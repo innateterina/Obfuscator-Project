@@ -19,8 +19,19 @@
 # 1234,'***','Software','2024-03-31','***'
 import boto3
 import csv
+import json
 from io import StringIO
-from helpers import parse_s3_location, replace_pii_data
+from helpers import parse_s3_location, replace_pii_csv_data, replace_pii_json_data
+
+
+def obfusc_json(s3_location: str, pii_fields: list):
+    s3 = boto3.client('s3')
+    bucket_name, file_key = parse_s3_location(s3_location)
+    obj = s3.get_object(Bucket=bucket_name, Key=file_key)
+    data = json.loads(obj['Body'].read().decode('utf-8'))
+    replace_pii_json_data(data, pii_fields)
+    obfuscated_json = json.dumps(data)
+    return obfuscated_json.encode('utf-8')
 
 
 def obfusc_csv(s3_location: str,  pii_fields: list):
@@ -35,15 +46,15 @@ def obfusc_csv(s3_location: str,  pii_fields: list):
     writer = csv.DictWriter(csv_output, fieldnames=reader.fieldnames)
     writer.writeheader()
     for row in reader:
-        obfusc_row = replace_pii_data(row, pii_fields)
+        obfusc_row = replace_pii_csv_data(row, pii_fields)
         writer.writerow(obfusc_row)
     return csv_output.getvalue().encode('utf-8')
 
 
-input_json = {
-    "file_to_obfuscate": "s3://my_ingestion_bucket/new_data/file1.csv",
-    "pii_fields": ["name", "email_address"]
-}
+# input_json = {
+#     "file_to_obfuscate": "s3://my_ingestion_bucket/new_data/file1.csv",
+#     "pii_fields": ["name", "email_address"]
+# }
 
-obfusc_data = obfusc_csv(
-    input_json['file_to_obfuscate'], input_json['pii_fields'])
+# obfusc_data = obfusc_csv(
+#     input_json['file_to_obfuscate'], input_json['pii_fields'])

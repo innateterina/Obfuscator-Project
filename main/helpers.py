@@ -5,9 +5,20 @@ def parse_s3_location(s3_location: str):
     return bucket_name, file_key
 
 
-def replace_pii_data(row: dict, pii_fields: list):
+def replace_pii_csv_data(row: dict, pii_fields: list):
     for field in pii_fields:
         if field in row:
             row[field] = '***'
     return row
 
+
+def replace_pii_json_data(data: dict, pii_fields: list):
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if key in pii_fields and isinstance(value, str):
+                data[key] = '***'
+            elif isinstance(value, (dict, list)):
+                replace_pii_json_data(value, pii_fields)
+    elif isinstance(data, list):
+        for item in data:
+            replace_pii_json_data(item, pii_fields)
