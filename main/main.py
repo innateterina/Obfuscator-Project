@@ -22,34 +22,34 @@ import pandas as pd
 import csv
 import json
 from io import StringIO
-from helpers import parse_s3_location, replace_pii_csv_data, replace_pii_json_data
+from helpers import parse_s3_location, replace_pii_csv_data, replace_pii_json_data, upload_obfuscated_file
 
 
-def main_obfuscator(s3_location: str, output_s3_location: str, pii_fields: list):
+def obfuscate_upload(s3_location: str, output_s3_location: str, pii_fields: list):
     if s3_location.endswith('.csv'):
-        data = obfusc_csv(s3_location, pii_fields)
+        data = obfuscate_csv(s3_location, pii_fields)
     elif s3_location.endswith('.json'):
-        data = obfusc_json(s3_location, pii_fields)
+        data = obfuscate_json(s3_location, pii_fields)
     elif s3_location.endswith('.parquet'):
-        data = obfusc_parquet(s3_location, pii_fields)
+        data = obfuscate_parquet(s3_location, pii_fields)
     else:
         raise ValueError("Unsupported file format.")
 
     bucket_name, file_key = parse_s3_location(output_s3_location)
-    upload_obf_file(bucket_name, file_key, data)
+    upload_obfuscated_file(bucket_name, file_key, data)
 
 
-def obfusc_json(s3_location: str, pii_fields: list):
+def obfuscate_json(s3_location: str, pii_fields: list):
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
     data = json.loads(obj['Body'].read().decode('utf-8'))
     replace_pii_json_data(data, pii_fields)
-    obfuscated_json = json.dumps(data)
-    return obfuscated_json.encode('utf-8')
+    obfuscated_json_file = json.dumps(data)
+    return obfuscated_json_file.encode('utf-8')
 
 
-def obfusc_csv(s3_location: str,  pii_fields: list):
+def obfuscate_csv(s3_location: str,  pii_fields: list):
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -61,12 +61,12 @@ def obfusc_csv(s3_location: str,  pii_fields: list):
     writer = csv.DictWriter(csv_output, fieldnames=reader.fieldnames)
     writer.writeheader()
     for row in reader:
-        obfusc_row = replace_pii_csv_data(row, pii_fields)
-        writer.writerow(obfusc_row)
+        obfuscated_row = replace_pii_csv_data(row, pii_fields)
+        writer.writerow(obfuscated_row)
     return csv_output.getvalue().encode('utf-8')
 
 
-def obfusc_parquet(s3_location: str, pii_fields: list):
+def obfuscate_parquet(s3_location: str, pii_fields: list):
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -78,9 +78,3 @@ def obfusc_parquet(s3_location: str, pii_fields: list):
     output = BytesIO()
     data.to_parquet(output, index=False)
     return output.getvalue()
-
-
-def upload_obf_file(bucket_name: str, file_key=str, data: bytes):
-    s3 = boto3.client('s3')
-    s3.put_object(Bucket=bucket_name, Key=file_key, Body=data)
-    print(f"File uploaded to s3://{bucket_name}/{file_key}")

@@ -22,3 +22,9 @@ def replace_pii_json_data(data: dict, pii_fields: list):
     elif isinstance(data, list):
         for item in data:
             replace_pii_json_data(item, pii_fields)
+
+
+def upload_obfuscated_file(bucket_name: str, file_key=str, data=bytes):
+    s3 = boto3.client('s3')
+    s3.put_object(Bucket=bucket_name, Key=file_key, Body=data)
+    print(f"File uploaded to s3://{bucket_name}/{file_key}")
