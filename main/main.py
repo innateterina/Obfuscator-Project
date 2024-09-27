@@ -25,15 +25,18 @@ from io import StringIO
 from helpers import parse_s3_location, replace_pii_csv_data, replace_pii_json_data
 
 
-def main_obfuscator(s3_location: str, pii_fields: list):
+def main_obfuscator(s3_location: str, output_s3_location: str, pii_fields: list):
     if s3_location.endswith('.csv'):
-        return obfusc_csv(s3_location, pii_fields)
+        data = obfusc_csv(s3_location, pii_fields)
     elif s3_location.endswith('.json'):
-        return obfusc_json(s3_location, pii_fields)
+        data = obfusc_json(s3_location, pii_fields)
     elif s3_location.endswith('.parquet'):
-        return obfusc_parquet(s3_location, pii_fields)
+        data = obfusc_parquet(s3_location, pii_fields)
     else:
         raise ValueError("Unsupported file format.")
+
+    bucket_name, file_key = parse_s3_location(output_s3_location)
+    upload_obf_file(bucket_name, file_key, data)
 
 
 def obfusc_json(s3_location: str, pii_fields: list):
@@ -75,3 +78,9 @@ def obfusc_parquet(s3_location: str, pii_fields: list):
     output = BytesIO()
     data.to_parquet(output, index=False)
     return output.getvalue()
+
+
+def upload_obf_file(bucket_name: str, file_key=str, data: bytes):
+    s3 = boto3.client('s3')
+    s3.put_object(Bucket=bucket_name, Key=file_key, Body=data)
+    print(f"File uploaded to s3://{bucket_name}/{file_key}")
