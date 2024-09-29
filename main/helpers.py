@@ -1,4 +1,10 @@
+import boto3
+
+
 def parse_s3_location(s3_location: str):
+    """ 
+    Function parses s3 URI into bucket name and file key.
+    """
     path_part = s3_location.replace('s3://', '').split('/')
     bucket_name = path_part[0]
     file_key = '/'.join(path_part[1:])
@@ -6,6 +12,9 @@ def parse_s3_location(s3_location: str):
 
 
 def replace_pii_csv_data(row: dict, pii_fields: list):
+    """
+    Function obfuscates sensitive pii fields in a csv row.
+    """
     for field in pii_fields:
         if field in row:
             row[field] = '***'
@@ -13,6 +22,9 @@ def replace_pii_csv_data(row: dict, pii_fields: list):
 
 
 def replace_pii_json_data(data: dict, pii_fields: list):
+    """
+    Function obfuscates pii fields in JSON data recursively.
+    """
     if isinstance(data, dict):
         for key, value in data.items():
             if key in pii_fields and isinstance(value, str):
@@ -25,6 +37,9 @@ def replace_pii_json_data(data: dict, pii_fields: list):
 
 
 def upload_obfuscated_file(bucket_name: str, file_key=str, data=bytes):
+    """
+    Function uploads obfuscated file to the specified s3 location.
+    """
     s3 = boto3.client('s3')
     s3.put_object(Bucket=bucket_name, Key=file_key, Body=data)
     print(f"File uploaded to s3://{bucket_name}/{file_key}")

@@ -1,22 +1,3 @@
-# the S3 location of the required CSV file for obfuscation
-# the names of the fields that are required to be obfuscated
-# For example, the input might be:
-
-# {
-#     "file_to_obfuscate": "s3://my_ingestion_bucket/new_data/file1.csv",
-#     "pii_fields": ["name", "email_address"]
-# }
-# The target CSV file might look like this:
-
-# student_id,name,course,cohort,graduation_date,email_address
-# ...
-# 1234,'John Smith','Software','2024-03-31','j.smith@email.com'
-# ...
-# The output will be a byte-stream representation of a file like this:
-
-# student_id,name,course,cohort,graduation_date,email_address
-# ...
-# 1234,'***','Software','2024-03-31','***'
 import boto3
 import pandas as pd
 import csv
@@ -26,6 +7,9 @@ from helpers import parse_s3_location, replace_pii_csv_data, replace_pii_json_da
 
 
 def obfuscate_upload(s3_location: str, output_s3_location: str, pii_fields: list):
+    """ 
+    Main function to handle obfuscation of pii data and upload the obfuscated file to output s3 location. 
+    """
     if s3_location.endswith('.csv'):
         data = obfuscate_csv(s3_location, pii_fields)
     elif s3_location.endswith('.json'):
@@ -40,6 +24,9 @@ def obfuscate_upload(s3_location: str, output_s3_location: str, pii_fields: list
 
 
 def obfuscate_json(s3_location: str, pii_fields: list):
+    """
+    Function obfuscates JSON data from the given s3 location.
+    """
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -50,6 +37,9 @@ def obfuscate_json(s3_location: str, pii_fields: list):
 
 
 def obfuscate_csv(s3_location: str,  pii_fields: list):
+    """
+    Function obfuscated CSV data from the given s3 location.
+    """
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
@@ -67,6 +57,9 @@ def obfuscate_csv(s3_location: str,  pii_fields: list):
 
 
 def obfuscate_parquet(s3_location: str, pii_fields: list):
+    """
+    Function obfuscates Parquet data from the given s3 location.
+    """
     s3 = boto3.client('s3')
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
