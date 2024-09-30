@@ -69,7 +69,8 @@ class BaseReshapingTests:
         tm.assert_frame_equal(result, expected)
 
         result = pd.concat([df1["A"], df2["A"].astype(object)])
-        expected = pd.concat([df1["A"].astype("object"), df2["A"].astype("object")])
+        expected = pd.concat(
+            [df1["A"].astype("object"), df2["A"].astype("object")])
         tm.assert_series_equal(result, expected)
 
     def test_concat_columns(self, data, na_value):
@@ -128,15 +129,18 @@ class BaseReshapingTests:
         r1, r2 = pd.Series(a).align(pd.Series(b, index=[1, 2, 3]))
 
         # Assumes that the ctor can take a list of scalars of the type
-        e1 = pd.Series(data._from_sequence(list(a) + [na_value], dtype=data.dtype))
-        e2 = pd.Series(data._from_sequence([na_value] + list(b), dtype=data.dtype))
+        e1 = pd.Series(data._from_sequence(
+            list(a) + [na_value], dtype=data.dtype))
+        e2 = pd.Series(data._from_sequence(
+            [na_value] + list(b), dtype=data.dtype))
         tm.assert_series_equal(r1, e1)
         tm.assert_series_equal(r2, e2)
 
     def test_align_frame(self, data, na_value):
         a = data[:3]
         b = data[2:5]
-        r1, r2 = pd.DataFrame({"A": a}).align(pd.DataFrame({"A": b}, index=[1, 2, 3]))
+        r1, r2 = pd.DataFrame({"A": a}).align(
+            pd.DataFrame({"A": b}, index=[1, 2, 3]))
 
         # Assumes that the ctor can take a list of scalars of the type
         e1 = pd.DataFrame(
@@ -182,7 +186,8 @@ class BaseReshapingTests:
 
     def test_merge(self, data, na_value):
         # GH-20743
-        df1 = pd.DataFrame({"ext": data[:3], "int1": [1, 2, 3], "key": [0, 1, 2]})
+        df1 = pd.DataFrame(
+            {"ext": data[:3], "int1": [1, 2, 3], "key": [0, 1, 2]})
         df2 = pd.DataFrame({"int2": [1, 2, 3, 4], "key": [0, 0, 1, 3]})
 
         res = pd.merge(df1, df2)
@@ -277,11 +282,13 @@ class BaseReshapingTests:
         "index",
         [
             # Two levels, uniform.
-            pd.MultiIndex.from_product(([["A", "B"], ["a", "b"]]), names=["a", "b"]),
+            pd.MultiIndex.from_product(
+                ([["A", "B"], ["a", "b"]]), names=["a", "b"]),
             # non-uniform
             pd.MultiIndex.from_tuples([("A", "a"), ("A", "b"), ("B", "b")]),
             # three levels, non-uniform
-            pd.MultiIndex.from_product([("A", "B"), ("a", "b", "c"), (0, 1, 2)]),
+            pd.MultiIndex.from_product(
+                [("A", "B"), ("a", "b", "c"), (0, 1, 2)]),
             pd.MultiIndex.from_tuples(
                 [
                     ("A", "a", 1),
@@ -324,7 +331,8 @@ class BaseReshapingTests:
 
             obj_ser = ser.astype(object)
 
-            expected = obj_ser.unstack(level=level, fill_value=data.dtype.na_value)
+            expected = obj_ser.unstack(
+                level=level, fill_value=data.dtype.na_value)
             if obj == "series":
                 assert (expected.dtypes == object).all()
 
@@ -337,7 +345,8 @@ class BaseReshapingTests:
         assert type(result) == type(data)
 
         if data.dtype._is_immutable:
-            pytest.skip(f"test_ravel assumes mutability and {data.dtype} is immutable")
+            pytest.skip(
+                f"test_ravel assumes mutability and {data.dtype} is immutable")
 
         # Check that we have a view, not a copy
         result[0] = result[1]
@@ -363,7 +372,8 @@ class BaseReshapingTests:
         assert data[0] == data[1]
 
     def test_transpose_frame(self, data):
-        df = pd.DataFrame({"A": data[:4], "B": data[:4]}, index=["a", "b", "c", "d"])
+        df = pd.DataFrame({"A": data[:4], "B": data[:4]}, index=[
+                          "a", "b", "c", "d"])
         result = df.T
         expected = pd.DataFrame(
             {

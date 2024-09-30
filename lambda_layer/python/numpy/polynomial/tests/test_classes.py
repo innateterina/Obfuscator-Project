@@ -12,7 +12,7 @@ from numpy.polynomial import (
     Polynomial, Legendre, Chebyshev, Laguerre, Hermite, HermiteE)
 from numpy.testing import (
     assert_almost_equal, assert_raises, assert_equal, assert_,
-    )
+)
 from numpy.exceptions import RankWarning
 
 #
@@ -22,12 +22,14 @@ from numpy.exceptions import RankWarning
 classes = (
     Polynomial, Legendre, Chebyshev, Laguerre,
     Hermite, HermiteE
-    )
+)
 classids = tuple(cls.__name__ for cls in classes)
+
 
 @pytest.fixture(params=classes, ids=classids)
 def Poly(request):
     return request.param
+
 
 #
 # helper functions
@@ -305,7 +307,7 @@ def test_floordiv(Poly):
 def test_truediv(Poly):
     # true division is valid only if the denominator is a Number and
     # not a python bool.
-    p1 = Poly([1,2,3])
+    p1 = Poly([1, 2, 3])
     p2 = p1 * 5
 
     for stype in np.ScalarType:

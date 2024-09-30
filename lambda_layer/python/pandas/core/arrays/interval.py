@@ -361,7 +361,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
             raise ValueError(msg)
         elif needs_i8_conversion(left.dtype) and left.unit != right.unit:
             # e.g. m8[s] vs m8[ms], try to cast to a common dtype GH#55714
-            left_arr, right_arr = left._data._ensure_matching_resos(right._data)
+            left_arr, right_arr = left._data._ensure_matching_resos(
+                right._data)
             left = ensure_index(left_arr)
             right = ensure_index(right_arr)
 
@@ -677,7 +678,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
             Values to be used for the right-side of the intervals.
         """
         dtype = IntervalDtype(left.dtype, closed=self.closed)
-        left, right, dtype = self._ensure_simple_new_inputs(left, right, dtype=dtype)
+        left, right, dtype = self._ensure_simple_new_inputs(
+            left, right, dtype=dtype)
 
         return self._simple_new(left, right, dtype=dtype)
 
@@ -731,7 +733,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         # "Union[Period, Timestamp, Timedelta, NaTType, DatetimeArray, TimedeltaArray,
         # ndarray[Any, Any]]"; expected "Union[Union[DatetimeArray, TimedeltaArray],
         # ndarray[Any, Any]]"
-        return self._simple_new(left, right, dtype=self.dtype)  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        return self._simple_new(left, right, dtype=self.dtype)
 
     def __setitem__(self, key, value) -> None:
         value_left, value_right = self._validate_setitem_value(value)
@@ -998,7 +1001,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
                 # We need to use Index rules for astype to prevent casting
                 #  np.nan entries to int subtypes
                 new_left = Index(self._left, copy=False).astype(dtype.subtype)
-                new_right = Index(self._right, copy=False).astype(dtype.subtype)
+                new_right = Index(
+                    self._right, copy=False).astype(dtype.subtype)
             except IntCastingNaNError:
                 # e.g test_subtype_integer
                 raise
@@ -1045,10 +1049,13 @@ class IntervalArray(IntervalMixin, ExtensionArray):
             raise ValueError("Intervals must all be closed on the same side.")
         closed = closed_set.pop()
 
-        left: IntervalSide = np.concatenate([interval.left for interval in to_concat])
-        right: IntervalSide = np.concatenate([interval.right for interval in to_concat])
+        left: IntervalSide = np.concatenate(
+            [interval.left for interval in to_concat])
+        right: IntervalSide = np.concatenate(
+            [interval.right for interval in to_concat])
 
-        left, right, dtype = cls._ensure_simple_new_inputs(left, right, closed=closed)
+        left, right, dtype = cls._ensure_simple_new_inputs(
+            left, right, closed=closed)
 
         return cls._simple_new(left, right, dtype=dtype)
 
@@ -1086,13 +1093,14 @@ class IntervalArray(IntervalMixin, ExtensionArray):
             fill_value = Index(self._left, copy=False)._na_value
             empty = IntervalArray.from_breaks([fill_value] * (empty_len + 1))
         else:
-            empty = self._from_sequence([fill_value] * empty_len, dtype=self.dtype)
+            empty = self._from_sequence(
+                [fill_value] * empty_len, dtype=self.dtype)
 
         if periods > 0:
             a = empty
             b = self[:-periods]
         else:
-            a = self[abs(periods) :]
+            a = self[abs(periods):]
             b = empty
         return self._concat_same_type([a, b])
 
@@ -1209,7 +1217,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
                 # can't set NaN on a numpy integer array
                 # GH#45484 TypeError, not ValueError, matches what we get with
                 #  non-NA un-holdable value.
-                raise TypeError("Cannot set float NaN to integer-backed IntervalArray")
+                raise TypeError(
+                    "Cannot set float NaN to integer-backed IntervalArray")
             value_left, value_right = value, value
 
         elif isinstance(value, Interval):
@@ -1800,7 +1809,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
     )
     def contains(self, other):
         if isinstance(other, Interval):
-            raise NotImplementedError("contains not implemented for two intervals")
+            raise NotImplementedError(
+                "contains not implemented for two intervals")
 
         return (self._left < other if self.open_left else self._left <= other) & (
             other < self._right if self.open_right else other <= self._right
@@ -1872,7 +1882,8 @@ class IntervalArray(IntervalMixin, ExtensionArray):
         # No overload variant of "__getitem__" of "ExtensionArray" matches argument
         # type "Tuple[slice, int]"
         nc = unique(
-            self._combined.view("complex128")[:, 0]  # type: ignore[call-overload]
+            # type: ignore[call-overload]
+            self._combined.view("complex128")[:, 0]
         )
         nc = nc[:, None]
         return self._from_combined(nc)

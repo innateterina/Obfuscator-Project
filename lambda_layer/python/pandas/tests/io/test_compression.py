@@ -24,7 +24,8 @@ import pandas.io.common as icom
     "obj",
     [
         pd.DataFrame(
-            100 * [[0.123456, 0.234567, 0.567567], [12.32112, 123123.2, 321321.2]],
+            100 * [[0.123456, 0.234567, 0.567567],
+                   [12.32112, 123123.2, 321321.2]],
             columns=["X", "Y", "Z"],
         ),
         pd.Series(100 * [0.123456, 0.234567, 0.567567], name="X"),
@@ -47,7 +48,8 @@ def test_compression_size(obj, method, compression_only):
     "obj",
     [
         pd.DataFrame(
-            100 * [[0.123456, 0.234567, 0.567567], [12.32112, 123123.2, 321321.2]],
+            100 * [[0.123456, 0.234567, 0.567567],
+                   [12.32112, 123123.2, 321321.2]],
             columns=["X", "Y", "Z"],
         ),
         pd.Series(100 * [0.123456, 0.234567, 0.567567], name="X"),
@@ -95,7 +97,8 @@ def test_dataframe_compression_defaults_to_infer(
 @pytest.mark.parametrize(
     "write_method,write_kwargs,read_method,read_kwargs",
     [
-        ("to_csv", {"index": False, "header": True}, pd.read_csv, {"squeeze": True}),
+        ("to_csv", {"index": False, "header": True},
+         pd.read_csv, {"squeeze": True}),
         ("to_json", {}, pd.read_json, {"typ": "series"}),
         ("to_pickle", {}, pd.read_pickle, {}),
     ],
@@ -120,7 +123,8 @@ def test_series_compression_defaults_to_infer(
                 "columns"
             )
         else:
-            output = read_method(path, compression=compression_only, **read_kwargs)
+            output = read_method(
+                path, compression=compression_only, **read_kwargs)
     tm.assert_series_equal(output, input, check_names=False)
 
 
@@ -226,7 +230,8 @@ def test_with_missing_lzma():
         import pandas
         """
     )
-    subprocess.check_output([sys.executable, "-c", code], stderr=subprocess.PIPE)
+    subprocess.check_output(
+        [sys.executable, "-c", code], stderr=subprocess.PIPE)
 
 
 @pytest.mark.single_cpu
@@ -245,14 +250,16 @@ def test_with_missing_lzma_runtime():
             df.to_csv('foo.csv', compression='xz')
         """
     )
-    subprocess.check_output([sys.executable, "-c", code], stderr=subprocess.PIPE)
+    subprocess.check_output(
+        [sys.executable, "-c", code], stderr=subprocess.PIPE)
 
 
 @pytest.mark.parametrize(
     "obj",
     [
         pd.DataFrame(
-            100 * [[0.123456, 0.234567, 0.567567], [12.32112, 123123.2, 321321.2]],
+            100 * [[0.123456, 0.234567, 0.567567],
+                   [12.32112, 123123.2, 321321.2]],
             columns=["X", "Y", "Z"],
         ),
         pd.Series(100 * [0.123456, 0.234567, 0.567567], name="X"),
@@ -264,7 +271,8 @@ def test_gzip_compression_level(obj, method):
     with tm.ensure_clean() as path:
         getattr(obj, method)(path, compression="gzip")
         compressed_size_default = os.path.getsize(path)
-        getattr(obj, method)(path, compression={"method": "gzip", "compresslevel": 1})
+        getattr(obj, method)(path, compression={
+            "method": "gzip", "compresslevel": 1})
         compressed_size_fast = os.path.getsize(path)
         assert compressed_size_default < compressed_size_fast
 
@@ -273,7 +281,8 @@ def test_gzip_compression_level(obj, method):
     "obj",
     [
         pd.DataFrame(
-            100 * [[0.123456, 0.234567, 0.567567], [12.32112, 123123.2, 321321.2]],
+            100 * [[0.123456, 0.234567, 0.567567],
+                   [12.32112, 123123.2, 321321.2]],
             columns=["X", "Y", "Z"],
         ),
         pd.Series(100 * [0.123456, 0.234567, 0.567567], name="X"),
@@ -295,7 +304,8 @@ def test_xz_compression_level_read(obj, method):
     "obj",
     [
         pd.DataFrame(
-            100 * [[0.123456, 0.234567, 0.567567], [12.32112, 123123.2, 321321.2]],
+            100 * [[0.123456, 0.234567, 0.567567],
+                   [12.32112, 123123.2, 321321.2]],
             columns=["X", "Y", "Z"],
         ),
         pd.Series(100 * [0.123456, 0.234567, 0.567567], name="X"),
@@ -308,7 +318,8 @@ def test_bzip_compression_level(obj, method):
     compression is passed as a dict.
     """
     with tm.ensure_clean() as path:
-        getattr(obj, method)(path, compression={"method": "bz2", "compresslevel": 1})
+        getattr(obj, method)(path, compression={
+            "method": "bz2", "compresslevel": 1})
 
 
 @pytest.mark.parametrize(

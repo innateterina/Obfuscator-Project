@@ -359,7 +359,7 @@ class TestSymbolic(util.F2PyTest):
                 name=as_string('"John"'),
                 age=as_number(50),
                 shape=as_array((as_number(34), as_number(23))),
-            )
+        )
 
         assert fromstring("x?y:z") == as_ternary(x, y, z)
 

@@ -833,7 +833,8 @@ class PlotAccessor(PandasObject):
         >>> plot = df.groupby("col2").plot(kind="bar", title="DataFrameGroupBy Plot")
     """
 
-    _common_kinds = ("line", "bar", "barh", "kde", "density", "area", "hist", "box")
+    _common_kinds = ("line", "bar", "barh", "kde",
+                     "density", "area", "hist", "box")
     _series_kinds = ("pie",)
     _dataframe_kinds = ("scatter", "hexbin")
     _kind_aliases = {"density": "kde"}
@@ -921,7 +922,8 @@ class PlotAccessor(PandasObject):
         if args and isinstance(data, ABCSeries):
             positional_args = str(args)[1:-1]
             keyword_args = ", ".join(
-                [f"{name}={repr(value)}" for (name, _), value in zip(arg_def, args)]
+                [f"{name}={repr(value)}" for (name, _),
+                 value in zip(arg_def, args)]
             )
             msg = (
                 "`Series.plot()` should not be called with positional "
@@ -974,7 +976,8 @@ class PlotAccessor(PandasObject):
             if isinstance(data, ABCDataFrame):
                 return plot_backend.plot(data, x=x, y=y, kind=kind, **kwargs)
             else:
-                raise ValueError(f"plot kind {kind} can only be used for data frames")
+                raise ValueError(
+                    f"plot kind {kind} can only be used for data frames")
         elif kind in self._series_kinds:
             if isinstance(data, ABCDataFrame):
                 if y is None and kwargs.get("subplots") is False:
@@ -1410,7 +1413,8 @@ class PlotAccessor(PandasObject):
 
     def kde(
         self,
-        bw_method: Literal["scott", "silverman"] | float | Callable | None = None,
+        bw_method: Literal["scott",
+                           "silverman"] | float | Callable | None = None,
         ind: np.ndarray | int | None = None,
         **kwargs,
     ) -> PlotAccessor:

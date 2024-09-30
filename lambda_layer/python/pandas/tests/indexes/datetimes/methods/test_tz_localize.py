@@ -83,7 +83,8 @@ class TestTZLocalize:
             index.tz_localize(tz=tz, nonexistent="raise")
 
         result = index.tz_localize(tz=tz, nonexistent="NaT")
-        test_times = ["2015-03-08 01:00-05:00", "NaT", "2015-03-08 03:00-04:00"]
+        test_times = ["2015-03-08 01:00-05:00",
+                      "NaT", "2015-03-08 03:00-04:00"]
         dti = to_datetime(test_times, utc=True)
         expected = dti.tz_convert("US/Eastern")
         tm.assert_index_equal(result, expected)
@@ -92,7 +93,8 @@ class TestTZLocalize:
     def test_dti_tz_localize_ambiguous_infer(self, tz):
         # November 6, 2011, fall back, repeat 2 AM hour
         # With no repeated hours, we cannot infer the transition
-        dr = date_range(datetime(2011, 11, 6, 0), periods=5, freq=offsets.Hour())
+        dr = date_range(datetime(2011, 11, 6, 0),
+                        periods=5, freq=offsets.Hour())
         with pytest.raises(pytz.AmbiguousTimeError, match="Cannot infer dst time"):
             dr.tz_localize(tz)
 
@@ -119,7 +121,8 @@ class TestTZLocalize:
     @pytest.mark.parametrize("tz", easts)
     def test_dti_tz_localize_ambiguous_infer3(self, tz):
         # When there is no dst transition, nothing special happens
-        dr = date_range(datetime(2011, 6, 1, 0), periods=10, freq=offsets.Hour())
+        dr = date_range(datetime(2011, 6, 1, 0),
+                        periods=10, freq=offsets.Hour())
         localized = dr.tz_localize(tz)
         localized_infer = dr.tz_localize(tz, ambiguous="infer")
         tm.assert_index_equal(localized, localized_infer)
@@ -127,7 +130,8 @@ class TestTZLocalize:
     @pytest.mark.parametrize("tz", easts)
     def test_dti_tz_localize_ambiguous_times(self, tz):
         # March 13, 2011, spring forward, skip from 2 AM to 3 AM
-        dr = date_range(datetime(2011, 3, 13, 1, 30), periods=3, freq=offsets.Hour())
+        dr = date_range(datetime(2011, 3, 13, 1, 30),
+                        periods=3, freq=offsets.Hour())
         with pytest.raises(pytz.NonExistentTimeError, match="2011-03-13 02:30:00"):
             dr.tz_localize(tz)
 
@@ -137,7 +141,8 @@ class TestTZLocalize:
         )
 
         # November 6, 2011, fall back, repeat 2 AM hour
-        dr = date_range(datetime(2011, 11, 6, 1, 30), periods=3, freq=offsets.Hour())
+        dr = date_range(datetime(2011, 11, 6, 1, 30),
+                        periods=3, freq=offsets.Hour())
         with pytest.raises(pytz.AmbiguousTimeError, match="Cannot infer dst time"):
             dr.tz_localize(tz)
 
@@ -161,7 +166,8 @@ class TestTZLocalize:
     @pytest.mark.parametrize("prefix", ["", "dateutil/"])
     def test_dti_tz_localize(self, prefix):
         tzstr = prefix + "US/Eastern"
-        dti = date_range(start="1/1/2005", end="1/1/2005 0:00:30.256", freq="ms")
+        dti = date_range(start="1/1/2005",
+                         end="1/1/2005 0:00:30.256", freq="ms")
         dti2 = dti.tz_localize(tzstr)
 
         dti_utc = date_range(
@@ -173,11 +179,13 @@ class TestTZLocalize:
         dti3 = dti2.tz_convert(prefix + "US/Pacific")
         tm.assert_numpy_array_equal(dti3.values, dti_utc.values)
 
-        dti = date_range(start="11/6/2011 1:59", end="11/6/2011 2:00", freq="ms")
+        dti = date_range(start="11/6/2011 1:59",
+                         end="11/6/2011 2:00", freq="ms")
         with pytest.raises(pytz.AmbiguousTimeError, match="Cannot infer dst time"):
             dti.tz_localize(tzstr)
 
-        dti = date_range(start="3/13/2011 1:59", end="3/13/2011 2:00", freq="ms")
+        dti = date_range(start="3/13/2011 1:59",
+                         end="3/13/2011 2:00", freq="ms")
         with pytest.raises(pytz.NonExistentTimeError, match="2011-03-13 02:00:00"):
             dti.tz_localize(tzstr)
 
@@ -241,7 +249,8 @@ class TestTZLocalize:
         dti2 = dti.tz_localize(dateutil.tz.tzlocal())
         tm.assert_numpy_array_equal(dti2.asi8 + offset, dti.asi8)
 
-        dti = date_range(start="2001-01-01", end="2001-03-01", tz=dateutil.tz.tzlocal())
+        dti = date_range(start="2001-01-01", end="2001-03-01",
+                         tz=dateutil.tz.tzlocal())
         dti2 = dti.tz_localize(None)
         tm.assert_numpy_array_equal(dti2.asi8 - offset, dti.asi8)
 
@@ -299,7 +308,8 @@ class TestTZLocalize:
         localized = di.tz_localize(tz, ambiguous=np.array(is_dst))
         tm.assert_index_equal(dr, localized)
 
-        localized = di.tz_localize(tz, ambiguous=np.array(is_dst).astype("bool"))
+        localized = di.tz_localize(
+            tz, ambiguous=np.array(is_dst).astype("bool"))
         tm.assert_index_equal(dr, localized)
 
         # Test constructor
@@ -324,7 +334,8 @@ class TestTZLocalize:
     @pytest.mark.parametrize("tz", easts)
     def test_dti_tz_localize_ambiguous_flags2(self, tz, unit):
         # When there is no dst transition, nothing special happens
-        dr = date_range(datetime(2011, 6, 1, 0), periods=10, freq=offsets.Hour())
+        dr = date_range(datetime(2011, 6, 1, 0),
+                        periods=10, freq=offsets.Hour())
         is_dst = np.array([1] * 10)
         localized = dr.tz_localize(tz)
         localized_is_dst = dr.tz_localize(tz, ambiguous=is_dst)
@@ -339,7 +350,8 @@ class TestTZLocalize:
     @pytest.mark.parametrize(
         "start_ts, tz, end_ts, shift",
         [
-            ["2015-03-29 02:20:00", "Europe/Warsaw", "2015-03-29 03:00:00", "forward"],
+            ["2015-03-29 02:20:00", "Europe/Warsaw",
+                "2015-03-29 03:00:00", "forward"],
             [
                 "2015-03-29 02:20:00",
                 "Europe/Warsaw",
@@ -358,7 +370,8 @@ class TestTZLocalize:
                 "2015-03-29 01:20:00",
                 timedelta(hours=-1),
             ],
-            ["2018-03-11 02:33:00", "US/Pacific", "2018-03-11 03:00:00", "forward"],
+            ["2018-03-11 02:33:00", "US/Pacific",
+                "2018-03-11 03:00:00", "forward"],
             [
                 "2018-03-11 02:33:00",
                 "US/Pacific",
@@ -389,7 +402,8 @@ class TestTZLocalize:
             shift = "shift_" + shift
         dti = DatetimeIndex([Timestamp(start_ts)]).as_unit(unit)
         result = dti.tz_localize(tz, nonexistent=shift)
-        expected = DatetimeIndex([Timestamp(end_ts)]).tz_localize(tz).as_unit(unit)
+        expected = DatetimeIndex(
+            [Timestamp(end_ts)]).tz_localize(tz).as_unit(unit)
         tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize("offset", [-1, 1])

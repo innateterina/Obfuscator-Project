@@ -162,7 +162,8 @@ class TestWeekOfMonth:
 
     def test_repr(self):
         assert (
-            repr(WeekOfMonth(weekday=1, week=2)) == "<WeekOfMonth: week=2, weekday=1>"
+            repr(WeekOfMonth(weekday=1, week=2)
+                 ) == "<WeekOfMonth: week=2, weekday=1>"
         )
 
     def test_offset(self):
@@ -347,5 +348,6 @@ class TestLastWeekOfMonth:
 
     def test_repr(self):
         assert (
-            repr(LastWeekOfMonth(n=2, weekday=1)) == "<2 * LastWeekOfMonths: weekday=1>"
+            repr(LastWeekOfMonth(n=2, weekday=1)
+                 ) == "<2 * LastWeekOfMonths: weekday=1>"
         )

@@ -36,7 +36,8 @@ class TestSeriesValueCounts:
         tm.assert_series_equal(idx.value_counts(), exp)
 
         # normalize
-        exp = Series(np.array([3.0, 2.0, 1]) / 6.0, index=exp_idx, name="proportion")
+        exp = Series(np.array([3.0, 2.0, 1]) / 6.0,
+                     index=exp_idx, name="proportion")
         tm.assert_series_equal(ser.value_counts(normalize=True), exp)
         tm.assert_series_equal(idx.value_counts(normalize=True), exp)
 
@@ -62,7 +63,8 @@ class TestSeriesValueCounts:
         idx = pd.DatetimeIndex(values, name="xxx").as_unit(unit)
         tm.assert_series_equal(idx.value_counts(), exp)
 
-        exp = Series(np.array([3.0, 2.0, 1]) / 6.0, index=exp_idx, name="proportion")
+        exp = Series(np.array([3.0, 2.0, 1]) / 6.0,
+                     index=exp_idx, name="proportion")
         tm.assert_series_equal(ser.value_counts(normalize=True), exp)
         tm.assert_series_equal(idx.value_counts(normalize=True), exp)
 
@@ -88,7 +90,8 @@ class TestSeriesValueCounts:
         tm.assert_series_equal(idx.value_counts(), exp)
 
         # normalize
-        exp = Series(np.array([3.0, 2.0, 1]) / 6.0, index=exp_idx, name="proportion")
+        exp = Series(np.array([3.0, 2.0, 1]) / 6.0,
+                     index=exp_idx, name="proportion")
         tm.assert_series_equal(ser.value_counts(normalize=True), exp)
         tm.assert_series_equal(idx.value_counts(normalize=True), exp)
 
@@ -108,7 +111,8 @@ class TestSeriesValueCounts:
         tm.assert_series_equal(idx.value_counts(), exp)
 
         # normalize
-        exp = Series(np.array([3.0, 2.0, 1]) / 6.0, index=exp_idx, name="proportion")
+        exp = Series(np.array([3.0, 2.0, 1]) / 6.0,
+                     index=exp_idx, name="proportion")
         tm.assert_series_equal(ser.value_counts(normalize=True), exp)
         tm.assert_series_equal(idx.value_counts(normalize=True), exp)
 
@@ -127,7 +131,8 @@ class TestSeriesValueCounts:
         tm.assert_series_equal(idx.value_counts(), exp)
 
         # normalize
-        exp = Series(np.array([3.0, 2.0, 1]) / 6.0, index=exp_idx, name="proportion")
+        exp = Series(np.array([3.0, 2.0, 1]) / 6.0,
+                     index=exp_idx, name="proportion")
         tm.assert_series_equal(ser.value_counts(normalize=True), exp)
         tm.assert_series_equal(idx.value_counts(normalize=True), exp)
 
@@ -155,7 +160,8 @@ class TestSeriesValueCounts:
         # (tested in tests/base)
         ser = Series(["a", "b", "c", "c", "c", "b"], name="xxx")
         res = ser.value_counts()
-        exp = Series([3, 2, 1], name="count", index=Index(["c", "b", "a"], name="xxx"))
+        exp = Series([3, 2, 1], name="count",
+                     index=Index(["c", "b", "a"], name="xxx"))
         tm.assert_series_equal(res, exp)
 
     def test_value_counts_categorical_with_nan(self):
@@ -175,13 +181,15 @@ class TestSeriesValueCounts:
         series = [
             Series(["a", "b", None, "a", None, None], dtype="category"),
             Series(
-                Categorical(["a", "b", None, "a", None, None], categories=["a", "b"])
+                Categorical(["a", "b", None, "a", None, None],
+                            categories=["a", "b"])
             ),
         ]
 
         for ser in series:
             # None is a NaN value, so we exclude its count here
-            exp = Series([2, 1], index=CategoricalIndex(["a", "b"]), name="count")
+            exp = Series([2, 1], index=CategoricalIndex(
+                ["a", "b"]), name="count")
             res = ser.value_counts(dropna=True)
             tm.assert_series_equal(res, exp)
 
@@ -211,7 +219,8 @@ class TestSeriesValueCounts:
             (
                 Series([False, True, True, pd.NA]),
                 True,
-                Series([2, 1], index=Index([True, False], dtype=object), name="count"),
+                Series([2, 1], index=Index(
+                    [True, False], dtype=object), name="count"),
             ),
             (
                 Series(range(3), index=[True, False, np.nan]).index,

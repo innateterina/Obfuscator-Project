@@ -294,7 +294,8 @@ def unbox_index(typ, obj, c):
     # If we see an object array, assume its been validated as only containing strings
     # We still need to do the conversion though
     index.data = c.unbox(typ.as_array, data_obj).value
-    typed_dict_obj = c.pyapi.unserialize(c.pyapi.serialize_object(numba.typed.Dict))
+    typed_dict_obj = c.pyapi.unserialize(
+        c.pyapi.serialize_object(numba.typed.Dict))
     # Create an empty typed dict in numba for the hashmap for indexing
     # equiv of numba.typed.Dict.empty(typ.dtype, types.intp)
     arr_type_obj = c.pyapi.unserialize(c.pyapi.serialize_object(typ.dtype))
@@ -302,7 +303,8 @@ def unbox_index(typ, obj, c):
     hashmap_obj = c.pyapi.call_method(
         typed_dict_obj, "empty", (arr_type_obj, intp_type_obj)
     )
-    index.hashmap = c.unbox(types.DictType(typ.dtype, types.intp), hashmap_obj).value
+    index.hashmap = c.unbox(types.DictType(
+        typ.dtype, types.intp), hashmap_obj).value
     # Set the parent for speedy boxing.
     index.parent = obj
 
@@ -368,11 +370,14 @@ def box_index(typ, val, c):
             if isinstance(typ.dtype, types.UnicodeCharSeq):
                 # We converted to numpy string dtype, convert back
                 # to object since _simple_new won't do that for uss
-                object_str_obj = c.pyapi.unserialize(c.pyapi.serialize_object("object"))
-                array_obj = c.pyapi.call_method(array_obj, "astype", (object_str_obj,))
+                object_str_obj = c.pyapi.unserialize(
+                    c.pyapi.serialize_object("object"))
+                array_obj = c.pyapi.call_method(
+                    array_obj, "astype", (object_str_obj,))
                 c.pyapi.decref(object_str_obj)
             # this is basically Index._simple_new(array_obj, name_obj) in python
-            index_obj = c.pyapi.call_method(class_obj, "_simple_new", (array_obj,))
+            index_obj = c.pyapi.call_method(
+                class_obj, "_simple_new", (array_obj,))
             index.parent = index_obj
             c.builder.store(index_obj, res)
 
@@ -388,7 +393,8 @@ def box_series(typ, val, c):
     Convert a native series structure to a Series object.
     """
     series = cgutils.create_struct_proxy(typ)(c.context, c.builder, value=val)
-    series_const_obj = c.pyapi.unserialize(c.pyapi.serialize_object(Series._from_mgr))
+    series_const_obj = c.pyapi.unserialize(
+        c.pyapi.serialize_object(Series._from_mgr))
     mgr_const_obj = c.pyapi.unserialize(
         c.pyapi.serialize_object(SingleBlockManager.from_array)
     )
@@ -549,7 +555,8 @@ def type_iloc_constructor(context):
 @lower_builtin(_iLocIndexer, SeriesType)
 def iloc_constructor(context, builder, sig, args):
     (obj,) = args
-    iloc_indexer = cgutils.create_struct_proxy(sig.return_type)(context, builder)
+    iloc_indexer = cgutils.create_struct_proxy(
+        sig.return_type)(context, builder)
     iloc_indexer.obj = obj
     return impl_ret_borrowed(
         context, builder, sig.return_type, iloc_indexer._getvalue()

@@ -125,7 +125,8 @@ def run_server_thread(dist_dir, q):
 @contextlib.contextmanager
 def launch_server(dist_dir):
     q = queue.Queue()
-    p = threading.Thread(target=run_server_thread, args=[dist_dir, q], daemon=True)
+    p = threading.Thread(target=run_server_thread, args=[
+                         dist_dir, q], daemon=True)
     p.start()
     address = q.get(timeout=50)
     time.sleep(0.1)  # wait to make sure server is started
@@ -244,7 +245,8 @@ class BrowserDriver:
             )
             if len(lines) > 0:
                 sys.stdout.buffer.write(bytes(lines))
-            done = self.driver.execute_script("return window.python_script_done;")
+            done = self.driver.execute_script(
+                "return window.python_script_done;")
             if done is not None:
                 value = done["result"]
                 self.driver.execute_script("delete window.python_script_done;")

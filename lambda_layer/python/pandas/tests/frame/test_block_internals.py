@@ -153,7 +153,8 @@ class TestDataFrameBlockInternals:
 
         df = DataFrame({"A": [1.0 + 2.0j, 3.0]})
         result = df["A"]
-        expected = Series(np.asarray([1.0 + 2.0j, 3.0], np.complex128), name="A")
+        expected = Series(np.asarray(
+            [1.0 + 2.0j, 3.0], np.complex128), name="A")
         tm.assert_series_equal(result, expected)
 
         df = DataFrame({"A": [1.0 + 2.0j, True]})
@@ -168,12 +169,14 @@ class TestDataFrameBlockInternals:
 
         df = DataFrame({"A": [1.0 + 2.0j, None]})
         result = df["A"]
-        expected = Series(np.asarray([1.0 + 2.0j, np.nan], np.complex128), name="A")
+        expected = Series(np.asarray(
+            [1.0 + 2.0j, np.nan], np.complex128), name="A")
         tm.assert_series_equal(result, expected)
 
         df = DataFrame({"A": [2.0, 1, True, None]})
         result = df["A"]
-        expected = Series(np.asarray([2.0, 1, True, None], np.object_), name="A")
+        expected = Series(np.asarray(
+            [2.0, 1, True, None], np.object_), name="A")
         tm.assert_series_equal(result, expected)
 
         df = DataFrame({"A": [2.0, 1, datetime(2006, 1, 1), None]})
@@ -331,7 +334,8 @@ class TestDataFrameBlockInternals:
         df.starting = ser_starting.index
         df.ending = ser_ending.index
 
-        tm.assert_index_equal(pd.DatetimeIndex(df.starting), ser_starting.index)
+        tm.assert_index_equal(pd.DatetimeIndex(
+            df.starting), ser_starting.index)
         tm.assert_index_equal(pd.DatetimeIndex(df.ending), ser_ending.index)
 
     def test_is_mixed_type(self, float_frame, float_string_frame):
@@ -397,7 +401,8 @@ class TestDataFrameBlockInternals:
     def test_add_column_with_pandas_array(self):
         # GH 26390
         df = DataFrame({"a": [1, 2, 3, 4], "b": ["a", "b", "c", "d"]})
-        df["c"] = pd.arrays.NumpyExtensionArray(np.array([1, 2, None, 3], dtype=object))
+        df["c"] = pd.arrays.NumpyExtensionArray(
+            np.array([1, 2, None, 3], dtype=object))
         df2 = DataFrame(
             {
                 "a": [1, 2, 3, 4],

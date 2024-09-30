@@ -49,7 +49,8 @@ numpy array values are different \\(66\\.66667 %\\)
 \\[right\\]: \\[1\\.0, nan, 3\\.0\\]"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_numpy_array_equal(np.array([np.nan, 2, 3]), np.array([1, np.nan, 3]))
+        tm.assert_numpy_array_equal(
+            np.array([np.nan, 2, 3]), np.array([1, np.nan, 3]))
 
 
 def test_assert_numpy_array_equal_value_mismatch2():
@@ -72,7 +73,8 @@ numpy array values are different \\(16\\.66667 %\\)
 
     with pytest.raises(AssertionError, match=msg):
         tm.assert_numpy_array_equal(
-            np.array([[1, 2], [3, 4], [5, 6]]), np.array([[1, 3], [3, 4], [5, 6]])
+            np.array([[1, 2], [3, 4], [5, 6]]), np.array(
+                [[1, 3], [3, 4], [5, 6]])
         )
 
 
@@ -84,7 +86,8 @@ numpy array values are different \\(50\\.0 %\\)
 \\[right\\]: \\[1\\.1, 2.0\\]"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_numpy_array_equal(np.array([1.1, 2.000001]), np.array([1.1, 2.0]))
+        tm.assert_numpy_array_equal(
+            np.array([1.1, 2.000001]), np.array([1.1, 2.0]))
 
 
 def test_assert_numpy_array_equal_value_mismatch5():
@@ -96,7 +99,8 @@ numpy array values are different \\(16\\.66667 %\\)
 
     with pytest.raises(AssertionError, match=msg):
         tm.assert_numpy_array_equal(
-            np.array([[1, 2], [3, 4], [5, 6]]), np.array([[1, 3], [3, 4], [5, 6]])
+            np.array([[1, 2], [3, 4], [5, 6]]), np.array(
+                [[1, 3], [3, 4], [5, 6]])
         )
 
 
@@ -121,7 +125,8 @@ Index shapes are different
 \\[right\\]: \\(3L*,\\)"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_numpy_array_equal(np.array([1, 2]), np.array([3, 4, 5]), obj="Index")
+        tm.assert_numpy_array_equal(
+            np.array([1, 2]), np.array([3, 4, 5]), obj="Index")
 
 
 def test_numpy_array_equal_unicode():

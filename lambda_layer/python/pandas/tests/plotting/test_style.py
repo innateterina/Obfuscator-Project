@@ -1,9 +1,9 @@
+from pandas.plotting._matplotlib.style import get_standard_colors
 import pytest
 
 from pandas import Series
 
 pytest.importorskip("matplotlib")
-from pandas.plotting._matplotlib.style import get_standard_colors
 
 
 class TestGetStandardColors:

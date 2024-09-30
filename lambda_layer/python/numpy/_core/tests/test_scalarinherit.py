@@ -9,22 +9,32 @@ from numpy.testing import assert_, assert_raises
 
 class A:
     pass
+
+
 class B(A, np.float64):
     pass
 
+
 class C(B):
     pass
+
+
 class D(C, B):
     pass
 
+
 class B0(np.float64, A):
     pass
+
+
 class C0(B0):
     pass
+
 
 class HasNew:
     def __new__(cls, *args, **kwargs):
         return cls, args, kwargs
+
 
 class B1(np.float64, HasNew):
     pass
@@ -58,9 +68,10 @@ class TestInherit:
         # Test that integer repr works correctly for subclasses (gh-27106)
         class my_int16(np.int16):
             pass
-    
+
         s = repr(my_int16(3))
         assert s == "my_int16(3)"
+
 
 class TestCharacter:
     def test_char_radd(self):
@@ -93,7 +104,7 @@ class TestCharacter:
             pass
 
         ret = s + MyBytes(b'abc')
-        assert(type(ret) is type(s))
+        assert (type(ret) is type(s))
         assert ret == b"defabc"
 
     def test_char_repeat(self):

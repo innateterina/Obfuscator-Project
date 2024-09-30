@@ -41,7 +41,8 @@ def get_objs():
         DatetimeIndex(date_range("2020-01-01", periods=10), name="a").tz_localize(
             tz="US/Eastern"
         ),
-        PeriodIndex(period_range("2020-01-01", periods=10, freq="D"), name="a"),
+        PeriodIndex(period_range(
+            "2020-01-01", periods=10, freq="D"), name="a"),
         Index([str(i) for i in range(10)], name="a"),
     ]
 
@@ -67,7 +68,8 @@ class TestReductions:
             else:
                 expected = getattr(obj.values, opname)()
         else:
-            expected = Period(ordinal=getattr(obj.asi8, opname)(), freq=obj.freq)
+            expected = Period(ordinal=getattr(
+                obj.asi8, opname)(), freq=obj.freq)
 
         if getattr(obj, "tz", None) is not None:
             # We need to de-localize before comparing to the numpy-produced result
@@ -334,7 +336,8 @@ class TestIndexReductions:
         # GH#4984
         # make sure ops return Timedelta
         s = Series(
-            [Timestamp("20130101") + timedelta(seconds=i * i) for i in range(10)]
+            [Timestamp("20130101") + timedelta(seconds=i * i)
+             for i in range(10)]
         )
         td = s.diff()
 
@@ -379,14 +382,16 @@ class TestIndexReductions:
         assert s.diff().median() == timedelta(days=4)
 
         s = Series(
-            [Timestamp("2015-02-03"), Timestamp("2015-02-07"), Timestamp("2015-02-15")]
+            [Timestamp("2015-02-03"), Timestamp("2015-02-07"),
+             Timestamp("2015-02-15")]
         )
         assert s.diff().median() == timedelta(days=6)
 
     @pytest.mark.parametrize("opname", ["skew", "kurt", "sem", "prod", "var"])
     def test_invalid_td64_reductions(self, opname):
         s = Series(
-            [Timestamp("20130101") + timedelta(seconds=i * i) for i in range(10)]
+            [Timestamp("20130101") + timedelta(seconds=i * i)
+             for i in range(10)]
         )
         td = s.diff()
 
@@ -510,7 +515,8 @@ class TestIndexReductions:
 
     def test_minmax_period(self):
         # monotonic
-        idx1 = PeriodIndex([NaT, "2011-01-01", "2011-01-02", "2011-01-03"], freq="D")
+        idx1 = PeriodIndex(
+            [NaT, "2011-01-01", "2011-01-02", "2011-01-03"], freq="D")
         assert not idx1.is_monotonic_increasing
         assert idx1[1:].is_monotonic_increasing
 
@@ -558,7 +564,8 @@ class TestIndexReductions:
             np.argmax(pr, out=0)
 
     def test_min_max_categorical(self):
-        ci = pd.CategoricalIndex(list("aabbca"), categories=list("cab"), ordered=False)
+        ci = pd.CategoricalIndex(
+            list("aabbca"), categories=list("cab"), ordered=False)
         msg = (
             r"Categorical is not ordered for operation min\n"
             r"you can use .as_ordered\(\) to change the Categorical to an ordered one\n"
@@ -572,7 +579,8 @@ class TestIndexReductions:
         with pytest.raises(TypeError, match=msg):
             ci.max()
 
-        ci = pd.CategoricalIndex(list("aabbca"), categories=list("cab"), ordered=True)
+        ci = pd.CategoricalIndex(
+            list("aabbca"), categories=list("cab"), ordered=True)
         assert ci.min() == "c"
         assert ci.max() == "b"
 
@@ -980,7 +988,8 @@ class TestSeriesReductions:
         assert not s2.any(skipna=True)
 
     def test_all_any_bool_only(self):
-        s = Series([False, False, True, True, False, True], index=[0, 0, 1, 1, 2, 2])
+        s = Series([False, False, True, True, False, True],
+                   index=[0, 0, 1, 1, 2, 2])
 
         # GH#47500 - test bool_only works
         assert s.any(bool_only=True)
@@ -998,7 +1007,8 @@ class TestSeriesReductions:
 
     @pytest.mark.parametrize("bool_agg_func", ["any", "all"])
     @pytest.mark.parametrize(
-        "data", [[False, None], [None, False], [False, np.nan], [np.nan, False]]
+        "data", [[False, None], [None, False],
+                 [False, np.nan], [np.nan, False]]
     )
     def test_any_all_object_dtype_missing(self, data, bool_agg_func):
         # GH#27709
@@ -1391,7 +1401,8 @@ class TestCategoricalSeriesReductions:
     @pytest.mark.parametrize("skipna", [True, False])
     def test_min_max_skipna(self, function, skipna):
         cat = Series(
-            Categorical(["a", "b", np.nan, "a"], categories=["b", "a"], ordered=True)
+            Categorical(["a", "b", np.nan, "a"],
+                        categories=["b", "a"], ordered=True)
         )
         result = getattr(cat, function)(skipna=skipna)
 
@@ -1409,7 +1420,8 @@ class TestSeriesMode:
 
     @pytest.mark.parametrize(
         "dropna, expected",
-        [(True, Series([], dtype=np.float64)), (False, Series([], dtype=np.float64))],
+        [(True, Series([], dtype=np.float64)),
+         (False, Series([], dtype=np.float64))],
     )
     def test_mode_empty(self, dropna, expected):
         s = Series([], dtype=np.float64)
@@ -1458,7 +1470,8 @@ class TestSeriesMode:
 
         s = Series(data, dtype=object)
         result = s.mode(dropna)
-        expected2 = Series(expected2, dtype=None if expected2 == ["bar"] else object)
+        expected2 = Series(expected2, dtype=None if expected2 == [
+                           "bar"] else object)
         tm.assert_series_equal(result, expected2)
 
         data = ["foo", "bar", "bar", np.nan, np.nan, np.nan]
@@ -1480,7 +1493,8 @@ class TestSeriesMode:
 
         s = Series([1, "foo", "foo", np.nan, np.nan, np.nan])
         result = s.mode(dropna)
-        expected = Series(expected2, dtype=None if expected2 == ["foo"] else object)
+        expected = Series(expected2, dtype=None if expected2 == [
+                          "foo"] else object)
         tm.assert_series_equal(result, expected)
 
     @pytest.mark.parametrize(
@@ -1565,7 +1579,8 @@ class TestSeriesMode:
                 False,
                 Categorical([np.nan], categories=[1, 2]),
                 Categorical([np.nan, "a"], categories=[1, "a"]),
-                Categorical([np.nan, 3, 1], categories=[3, 2, 1], ordered=True),
+                Categorical([np.nan, 3, 1], categories=[
+                            3, 2, 1], ordered=True),
             ),
         ],
     )

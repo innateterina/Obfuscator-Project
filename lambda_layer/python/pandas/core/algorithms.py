@@ -534,7 +534,7 @@ def isin(comps: ListLike, values: ListLike) -> npt.NDArray[np.bool_]:
                 return np.logical_or(np.isin(c, v).ravel(), np.isnan(c))
 
         else:
-            f = lambda a, b: np.isin(a, b).ravel()
+            def f(a, b): return np.isin(a, b).ravel()
 
     else:
         common = np_find_common_type(values.dtype, comps_array.dtype)
@@ -884,7 +884,8 @@ def value_counts_internal(
         try:
             ii = cut(values, bins, include_lowest=True)
         except TypeError as err:
-            raise TypeError("bins argument only works with numeric data.") from err
+            raise TypeError(
+                "bins argument only works with numeric data.") from err
 
         # count, remove nulls (from the index), and but the bins
         result = ii.value_counts(dropna=dropna)
@@ -903,7 +904,8 @@ def value_counts_internal(
     else:
         if is_extension_array_dtype(values):
             # handle Categorical and sparse,
-            result = Series(values, copy=False)._values.value_counts(dropna=dropna)
+            result = Series(values, copy=False)._values.value_counts(
+                dropna=dropna)
             result.name = name
             result.index.name = index_name
             counts = result._values
@@ -1326,7 +1328,8 @@ def searchsorted(
 
     # Argument 1 to "searchsorted" of "ndarray" has incompatible type
     # "Union[NumpyValueArrayLike, ExtensionArray]"; expected "NumpyValueArrayLike"
-    return arr.searchsorted(value, side=side, sorter=sorter)  # type: ignore[arg-type]
+    # type: ignore[arg-type]
+    return arr.searchsorted(value, side=side, sorter=sorter)
 
 
 # ---- #
@@ -1375,7 +1378,8 @@ def diff(arr, n: int, axis: AxisInt = 0):
         # i.e ExtensionArray
         if hasattr(arr, f"__{op.__name__}__"):
             if axis != 0:
-                raise ValueError(f"cannot diff {type(arr).__name__} on axis={axis}")
+                raise ValueError(
+                    f"cannot diff {type(arr).__name__} on axis={axis}")
             return op(arr, arr.shift(n))
         else:
             raise TypeError(
@@ -1547,7 +1551,8 @@ def safe_sort(
         # error: Argument 1 to "_get_hashtable_algo" has incompatible type
         # "Union[Index, ExtensionArray, ndarray[Any, Any]]"; expected
         # "ndarray[Any, Any]"
-        hash_klass, values = _get_hashtable_algo(values)  # type: ignore[arg-type]
+        hash_klass, values = _get_hashtable_algo(
+            values)  # type: ignore[arg-type]
         t = hash_klass(len(values))
         t.map_locations(values)
         sorter = ensure_platform_int(t.lookup(ordered))
@@ -1646,7 +1651,8 @@ def union_with_duplicates(
         r_count = value_counts_internal(rvals, dropna=False)
     l_count, r_count = l_count.align(r_count, fill_value=0)
     final_count = np.maximum(l_count.values, r_count.values)
-    final_count = Series(final_count, index=l_count.index, dtype="int", copy=False)
+    final_count = Series(final_count, index=l_count.index,
+                         dtype="int", copy=False)
     if isinstance(lvals, ABCMultiIndex) and isinstance(rvals, ABCMultiIndex):
         unique_vals = lvals.append(rvals).unique()
     else:
@@ -1703,7 +1709,8 @@ def map_array(
             # If a dictionary subclass defines a default value method,
             # convert mapper to a lookup function (GH #15999).
             dict_with_default = mapper
-            mapper = lambda x: dict_with_default[
+
+            def mapper(x): return dict_with_default[
                 np.nan if isinstance(x, float) and np.isnan(x) else x
             ]
         else:

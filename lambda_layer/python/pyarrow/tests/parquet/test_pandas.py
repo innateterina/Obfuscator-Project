@@ -299,7 +299,8 @@ def test_index_column_name_duplicate(tempdir):
     # Pandas v2 defaults to [ns], but Arrow defaults to [us] time units
     # so we need to cast the pandas dtype. Pandas v1 will always silently
     # coerce to [ns] due to lack of non-[ns] support.
-    dfx = pd.DataFrame(data, dtype='datetime64[us]').set_index('time', drop=False)
+    dfx = pd.DataFrame(data, dtype='datetime64[us]').set_index(
+        'time', drop=False)
 
     tdfx = pa.Table.from_pandas(dfx)
     _write_table(tdfx, path)
@@ -499,7 +500,8 @@ def test_pandas_categorical_roundtrip():
 def test_categories_with_string_pyarrow_dtype(tempdir):
     # gh-33727: writing to parquet should not fail
     if Version(pd.__version__) < Version("1.3.0"):
-        pytest.skip("PyArrow backed string data type introduced in pandas 1.3.0")
+        pytest.skip(
+            "PyArrow backed string data type introduced in pandas 1.3.0")
 
     df1 = pd.DataFrame({"x": ["foo", "bar", "foo"]}, dtype="string[pyarrow]")
     df1 = df1.astype("category")

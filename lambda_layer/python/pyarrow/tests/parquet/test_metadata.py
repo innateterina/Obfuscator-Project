@@ -323,7 +323,8 @@ def test_parquet_sorting_column():
         pq.SortingColumn(1, descending=True),
         pq.SortingColumn(0, descending=False),
     )
-    sort_order, null_placement = pq.SortingColumn.to_ordering(schema, sorting_cols)
+    sort_order, null_placement = pq.SortingColumn.to_ordering(
+        schema, sorting_cols)
     assert sort_order == (('b', "descending"), ('a', "ascending"))
     assert null_placement == "at_end"
 
@@ -346,7 +347,8 @@ def test_parquet_sorting_column():
     assert pq.SortingColumn.to_ordering(schema, ()) == ((), "at_end")
 
     with pytest.raises(ValueError):
-        pq.SortingColumn.from_ordering(schema, (("a", "not a valid sort order")))
+        pq.SortingColumn.from_ordering(
+            schema, (("a", "not a valid sort order")))
 
     with pytest.raises(ValueError, match="inconsistent null placement"):
         sorting_cols = (
@@ -367,7 +369,8 @@ def test_parquet_sorting_column_nested():
         pq.SortingColumn(2, descending=False)  # b
     ]
 
-    sort_order, null_placement = pq.SortingColumn.to_ordering(schema, sorting_columns)
+    sort_order, null_placement = pq.SortingColumn.to_ordering(
+        schema, sorting_columns)
     assert null_placement == "at_end"
     assert len(sort_order) == 2
     assert sort_order[0] == ("a.x", "descending")
@@ -529,7 +532,8 @@ def test_metadata_hashing(tempdir):
 
     # Deterministic
     assert hash(parquet_meta1) == hash(parquet_meta1)  # equal w/ same instance
-    assert hash(parquet_meta1) == hash(parquet_meta2)  # equal w/ different instance
+    assert hash(parquet_meta1) == hash(
+        parquet_meta2)  # equal w/ different instance
 
     # Not the same as other metadata with different schema
     assert hash(parquet_meta1) != hash(parquet_meta3)

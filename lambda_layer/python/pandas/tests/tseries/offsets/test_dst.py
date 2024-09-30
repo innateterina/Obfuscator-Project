@@ -115,7 +115,8 @@ class TestDST:
 
         if offset_name == "weeks":
             # dates should match
-            assert t.date() == timedelta(days=7 * offset.kwds["weeks"]) + tstart.date()
+            assert t.date() == timedelta(
+                days=7 * offset.kwds["weeks"]) + tstart.date()
             # expect the same day of week, hour of day, minute, second, ...
             assert (
                 t.dayofweek == tstart.dayofweek
@@ -140,7 +141,8 @@ class TestDST:
             assert datepart_offset == offset.kwds[offset_name]
         else:
             # the offset should be the same as if it was done in UTC
-            assert t == (tstart.tz_convert("UTC") + offset).tz_convert("US/Pacific")
+            assert t == (tstart.tz_convert("UTC") +
+                         offset).tz_convert("US/Pacific")
 
     def _make_timestamp(self, string, hrs_offset, tz):
         if hrs_offset >= 0:
@@ -156,7 +158,8 @@ class TestDST:
             hrs_post = utc_offsets["utc_offset_daylight"]
             self._test_all_offsets(
                 n=3,
-                tstart=self._make_timestamp(self.ts_pre_springfwd, hrs_pre, tz),
+                tstart=self._make_timestamp(
+                    self.ts_pre_springfwd, hrs_pre, tz),
                 expected_utc_offset=hrs_post,
             )
 
@@ -177,7 +180,8 @@ class TestDST:
             hrs_pre = utc_offsets["utc_offset_standard"]
             self._test_all_offsets(
                 n=1,
-                tstart=self._make_timestamp(self.ts_pre_springfwd, hrs_pre, tz),
+                tstart=self._make_timestamp(
+                    self.ts_pre_springfwd, hrs_pre, tz),
                 expected_utc_offset=None,
             )
 
@@ -220,7 +224,8 @@ class TestDST:
             MonthBegin(66),
             "Africa/Lagos",
             marks=pytest.mark.xfail(
-                pytz_version < Version("2020.5") or pytz_version == Version("2022.2"),
+                pytz_version < Version(
+                    "2020.5") or pytz_version == Version("2022.2"),
                 reason="GH#41906: pytz utc transition dates changed",
             ),
         ),

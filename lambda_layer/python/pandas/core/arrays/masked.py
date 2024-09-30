@@ -222,9 +222,9 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
                 last = len(neg_mask) - neg_mask[::-1].argmax() - 1
                 if limit_area == "inside":
                     new_mask[:first] |= mask[:first]
-                    new_mask[last + 1 :] |= mask[last + 1 :]
+                    new_mask[last + 1:] |= mask[last + 1:]
                 elif limit_area == "outside":
-                    new_mask[first + 1 : last] |= mask[first + 1 : last]
+                    new_mask[first + 1: last] |= mask[first + 1: last]
 
             if copy:
                 return self._simple_new(npvalues.T, new_mask.T)
@@ -500,7 +500,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         array([ True, False, False])
         """
         hasna = self._hasna
-        dtype, na_value = to_numpy_dtype_inference(self, dtype, na_value, hasna)
+        dtype, na_value = to_numpy_dtype_inference(
+            self, dtype, na_value, hasna)
         if dtype is None:
             dtype = object
 
@@ -734,7 +735,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
             if not isinstance(other, ExtensionArray):
                 other = np.asarray(other)
             if other.ndim > 1:
-                raise NotImplementedError("can only perform ops with 1-d structures")
+                raise NotImplementedError(
+                    "can only perform ops with 1-d structures")
 
         # We wrap the non-masked arithmetic logic used for numpy dtypes
         #  in Series/Index arithmetic ops.
@@ -820,7 +822,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         elif is_list_like(other):
             other = np.asarray(other)
             if other.ndim > 1:
-                raise NotImplementedError("can only perform ops with 1-d structures")
+                raise NotImplementedError(
+                    "can only perform ops with 1-d structures")
             if len(self) != len(other):
                 raise ValueError("Lengths must match to compare")
 
@@ -839,7 +842,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
                 # before returning NotImplemented. We fall back to the correct
                 # behavior today, so that should be fine to ignore.
                 warnings.filterwarnings("ignore", "elementwise", FutureWarning)
-                warnings.filterwarnings("ignore", "elementwise", DeprecationWarning)
+                warnings.filterwarnings(
+                    "ignore", "elementwise", DeprecationWarning)
                 method = getattr(self._data, f"__{op.__name__}__")
                 result = method(other)
 
@@ -936,7 +940,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
     ) -> Self:
         # we always fill with 1 internally
         # to avoid upcasting
-        data_fill_value = self._internal_fill_value if isna(fill_value) else fill_value
+        data_fill_value = self._internal_fill_value if isna(
+            fill_value) else fill_value
         result = take(
             self._data,
             indexer,
@@ -962,7 +967,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
 
     # error: Return type "BooleanArray" of "isin" incompatible with return type
     # "ndarray" in supertype "ExtensionArray"
-    def isin(self, values: ArrayLike) -> BooleanArray:  # type: ignore[override]
+    # type: ignore[override]
+    def isin(self, values: ArrayLike) -> BooleanArray:
         from pandas.core.arrays import BooleanArray
 
         # algorithms.isin will eventually convert values to an ndarray, so no extra
@@ -1035,7 +1041,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         codes, uniques = factorize_array(arr, use_na_sentinel=True, mask=mask)
 
         # check that factorize_array correctly preserves dtype.
-        assert uniques.dtype == self.dtype.numpy_dtype, (uniques.dtype, self.dtype)
+        assert uniques.dtype == self.dtype.numpy_dtype, (
+            uniques.dtype, self.dtype)
 
         has_na = mask.any()
         if use_na_sentinel or not has_na:
@@ -1408,7 +1415,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         # _NestedSequence[_SupportsArray[dtype[Any]]],
         # bool, int, float, complex, str, bytes,
         # _NestedSequence[Union[bool, int, float, complex, str, bytes]]]"
-        np.putmask(values, self._mask, self._falsey_value)  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        np.putmask(values, self._mask, self._falsey_value)
         result = values.any()
         if skipna:
             return result
@@ -1489,7 +1497,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         # _NestedSequence[_SupportsArray[dtype[Any]]],
         # bool, int, float, complex, str, bytes,
         # _NestedSequence[Union[bool, int, float, complex, str, bytes]]]"
-        np.putmask(values, self._mask, self._truthy_value)  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        np.putmask(values, self._mask, self._truthy_value)
         result = values.all(axis=axis)
 
         if skipna:
@@ -1546,7 +1555,8 @@ class BaseMaskedArray(OpsMixin, ExtensionArray):
         if not copy:
             return self  # type: ignore[return-value]
         if self.dtype.kind == "f":
-            return type(self)._simple_new(data, mask)  # type: ignore[return-value]
+            # type: ignore[return-value]
+            return type(self)._simple_new(data, mask)
         else:
             from pandas.core.arrays import FloatingArray
 
@@ -1644,7 +1654,8 @@ def transpose_homogeneous_masked_arrays(
     arr_type = dtype.construct_array_type()
     transposed_arrays: list[BaseMaskedArray] = []
     for i in range(transposed_values.shape[1]):
-        transposed_arr = arr_type(transposed_values[:, i], mask=transposed_masks[:, i])
+        transposed_arr = arr_type(
+            transposed_values[:, i], mask=transposed_masks[:, i])
         transposed_arrays.append(transposed_arr)
 
     return transposed_arrays

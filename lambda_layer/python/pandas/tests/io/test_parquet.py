@@ -48,7 +48,8 @@ except ImportError:
 # TODO(ArrayManager) fastparquet relies on BlockManager internals
 
 pytestmark = [
-    pytest.mark.filterwarnings("ignore:DataFrame._data is deprecated:FutureWarning"),
+    pytest.mark.filterwarnings(
+        "ignore:DataFrame._data is deprecated:FutureWarning"),
     pytest.mark.filterwarnings(
         "ignore:Passing a BlockManager to DataFrame:DeprecationWarning"
     ),
@@ -146,10 +147,14 @@ def df_full():
         datetime.datetime.now(datetime.timezone.utc),
         datetime.datetime.now(datetime.timezone.min),
         datetime.datetime.now(datetime.timezone.max),
-        datetime.datetime.strptime("2019-01-04T16:41:24+0200", "%Y-%m-%dT%H:%M:%S%z"),
-        datetime.datetime.strptime("2019-01-04T16:41:24+0215", "%Y-%m-%dT%H:%M:%S%z"),
-        datetime.datetime.strptime("2019-01-04T16:41:24-0200", "%Y-%m-%dT%H:%M:%S%z"),
-        datetime.datetime.strptime("2019-01-04T16:41:24-0215", "%Y-%m-%dT%H:%M:%S%z"),
+        datetime.datetime.strptime(
+            "2019-01-04T16:41:24+0200", "%Y-%m-%dT%H:%M:%S%z"),
+        datetime.datetime.strptime(
+            "2019-01-04T16:41:24+0215", "%Y-%m-%dT%H:%M:%S%z"),
+        datetime.datetime.strptime(
+            "2019-01-04T16:41:24-0200", "%Y-%m-%dT%H:%M:%S%z"),
+        datetime.datetime.strptime(
+            "2019-01-04T16:41:24-0215", "%Y-%m-%dT%H:%M:%S%z"),
     ]
 )
 def timezone_aware_date_list(request):
@@ -511,14 +516,16 @@ class TestBasic(Base):
         # have the default integer index.
         expected = df.reset_index(drop=True)
 
-        check_round_trip(df, engine, write_kwargs=write_kwargs, expected=expected)
+        check_round_trip(
+            df, engine, write_kwargs=write_kwargs, expected=expected)
 
         # Ignore custom index
         df = pd.DataFrame(
             {"a": [1, 2, 3], "b": ["q", "r", "s"]}, index=["zyx", "wvu", "tsr"]
         )
 
-        check_round_trip(df, engine, write_kwargs=write_kwargs, expected=expected)
+        check_round_trip(
+            df, engine, write_kwargs=write_kwargs, expected=expected)
 
         # Ignore multi-indexes as well.
         arrays = [
@@ -530,7 +537,8 @@ class TestBasic(Base):
         )
 
         expected = df.reset_index(drop=True)
-        check_round_trip(df, engine, write_kwargs=write_kwargs, expected=expected)
+        check_round_trip(
+            df, engine, write_kwargs=write_kwargs, expected=expected)
 
     def test_write_column_multiindex(self, engine):
         # Not able to write column multi-indexes with non-string column names.
@@ -638,7 +646,8 @@ class TestBasic(Base):
             # write manually with pyarrow to write integers
             pq.write_table(table, path)
             result1 = read_parquet(path, engine=engine)
-            result2 = read_parquet(path, engine=engine, dtype_backend="numpy_nullable")
+            result2 = read_parquet(path, engine=engine,
+                                   dtype_backend="numpy_nullable")
 
         assert result1["a"].dtype == np.dtype("float64")
         expected = pd.DataFrame(
@@ -710,7 +719,8 @@ class TestParquetPyArrow(Base):
 
         df = df_full
         # additional supported types for pyarrow
-        df["datetime_tz"] = pd.date_range("20130101", periods=3, tz="Europe/Brussels")
+        df["datetime_tz"] = pd.date_range(
+            "20130101", periods=3, tz="Europe/Brussels")
 
         check_round_trip(
             df,
@@ -733,8 +743,10 @@ class TestParquetPyArrow(Base):
 
     def test_duplicate_columns(self, pa):
         # not currently able to handle duplicate columns
-        df = pd.DataFrame(np.arange(12).reshape(4, 3), columns=list("aaa")).copy()
-        self.check_error_on_write(df, pa, ValueError, "Duplicate column names found")
+        df = pd.DataFrame(np.arange(12).reshape(4, 3),
+                          columns=list("aaa")).copy()
+        self.check_error_on_write(
+            df, pa, ValueError, "Duplicate column names found")
 
     def test_timedelta(self, pa):
         df = pd.DataFrame({"a": pd.timedelta_range("1 day", periods=3)})
@@ -839,7 +851,8 @@ class TestParquetPyArrow(Base):
 
         # GH #35791
         if partition_col:
-            expected_df = expected_df.astype(dict.fromkeys(partition_col, np.int32))
+            expected_df = expected_df.astype(
+                dict.fromkeys(partition_col, np.int32))
             partition_col_type = "category"
 
             expected_df[partition_col] = expected_df[partition_col].astype(
@@ -881,7 +894,8 @@ class TestParquetPyArrow(Base):
         # GH #23283
         partition_cols = ["bool", "int"]
         df = df_full
-        df.to_parquet(tmp_path, partition_cols=partition_cols, compression=None)
+        df.to_parquet(tmp_path, partition_cols=partition_cols,
+                      compression=None)
         check_partition_names(tmp_path, partition_cols)
         assert read_parquet(tmp_path).shape == df.shape
 
@@ -890,7 +904,8 @@ class TestParquetPyArrow(Base):
         partition_cols = "bool"
         partition_cols_list = [partition_cols]
         df = df_full
-        df.to_parquet(tmp_path, partition_cols=partition_cols, compression=None)
+        df.to_parquet(tmp_path, partition_cols=partition_cols,
+                      compression=None)
         check_partition_names(tmp_path, partition_cols_list)
         assert read_parquet(tmp_path).shape == df.shape
 
@@ -919,7 +934,8 @@ class TestParquetPyArrow(Base):
         df = pd.DataFrame({"x": [0, 1]})
         schema = pyarrow.schema([pyarrow.field("x", type=pyarrow.bool_())])
         out_df = df.astype(bool)
-        check_round_trip(df, pa, write_kwargs={"schema": schema}, expected=out_df)
+        check_round_trip(df, pa, write_kwargs={
+                         "schema": schema}, expected=out_df)
 
     def test_additional_extension_arrays(self, pa):
         # test additional ExtensionArrays that are supported through the
@@ -940,9 +956,11 @@ class TestParquetPyArrow(Base):
     def test_pyarrow_backed_string_array(self, pa, string_storage):
         # test ArrowStringArray supported through the __arrow_array__ protocol
         pytest.importorskip("pyarrow")
-        df = pd.DataFrame({"a": pd.Series(["a", None, "c"], dtype="string[pyarrow]")})
+        df = pd.DataFrame(
+            {"a": pd.Series(["a", None, "c"], dtype="string[pyarrow]")})
         with pd.option_context("string_storage", string_storage):
-            check_round_trip(df, pa, expected=df.astype(f"string[{string_storage}]"))
+            check_round_trip(df, pa, expected=df.astype(
+                f"string[{string_storage}]"))
 
     def test_additional_extension_types(self, pa):
         # test additional ExtensionArrays that are supported through the
@@ -965,7 +983,8 @@ class TestParquetPyArrow(Base):
         # this should work without error
         # Note in previous pyarrows(<7.0.0), only the pseudo-version 2.0 was available
         ver = "2.6"
-        df = pd.DataFrame({"a": pd.date_range("2017-01-01", freq="1ns", periods=10)})
+        df = pd.DataFrame(
+            {"a": pd.date_range("2017-01-01", freq="1ns", periods=10)})
         check_round_trip(df, pa, write_kwargs={"version": ver})
 
     def test_timezone_aware_index(self, request, pa, timezone_aware_date_list):
@@ -1028,12 +1047,14 @@ class TestParquetPyArrow(Base):
         expected = pa_table.to_pandas(types_mapper=pd.ArrowDtype)
         if pa_version_under13p0:
             # pyarrow infers datetimes as us instead of ns
-            expected["datetime"] = expected["datetime"].astype("timestamp[us][pyarrow]")
+            expected["datetime"] = expected["datetime"].astype(
+                "timestamp[us][pyarrow]")
             expected["datetime_with_nat"] = expected["datetime_with_nat"].astype(
                 "timestamp[us][pyarrow]"
             )
             expected["datetime_tz"] = expected["datetime_tz"].astype(
-                pd.ArrowDtype(pyarrow.timestamp(unit="us", tz="Europe/Brussels"))
+                pd.ArrowDtype(pyarrow.timestamp(
+                    unit="us", tz="Europe/Brussels"))
             )
 
         check_round_trip(
@@ -1183,7 +1204,8 @@ class TestParquetFastParquet(Base):
 
     def test_duplicate_columns(self, fp):
         # not currently able to handle duplicate columns
-        df = pd.DataFrame(np.arange(12).reshape(4, 3), columns=list("aaa")).copy()
+        df = pd.DataFrame(np.arange(12).reshape(4, 3),
+                          columns=list("aaa")).copy()
         msg = "Cannot create parquet dataset with duplicate column names"
         self.check_error_on_write(df, fp, ValueError, msg)
 
@@ -1217,7 +1239,8 @@ class TestParquetFastParquet(Base):
         d = {"a": list(range(3))}
         df = pd.DataFrame(d)
         with tm.ensure_clean() as path:
-            df.to_parquet(path, engine=fp, compression=None, row_group_offsets=1)
+            df.to_parquet(path, engine=fp, compression=None,
+                          row_group_offsets=1)
             result = read_parquet(path, fp, filters=[("a", "==", 0)])
         assert len(result) == 1
 
@@ -1245,7 +1268,8 @@ class TestParquetFastParquet(Base):
         assert os.path.exists(tmp_path)
         import fastparquet
 
-        actual_partition_cols = fastparquet.ParquetFile(str(tmp_path), False).cats
+        actual_partition_cols = fastparquet.ParquetFile(
+            str(tmp_path), False).cats
         assert len(actual_partition_cols) == 2
 
     def test_partition_cols_string(self, tmp_path, fp, df_full):
@@ -1261,7 +1285,8 @@ class TestParquetFastParquet(Base):
         assert os.path.exists(tmp_path)
         import fastparquet
 
-        actual_partition_cols = fastparquet.ParquetFile(str(tmp_path), False).cats
+        actual_partition_cols = fastparquet.ParquetFile(
+            str(tmp_path), False).cats
         assert len(actual_partition_cols) == 1
 
     def test_partition_on_supported(self, tmp_path, fp, df_full):
@@ -1277,7 +1302,8 @@ class TestParquetFastParquet(Base):
         assert os.path.exists(tmp_path)
         import fastparquet
 
-        actual_partition_cols = fastparquet.ParquetFile(str(tmp_path), False).cats
+        actual_partition_cols = fastparquet.ParquetFile(
+            str(tmp_path), False).cats
         assert len(actual_partition_cols) == 2
 
     def test_error_on_using_partition_cols_and_partition_on(
@@ -1307,7 +1333,8 @@ class TestParquetFastParquet(Base):
         check_round_trip(df, fp, expected=expected)
 
     @pytest.mark.xfail(
-        _HAVE_FASTPARQUET and Version(fastparquet.__version__) > Version("2022.12"),
+        _HAVE_FASTPARQUET and Version(
+            fastparquet.__version__) > Version("2022.12"),
         reason="fastparquet bug, see https://github.com/dask/fastparquet/issues/929",
     )
     def test_timezone_aware_index(self, fp, timezone_aware_date_list):
@@ -1326,9 +1353,11 @@ class TestParquetFastParquet(Base):
             df.to_parquet(path)
             with pytest.raises(ValueError, match="not supported for the fastparquet"):
                 with tm.assert_produces_warning(FutureWarning):
-                    read_parquet(path, engine="fastparquet", use_nullable_dtypes=True)
+                    read_parquet(path, engine="fastparquet",
+                                 use_nullable_dtypes=True)
             with pytest.raises(ValueError, match="not supported for the fastparquet"):
-                read_parquet(path, engine="fastparquet", dtype_backend="pyarrow")
+                read_parquet(path, engine="fastparquet",
+                             dtype_backend="pyarrow")
 
     def test_close_file_handle_on_read_error(self):
         with tm.ensure_clean("test.parquet") as path:
@@ -1423,5 +1452,6 @@ class TestParquetFastParquet(Base):
     def test_empty_columns(self, fp):
         # GH 52034
         df = pd.DataFrame(index=pd.Index(["a", "b", "c"], name="custom name"))
-        expected = pd.DataFrame(index=pd.Index(["a", "b", "c"], name="custom name"))
+        expected = pd.DataFrame(index=pd.Index(
+            ["a", "b", "c"], name="custom name"))
         check_round_trip(df, fp, expected=expected)

@@ -66,7 +66,8 @@ def test_first_last_nth(df):
 @pytest.mark.parametrize("method", ["first", "last"])
 def test_first_last_with_na_object(method, nulls_fixture):
     # https://github.com/pandas-dev/pandas/issues/32123
-    groups = DataFrame({"a": [1, 1, 2, 2], "b": [1, 2, 3, nulls_fixture]}).groupby("a")
+    groups = DataFrame(
+        {"a": [1, 1, 2, 2], "b": [1, 2, 3, nulls_fixture]}).groupby("a")
     result = getattr(groups, method)()
 
     if method == "first":
@@ -190,7 +191,8 @@ def test_first_strings_timestamps():
     result = test.groupby("name").first()
     expected = DataFrame(
         [["a", "c", "f"]],
-        columns=Index([Timestamp("2012-01-01"), Timestamp("2012-01-02"), "aaaa"]),
+        columns=Index([Timestamp("2012-01-01"),
+                      Timestamp("2012-01-02"), "aaaa"]),
         index=Index(["e"], name="name"),
     )
     tm.assert_frame_equal(result, expected)
@@ -253,7 +255,8 @@ def test_nth2():
 def test_nth3():
     # GH 7559
     # from the vbench
-    df = DataFrame(np.random.default_rng(2).integers(1, 10, (100, 2)), dtype="int64")
+    df = DataFrame(np.random.default_rng(
+        2).integers(1, 10, (100, 2)), dtype="int64")
     ser = df[1]
     gb = df[0]
     expected = ser.groupby(gb).first()
@@ -282,7 +285,8 @@ def test_nth4():
 
 def test_nth5():
     # test multiple nth values
-    df = DataFrame([[1, np.nan], [1, 3], [1, 4], [5, 6], [5, 7]], columns=["A", "B"])
+    df = DataFrame([[1, np.nan], [1, 3], [1, 4], [
+                   5, 6], [5, 7]], columns=["A", "B"])
     gb = df.groupby("A")
 
     tm.assert_frame_equal(gb.nth(0), df.iloc[[0, 3]])
@@ -866,8 +870,10 @@ def test_head_tail_dropna_true():
 
 def test_head_tail_dropna_false():
     # GH#45089
-    df = DataFrame([["a", "z"], ["b", np.nan], ["c", np.nan]], columns=["X", "Y"])
-    expected = DataFrame([["a", "z"], ["b", np.nan], ["c", np.nan]], columns=["X", "Y"])
+    df = DataFrame([["a", "z"], ["b", np.nan], ["c", np.nan]],
+                   columns=["X", "Y"])
+    expected = DataFrame([["a", "z"], ["b", np.nan], [
+                         "c", np.nan]], columns=["X", "Y"])
 
     result = df.groupby(["X", "Y"], dropna=False).head(n=1)
     tm.assert_frame_equal(result, expected)

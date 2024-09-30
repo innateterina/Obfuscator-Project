@@ -37,6 +37,7 @@ def get_class(name, notfound_action=1):
           }.get(name.lower(), _system_info)
     return cl()
 
+
 simple_site = """
 [ALL]
 library_dirs = {dir1:s}{pathsep:s}{dir2:s}
@@ -71,6 +72,7 @@ void bar(void) {
    printf("Hello bar");
 }
 """
+
 
 def have_compiler():
     """ Return True if there appears to be an executable compiler
@@ -133,6 +135,7 @@ class Temp1Info(_system_info):
 class Temp2Info(_system_info):
     """For testing purposes"""
     section = 'temp2'
+
 
 class DuplicateOptionInfo(_system_info):
     """For testing purposes"""
@@ -204,7 +207,8 @@ class TestSystemInfoReading:
         assert_equal(tsi.get_libraries(), [self._lib1, self._lib2])
         assert_equal(tsi.get_runtime_lib_dirs(), [self._dir1])
         extra = tsi.calc_extra_info()
-        assert_equal(extra['extra_compile_args'], ['-I/fake/directory', '-I/path with/spaces', '-Os'])
+        assert_equal(extra['extra_compile_args'], [
+                     '-I/fake/directory', '-I/path with/spaces', '-Os'])
 
     def test_temp1(self):
         # Read in all information in the temp1 block
@@ -226,7 +230,8 @@ class TestSystemInfoReading:
     def test_duplicate_options(self):
         # Ensure that duplicates are raising an AliasedOptionError
         tsi = self.c_dup_options
-        assert_raises(AliasedOptionError, tsi.get_option_single, "mylib_libs", "libraries")
+        assert_raises(AliasedOptionError, tsi.get_option_single,
+                      "mylib_libs", "libraries")
         assert_equal(tsi.get_libs("mylib_libs", [self._lib1]), [self._lib1])
         assert_equal(tsi.get_libs("libraries", [self._lib2]), [self._lib2])
 
@@ -247,7 +252,7 @@ class TestSystemInfoReading:
 
     @pytest.mark.skipif(not HAVE_COMPILER, reason="Missing compiler")
     @pytest.mark.skipif('msvc' in repr(ccompiler.new_compiler()),
-                         reason="Fails with MSVC compiler ")
+                        reason="Fails with MSVC compiler ")
     def test_compile2(self):
         # Compile source and link the second source
         tsi = self.c_temp2

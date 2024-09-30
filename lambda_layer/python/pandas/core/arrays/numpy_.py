@@ -389,7 +389,8 @@ class NumpyExtensionArray(  # type: ignore[misc]
         keepdims: bool = False,
         skipna: bool = True,
     ):
-        nv.validate_mean((), {"dtype": dtype, "out": out, "keepdims": keepdims})
+        nv.validate_mean(
+            (), {"dtype": dtype, "out": out, "keepdims": keepdims})
         result = nanops.nanmean(self._ndarray, axis=axis, skipna=skipna)
         return self._wrap_reduction_result(axis, result)
 
@@ -421,7 +422,8 @@ class NumpyExtensionArray(  # type: ignore[misc]
         nv.validate_stat_ddof_func(
             (), {"dtype": dtype, "out": out, "keepdims": keepdims}, fname="std"
         )
-        result = nanops.nanstd(self._ndarray, axis=axis, skipna=skipna, ddof=ddof)
+        result = nanops.nanstd(self._ndarray, axis=axis,
+                               skipna=skipna, ddof=ddof)
         return self._wrap_reduction_result(axis, result)
 
     def var(
@@ -437,7 +439,8 @@ class NumpyExtensionArray(  # type: ignore[misc]
         nv.validate_stat_ddof_func(
             (), {"dtype": dtype, "out": out, "keepdims": keepdims}, fname="var"
         )
-        result = nanops.nanvar(self._ndarray, axis=axis, skipna=skipna, ddof=ddof)
+        result = nanops.nanvar(self._ndarray, axis=axis,
+                               skipna=skipna, ddof=ddof)
         return self._wrap_reduction_result(axis, result)
 
     def sem(
@@ -453,7 +456,8 @@ class NumpyExtensionArray(  # type: ignore[misc]
         nv.validate_stat_ddof_func(
             (), {"dtype": dtype, "out": out, "keepdims": keepdims}, fname="sem"
         )
-        result = nanops.nansem(self._ndarray, axis=axis, skipna=skipna, ddof=ddof)
+        result = nanops.nansem(self._ndarray, axis=axis,
+                               skipna=skipna, ddof=ddof)
         return self._wrap_reduction_result(axis, result)
 
     def kurt(

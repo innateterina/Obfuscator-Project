@@ -29,7 +29,8 @@ def test_group_shift_with_null_key():
     g = df.groupby(["A", "B"])
 
     expected = DataFrame(
-        [(i + 12 if i % 3 and i < n_rows - 12 else np.nan) for i in range(n_rows)],
+        [(i + 12 if i % 3 and i < n_rows - 12 else np.nan)
+         for i in range(n_rows)],
         dtype=float,
         columns=["Z"],
         index=None,
@@ -79,7 +80,8 @@ def test_group_diff_real_series(any_real_numpy_dtype):
     exp_dtype = "float"
     if any_real_numpy_dtype in ["int8", "int16", "float32"]:
         exp_dtype = "float32"
-    expected = Series([np.nan, np.nan, np.nan, 1.0, 3.0], dtype=exp_dtype, name="b")
+    expected = Series([np.nan, np.nan, np.nan, 1.0, 3.0],
+                      dtype=exp_dtype, name="b")
     tm.assert_series_equal(result, expected)
 
 
@@ -121,12 +123,14 @@ def test_group_diff_datetimelike(data, unit):
     df = DataFrame({"a": [1, 2, 2], "b": data})
     df["b"] = df["b"].dt.as_unit(unit)
     result = df.groupby("a")["b"].diff()
-    expected = Series([NaT, NaT, Timedelta("1 days")], name="b").dt.as_unit(unit)
+    expected = Series([NaT, NaT, Timedelta("1 days")],
+                      name="b").dt.as_unit(unit)
     tm.assert_series_equal(result, expected)
 
 
 def test_group_diff_bool():
-    df = DataFrame({"a": [1, 2, 3, 3, 2], "b": [True, True, False, False, True]})
+    df = DataFrame({"a": [1, 2, 3, 3, 2], "b": [
+                   True, True, False, False, True]})
     result = df.groupby("a")["b"].diff()
     expected = Series([np.nan, np.nan, np.nan, False, False], name="b")
     tm.assert_series_equal(result, expected)
@@ -189,7 +193,8 @@ def test_shift_disallow_suffix_if_periods_is_int():
 
 def test_group_shift_with_multiple_periods():
     # GH#44424
-    df = DataFrame({"a": [1, 2, 3, 3, 2], "b": [True, True, False, False, True]})
+    df = DataFrame({"a": [1, 2, 3, 3, 2], "b": [
+                   True, True, False, False, True]})
 
     shifted_df = df.groupby("b")[["a"]].shift([0, 1])
     expected_df = DataFrame(

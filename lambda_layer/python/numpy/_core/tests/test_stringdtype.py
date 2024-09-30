@@ -233,11 +233,11 @@ def test_self_casts(dtype, dtype2, strings):
         na1 = dtype.na_object
         na2 = dtype2.na_object
         if (na1 is not na2 and
-             # check for pd_NA first because bool(pd_NA) is an error
-             ((na1 is pd_NA or na2 is pd_NA) or
-              # the second check is a NaN check, spelled this way
-              # to avoid errors from math.isnan and np.isnan
-              (na1 != na2 and not (na1 != na1 and na2 != na2)))):
+            # check for pd_NA first because bool(pd_NA) is an error
+            ((na1 is pd_NA or na2 is pd_NA) or
+             # the second check is a NaN check, spelled this way
+             # to avoid errors from math.isnan and np.isnan
+             (na1 != na2 and not (na1 != na1 and na2 != na2)))):
             with pytest.raises(TypeError):
                 arr[:-1] == newarr[:-1]
             return
@@ -559,6 +559,7 @@ def test_astype_copy_false():
     assert not arr.astype(StringDType(coerce=False), copy=False).dtype.coerce
 
     assert arr.astype(orig_dt, copy=False).dtype is orig_dt
+
 
 @pytest.mark.parametrize(
     "strings",

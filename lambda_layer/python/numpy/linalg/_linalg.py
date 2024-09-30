@@ -40,21 +40,26 @@ from numpy.linalg import _umath_linalg
 
 from numpy._typing import NDArray
 
+
 class EigResult(NamedTuple):
     eigenvalues: NDArray[Any]
     eigenvectors: NDArray[Any]
+
 
 class EighResult(NamedTuple):
     eigenvalues: NDArray[Any]
     eigenvectors: NDArray[Any]
 
+
 class QRResult(NamedTuple):
     Q: NDArray[Any]
     R: NDArray[Any]
 
+
 class SlogdetResult(NamedTuple):
     sign: NDArray[Any]
     logabsdet: NDArray[Any]
+
 
 class SVDResult(NamedTuple):
     U: NDArray[Any]
@@ -103,17 +108,22 @@ class LinAlgError(ValueError):
 def _raise_linalgerror_singular(err, flag):
     raise LinAlgError("Singular matrix")
 
+
 def _raise_linalgerror_nonposdef(err, flag):
     raise LinAlgError("Matrix is not positive definite")
+
 
 def _raise_linalgerror_eigenvalues_nonconvergence(err, flag):
     raise LinAlgError("Eigenvalues did not converge")
 
+
 def _raise_linalgerror_svd_nonconvergence(err, flag):
     raise LinAlgError("SVD did not converge")
 
+
 def _raise_linalgerror_lstsq(err, flag):
     raise LinAlgError("SVD did not converge in Linear Least Squares")
+
 
 def _raise_linalgerror_qr(err, flag):
     raise LinAlgError("Incorrect argument found while performing "
@@ -124,6 +134,7 @@ def _makearray(a):
     new = asarray(a)
     wrap = getattr(a, "__array_wrap__", new.__array_wrap__)
     return new, wrap
+
 
 def isComplexType(t):
     return issubclass(t, complexfloating)
@@ -139,11 +150,14 @@ _complex_types_map = {single: csingle,
                       csingle: csingle,
                       cdouble: cdouble}
 
+
 def _realType(t, default=double):
     return _real_types_map.get(t, default)
 
+
 def _complexType(t, default=cdouble):
     return _complex_types_map.get(t, default)
+
 
 def _commonType(*arrays):
     # in lite version, use higher precision (always double or cdouble)
@@ -160,7 +174,7 @@ def _commonType(*arrays):
             elif rt is None:
                 # unsupported inexact scalar
                 raise TypeError("array type %s is unsupported in linalg" %
-                        (a.dtype.name,))
+                                (a.dtype.name,))
         else:
             result_type = double
     if is_complex:
@@ -187,13 +201,15 @@ def _assert_2d(*arrays):
     for a in arrays:
         if a.ndim != 2:
             raise LinAlgError('%d-dimensional array given. Array must be '
-                    'two-dimensional' % a.ndim)
+                              'two-dimensional' % a.ndim)
+
 
 def _assert_stacked_2d(*arrays):
     for a in arrays:
         if a.ndim < 2:
             raise LinAlgError('%d-dimensional array given. Array must be '
-                    'at least two-dimensional' % a.ndim)
+                              'at least two-dimensional' % a.ndim)
+
 
 def _assert_stacked_square(*arrays):
     for a in arrays:
@@ -201,10 +217,12 @@ def _assert_stacked_square(*arrays):
         if m != n:
             raise LinAlgError('Last 2 dimensions of the array must be square')
 
+
 def _assert_finite(*arrays):
     for a in arrays:
         if not isfinite(a).all():
             raise LinAlgError("Array must not contain infs or NaNs")
+
 
 def _is_empty_2d(arr):
     # check size first for efficiency
@@ -229,6 +247,7 @@ def transpose(a):
     return swapaxes(a, -1, -2)
 
 # Linear equations
+
 
 def _tensorsolve_dispatcher(a, b, axes=None):
     return (a, b)
@@ -1072,8 +1091,8 @@ def qr(a, mode='reduced'):
         if mode in ('f', 'full'):
             # 2013-04-01, 1.8
             msg = "".join((
-                    "The 'full' option is deprecated in favor of 'reduced'.\n",
-                    "For backward compatibility let mode default."))
+                "The 'full' option is deprecated in favor of 'reduced'.\n",
+                "For backward compatibility let mode default."))
             warnings.warn(msg, DeprecationWarning, stacklevel=2)
             mode = 'reduced'
         elif mode in ('e', 'economic'):
@@ -1332,6 +1351,7 @@ def eigvalsh(a, UPLO='L'):
                   under='ignore'):
         w = gufunc(a, signature=signature)
     return w.astype(_realType(result_t), copy=False)
+
 
 def _convertarray(a):
     t, result_t = _commonType(a)
@@ -3456,6 +3476,7 @@ tensordot.__doc__ = _core_tensordot.__doc__
 def _matrix_transpose_dispatcher(x):
     return (x,)
 
+
 @array_function_dispatch(_matrix_transpose_dispatcher)
 def matrix_transpose(x, /):
     return _core_matrix_transpose(x)
@@ -3468,6 +3489,7 @@ matrix_transpose.__doc__ = _core_matrix_transpose.__doc__
 
 def _matrix_norm_dispatcher(x, /, *, keepdims=None, ord=None):
     return (x,)
+
 
 @array_function_dispatch(_matrix_norm_dispatcher)
 def matrix_norm(x, /, *, keepdims=False, ord="fro"):
@@ -3531,6 +3553,7 @@ def matrix_norm(x, /, *, keepdims=False, ord="fro"):
 
 def _vector_norm_dispatcher(x, /, *, axis=None, keepdims=None, ord=None):
     return (x,)
+
 
 @array_function_dispatch(_vector_norm_dispatcher)
 def vector_norm(x, /, *, axis=None, keepdims=False, ord=2):
@@ -3631,6 +3654,7 @@ def vector_norm(x, /, *, axis=None, keepdims=False, ord=2):
 
 def _vecdot_dispatcher(x1, x2, /, *, axis=None):
     return (x1, x2)
+
 
 @array_function_dispatch(_vecdot_dispatcher)
 def vecdot(x1, x2, /, *, axis=-1):

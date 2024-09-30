@@ -171,7 +171,8 @@ def test_assert_almost_equal_complex_numbers(a, b, rtol):
 def test_assert_not_almost_equal_complex_numbers(a, b, rtol):
     _assert_not_almost_equal_both(a, b, rtol=rtol)
     _assert_not_almost_equal_both(np.complex64(a), np.complex64(b), rtol=rtol)
-    _assert_not_almost_equal_both(np.complex128(a), np.complex128(b), rtol=rtol)
+    _assert_not_almost_equal_both(
+        np.complex128(a), np.complex128(b), rtol=rtol)
 
 
 @pytest.mark.parametrize("a,b", [(0, 0), (0, 0.0), (0, np.float64(0)), (0.00000001, 0)])
@@ -303,7 +304,8 @@ def test_assert_not_almost_equal_null(a, b):
     [
         (np.inf, np.inf),
         (np.inf, float("inf")),
-        (np.array([np.inf, np.nan, -np.inf]), np.array([np.inf, np.nan, -np.inf])),
+        (np.array([np.inf, np.nan, -np.inf]),
+         np.array([np.inf, np.nan, -np.inf])),
     ],
 )
 def test_assert_almost_equal_inf(a, b):
@@ -331,7 +333,8 @@ def test_mismatched_na_assert_almost_equal_deprecation(left, right):
             Series(left_arr, dtype=object), Series(right_arr, dtype=object)
         )
         tm.assert_frame_equal(
-            DataFrame(left_arr, dtype=object), DataFrame(right_arr, dtype=object)
+            DataFrame(left_arr, dtype=object), DataFrame(
+                right_arr, dtype=object)
         )
 
     else:
@@ -349,7 +352,8 @@ def test_mismatched_na_assert_almost_equal_deprecation(left, right):
             )
         with tm.assert_produces_warning(FutureWarning, match=msg):
             tm.assert_frame_equal(
-                DataFrame(left_arr, dtype=object), DataFrame(right_arr, dtype=object)
+                DataFrame(left_arr, dtype=object), DataFrame(
+                    right_arr, dtype=object)
             )
 
 
@@ -406,7 +410,8 @@ numpy array values are different \\(66\\.66667 %\\)
 \\[right\\]: \\[1\\.0, nan, 3\\.0\\]"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_almost_equal(np.array([np.nan, 2, 3]), np.array([1, np.nan, 3]))
+        tm.assert_almost_equal(
+            np.array([np.nan, 2, 3]), np.array([1, np.nan, 3]))
 
 
 def test_assert_almost_equal_value_mismatch2():
@@ -429,7 +434,8 @@ numpy array values are different \\(16\\.66667 %\\)
 
     with pytest.raises(AssertionError, match=msg):
         tm.assert_almost_equal(
-            np.array([[1, 2], [3, 4], [5, 6]]), np.array([[1, 3], [3, 4], [5, 6]])
+            np.array([[1, 2], [3, 4], [5, 6]]), np.array(
+                [[1, 3], [3, 4], [5, 6]])
         )
 
 
@@ -441,7 +447,8 @@ numpy array values are different \\(25\\.0 %\\)
 \\[right\\]: \\[\\[1, 3\\], \\[3, 4\\]\\]"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_almost_equal(np.array([[1, 2], [3, 4]]), np.array([[1, 3], [3, 4]]))
+        tm.assert_almost_equal(
+            np.array([[1, 2], [3, 4]]), np.array([[1, 3], [3, 4]]))
 
 
 def test_assert_almost_equal_shape_mismatch_override():
@@ -451,7 +458,8 @@ Index shapes are different
 \\[left\\]:  \\(2L*,\\)
 \\[right\\]: \\(3L*,\\)"""
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_almost_equal(np.array([1, 2]), np.array([3, 4, 5]), obj="Index")
+        tm.assert_almost_equal(
+            np.array([1, 2]), np.array([3, 4, 5]), obj="Index")
 
 
 def test_assert_almost_equal_unicode():
@@ -463,7 +471,8 @@ numpy array values are different \\(33\\.33333 %\\)
 \\[right\\]: \\[á, à, å\\]"""
 
     with pytest.raises(AssertionError, match=msg):
-        tm.assert_almost_equal(np.array(["á", "à", "ä"]), np.array(["á", "à", "å"]))
+        tm.assert_almost_equal(
+            np.array(["á", "à", "ä"]), np.array(["á", "à", "å"]))
 
 
 def test_assert_almost_equal_timestamp():
@@ -503,7 +512,8 @@ Iterable values are different \\(50\\.0 %\\)
 
 
 subarr = np.empty(2, dtype=object)
-subarr[:] = [np.array([None, "b"], dtype=object), np.array(["c", "d"], dtype=object)]
+subarr[:] = [np.array([None, "b"], dtype=object),
+             np.array(["c", "d"], dtype=object)]
 
 NESTED_CASES = [
     # nested array
@@ -557,11 +567,14 @@ NESTED_CASES = [
     ),
     # dicts
     (
-        np.array([{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
-        np.array([{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
+        np.array(
+            [{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
+        np.array(
+            [{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
     ),
     (
-        np.array([{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
+        np.array(
+            [{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object),
         np.array([{"f1": 1, "f2": ["a", "b"]}], dtype=object),
     ),
     # array/list of dicts

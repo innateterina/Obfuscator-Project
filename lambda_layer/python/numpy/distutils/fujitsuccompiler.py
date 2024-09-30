@@ -1,5 +1,6 @@
 from distutils.unixccompiler import UnixCCompiler
 
+
 class FujitsuCCompiler(UnixCCompiler):
 
     """
@@ -25,4 +26,4 @@ class FujitsuCCompiler(UnixCCompiler):
             ' -lfj90i -lfj90f -lfjsrcinfo -lelf -shared',
             linker_so=cc_compiler +
             ' -lfj90i -lfj90f -lfjsrcinfo -lelf -shared'
-            )
+        )

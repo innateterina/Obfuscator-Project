@@ -267,7 +267,8 @@ class TestEval:
                 tm.assert_almost_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "arith1", sorted(set(ARITH_OPS_SYMS).difference(SPECIAL_CASE_ARITH_OPS_SYMS))
+        "arith1", sorted(set(ARITH_OPS_SYMS).difference(
+            SPECIAL_CASE_ARITH_OPS_SYMS))
     )
     def test_binary_arith_ops(self, arith1, lhs, rhs, engine, parser):
         ex = f"lhs {arith1} rhs"
@@ -410,7 +411,8 @@ class TestEval:
 
         # object raises
         lhs = DataFrame(
-            {"b": ["a", 1, 2.0], "c": np.random.default_rng(2).standard_normal(3) > 0.5}
+            {"b": ["a", 1, 2.0], "c": np.random.default_rng(
+                2).standard_normal(3) > 0.5}
         )
         if engine == "numexpr":
             with pytest.raises(ValueError, match="unknown type object"):
@@ -586,7 +588,8 @@ class TestEval:
         # TODO: 2022-01-29: result return list with numexpr 2.7.3 in CI
         # but cannot reproduce locally
         result = np.array(
-            pd.eval("[-True, True, +True, -False, False, +False, -37, 37, ~37, +37]"),
+            pd.eval(
+                "[-True, True, +True, -False, False, +False, -37, 37, ~37, +37]"),
             dtype=np.object_,
         )
         expected = np.array(
@@ -695,7 +698,8 @@ class TestEval:
         expected = np.float64(exp)
         assert result == expected
 
-        df = DataFrame({"A": [1000000000.0009, 1000000000.0011, 1000000000.0015]})
+        df = DataFrame(
+            {"A": [1000000000.0009, 1000000000.0011, 1000000000.0015]})
         cutoff = 1000000000.0006
         result = df.query(f"A < {cutoff:.4f}")
         assert result.empty
@@ -736,7 +740,8 @@ class TestEval:
         # GH 25823
         event = Series({"a": "hello"})
         assert pd.eval(f"{event.str.match('hello').a}")
-        assert pd.eval(f"{event.str.match('hello').a and event.str.match('hello').a}")
+        assert pd.eval(
+            f"{event.str.match('hello').a and event.str.match('hello').a}")
 
 
 # -------------------------------------
@@ -753,7 +758,8 @@ class TestTypeCasting:
     ):
         # GH#21374
         dtype = complex_or_float_dtype
-        df = DataFrame(np.random.default_rng(2).standard_normal((5, 3)), dtype=dtype)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((5, 3)), dtype=dtype)
         left, right = left_right
         s = f"{left} {op} {right}"
         res = pd.eval(s, engine=engine, parser=parser)
@@ -774,7 +780,8 @@ class TestTypeCasting:
 
 
 def should_warn(*args):
-    not_mono = not any(map(operator.attrgetter("is_monotonic_increasing"), args))
+    not_mono = not any(
+        map(operator.attrgetter("is_monotonic_increasing"), args))
     only_one_dt = reduce(
         operator.xor, (issubclass(x.dtype.type, np.datetime64) for x in args)
     )
@@ -1096,11 +1103,13 @@ class TestOperations:
                 assert x == expec
 
                 expec = _eval_single_bin(x, op, 1, engine)
-                y = self.eval(ex2, local_dict={"x": x}, engine=engine, parser=parser)
+                y = self.eval(ex2, local_dict={
+                              "x": x}, engine=engine, parser=parser)
                 assert y == expec
 
                 expec = _eval_single_bin(1, op, x + 1, engine)
-                y = self.eval(ex3, local_dict={"x": x}, engine=engine, parser=parser)
+                y = self.eval(ex3, local_dict={
+                              "x": x}, engine=engine, parser=parser)
                 assert y == expec
 
     @pytest.mark.parametrize("rhs", [True, False])
@@ -1271,7 +1280,8 @@ class TestOperations:
             np.random.default_rng(2).standard_normal((5, 2)), columns=list("ab")
         )
         # explicit targets
-        self.eval("c = df.a + df.b", local_dict={"df": df}, target=df, inplace=True)
+        self.eval("c = df.a + df.b",
+                  local_dict={"df": df}, target=df, inplace=True)
         expected = df.copy()
         expected["c"] = expected["a"] + expected["b"]
         tm.assert_frame_equal(df, expected)
@@ -1540,10 +1550,12 @@ class TestOperations:
             res = pd.eval("(3,) in [(3,), 2]", engine=engine, parser=parser)
             assert res
 
-            res = pd.eval("(3,) not in [(3,), 2]", engine=engine, parser=parser)
+            res = pd.eval("(3,) not in [(3,), 2]",
+                          engine=engine, parser=parser)
             assert not res
 
-            res = pd.eval("[(3,)] in [[(3,)], 2]", engine=engine, parser=parser)
+            res = pd.eval("[(3,)] in [[(3,)], 2]",
+                          engine=engine, parser=parser)
             assert res
         else:
             msg = "'In' nodes are not implemented"
@@ -1554,12 +1566,14 @@ class TestOperations:
             with pytest.raises(NotImplementedError, match=msg):
                 pd.eval("3 in (1, 2)", engine=engine, parser=parser)
             with pytest.raises(NotImplementedError, match=msg):
-                pd.eval("[(3,)] in (1, 2, [(3,)])", engine=engine, parser=parser)
+                pd.eval("[(3,)] in (1, 2, [(3,)])",
+                        engine=engine, parser=parser)
             msg = "'NotIn' nodes are not implemented"
             with pytest.raises(NotImplementedError, match=msg):
                 pd.eval("3 not in (1, 2)", engine=engine, parser=parser)
             with pytest.raises(NotImplementedError, match=msg):
-                pd.eval("[3] not in (1, 2, [[3]])", engine=engine, parser=parser)
+                pd.eval("[3] not in (1, 2, [[3]])",
+                        engine=engine, parser=parser)
 
     def test_check_many_exprs(self, engine, parser):
         a = 1  # noqa: F841
@@ -1684,7 +1698,8 @@ class TestMath:
             (np.int64, np.float64),
             (np.float32, np.float32),
             (np.float64, np.float64),
-            pytest.param(np.complex128, np.complex128, marks=td.skip_if_windows),
+            pytest.param(np.complex128, np.complex128,
+                         marks=td.skip_if_windows),
         ],
     )
     def test_result_types(self, dtype, expect_dtype, engine, parser):
@@ -1788,7 +1803,8 @@ def test_numexpr_option_incompatible_op():
     # GH 32556
     with pd.option_context("compute.use_numexpr", False):
         df = DataFrame(
-            {"A": [True, False, True, False, None, None], "B": [1, 2, 3, 4, 5, 6]}
+            {"A": [True, False, True, False, None, None],
+                "B": [1, 2, 3, 4, 5, 6]}
         )
         result = df.query("A.isnull()")
         expected = DataFrame({"A": [None, None], "B": [5, 6]}, index=[4, 5])
@@ -1860,7 +1876,8 @@ def test_numexpr_builtin_raises(engine, parser):
 def test_bad_resolver_raises(engine, parser):
     cannot_resolve = 42, 3.0
     with pytest.raises(TypeError, match="Resolver of type .+"):
-        pd.eval("1 + 2", resolvers=cannot_resolve, engine=engine, parser=parser)
+        pd.eval("1 + 2", resolvers=cannot_resolve,
+                engine=engine, parser=parser)
 
 
 def test_empty_string_raises(engine, parser):

@@ -82,7 +82,8 @@ class TestIndexConstructorInference:
 
     @pytest.mark.parametrize(
         "dtype",
-        [int, "int64", "int32", "int16", "int8", "uint64", "uint32", "uint16", "uint8"],
+        [int, "int64", "int32", "int16", "int8",
+            "uint64", "uint32", "uint16", "uint8"],
     )
     def test_constructor_int_dtype_float(self, dtype):
         # GH#18400
@@ -92,7 +93,8 @@ class TestIndexConstructorInference:
 
     @pytest.mark.parametrize("cast_index", [True, False])
     @pytest.mark.parametrize(
-        "vals", [[True, False, True], np.array([True, False, True], dtype=bool)]
+        "vals", [[True, False, True], np.array(
+            [True, False, True], dtype=bool)]
     )
     def test_constructor_dtypes_to_object(self, cast_index, vals):
         if cast_index:
@@ -148,7 +150,8 @@ class TestIndexConstructorInference:
         warn = None
         if nulls_fixture is NA:
             expected = Index([NA, NaT])
-            mark = pytest.mark.xfail(reason="Broken with np.NaT ctor; see GH 31884")
+            mark = pytest.mark.xfail(
+                reason="Broken with np.NaT ctor; see GH 31884")
             request.applymarker(mark)
             # GH#35942 numpy will emit a DeprecationWarning within the
             #  assert_index_equal calls.  Since we can't do anything
@@ -332,7 +335,8 @@ class TestDtypeEnforced:
     @pytest.mark.parametrize(
         "vals",
         [
-            Index(np.array([np.datetime64("2011-01-01"), np.datetime64("2011-01-02")])),
+            Index(np.array([np.datetime64("2011-01-01"),
+                  np.datetime64("2011-01-02")])),
             Index([datetime(2011, 1, 1), datetime(2011, 1, 2)]),
         ],
     )
@@ -385,7 +389,8 @@ class TestIndexConstructorUnwrapping:
 
     @pytest.mark.parametrize("klass", [Index, DatetimeIndex])
     def test_constructor_from_series_dt64(self, klass):
-        stamps = [Timestamp("20110101"), Timestamp("20120101"), Timestamp("20130101")]
+        stamps = [Timestamp("20110101"), Timestamp(
+            "20120101"), Timestamp("20130101")]
         expected = DatetimeIndex(stamps)
         ser = Series(stamps)
         result = klass(ser)

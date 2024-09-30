@@ -198,7 +198,7 @@ class TestNDArrayArrayFunction:
         # __array_function__ with invalid arguments, but check that we raise
         # an appropriate error all the same.
         array = np.array(1)
-        func = lambda x: x
+        def func(x): return x
         with assert_raises_regex(AttributeError, '_implementation'):
             array.__array_function__(func=func, types=(np.ndarray,),
                                      args=(array,), kwargs={})
@@ -209,7 +209,7 @@ class TestArrayFunctionDispatch:
     def test_pickle(self):
         for proto in range(2, pickle.HIGHEST_PROTOCOL + 1):
             roundtripped = pickle.loads(
-                    pickle.dumps(dispatched_one_arg, protocol=proto))
+                pickle.dumps(dispatched_one_arg, protocol=proto))
             assert_(roundtripped is dispatched_one_arg)
 
     def test_name_and_docstring(self):
@@ -425,10 +425,10 @@ class TestArrayFunctionImplementation:
         assert repr_no_id == repr_no_id_impl
 
     @pytest.mark.parametrize("func", [
-            lambda x, y: 0,  # no like argument
-            lambda like=None: 0,  # not keyword only
-            lambda *, like=None, a=3: 0,  # not last (not that it matters)
-        ])
+        lambda x, y: 0,  # no like argument
+        lambda like=None: 0,  # not keyword only
+        lambda *, like=None, a=3: 0,  # not last (not that it matters)
+    ])
     def test_bad_like_sig(self, func):
         # We sanity check the signature, and these should fail.
         with pytest.raises(RuntimeError):
@@ -464,7 +464,6 @@ class TestArrayFunctionImplementation:
 
         with pytest.raises(TypeError, match="maximum number"):
             func(*objs)
-
 
 
 class TestNDArrayMethods:
@@ -510,8 +509,10 @@ class TestNumPyFunctions:
         class ArrayProxy:
             def __init__(self, value):
                 self.value = value
+
             def __array_function__(self, *args, **kwargs):
                 return self.value.__array_function__(*args, **kwargs)
+
             def __array__(self, *args, **kwargs):
                 return self.value.__array__(*args, **kwargs)
 
@@ -650,7 +651,7 @@ class TestArrayLike:
         like_args = tuple(a() if callable(a) else a for a in args)
 
         with assert_raises_regex(TypeError,
-                'The `like` argument must be an array-like that implements'):
+                                 'The `like` argument must be an array-like that implements'):
             np_func(*like_args, **kwargs, like=ref)
 
     @pytest.mark.parametrize('numpy_ref', [True, False])
@@ -709,7 +710,7 @@ class TestArrayLike:
 
 def test_function_like():
     # We provide a `__get__` implementation, make sure it works
-    assert type(np.mean) is np._core._multiarray_umath._ArrayFunctionDispatcher 
+    assert type(np.mean) is np._core._multiarray_umath._ArrayFunctionDispatcher
 
     class MyClass:
         def __array__(self, dtype=None, copy=None):

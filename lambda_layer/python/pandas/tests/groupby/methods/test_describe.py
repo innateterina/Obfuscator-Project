@@ -215,7 +215,8 @@ def test_describe_duplicate_columns():
 
     columns = ["count", "mean", "std", "min", "50%", "max"]
     frames = [
-        DataFrame([[1.0, val, np.nan, val, val, val]], index=[1], columns=columns)
+        DataFrame([[1.0, val, np.nan, val, val, val]],
+                  index=[1], columns=columns)
         for val in (0.0, 2.0, 3.0)
     ]
     expected = pd.concat(frames, axis=1)
@@ -253,7 +254,8 @@ class TestGroupByNonCythonPaths:
         # describe
         expected_index = Index([1, 3], name="A")
         expected_col = MultiIndex(
-            levels=[["B"], ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]],
+            levels=[["B"], ["count", "mean", "std",
+                            "min", "25%", "50%", "75%", "max"]],
             codes=[[0] * 8, list(range(8))],
         )
         expected = DataFrame(
@@ -277,8 +279,10 @@ class TestGroupByNonCythonPaths:
     "kwargs",
     [
         {"percentiles": [0.10, 0.20, 0.30], "include": "all", "exclude": None},
-        {"percentiles": [0.10, 0.20, 0.30], "include": None, "exclude": ["int"]},
-        {"percentiles": [0.10, 0.20, 0.30], "include": ["int"], "exclude": None},
+        {"percentiles": [0.10, 0.20, 0.30],
+            "include": None, "exclude": ["int"]},
+        {"percentiles": [0.10, 0.20, 0.30],
+            "include": ["int"], "exclude": None},
     ],
 )
 def test_groupby_empty_dataset(dtype, kwargs):
@@ -288,10 +292,12 @@ def test_groupby_empty_dataset(dtype, kwargs):
     df["C"] = df["C"].astype(float)
 
     result = df.iloc[:0].groupby("A").describe(**kwargs)
-    expected = df.groupby("A").describe(**kwargs).reset_index(drop=True).iloc[:0]
+    expected = df.groupby("A").describe(
+        **kwargs).reset_index(drop=True).iloc[:0]
     tm.assert_frame_equal(result, expected)
 
     result = df.iloc[:0].groupby("A").B.describe(**kwargs)
-    expected = df.groupby("A").B.describe(**kwargs).reset_index(drop=True).iloc[:0]
+    expected = df.groupby("A").B.describe(
+        **kwargs).reset_index(drop=True).iloc[:0]
     expected.index = Index([])
     tm.assert_frame_equal(result, expected)

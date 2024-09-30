@@ -169,7 +169,8 @@ def __internal_pivot_table(
         values = list(values)
 
     observed_bool = False if observed is lib.no_default else observed
-    grouped = data.groupby(keys, observed=observed_bool, sort=sort, dropna=dropna)
+    grouped = data.groupby(keys, observed=observed_bool,
+                           sort=sort, dropna=dropna)
     if observed is lib.no_default and any(
         ping._passed_categorical for ping in grouped._grouper.groupings
     ):
@@ -381,7 +382,8 @@ def _generate_marginal_results(
             return (key, margins_name) + ("",) * (len(cols) - 1)
 
         if len(rows) > 0:
-            margin = data[rows + values].groupby(rows, observed=observed).agg(aggfunc)
+            margin = data[rows +
+                          values].groupby(rows, observed=observed).agg(aggfunc)
             cat_axis = 1
 
             for key, piece in table.T.groupby(level=0, observed=observed):
@@ -413,7 +415,8 @@ def _generate_marginal_results(
                         [all_key], names=piece.index.names + [None]
                     )
                 else:
-                    transformed_piece.index = Index([all_key], name=piece.index.name)
+                    transformed_piece.index = Index(
+                        [all_key], name=piece.index.name)
 
                 # append piece for margin into table_piece
                 table_pieces.append(transformed_piece)
@@ -432,12 +435,14 @@ def _generate_marginal_results(
         margin_keys = table.columns
 
     if len(cols) > 0:
-        row_margin = data[cols + values].groupby(cols, observed=observed).agg(aggfunc)
+        row_margin = data[cols +
+                          values].groupby(cols, observed=observed).agg(aggfunc)
         row_margin = row_margin.stack(future_stack=True)
 
         # GH#26568. Use names instead of indices in case of numeric names
         new_order_indices = [len(cols)] + list(range(len(cols)))
-        new_order_names = [row_margin.index.names[i] for i in new_order_indices]
+        new_order_names = [row_margin.index.names[i]
+                           for i in new_order_indices]
         row_margin.index = row_margin.index.reorder_levels(new_order_names)
     else:
         row_margin = data._constructor_sliced(np.nan, index=result.columns)
@@ -472,7 +477,8 @@ def _generate_marginal_results_without_values(
             margin_keys.append(all_key)
 
         else:
-            margin = data.groupby(level=0, axis=0, observed=observed).apply(aggfunc)
+            margin = data.groupby(
+                level=0, axis=0, observed=observed).apply(aggfunc)
             all_key = _all_key()
             table[all_key] = margin
             result = table
@@ -563,7 +569,8 @@ def pivot(
                 data[values]._values, index=multiindex, columns=values
             )
         else:
-            indexed = data._constructor_sliced(data[values]._values, index=multiindex)
+            indexed = data._constructor_sliced(
+                data[values]._values, index=multiindex)
     # error: Argument 1 to "unstack" of "DataFrame" has incompatible type "Union
     # [List[Any], ExtensionArray, ndarray[Any, Any], Index, Series]"; expected
     # "Hashable"
@@ -693,9 +700,11 @@ def crosstab(
         columns = [columns]
 
     common_idx = None
-    pass_objs = [x for x in index + columns if isinstance(x, (ABCSeries, ABCDataFrame))]
+    pass_objs = [x for x in index +
+                 columns if isinstance(x, (ABCSeries, ABCDataFrame))]
     if pass_objs:
-        common_idx = get_objs_combined_axis(pass_objs, intersect=True, sort=False)
+        common_idx = get_objs_combined_axis(
+            pass_objs, intersect=True, sort=False)
 
     rownames = _get_names(index, rownames, prefix="row")
     colnames = _get_names(columns, colnames, prefix="col")
@@ -880,7 +889,8 @@ def _build_names_mapper(
         return {name for name in names if name not in seen}
 
     shared_names = set(rownames).intersection(set(colnames))
-    dup_names = get_duplicates(rownames) | get_duplicates(colnames) | shared_names
+    dup_names = get_duplicates(rownames) | get_duplicates(
+        colnames) | shared_names
 
     rownames_mapper = {
         f"row_{i}": name for i, name in enumerate(rownames) if name in dup_names

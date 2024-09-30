@@ -7,6 +7,8 @@ from numpy._core.numerictypes import obj2sctype
 from collections import namedtuple
 
 # Generic object that can be added, but doesn't do anything else
+
+
 class GenericObject:
     def __init__(self, v):
         self.v = v
@@ -18,6 +20,7 @@ class GenericObject:
         return self
 
     dtype = np.dtype('O')
+
 
 def print_cancast_table(ntypes):
     print('X', end=' ')
@@ -40,6 +43,7 @@ def print_cancast_table(ntypes):
             print(cast, end=' ')
         print()
 
+
 def print_coercion_table(ntypes, inputfirstvalue, inputsecondvalue, firstarray, use_promote_types=False):
     print('+', end=' ')
     for char in ntypes:
@@ -59,12 +63,14 @@ def print_coercion_table(ntypes, inputfirstvalue, inputsecondvalue, firstarray, 
                 coltype = obj2sctype(col)
             try:
                 if firstarray:
-                    rowvalue = np.array([rowtype(inputfirstvalue)], dtype=rowtype)
+                    rowvalue = np.array(
+                        [rowtype(inputfirstvalue)], dtype=rowtype)
                 else:
                     rowvalue = rowtype(inputfirstvalue)
                 colvalue = coltype(inputsecondvalue)
                 if use_promote_types:
-                    char = np.promote_types(rowvalue.dtype, colvalue.dtype).char
+                    char = np.promote_types(
+                        rowvalue.dtype, colvalue.dtype).char
                 else:
                     value = np.add(rowvalue, colvalue)
                     if isinstance(value, np.ndarray):
@@ -96,10 +102,10 @@ def print_new_cast_table(*, can_cast=True, legacy=False, flags=False):
         4: ".",  # unsafe casting
     }
     flags_table = {
-        0 : "▗", 7: "█",
+        0: "▗", 7: "█",
         1: "▚", 2: "▐", 4: "▄",
-                3: "▜", 5: "▙",
-                        6: "▟",
+        3: "▜", 5: "▙",
+        6: "▟",
     }
 
     cast_info = namedtuple("cast_info", ["can_cast", "legacy", "flags"])
@@ -127,11 +133,13 @@ def print_new_cast_table(*, can_cast=True, legacy=False, flags=False):
             flags |= 4
 
         flags = flags_table[flags]
-        to_dict[cast["to"]] = cast_info(can_cast=can_cast, legacy=legacy, flags=flags)
+        to_dict[cast["to"]] = cast_info(
+            can_cast=can_cast, legacy=legacy, flags=flags)
 
     # The np.dtype(x.type) is a bit strange, because dtype classes do
     # not expose much yet.
     types = np.typecodes["All"]
+
     def sorter(x):
         # This is a bit weird hack, to get a table as close as possible to
         # the one printing all typecodes (but expecting user-dtypes).

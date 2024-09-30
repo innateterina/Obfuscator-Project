@@ -37,7 +37,8 @@ def new_func_with_deprecation():
 
 
 def test_deprecate_ok():
-    depr_func = deprecate("depr_func", new_func, "1.0", msg="Use new_func instead.")
+    depr_func = deprecate("depr_func", new_func, "1.0",
+                          msg="Use new_func instead.")
 
     with tm.assert_produces_warning(FutureWarning):
         result = depr_func()

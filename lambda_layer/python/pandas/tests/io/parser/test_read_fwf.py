@@ -364,7 +364,8 @@ def test_fwf_comment(comment):
     colspecs = [(0, 3), (4, 9), (9, 25)]
     expected = DataFrame([[1, 2.0, 4], [5, np.nan, 10.0]])
 
-    result = read_fwf(StringIO(data), colspecs=colspecs, header=None, comment=comment)
+    result = read_fwf(StringIO(data), colspecs=colspecs,
+                      header=None, comment=comment)
     tm.assert_almost_equal(result, expected)
 
 
@@ -605,7 +606,8 @@ DataCol1   DataCol2
 
     depr_msg = "The 'delim_whitespace' keyword in pd.read_csv is deprecated"
     with tm.assert_produces_warning(FutureWarning, match=depr_msg):
-        expected = read_csv(StringIO(data), skiprows=skiprows, delim_whitespace=True)
+        expected = read_csv(
+            StringIO(data), skiprows=skiprows, delim_whitespace=True)
 
     result = read_fwf(StringIO(data), skiprows=skiprows)
     tm.assert_frame_equal(result, expected)
@@ -623,7 +625,8 @@ Once more to be skipped
 
     depr_msg = "The 'delim_whitespace' keyword in pd.read_csv is deprecated"
     with tm.assert_produces_warning(FutureWarning, match=depr_msg):
-        expected = read_csv(StringIO(data), skiprows=skiprows, delim_whitespace=True)
+        expected = read_csv(
+            StringIO(data), skiprows=skiprows, delim_whitespace=True)
 
     result = read_fwf(StringIO(data), skiprows=skiprows)
     tm.assert_frame_equal(result, expected)
@@ -667,7 +670,8 @@ cc,dd"""
     fwf_data = """
 a \tbbb
 cc\tdd """
-    result = read_fwf(StringIO(fwf_data), widths=[3, 3], header=header, skiprows=[0])
+    result = read_fwf(StringIO(fwf_data), widths=[
+                      3, 3], header=header, skiprows=[0])
     expected = read_csv(StringIO(csv_data), header=header)
     tm.assert_frame_equal(result, expected)
 
@@ -938,7 +942,8 @@ def test_names_and_infer_colspecs():
     data = """X   Y   Z
       959.0    345   22.2
     """
-    result = read_fwf(StringIO(data), skiprows=1, usecols=[0, 2], names=["a", "b"])
+    result = read_fwf(StringIO(data), skiprows=1,
+                      usecols=[0, 2], names=["a", "b"])
     expected = DataFrame({"a": [959.0], "b": 22.2})
     tm.assert_frame_equal(result, expected)
 
@@ -1007,7 +1012,8 @@ def test_dtype_backend(string_storage, dtype_backend):
 
         expected = DataFrame(
             {
-                col: ArrowExtensionArray(pa.array(expected[col], from_pandas=True))
+                col: ArrowExtensionArray(
+                    pa.array(expected[col], from_pandas=True))
                 for col in expected.columns
             }
         )

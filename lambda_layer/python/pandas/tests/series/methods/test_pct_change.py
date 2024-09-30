@@ -16,7 +16,8 @@ class TestSeriesPctChange:
         )
 
         rs = datetime_series.pct_change(fill_method=None)
-        tm.assert_series_equal(rs, datetime_series / datetime_series.shift(1) - 1)
+        tm.assert_series_equal(rs, datetime_series /
+                               datetime_series.shift(1) - 1)
 
         rs = datetime_series.pct_change(2)
         filled = datetime_series.ffill()
@@ -108,7 +109,8 @@ def test_pct_change_with_duplicated_indices(fill_method):
     with tm.assert_produces_warning(warn, match=msg):
         result = s.pct_change(fill_method=fill_method)
 
-    expected = Series([np.nan, np.nan, 1.0, 0.5, 2.0, 1.0], index=["a", "b"] * 3)
+    expected = Series([np.nan, np.nan, 1.0, 0.5, 2.0, 1.0],
+                      index=["a", "b"] * 3)
     tm.assert_series_equal(result, expected)
 
 

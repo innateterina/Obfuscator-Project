@@ -132,7 +132,8 @@ class TestNumericOnly:
         )
         if method == "cumsum":
             # cumsum loses string
-            expected_columns = Index(["int", "float", "category_int", "timedelta"])
+            expected_columns = Index(
+                ["int", "float", "category_int", "timedelta"])
 
         self._check(df, method, expected_columns, expected_columns_numeric)
 
@@ -160,7 +161,8 @@ class TestNumericOnly:
 
         # object dtypes for transformations are not implemented in Cython and
         # have no Python fallback
-        exception = NotImplementedError if method.startswith("cum") else TypeError
+        exception = NotImplementedError if method.startswith(
+            "cum") else TypeError
 
         if method in ("min", "max", "cummin", "cummax", "cumsum", "cumprod"):
             # The methods default to numeric_only=False and raise TypeError
@@ -168,7 +170,8 @@ class TestNumericOnly:
                 [
                     "Categorical is not ordered",
                     f"Cannot perform {method} with non-ordered Categorical",
-                    re.escape(f"agg function failed [how->{method},dtype->object]"),
+                    re.escape(
+                        f"agg function failed [how->{method},dtype->object]"),
                     # cumsum/cummin/cummax/cumprod
                     "function is not implemented for this dtype",
                 ]
@@ -179,8 +182,10 @@ class TestNumericOnly:
             msg = "|".join(
                 [
                     "category type does not support sum operations",
-                    re.escape(f"agg function failed [how->{method},dtype->object]"),
-                    re.escape(f"agg function failed [how->{method},dtype->string]"),
+                    re.escape(
+                        f"agg function failed [how->{method},dtype->object]"),
+                    re.escape(
+                        f"agg function failed [how->{method},dtype->string]"),
                 ]
             )
             with pytest.raises(exception, match=msg):
@@ -196,8 +201,10 @@ class TestNumericOnly:
                     "category type does not support",
                     "function is not implemented for this dtype",
                     f"Cannot perform {method} with non-ordered Categorical",
-                    re.escape(f"agg function failed [how->{method},dtype->object]"),
-                    re.escape(f"agg function failed [how->{method},dtype->string]"),
+                    re.escape(
+                        f"agg function failed [how->{method},dtype->object]"),
+                    re.escape(
+                        f"agg function failed [how->{method},dtype->string]"),
                 ]
             )
             with pytest.raises(exception, match=msg):
@@ -229,7 +236,8 @@ def test_axis1_numeric_only(request, groupby_func, numeric_only, using_infer_str
         kwargs["numeric_only"] = numeric_only
 
     # Functions without numeric_only and axis args
-    no_args = ("cumprod", "cumsum", "diff", "fillna", "pct_change", "rank", "shift")
+    no_args = ("cumprod", "cumsum", "diff", "fillna",
+               "pct_change", "rank", "shift")
     # Functions with axis args
     has_axis = (
         "cumprod",
@@ -337,7 +345,8 @@ def test_numeric_only(kernel, has_arg, numeric_only, keys):
     # GH#46072
     # drops_nuisance: Whether the op drops nuisance columns even when numeric_only=False
     # has_arg: Whether the op has a numeric_only arg
-    df = DataFrame({"a1": [1, 1], "a2": [2, 2], "a3": [5, 6], "b": 2 * [object]})
+    df = DataFrame({"a1": [1, 1], "a2": [2, 2],
+                   "a3": [5, 6], "b": 2 * [object]})
 
     args = get_groupby_method_args(kernel, df)
     kwargs = {} if numeric_only is lib.no_default else {"numeric_only": numeric_only}
@@ -353,7 +362,8 @@ def test_numeric_only(kernel, has_arg, numeric_only, keys):
         kernel in ("first", "last")
         or (
             # kernels that work on any dtype and don't have numeric_only arg
-            kernel in ("any", "all", "bfill", "ffill", "fillna", "nth", "nunique")
+            kernel in ("any", "all", "bfill", "ffill",
+                       "fillna", "nth", "nunique")
             and numeric_only is lib.no_default
         )
     ):
@@ -368,7 +378,8 @@ def test_numeric_only(kernel, has_arg, numeric_only, keys):
 
         # object dtypes for transformations are not implemented in Cython and
         # have no Python fallback
-        exception = NotImplementedError if kernel.startswith("cum") else TypeError
+        exception = NotImplementedError if kernel.startswith(
+            "cum") else TypeError
 
         msg = "|".join(
             [
@@ -378,7 +389,8 @@ def test_numeric_only(kernel, has_arg, numeric_only, keys):
                 "must be a string or a.* number",
                 "unsupported operand type",
                 "function is not implemented for this dtype",
-                re.escape(f"agg function failed [how->{kernel},dtype->object]"),
+                re.escape(
+                    f"agg function failed [how->{kernel},dtype->object]"),
             ]
         )
         if kernel == "idxmin":

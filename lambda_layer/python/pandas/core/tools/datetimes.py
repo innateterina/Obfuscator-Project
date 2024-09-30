@@ -135,7 +135,7 @@ def _guess_datetime_format_for_array(arr, dayfirst: bool | None = False) -> str 
                 return guessed_format
             # If there are multiple non-null elements, warn about
             # how parsing might not be consistent
-            if tslib.first_non_null(arr[first_non_null + 1 :]) != -1:
+            if tslib.first_non_null(arr[first_non_null + 1:]) != -1:
                 warnings.warn(
                     "Could not infer format, so each element will be parsed "
                     "individually, falling back to `dateutil`. To ensure parsing is "
@@ -247,7 +247,8 @@ def _maybe_cache(
             cache_dates = convert_listlike(unique_dates, format)
             # GH#45319
             try:
-                cache_array = Series(cache_dates, index=unique_dates, copy=False)
+                cache_array = Series(
+                    cache_dates, index=unique_dates, copy=False)
             except OutOfBoundsDatetime:
                 return cache_array
             # GH#39882 and GH#35888 in case of None and NaT we get duplicates
@@ -413,10 +414,12 @@ def _convert_listlike_datetimes(
     # warn if passing timedelta64, raise for PeriodDtype
     # NB: this must come after unit transformation
     try:
-        arg, _ = maybe_convert_dtype(arg, copy=False, tz=libtimezones.maybe_get_tz(tz))
+        arg, _ = maybe_convert_dtype(
+            arg, copy=False, tz=libtimezones.maybe_get_tz(tz))
     except TypeError:
         if errors == "coerce":
-            npvalues = np.array(["NaT"], dtype="datetime64[ns]").repeat(len(arg))
+            npvalues = np.array(
+                ["NaT"], dtype="datetime64[ns]").repeat(len(arg))
             return DatetimeIndex(npvalues, name=name)
         elif errors == "ignore":
             idx = Index(arg, name=name)
@@ -464,7 +467,8 @@ def _array_strptime_with_fallback(
     """
     Call array_strptime, with fallback behavior depending on 'errors'.
     """
-    result, tz_out = array_strptime(arg, fmt, exact=exact, errors=errors, utc=utc)
+    result, tz_out = array_strptime(
+        arg, fmt, exact=exact, errors=errors, utc=utc)
     if tz_out is not None:
         unit = np.datetime_data(result.dtype)[0]
         dtype = DatetimeTZDtype(tz=tz_out, unit=unit)
@@ -523,7 +527,8 @@ def _to_datetime_with_unit(arg, unit, name, utc: bool, errors: str) -> Index:
             tz_parsed = None
         else:
             arg = arg.astype(object, copy=False)
-            arr, tz_parsed = tslib.array_with_unit_to_datetime(arg, unit, errors=errors)
+            arr, tz_parsed = tslib.array_with_unit_to_datetime(
+                arg, unit, errors=errors)
 
     if errors == "ignore":
         # Index constructor _may_ infer to DatetimeIndex
@@ -598,7 +603,8 @@ def _adjust_to_origin(arg, origin, unit):
         try:
             offset = Timestamp(origin, unit=unit)
         except OutOfBoundsDatetime as err:
-            raise OutOfBoundsDatetime(f"origin {origin} is Out of Bounds") from err
+            raise OutOfBoundsDatetime(
+                f"origin {origin} is Out of Bounds") from err
         except ValueError as err:
             raise ValueError(
                 f"origin {origin} cannot be converted to a Timestamp"
@@ -1014,7 +1020,8 @@ def to_datetime(
                   dtype='datetime64[ns, UTC]', freq=None)
     """
     if exact is not lib.no_default and format in {"mixed", "ISO8601"}:
-        raise ValueError("Cannot use 'exact' when 'format' is 'mixed' or 'ISO8601'")
+        raise ValueError(
+            "Cannot use 'exact' when 'format' is 'mixed' or 'ISO8601'")
     if infer_datetime_format is not lib.no_default:
         warnings.warn(
             "The argument 'infer_datetime_format' is deprecated and will "
@@ -1081,7 +1088,8 @@ def to_datetime(
             # ndarray[Any, Any], Series]"; expected "Union[List[Any], Tuple[Any, ...],
             # Union[Union[ExtensionArray, ndarray[Any, Any]], Index, Series], Series]"
             argc = cast(
-                Union[list, tuple, ExtensionArray, np.ndarray, "Series", Index], arg
+                Union[list, tuple, ExtensionArray,
+                      np.ndarray, "Series", Index], arg
             )
             cache_array = _maybe_cache(argc, format, cache, convert_listlike)
         except OutOfBoundsDatetime:
@@ -1220,7 +1228,8 @@ def _assemble_from_unit_mappings(arg, errors: DateTimeErrorChoices, utc: bool):
         value = unit_rev.get(u)
         if value is not None and value in arg:
             try:
-                values += to_timedelta(coerce(arg[value]), unit=u, errors=errors)
+                values += to_timedelta(coerce(arg[value]),
+                                       unit=u, errors=errors)
             except (TypeError, ValueError) as err:
                 raise ValueError(
                     f"cannot assemble the datetimes [{value}]: {err}"

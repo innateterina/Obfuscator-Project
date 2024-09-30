@@ -118,8 +118,10 @@ class TestNonNano:
         assert res == expected
 
         # if there's no overflow, we cast to the higher reso
-        left = Timedelta._from_value_and_reso(50, NpyDatetimeUnit.NPY_FR_us.value)
-        right = Timedelta._from_value_and_reso(50, NpyDatetimeUnit.NPY_FR_ms.value)
+        left = Timedelta._from_value_and_reso(
+            50, NpyDatetimeUnit.NPY_FR_us.value)
+        right = Timedelta._from_value_and_reso(
+            50, NpyDatetimeUnit.NPY_FR_ms.value)
         result = left / right
         assert result == 0.001
 
@@ -153,8 +155,10 @@ class TestNonNano:
         assert res == 0
 
         # if there's no overflow, we cast to the higher reso
-        left = Timedelta._from_value_and_reso(50050, NpyDatetimeUnit.NPY_FR_us.value)
-        right = Timedelta._from_value_and_reso(50, NpyDatetimeUnit.NPY_FR_ms.value)
+        left = Timedelta._from_value_and_reso(
+            50050, NpyDatetimeUnit.NPY_FR_us.value)
+        right = Timedelta._from_value_and_reso(
+            50, NpyDatetimeUnit.NPY_FR_ms.value)
         result = left // right
         assert result == 1
         result = right // left
@@ -310,7 +314,8 @@ class TestTimedeltas:
             pydt = td.to_pytimedelta()
             assert td == Timedelta(pydt)
             assert td == pydt
-            assert isinstance(pydt, timedelta) and not isinstance(pydt, Timedelta)
+            assert isinstance(pydt, timedelta) and not isinstance(
+                pydt, Timedelta)
 
             assert td == np.timedelta64(td._value, "ns")
             td64 = td.to_timedelta64()
@@ -431,7 +436,8 @@ class TestTimedeltas:
         assert Timedelta(timedelta(microseconds=1)) == np.timedelta64(1, "us").astype(
             "m8[ns]"
         )
-        assert Timedelta(timedelta(days=1)) == np.timedelta64(1, "D").astype("m8[ns]")
+        assert Timedelta(timedelta(days=1)) == np.timedelta64(
+            1, "D").astype("m8[ns]")
 
     def test_to_numpy_alias(self):
         # GH 24653: alias .to_numpy() for scalars
@@ -512,12 +518,14 @@ class TestTimedeltas:
 
         assert Timedelta("00:00:01") == conv(np.timedelta64(1, "s"))
         assert Timedelta("06:00:01") == conv(np.timedelta64(6 * 3600 + 1, "s"))
-        assert Timedelta("06:00:01.0") == conv(np.timedelta64(6 * 3600 + 1, "s"))
+        assert Timedelta("06:00:01.0") == conv(
+            np.timedelta64(6 * 3600 + 1, "s"))
         assert Timedelta("06:00:01.01") == conv(
             np.timedelta64(1000 * (6 * 3600 + 1) + 10, "ms")
         )
 
-        assert Timedelta("- 1days, 00:00:01") == conv(-d1 + np.timedelta64(1, "s"))
+        assert Timedelta("- 1days, 00:00:01") == conv(-d1 +
+                                                      np.timedelta64(1, "s"))
         assert Timedelta("1days, 06:00:01") == conv(
             d1 + np.timedelta64(6 * 3600 + 1, "s")
         )

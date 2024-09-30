@@ -4,12 +4,13 @@ import pytest
 
 from numpy.distutils.misc_util import (
     appendpath, minrelpath, gpaths, get_shared_lib_extension, get_info
-    )
+)
 from numpy.testing import (
     assert_, assert_equal, IS_EDITABLE
-    )
+)
 
 ajoin = lambda *paths: join(*((sep,)+paths))
+
 
 class TestAppendpath:
 
@@ -35,10 +36,11 @@ class TestAppendpath:
         assert_equal(appendpath('/prefix/sub/sub2', '/prefix/sub/sup/name'),
                      ajoin('prefix', 'sub', 'sub2', 'sup', 'name'))
 
+
 class TestMinrelpath:
 
     def test_1(self):
-        n = lambda path: path.replace('/', sep)
+        def n(path): return path.replace('/', sep)
         assert_equal(minrelpath(n('aa/bb')), n('aa/bb'))
         assert_equal(minrelpath('..'), '..')
         assert_equal(minrelpath(n('aa/..')), '')
@@ -49,6 +51,7 @@ class TestMinrelpath:
         assert_equal(minrelpath(n('.././..')), n('../..'))
         assert_equal(minrelpath(n('aa/bb/.././../dd')), n('dd'))
 
+
 class TestGpaths:
 
     def test_gpaths(self):
@@ -57,6 +60,7 @@ class TestGpaths:
         assert_(join(local_path, 'command', 'build_src.py') in ls, repr(ls))
         f = gpaths('system_info.py', local_path)
         assert_(join(local_path, 'system_info.py') == f[0], repr(f))
+
 
 class TestSharedExtension:
 

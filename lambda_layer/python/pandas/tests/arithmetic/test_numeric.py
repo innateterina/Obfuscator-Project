@@ -63,7 +63,8 @@ def numeric_idx(request):
 
 
 @pytest.fixture(
-    params=[Index, Series, tm.to_array, np.array, list], ids=lambda x: x.__name__
+    params=[Index, Series, tm.to_array,
+            np.array, list], ids=lambda x: x.__name__
 )
 def box_1d_array(request):
     """
@@ -105,7 +106,8 @@ def compare_op(series, other, op):
 _ldtypes = ["i1", "i2", "i4", "i8", "u1", "u2", "u4", "u8", "f2", "f4", "f8"]
 lefts: list[Index | Series] = [RangeIndex(10, 40, 10)]
 lefts.extend([Series([10, 20, 30], dtype=dtype) for dtype in _ldtypes])
-lefts.extend([Index([10, 20, 30], dtype=dtype) for dtype in _ldtypes if dtype != "f2"])
+lefts.extend([Index([10, 20, 30], dtype=dtype)
+             for dtype in _ldtypes if dtype != "f2"])
 
 # ------------------------------------------------------------------
 # Comparisons
@@ -237,7 +239,8 @@ class TestNumericArraylikeArithmeticWithDatetimeLike:
         # GH#19333
         box = box_with_array
         index = numeric_idx
-        expected = TimedeltaIndex([Timedelta(days=n) for n in range(len(index))])
+        expected = TimedeltaIndex([Timedelta(days=n)
+                                  for n in range(len(index))])
         if isinstance(scalar_td, np.timedelta64):
             dtype = scalar_td.dtype
             expected = expected.astype(dtype)
@@ -372,7 +375,8 @@ class TestDivisionByZero:
     def test_div_zero(self, zero, numeric_idx):
         idx = numeric_idx
 
-        expected = Index([np.nan, np.inf, np.inf, np.inf, np.inf], dtype=np.float64)
+        expected = Index(
+            [np.nan, np.inf, np.inf, np.inf, np.inf], dtype=np.float64)
         # We only adjust for Index, because Series does not yet apply
         #  the adjustment correctly.
         expected2 = adjust_negative_zero(zero, expected)
@@ -385,7 +389,8 @@ class TestDivisionByZero:
     def test_floordiv_zero(self, zero, numeric_idx):
         idx = numeric_idx
 
-        expected = Index([np.nan, np.inf, np.inf, np.inf, np.inf], dtype=np.float64)
+        expected = Index(
+            [np.nan, np.inf, np.inf, np.inf, np.inf], dtype=np.float64)
         # We only adjust for Index, because Series does not yet apply
         #  the adjustment correctly.
         expected2 = adjust_negative_zero(zero, expected)
@@ -398,7 +403,8 @@ class TestDivisionByZero:
     def test_mod_zero(self, zero, numeric_idx):
         idx = numeric_idx
 
-        expected = Index([np.nan, np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
+        expected = Index(
+            [np.nan, np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
         result = idx % zero
         tm.assert_index_equal(result, expected)
         ser_compat = Series(idx).astype("i8") % np.array(zero).astype("i8")
@@ -407,8 +413,10 @@ class TestDivisionByZero:
     def test_divmod_zero(self, zero, numeric_idx):
         idx = numeric_idx
 
-        exleft = Index([np.nan, np.inf, np.inf, np.inf, np.inf], dtype=np.float64)
-        exright = Index([np.nan, np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
+        exleft = Index([np.nan, np.inf, np.inf, np.inf,
+                       np.inf], dtype=np.float64)
+        exright = Index([np.nan, np.nan, np.nan, np.nan,
+                        np.nan], dtype=np.float64)
         exleft = adjust_negative_zero(zero, exleft)
 
         result = divmod(idx, zero)
@@ -419,10 +427,12 @@ class TestDivisionByZero:
     def test_div_negative_zero(self, zero, numeric_idx, op):
         # Check that -1 / -0.0 returns np.inf, not -np.inf
         if numeric_idx.dtype == np.uint64:
-            pytest.skip(f"Div by negative 0 not relevant for {numeric_idx.dtype}")
+            pytest.skip(
+                f"Div by negative 0 not relevant for {numeric_idx.dtype}")
         idx = numeric_idx - 3
 
-        expected = Index([-np.inf, -np.inf, -np.inf, np.nan, np.inf], dtype=np.float64)
+        expected = Index([-np.inf, -np.inf, -np.inf,
+                         np.nan, np.inf], dtype=np.float64)
         expected = adjust_negative_zero(zero, expected)
 
         result = op(idx, zero)
@@ -603,7 +613,8 @@ class TestDivisionByZero:
 
         # GH#38939 If we dont pass copy=False, df is consolidated and
         #  result["first"] is float64 instead of int64
-        df = pd.DataFrame({"first": [3, 4, 5, 8], "second": [0, 0, 0, 3]}, copy=False)
+        df = pd.DataFrame(
+            {"first": [3, 4, 5, 8], "second": [0, 0, 0, 3]}, copy=False)
         first = Series([0, 0, 0, 0], dtype="int64")
         second = Series([np.nan, np.nan, np.nan, 0])
         expected = pd.DataFrame({"first": first, "second": second})
@@ -623,7 +634,8 @@ class TestDivisionByZero:
         # numpy has a slightly different (wrong) treatment
         with np.errstate(all="ignore"):
             arr = df.values % df.values
-        result2 = pd.DataFrame(arr, index=df.index, columns=df.columns, dtype="float64")
+        result2 = pd.DataFrame(arr, index=df.index,
+                               columns=df.columns, dtype="float64")
         result2.iloc[0:3, 1] = np.nan
         tm.assert_frame_equal(result2, expected)
 
@@ -813,7 +825,8 @@ class TestMultiplicationDivision:
     @pytest.mark.parametrize("other", [np.nan, 7, -23, 2.718, -3.14, np.inf])
     def test_ops_np_scalar(self, other):
         vals = np.random.default_rng(2).standard_normal((5, 3))
-        f = lambda x: pd.DataFrame(
+
+        def f(x): return pd.DataFrame(
             x, index=list("ABCDE"), columns=["jim", "joe", "jolie"]
         )
 
@@ -848,7 +861,8 @@ class TestMultiplicationDivision:
             # GH#3590, modulo as ints
             p = pd.DataFrame({"first": [3, 4, 5, 8], "second": [0, 0, 0, 3]})
             result = p["first"] % p["second"]
-            expected = Series(p["first"].values % p["second"].values, dtype="float64")
+            expected = Series(p["first"].values %
+                              p["second"].values, dtype="float64")
             expected.iloc[0:3] = np.nan
             tm.assert_series_equal(result, expected)
 
@@ -890,7 +904,8 @@ class TestAdditionSubtraction:
             (
                 Series([1, 2, 3], index=list("ABC"), name="x"),
                 Series([2, 2, 2], index=list("ABD"), name="x"),
-                Series([3.0, 4.0, np.nan, np.nan], index=list("ABCD"), name="x"),
+                Series([3.0, 4.0, np.nan, np.nan],
+                       index=list("ABCD"), name="x"),
             ),
             (
                 Series([1, 2, 3], index=list("ABC"), name="x"),
@@ -910,7 +925,8 @@ class TestAdditionSubtraction:
             (
                 pd.DataFrame({"x": [1, 2, 3]}, index=list("ABC")),
                 pd.DataFrame({"x": [2, 2, 2]}, index=list("ABD")),
-                pd.DataFrame({"x": [3.0, 4.0, np.nan, np.nan]}, index=list("ABCD")),
+                pd.DataFrame(
+                    {"x": [3.0, 4.0, np.nan, np.nan]}, index=list("ABCD")),
             ),
             (
                 pd.DataFrame({"x": [1, 2, 3]}, index=list("ABC")),
@@ -1024,7 +1040,8 @@ class TestAdditionSubtraction:
 
     def test_frame_operators_none_to_nan(self):
         df = pd.DataFrame({"a": ["a", None, "b"]})
-        tm.assert_frame_equal(df + df, pd.DataFrame({"a": ["aa", np.nan, "bb"]}))
+        tm.assert_frame_equal(
+            df + df, pd.DataFrame({"a": ["aa", np.nan, "bb"]}))
 
     @pytest.mark.parametrize("dtype", ("float", "int64"))
     def test_frame_operators_empty_like(self, dtype):
@@ -1147,7 +1164,8 @@ class TestUFuncCompat:
 
         result = np.sqrt(idx)
         assert result.dtype == "f8" and isinstance(result, box)
-        exp = Index(np.sqrt(np.array([1, 2, 3, 4, 5], dtype=np.float64)), name="x")
+        exp = Index(
+            np.sqrt(np.array([1, 2, 3, 4, 5], dtype=np.float64)), name="x")
         exp = tm.box_expected(exp, box)
         tm.assert_equal(result, exp)
 
@@ -1239,7 +1257,8 @@ class TestObjectDtypeEquivalence:
     # TODO: moved from tests.series.test_operators; needs cleanup
     @pytest.mark.parametrize(
         "op",
-        [operator.add, operator.sub, operator.mul, operator.truediv, operator.floordiv],
+        [operator.add, operator.sub, operator.mul,
+            operator.truediv, operator.floordiv],
     )
     def test_operators_reverse_object(self, op):
         # GH#56

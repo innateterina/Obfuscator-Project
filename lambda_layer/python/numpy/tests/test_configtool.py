@@ -22,15 +22,18 @@ def check_numpyconfig(arg):
     p.check_returncode()
     return p.stdout.strip()
 
+
 @pytest.mark.skipif(IS_WASM, reason="wasm interpreter cannot start subprocess")
 def test_configtool_version():
     stdout = check_numpyconfig('--version')
     assert stdout == np.__version__
 
+
 @pytest.mark.skipif(IS_WASM, reason="wasm interpreter cannot start subprocess")
 def test_configtool_cflags():
     stdout = check_numpyconfig('--cflags')
     assert stdout.endswith(os.path.join('numpy', '_core', 'include'))
+
 
 @pytest.mark.skipif(IS_WASM, reason="wasm interpreter cannot start subprocess")
 def test_configtool_pkgconfigdir():

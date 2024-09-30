@@ -410,7 +410,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
             else:
                 npoints = sparse_index.length
 
-            data = construct_1d_arraylike_from_scalar(data, npoints, dtype=None)
+            data = construct_1d_arraylike_from_scalar(
+                data, npoints, dtype=None)
             dtype = data.dtype
 
         if dtype is not None:
@@ -484,7 +485,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
         else:
             # error: Argument "dtype" to "asarray" has incompatible type
             # "Union[ExtensionDtype, dtype[Any], None]"; expected "None"
-            sparse_values = np.asarray(data, dtype=dtype)  # type: ignore[arg-type]
+            # type: ignore[arg-type]
+            sparse_values = np.asarray(data, dtype=dtype)
             if len(sparse_values) != sparse_index.npoints:
                 raise AssertionError(
                     f"Non array-like type {type(sparse_values)} must "
@@ -815,7 +817,7 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
             a = empty
             b = arr[:-periods]
         else:
-            a = arr[abs(periods) :]
+            a = arr[abs(periods):]
             b = empty
         return arr._concat_same_type([a, b])
 
@@ -899,10 +901,12 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
             Series,
         )
 
-        keys, counts, _ = algos.value_counts_arraylike(self.sp_values, dropna=dropna)
+        keys, counts, _ = algos.value_counts_arraylike(
+            self.sp_values, dropna=dropna)
         fcounts = self.sp_index.ngaps
         if fcounts > 0 and (not self._null_fill_value or not dropna):
-            mask = isna(keys) if self._null_fill_value else keys == self.fill_value
+            mask = isna(
+                keys) if self._null_fill_value else keys == self.fill_value
             if mask.any():
                 counts[mask] += fcounts
             else:
@@ -912,7 +916,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                 # [Any]]], Sequence[Sequence[_SupportsArray[dtype[Any]]]],
                 # Sequence[Sequence[Sequence[_SupportsArray[dtype[Any]]]]], Sequence
                 # [Sequence[Sequence[Sequence[_SupportsArray[dtype[Any]]]]]]]"
-                keys = np.insert(keys, 0, self.fill_value)  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                keys = np.insert(keys, 0, self.fill_value)
                 counts = np.insert(counts, 0, fcounts)
 
         if not isinstance(keys, ABCIndex):
@@ -969,7 +974,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                     end += len(self)
 
                 indices = self.sp_index.indices
-                keep_inds = np.flatnonzero((indices >= start) & (indices < end))
+                keep_inds = np.flatnonzero(
+                    (indices >= start) & (indices < end))
                 sp_vals = self.sp_values[keep_inds]
 
                 sp_index = indices[keep_inds].copy()
@@ -1042,7 +1048,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
 
     def take(self, indices, *, allow_fill: bool = False, fill_value=None) -> Self:
         if is_scalar(indices):
-            raise ValueError(f"'indices' must be an array, not a scalar '{indices}'.")
+            raise ValueError(
+                f"'indices' must be an array, not a scalar '{indices}'.")
         indices = np.asarray(indices, dtype=np.int32)
 
         dtype = None
@@ -1079,7 +1086,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                 taken.fill(fill_value)
                 return taken
             else:
-                raise IndexError("cannot do a non-empty take from an empty axes.")
+                raise IndexError(
+                    "cannot do a non-empty take from an empty axes.")
 
         # sp_indexer may be -1 for two reasons
         # 1.) we took for an index of -1 (new)
@@ -1097,7 +1105,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
         elif self.sp_index.npoints == 0:
             # Use the old fill_value unless we took for an index of -1
             _dtype = np.result_type(self.dtype.subtype, type(fill_value))
-            taken = np.full(sp_indexer.shape, fill_value=fill_value, dtype=_dtype)
+            taken = np.full(sp_indexer.shape,
+                            fill_value=fill_value, dtype=_dtype)
             taken[old_fill_indices] = self.fill_value
         else:
             taken = self.sp_values.take(sp_indexer)
@@ -1113,7 +1122,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
             result_type = taken.dtype
 
             if m0.any():
-                result_type = np.result_type(result_type, type(self.fill_value))
+                result_type = np.result_type(
+                    result_type, type(self.fill_value))
                 taken = taken.astype(result_type)
                 taken[old_fill_indices] = self.fill_value
 
@@ -1131,7 +1141,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
 
         if (indices.max() >= n) or (indices.min() < -n):
             if n == 0:
-                raise IndexError("cannot do a non-empty take from an empty axes.")
+                raise IndexError(
+                    "cannot do a non-empty take from an empty axes.")
             raise IndexError("out of bounds value in 'indices'.")
 
         if to_shift.any():
@@ -1144,7 +1155,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
 
         value_indices = np.flatnonzero(value_mask).astype(np.int32, copy=False)
 
-        new_sp_index = make_sparse_index(len(indices), value_indices, kind=self.kind)
+        new_sp_index = make_sparse_index(
+            len(indices), value_indices, kind=self.kind)
         return type(self)._simple_new(new_sp_values, new_sp_index, dtype=self.dtype)
 
     def searchsorted(
@@ -1342,7 +1354,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
         fill_val = self.fill_value
 
         if na_action is None or notna(fill_val):
-            fill_val = mapper.get(fill_val, fill_val) if is_map else mapper(fill_val)
+            fill_val = mapper.get(
+                fill_val, fill_val) if is_map else mapper(fill_val)
 
         def func(sp_val):
             new_sp_val = mapper.get(sp_val, None) if is_map else mapper(sp_val)
@@ -1370,7 +1383,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
         # NB: may not preserve dtype, e.g. result may be Sparse[float64]
         #  while self is Sparse[int64]
         naive_implementation = np.where(mask, self, value)
-        dtype = SparseDtype(naive_implementation.dtype, fill_value=self.fill_value)
+        dtype = SparseDtype(naive_implementation.dtype,
+                            fill_value=self.fill_value)
         result = type(self)._from_sequence(naive_implementation, dtype=dtype)
         return result
 
@@ -1711,7 +1725,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                 # multiple outputs. e.g. modf
                 arrays = tuple(
                     self._simple_new(
-                        sp_value, self.sp_index, SparseDtype(sp_value.dtype, fv)
+                        sp_value, self.sp_index, SparseDtype(
+                            sp_value.dtype, fv)
                     )
                     for sp_value, fv in zip(sp_values, fill_value)
                 )
@@ -1721,7 +1736,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                 return sp_values
 
             return self._simple_new(
-                sp_values, self.sp_index, SparseDtype(sp_values.dtype, fill_value)
+                sp_values, self.sp_index, SparseDtype(
+                    sp_values.dtype, fill_value)
             )
 
         new_inputs = tuple(np.asarray(x) for x in inputs)
@@ -1773,7 +1789,8 @@ class SparseArray(OpsMixin, PandasObject, ExtensionArray):
                     )
                 if not isinstance(other, SparseArray):
                     dtype = getattr(other, "dtype", None)
-                    other = SparseArray(other, fill_value=self.fill_value, dtype=dtype)
+                    other = SparseArray(
+                        other, fill_value=self.fill_value, dtype=dtype)
                 return _sparse_array_op(self, other, op, op_name)
 
     def _cmp_method(self, other, op) -> SparseArray:

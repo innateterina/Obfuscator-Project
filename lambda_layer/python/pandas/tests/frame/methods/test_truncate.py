@@ -69,7 +69,8 @@ class TestDataFrameTruncate:
     def test_truncate_nonsortedindex(self, frame_or_series):
         # GH#17935
 
-        obj = DataFrame({"A": ["a", "b", "c", "d", "e"]}, index=[5, 3, 2, 9, 0])
+        obj = DataFrame({"A": ["a", "b", "c", "d", "e"]},
+                        index=[5, 3, 2, 9, 0])
         obj = tm.get_obj(obj, frame_or_series)
 
         msg = "truncate requires a sorted index"
@@ -129,14 +130,16 @@ class TestDataFrameTruncate:
 
     def test_truncate_multiindex(self, frame_or_series):
         # GH 34564
-        mi = pd.MultiIndex.from_product([[1, 2, 3, 4], ["A", "B"]], names=["L1", "L2"])
+        mi = pd.MultiIndex.from_product(
+            [[1, 2, 3, 4], ["A", "B"]], names=["L1", "L2"])
         s1 = DataFrame(range(mi.shape[0]), index=mi, columns=["col"])
         s1 = tm.get_obj(s1, frame_or_series)
 
         result = s1.truncate(before=2, after=3)
 
         df = DataFrame.from_dict(
-            {"L1": [2, 2, 3, 3], "L2": ["A", "B", "A", "B"], "col": [2, 3, 4, 5]}
+            {"L1": [2, 2, 3, 3], "L2": [
+                "A", "B", "A", "B"], "col": [2, 3, 4, 5]}
         )
         expected = df.set_index(["L1", "L2"])
         expected = tm.get_obj(expected, frame_or_series)

@@ -3222,7 +3222,8 @@ def test_list_element():
 
 
 def test_count_distinct():
-    samples = [datetime.datetime(year=y, month=1, day=1) for y in range(1992, 2092)]
+    samples = [datetime.datetime(year=y, month=1, day=1)
+               for y in range(1992, 2092)]
     arr = pa.array(samples, pa.timestamp("ns"))
     assert pc.count_distinct(arr) == pa.scalar(len(samples), type=pa.int64())
 

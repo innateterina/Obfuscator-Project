@@ -13,17 +13,19 @@ from numpy.ma.testutils import assert_equal
 from numpy.ma.core import (
     array, arange, masked, MaskedArray, masked_array, log, add, hypot,
     divide, asarray, asanyarray, nomask
-    )
+)
 # from numpy.ma.core import (
+
 
 def assert_startswith(a, b):
     # produces a better error message than assert_(a.startswith(b))
     assert_equal(a[:len(b)], b)
 
+
 class SubArray(np.ndarray):
     # Defines a generic np.ndarray subclass, that stores some metadata
     # in the  dictionary `info`.
-    def __new__(cls,arr,info={}):
+    def __new__(cls, arr, info={}):
         x = np.asanyarray(arr).view(cls)
         x.info = info.copy()
         return x
@@ -69,6 +71,7 @@ class MSubArray(SubArray, MaskedArray):
         _view._sharedmask = False
         return _view
 
+
 msubarray = MSubArray
 
 
@@ -84,6 +87,7 @@ class CSAIterator:
     see https://github.com/numpy/numpy/issues/4564)
     roughly following MaskedIterator
     """
+
     def __init__(self, a):
         self._original = a
         self._dataiter = a.view(np.ndarray).flat
@@ -255,7 +259,7 @@ class TestSubclassing:
         ym._series._set_mask([0, 0, 0, 0, 1])
         assert_equal(ym._mask, [0, 0, 0, 0, 1])
         #
-        xsub = subarray(x, info={'name':'x'})
+        xsub = subarray(x, info={'name': 'x'})
         mxsub = masked_array(xsub)
         assert_(hasattr(mxsub, 'info'))
         assert_equal(mxsub.info, xsub.info)
@@ -265,7 +269,7 @@ class TestSubclassing:
         x = np.arange(5)
         m = [0, 0, 1, 0, 0]
         xinfo = [(i, j) for (i, j) in zip(x, m)]
-        xsub = MSubArray(x, mask=m, info={'xsub':xinfo})
+        xsub = MSubArray(x, mask=m, info={'xsub': xinfo})
         #
         mxsub = masked_array(xsub, subok=False)
         assert_(not isinstance(mxsub, MSubArray))
@@ -295,14 +299,14 @@ class TestSubclassing:
         # getter should  return a ComplicatedSubArray, even for single item
         # first check we wrote ComplicatedSubArray correctly
         assert_(isinstance(xcsub[1], ComplicatedSubArray))
-        assert_(isinstance(xcsub[1,...], ComplicatedSubArray))
+        assert_(isinstance(xcsub[1, ...], ComplicatedSubArray))
         assert_(isinstance(xcsub[1:4], ComplicatedSubArray))
 
         # now that it propagates inside the MaskedArray
         assert_(isinstance(mxcsub[1], ComplicatedSubArray))
-        assert_(isinstance(mxcsub[1,...].data, ComplicatedSubArray))
+        assert_(isinstance(mxcsub[1, ...].data, ComplicatedSubArray))
         assert_(mxcsub[0] is masked)
-        assert_(isinstance(mxcsub[0,...].data, ComplicatedSubArray))
+        assert_(isinstance(mxcsub[0, ...].data, ComplicatedSubArray))
         assert_(isinstance(mxcsub[1:4].data, ComplicatedSubArray))
 
         # also for flattened version (which goes via MaskedIterator)
@@ -329,8 +333,8 @@ class TestSubclassing:
         xcsub = ComplicatedSubArray(x)
         mxcsub_nomask = masked_array(xcsub)
 
-        assert_(isinstance(mxcsub_nomask[1,...].data, ComplicatedSubArray))
-        assert_(isinstance(mxcsub_nomask[0,...].data, ComplicatedSubArray))
+        assert_(isinstance(mxcsub_nomask[1, ...].data, ComplicatedSubArray))
+        assert_(isinstance(mxcsub_nomask[0, ...].data, ComplicatedSubArray))
 
         assert_(isinstance(mxcsub_nomask[1], ComplicatedSubArray))
         assert_(isinstance(mxcsub_nomask[0], ComplicatedSubArray))
@@ -344,7 +348,7 @@ class TestSubclassing:
         xsub = SubArray(x)
         mxsub = masked_array(xsub, mask=[True, False, True, False, False])
         assert_startswith(repr(mxsub),
-            f'masked_{SubArray.__name__}(data=[--, 1, --, 3, 4]')
+                          f'masked_{SubArray.__name__}(data=[--, 1, --, 3, 4]')
 
     def test_subclass_str(self):
         """test str with subclass that has overridden str, setitem"""
@@ -363,8 +367,8 @@ class TestSubclassing:
     def test_pure_subclass_info_preservation(self):
         # Test that ufuncs and methods conserve extra information consistently;
         # see gh-7122.
-        arr1 = SubMaskedArray('test', data=[1,2,3,4,5,6])
-        arr2 = SubMaskedArray(data=[0,1,2,3,4,5])
+        arr1 = SubMaskedArray('test', data=[1, 2, 3, 4, 5, 6])
+        arr2 = SubMaskedArray(data=[0, 1, 2, 3, 4, 5])
         diff1 = np.subtract(arr1, arr2)
         assert_('info' in diff1._optinfo)
         assert_(diff1._optinfo['info'] == 'test')
@@ -375,6 +379,7 @@ class TestSubclassing:
 
 class ArrayNoInheritance:
     """Quantity-like class that does not inherit from ndarray"""
+
     def __init__(self, data, units):
         self.magnitude = data
         self.units = units

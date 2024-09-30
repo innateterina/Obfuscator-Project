@@ -25,8 +25,10 @@ class TestDataFrameAlign:
     def test_frame_align_aware(self):
         idx1 = date_range("2001", periods=5, freq="h", tz="US/Eastern")
         idx2 = date_range("2001", periods=5, freq="2h", tz="US/Eastern")
-        df1 = DataFrame(np.random.default_rng(2).standard_normal((len(idx1), 3)), idx1)
-        df2 = DataFrame(np.random.default_rng(2).standard_normal((len(idx2), 3)), idx2)
+        df1 = DataFrame(np.random.default_rng(
+            2).standard_normal((len(idx1), 3)), idx1)
+        df2 = DataFrame(np.random.default_rng(
+            2).standard_normal((len(idx2), 3)), idx2)
         new1, new2 = df1.align(df2)
         assert df1.index.tz == new1.index.tz
         assert df2.index.tz == new2.index.tz
@@ -96,7 +98,8 @@ class TestDataFrameAlign:
             "are deprecated"
         )
         with tm.assert_produces_warning(FutureWarning, match=msg):
-            af, bf = float_frame.align(other, join="inner", axis=1, method="pad")
+            af, bf = float_frame.align(
+                other, join="inner", axis=1, method="pad")
         tm.assert_index_equal(bf.columns, other.columns)
 
         msg = (
@@ -334,7 +337,8 @@ class TestDataFrameAlign:
         foo_index = Index([1, 2, 3], name="foo")
         bar_index = Index([1, 2, 3, 4], name="bar")
 
-        series = Series([1, 2], index=Index([1, 2], name="bar"), name="foo_series")
+        series = Series([1, 2], index=Index(
+            [1, 2], name="bar"), name="foo_series")
         df = DataFrame(
             {"col": np.arange(12)},
             index=pd.MultiIndex.from_product([foo_index, bar_index]),
@@ -361,7 +365,8 @@ class TestDataFrameAlign:
             index=pd.MultiIndex.from_product([foo_index, bar_index]),
         )
 
-        expected_r = Series([1, np.nan, 3] * 3, index=df.index, name="foo_series")
+        expected_r = Series([1, np.nan, 3] * 3,
+                            index=df.index, name="foo_series")
         result_l, result_r = df.align(series, axis=0)
 
         tm.assert_frame_equal(result_l, df)

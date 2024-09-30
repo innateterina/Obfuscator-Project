@@ -155,7 +155,8 @@ def arrays_to_mgr(
     elif typ == "array":
         return ArrayManager(arrays, [index, columns])
     else:
-        raise ValueError(f"'typ' needs to be one of {{'block', 'array'}}, got '{typ}'")
+        raise ValueError(
+            f"'typ' needs to be one of {{'block', 'array'}}, got '{typ}'")
 
 
 def rec_array_to_mgr(
@@ -182,7 +183,8 @@ def rec_array_to_mgr(
 
     # create the manager
 
-    arrays, arr_columns = reorder_arrays(arrays, arr_columns, columns, len(index))
+    arrays, arr_columns = reorder_arrays(
+        arrays, arr_columns, columns, len(index))
     if columns is None:
         columns = arr_columns
 
@@ -210,7 +212,8 @@ def mgr_to_mgr(mgr, typ: str, copy: bool = True) -> Manager:
                     mgr.arrays, mgr.axes[0], mgr.axes[1], typ="block"
                 )
             else:
-                new_mgr = SingleBlockManager.from_array(mgr.arrays[0], mgr.index)
+                new_mgr = SingleBlockManager.from_array(
+                    mgr.arrays[0], mgr.index)
     elif typ == "array":
         if isinstance(mgr, ArrayManager):
             new_mgr = mgr
@@ -226,7 +229,8 @@ def mgr_to_mgr(mgr, typ: str, copy: bool = True) -> Manager:
                     array = array.copy()
                 new_mgr = SingleArrayManager([array], [mgr.index])
     else:
-        raise ValueError(f"'typ' needs to be one of {{'block', 'array'}}, got '{typ}'")
+        raise ValueError(
+            f"'typ' needs to be one of {{'block', 'array'}}, got '{typ}'")
     return new_mgr
 
 
@@ -366,7 +370,8 @@ def ndarray_to_mgr(
         maybe_datetime = [maybe_infer_to_datetimelike(x) for x in obj_columns]
         # don't convert (and copy) the objects if no type inference occurs
         if any(x is not y for x, y in zip(obj_columns, maybe_datetime)):
-            dvals_list = [ensure_block_shape(dval, 2) for dval in maybe_datetime]
+            dvals_list = [ensure_block_shape(dval, 2)
+                          for dval in maybe_datetime]
             block_values = [
                 new_block_2d(dvals_list[n], placement=BlockPlacement(n))
                 for n in range(len(dvals_list))
@@ -417,7 +422,8 @@ def _check_values_indices_shape_match(
 
         passed = values.shape
         implied = (len(index), len(columns))
-        raise ValueError(f"Shape of passed values is {passed}, indices imply {implied}")
+        raise ValueError(
+            f"Shape of passed values is {passed}, indices imply {implied}")
 
 
 def dict_to_mgr(
@@ -463,7 +469,8 @@ def dict_to_mgr(
             else:
                 # GH#1783
                 nan_dtype = np.dtype("object")
-                val = construct_1d_arraylike_from_scalar(np.nan, len(index), nan_dtype)
+                val = construct_1d_arraylike_from_scalar(
+                    np.nan, len(index), nan_dtype)
                 nmissing = missing.sum()
                 if copy:
                     rhs = [val] * nmissing
@@ -865,7 +872,8 @@ def _list_of_series_to_arrays(
 
     if columns is None:
         # We know pass_data is non-empty because data[0] is a Series
-        pass_data = [x for x in data if isinstance(x, (ABCSeries, ABCDataFrame))]
+        pass_data = [x for x in data if isinstance(
+            x, (ABCSeries, ABCDataFrame))]
         columns = get_objs_combined_axis(pass_data, sort=False)
 
     indexer_cache: dict[int, np.ndarray] = {}

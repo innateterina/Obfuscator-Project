@@ -48,7 +48,8 @@ del M29, M30, M31, M365MASK[59], MDAY365MASK[59], NMDAY365MASK[31]
 MDAY365MASK = tuple(MDAY365MASK)
 M365MASK = tuple(M365MASK)
 
-FREQNAMES = ['YEARLY', 'MONTHLY', 'WEEKLY', 'DAILY', 'HOURLY', 'MINUTELY', 'SECONDLY']
+FREQNAMES = ['YEARLY', 'MONTHLY', 'WEEKLY',
+             'DAILY', 'HOURLY', 'MINUTELY', 'SECONDLY']
 
 (YEARLY,
  MONTHLY,
@@ -67,6 +68,7 @@ class weekday(weekdaybase):
     """
     This version of weekday does not allow n = 0.
     """
+
     def __init__(self, wkday, n=None):
         if n == 0:
             raise ValueError("Can't create weekday with n==0")
@@ -253,9 +255,9 @@ class rrulebase(object):
 
         # Select the comparison function
         if inc:
-            comp = lambda dc, dtc: dc >= dtc
+            def comp(dc, dtc): return dc >= dtc
         else:
-            comp = lambda dc, dtc: dc > dtc
+            def comp(dc, dtc): return dc > dtc
 
         # Generate dates
         n = 0
@@ -425,6 +427,7 @@ class rrule(rrulebase):
         caching of results. If you will use the same rrule instance multiple
         times, enabling caching will improve the performance considerably.
      """
+
     def __init__(self, freq, dtstart=None,
                  interval=1, wkst=None, count=None, until=None, bysetpos=None,
                  bymonth=None, bymonthday=None, byyearday=None, byeaster=None,
@@ -435,7 +438,8 @@ class rrule(rrulebase):
         global easter
         if not dtstart:
             if until and until.tzinfo:
-                dtstart = datetime.datetime.now(tz=until.tzinfo).replace(microsecond=0)
+                dtstart = datetime.datetime.now(
+                    tz=until.tzinfo).replace(microsecond=0)
             else:
                 dtstart = datetime.datetime.now().replace(microsecond=0)
         elif not isinstance(dtstart, datetime.datetime):
@@ -768,7 +772,7 @@ class rrule(rrulebase):
                       "freq": self._freq,
                       "until": self._until,
                       "wkst": self._wkst,
-                      "cache": False if self._cache is None else True }
+                      "cache": False if self._cache is None else True}
         new_kwargs.update(self._original_rule)
         new_kwargs.update(kwargs)
         return rrule(**new_kwargs)
@@ -1413,8 +1417,6 @@ class rruleset(rrulebase):
         self._len = total
 
 
-
-
 class _rrulestr(object):
     """ Parses a string representation of a recurrence rule or set of
     recurrence rules.
@@ -1607,7 +1609,8 @@ class _rrulestr(object):
                 if date.tzinfo is None:
                     date = date.replace(tzinfo=TZID)
                 else:
-                    raise ValueError('DTSTART/EXDATE specifies multiple timezone')
+                    raise ValueError(
+                        'DTSTART/EXDATE specifies multiple timezone')
             datevals.append(date)
 
         return datevals

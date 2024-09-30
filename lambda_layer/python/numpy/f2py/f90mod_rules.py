@@ -8,20 +8,19 @@ terms of the NumPy License.
 
 NO WARRANTY IS EXPRESSED OR IMPLIED.  USE AT YOUR OWN RISK.
 """
+from .auxfuncs import *
+from .crackfortran import undo_rmbadname, undo_rmbadname1
+from . import func2subr
+from . import capi_maps
+import numpy as np
 __version__ = "$Revision: 1.27 $"[10:-1]
 
 f2py_version = 'See `f2py -v`'
 
-import numpy as np
-
-from . import capi_maps
-from . import func2subr
-from .crackfortran import undo_rmbadname, undo_rmbadname1
 
 # The environment provided by auxfuncs.py is needed for some calls to eval.
 # As the needed functions cannot be determined by static inspection of the
 # code, it is safest to use import * pending a major refactoring of f2py.
-from .auxfuncs import *
 
 options = {}
 
@@ -38,6 +37,7 @@ def findf90modules(m):
         else:
             ret = ret + findf90modules(b)
     return ret
+
 
 fgetdims1 = """\
       external f2pysetdata
@@ -117,7 +117,8 @@ def buildhooks(pymod):
         outmess('\t\tConstructing F90 module support for "%s"...\n' %
                 (m['name']))
         if len(onlyvars) == 0 and len(notvars) == 1 and m['name'] in notvars:
-            outmess(f"\t\t\tSkipping {m['name']} since there are no public vars/func in this module...\n")
+            outmess(
+                f"\t\t\tSkipping {m['name']} since there are no public vars/func in this module...\n")
             continue
 
         if m['name'] in usenames and not contains_functions_or_subroutines:
@@ -170,7 +171,8 @@ def buildhooks(pymod):
                 efargs.append(fargs[-1])
                 sargs.append(
                     'void (*%s)(int*,npy_intp*,void(*)(char*,npy_intp*),int*)' % (n))
-                sargsp.append('void (*)(int*,npy_intp*,void(*)(char*,npy_intp*),int*)')
+                sargsp.append(
+                    'void (*)(int*,npy_intp*,void(*)(char*,npy_intp*),int*)')
                 iadd('\tf2py_%s_def[i_f2py++].func = %s;' % (m['name'], n))
                 fadd('subroutine %s(r,s,f2pysetdata,flag)' % (fargs[-1]))
                 fadd('use %s, only: d => %s\n' %

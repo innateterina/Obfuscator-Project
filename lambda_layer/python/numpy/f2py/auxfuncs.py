@@ -117,7 +117,7 @@ def isscalar(var):
 
 def iscomplex(var):
     return isscalar(var) and \
-           var.get('typespec') in ['complex', 'double complex']
+        var.get('typespec') in ['complex', 'double complex']
 
 
 def islogical(var):
@@ -211,7 +211,7 @@ def islong_complex(var):
 
 def iscomplexarray(var):
     return isarray(var) and \
-           var.get('typespec') in ['complex', 'double complex']
+        var.get('typespec') in ['complex', 'double complex']
 
 
 def isint1array(var):
@@ -293,6 +293,7 @@ def issubroutine_wrap(rout):
     if isintent_c(rout):
         return 0
     return issubroutine(rout) and hasassumedshape(rout)
+
 
 def isattr_value(var):
     return 'value' in var.get('attrspec', [])
@@ -526,6 +527,7 @@ def isvariable(var):
         is_var = True
     return is_var
 
+
 def hasinitvalue(var):
     return '=' in var
 
@@ -710,8 +712,8 @@ def getcallprotoargument(rout, cb_map={}):
                 if not isattr_value(var):
                     ctype = ctype + '*'
             if (isstring(var)
-                 or isarrayofstrings(var)  # obsolete?
-                 or isstringarray(var)):
+                or isarrayofstrings(var)  # obsolete?
+                    or isstringarray(var)):
                 arg_types2.append('size_t')
         arg_types.append(ctype)
 
@@ -901,10 +903,12 @@ def applyrules(rules, d, var={}):
                 del ret[k]
     return ret
 
+
 _f2py_module_name_match = re.compile(r'\s*python\s*module\s*(?P<name>[\w_]+)',
                                      re.I).match
 _f2py_user_module_name_match = re.compile(r'\s*python\s*module\s*(?P<name>[\w_]*?'
                                           r'__user__[\w_]*)', re.I).match
+
 
 def get_f2py_modulename(source):
     name = None
@@ -912,21 +916,24 @@ def get_f2py_modulename(source):
         for line in f:
             m = _f2py_module_name_match(line)
             if m:
-                if _f2py_user_module_name_match(line): # skip *__user__* names
+                if _f2py_user_module_name_match(line):  # skip *__user__* names
                     continue
                 name = m.group('name')
                 break
     return name
+
 
 def getuseblocks(pymod):
     all_uses = []
     for inner in pymod['body']:
         for modblock in inner['body']:
             if modblock.get('use'):
-                all_uses.extend([x for x in modblock.get("use").keys() if "__" not in x])
+                all_uses.extend(
+                    [x for x in modblock.get("use").keys() if "__" not in x])
     return all_uses
 
-def process_f2cmap_dict(f2cmap_all, new_map, c2py_map, verbose = False):
+
+def process_f2cmap_dict(f2cmap_all, new_map, c2py_map, verbose=False):
     """
     Update the Fortran-to-C type mapping dictionary with new mappings and
     return a list of successfully mapped C types.

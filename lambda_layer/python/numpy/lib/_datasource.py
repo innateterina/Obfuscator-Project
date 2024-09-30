@@ -60,7 +60,8 @@ def _check_mode(mode, encoding, newline):
             raise ValueError("Invalid mode: %r" % (mode,))
     else:
         if encoding is not None:
-            raise ValueError("Argument 'encoding' not supported in binary mode")
+            raise ValueError(
+                "Argument 'encoding' not supported in binary mode")
         if newline is not None:
             raise ValueError("Argument 'newline' not supported in binary mode")
 
@@ -149,7 +150,9 @@ class _FileOpeners:
         self._load()
         return self._file_openers[key]
 
+
 _file_openers = _FileOpeners()
+
 
 def open(path, mode='r', destpath=os.curdir, encoding=None, newline=None):
     """
@@ -474,7 +477,7 @@ class DataSource:
             try:
                 netfile = urlopen(path)
                 netfile.close()
-                del(netfile)
+                del (netfile)
                 return True
             except URLError:
                 return False
@@ -695,6 +698,6 @@ class Repository (DataSource):
         """
         if self._isurl(self._baseurl):
             raise NotImplementedError(
-                  "Directory listing of URLs, not supported yet.")
+                "Directory listing of URLs, not supported yet.")
         else:
             return os.listdir(self._baseurl)

@@ -243,7 +243,8 @@ def test_object_series_ok():
     arr = np.array([Dummy(0), Dummy(1)])
     ser = pd.Series(arr)
     tm.assert_series_equal(np.add(ser, ser), pd.Series(np.add(ser, arr)))
-    tm.assert_series_equal(np.add(ser, Dummy(1)), pd.Series(np.add(ser, Dummy(1))))
+    tm.assert_series_equal(np.add(ser, Dummy(1)),
+                           pd.Series(np.add(ser, Dummy(1))))
 
 
 @pytest.fixture(
@@ -256,7 +257,8 @@ def test_object_series_ok():
         pd.to_datetime(["2000", "2010", "2001"]).tz_localize("CET"),
         pd.to_datetime(["2000", "2010", "2001"]).to_period(freq="D"),
         pd.to_timedelta(["1 Day", "3 Days", "2 Days"]),
-        pd.IntervalIndex([pd.Interval(0, 1), pd.Interval(2, 3), pd.Interval(1, 2)]),
+        pd.IntervalIndex(
+            [pd.Interval(0, 1), pd.Interval(2, 3), pd.Interval(1, 2)]),
     ],
     ids=lambda x: str(x.dtype),
 )

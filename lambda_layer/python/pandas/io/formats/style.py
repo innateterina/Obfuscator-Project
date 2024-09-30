@@ -2,6 +2,18 @@
 Module for applying conditional formatting to DataFrames and Series.
 """
 from __future__ import annotations
+from pandas.io.formats.style_render import (
+    CSSProperties,
+    CSSStyles,
+    ExtFormatter,
+    StylerRenderer,
+    Subset,
+    Tooltips,
+    format_table_styles,
+    maybe_convert_css_to_tuples,
+    non_reducing_slice,
+    refactor_levels,
+)
 
 from contextlib import contextmanager
 import copy
@@ -41,20 +53,9 @@ from pandas.core.shared_docs import _shared_docs
 
 from pandas.io.formats.format import save_to_buffer
 
-jinja2 = import_optional_dependency("jinja2", extra="DataFrame.style requires jinja2.")
+jinja2 = import_optional_dependency(
+    "jinja2", extra="DataFrame.style requires jinja2.")
 
-from pandas.io.formats.style_render import (
-    CSSProperties,
-    CSSStyles,
-    ExtFormatter,
-    StylerRenderer,
-    Subset,
-    Tooltips,
-    format_table_styles,
-    maybe_convert_css_to_tuples,
-    non_reducing_slice,
-    refactor_levels,
-)
 
 if TYPE_CHECKING:
     from collections.abc import (
@@ -387,7 +388,8 @@ class Styler(StylerRenderer):
         if not isinstance(other, Styler):
             raise TypeError("`other` must be of type `Styler`")
         if not self.data.columns.equals(other.data.columns):
-            raise ValueError("`other.data` must have same columns as `Styler.data`")
+            raise ValueError(
+                "`other.data` must have same columns as `Styler.data`")
         if not self.data.index.nlevels == other.data.index.nlevels:
             raise ValueError(
                 "number of index levels must be same in `other` "
@@ -1069,7 +1071,8 @@ class Styler(StylerRenderer):
 
         .. figure:: ../../_static/style/latex_stocks.png
         """
-        obj = self._copy(deepcopy=True)  # manipulate table_styles on obj, not self
+        obj = self._copy(
+            deepcopy=True)  # manipulate table_styles on obj, not self
 
         table_selectors = (
             [style["selector"] for style in self.table_styles]
@@ -1126,7 +1129,8 @@ class Styler(StylerRenderer):
                 overwrite=False,
             )
 
-        hrules = get_option("styler.latex.hrules") if hrules is None else hrules
+        hrules = get_option(
+            "styler.latex.hrules") if hrules is None else hrules
         if hrules:
             obj.set_table_styles(
                 [
@@ -1139,7 +1143,8 @@ class Styler(StylerRenderer):
 
         if label:
             obj.set_table_styles(
-                [{"selector": "label", "props": f":{{{label.replace(':', '§')}}}"}],
+                [{"selector": "label",
+                    "props": f":{{{label.replace(':', '§')}}}"}],
                 overwrite=False,
             )
 
@@ -1151,8 +1156,10 @@ class Styler(StylerRenderer):
         if sparse_columns is None:
             sparse_columns = get_option("styler.sparse.columns")
         environment = environment or get_option("styler.latex.environment")
-        multicol_align = multicol_align or get_option("styler.latex.multicol_align")
-        multirow_align = multirow_align or get_option("styler.latex.multirow_align")
+        multicol_align = multicol_align or get_option(
+            "styler.latex.multicol_align")
+        multirow_align = multirow_align or get_option(
+            "styler.latex.multirow_align")
         latex = obj._render_latex(
             sparse_index=sparse_index,
             sparse_columns=sparse_columns,
@@ -1320,7 +1327,8 @@ class Styler(StylerRenderer):
             </tr>
         ...
         """
-        obj = self._copy(deepcopy=True)  # manipulate table_styles on obj, not self
+        obj = self._copy(
+            deepcopy=True)  # manipulate table_styles on obj, not self
 
         if table_uuid:
             obj.set_uuid(table_uuid)
@@ -1687,7 +1695,8 @@ class Styler(StylerRenderer):
         # create default GH 40675
         clean_copy = Styler(self.data, uuid=self.uuid)
         clean_attrs = [a for a in clean_copy.__dict__ if not callable(a)]
-        self_attrs = [a for a in self.__dict__ if not callable(a)]  # maybe more attrs
+        # maybe more attrs
+        self_attrs = [a for a in self.__dict__ if not callable(a)]
         for attr in clean_attrs:
             setattr(self, attr, getattr(clean_copy, attr))
         for attr in set(self_attrs).difference(clean_attrs):
@@ -1719,7 +1728,8 @@ class Styler(StylerRenderer):
                         f"Result has shape: {result.shape}\n"
                         f"Expected shape: {data.shape}"
                     )
-                result = DataFrame(result, index=data.index, columns=data.columns)
+                result = DataFrame(result, index=data.index,
+                                   columns=data.columns)
         else:
             axis = self.data._get_axis_number(axis)
             if axis == 0:
@@ -1744,7 +1754,8 @@ class Styler(StylerRenderer):
             f"Expected {{0}} shape:   {{2}}"
         )
         if not all(result.index.isin(data.index)):
-            raise ValueError(msg.format("index", result.index.shape, data.index.shape))
+            raise ValueError(msg.format(
+                "index", result.index.shape, data.index.shape))
         if not all(result.columns.isin(data.columns)):
             raise ValueError(
                 msg.format("columns", result.columns.shape, data.columns.shape)
@@ -1841,7 +1852,8 @@ class Styler(StylerRenderer):
         more details.
         """
         self._todo.append(
-            (lambda instance: getattr(instance, "_apply"), (func, axis, subset), kwargs)
+            (lambda instance: getattr(instance, "_apply"),
+             (func, axis, subset), kwargs)
         )
         return self
 
@@ -2254,7 +2266,8 @@ class Styler(StylerRenderer):
             if styles.get("table_attributes") is None
             else str(styles.get("table_attributes"))
         )
-        self.set_table_attributes((table_attributes + " " + obj_table_atts).strip())
+        self.set_table_attributes(
+            (table_attributes + " " + obj_table_atts).strip())
         if styles.get("table_styles"):
             self.set_table_styles(styles.get("table_styles"), overwrite=False)
 
@@ -2391,7 +2404,8 @@ class Styler(StylerRenderer):
         """
         axis = self.data._get_axis_number(axis)
         obj = self.data.index if axis == 0 else self.data.columns
-        pixel_size = (75 if axis == 0 else 25) if not pixel_size else pixel_size
+        pixel_size = (
+            75 if axis == 0 else 25) if not pixel_size else pixel_size
 
         props = "position:sticky; background-color:inherit;"
         if not isinstance(obj, pd.MultiIndex):
@@ -2435,7 +2449,8 @@ class Styler(StylerRenderer):
         else:
             # handle the MultiIndex case
             range_idx = list(range(obj.nlevels))
-            levels_: list[int] = refactor_levels(levels, obj) if levels else range_idx
+            levels_: list[int] = refactor_levels(
+                levels, obj) if levels else range_idx
             levels_ = sorted(levels_)
 
             if axis == 1:
@@ -2788,7 +2803,8 @@ class Styler(StylerRenderer):
             obj, objs, alt = "column", "columns", "columns"
 
         if level is not None and subset is not None:
-            raise ValueError("`subset` and `level` cannot be passed simultaneously")
+            raise ValueError(
+                "`subset` and `level` cannot be passed simultaneously")
 
         if subset is None:
             if level is None and names:
@@ -2804,9 +2820,11 @@ class Styler(StylerRenderer):
             )
         else:
             if axis == 0:
-                subset_ = IndexSlice[subset, :]  # new var so mypy reads not Optional
+                # new var so mypy reads not Optional
+                subset_ = IndexSlice[subset, :]
             else:
-                subset_ = IndexSlice[:, subset]  # new var so mypy reads not Optional
+                # new var so mypy reads not Optional
+                subset_ = IndexSlice[:, subset]
             subset = non_reducing_slice(subset_)
             hide = self.data.loc[subset]
             h_els = getattr(self, objs).get_indexer_for(getattr(hide, objs))
@@ -3149,9 +3167,11 @@ class Styler(StylerRenderer):
                 )
 
         if not 0 <= width <= 100:
-            raise ValueError(f"`width` must be a value in [0, 100], got {width}")
+            raise ValueError(
+                f"`width` must be a value in [0, 100], got {width}")
         if not 0 <= height <= 100:
-            raise ValueError(f"`height` must be a value in [0, 100], got {height}")
+            raise ValueError(
+                f"`height` must be a value in [0, 100], got {height}")
 
         if subset is None:
             subset = self._get_numeric_subset_default()
@@ -3600,7 +3620,8 @@ class Styler(StylerRenderer):
         Please see:
         `Table Visualization <../../user_guide/style.ipynb>`_ for more examples.
         """
-        loader = jinja2.ChoiceLoader([jinja2.FileSystemLoader(searchpath), cls.loader])
+        loader = jinja2.ChoiceLoader(
+            [jinja2.FileSystemLoader(searchpath), cls.loader])
 
         # mypy doesn't like dynamically-defined classes
         # error: Variable "cls" is not valid as a type
@@ -3808,7 +3829,8 @@ def _background_gradient(
         smax = np.nanmax(gmap) if vmax is None else vmax
         rng = smax - smin
         # extend lower / upper bounds, compresses color range
-        norm = _matplotlib.colors.Normalize(smin - (rng * low), smax + (rng * high))
+        norm = _matplotlib.colors.Normalize(
+            smin - (rng * low), smax + (rng * high))
 
         if cmap is None:
             rgbas = _matplotlib.colormaps[_matplotlib.rcParams["image.cmap"]](
@@ -4053,7 +4075,8 @@ def _bar(
                 # bars drawn from zero either leftwards or rightwards with center at mid
                 mid: float = (left + right) / 2
                 z_frac = (
-                    -mid / (right - left) + 0.5 if mid < 0 else -left / (right - left)
+                    -mid / (right - left) + 0.5 if mid < 0 else -
+                    left / (right - left)
                 )
 
             if x < 0:
@@ -4064,7 +4087,8 @@ def _bar(
         ret = css_bar(start * width, end * width, color)
         if height < 1 and "background: linear-gradient(" in ret:
             return (
-                ret + f" no-repeat center; background-size: 100% {height * 100:.1f}%;"
+                ret +
+                f" no-repeat center; background-size: 100% {height * 100:.1f}%;"
             )
         else:
             return ret
@@ -4110,11 +4134,13 @@ def _bar(
                     [_matplotlib.colors.rgb2hex(rgba) for rgba in row] for row in rgbas
                 ]
 
-    assert isinstance(align, str)  # mypy: should now be in [left, right, mid, zero]
+    # mypy: should now be in [left, right, mid, zero]
+    assert isinstance(align, str)
     if data.ndim == 1:
         return [
             css_calc(
-                x - z, left - z, right - z, align, colors if rgbas is None else rgbas[i]
+                x - z, left - z, right -
+                z, align, colors if rgbas is None else rgbas[i]
             )
             for i, x in enumerate(values)
         ]

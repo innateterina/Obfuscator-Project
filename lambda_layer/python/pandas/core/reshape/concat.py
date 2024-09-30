@@ -446,7 +446,8 @@ class _Concatenator:
 
         # figure out what our result ndim is going to be
         ndims = self._get_ndims(objs)
-        sample, objs = self._get_sample_object(objs, ndims, keys, names, levels)
+        sample, objs = self._get_sample_object(
+            objs, ndims, keys, names, levels)
 
         # Standardize axis parameter to int
         if sample.ndim == 1:
@@ -535,7 +536,8 @@ class _Concatenator:
                 keys = type(keys).from_tuples(clean_keys, names=keys.names)
             else:
                 name = getattr(keys, "name", None)
-                keys = Index(clean_keys, name=name, dtype=getattr(keys, "dtype", None))
+                keys = Index(clean_keys, name=name,
+                             dtype=getattr(keys, "dtype", None))
 
         if len(objs_list) == 0:
             raise ValueError("All objects passed were None")
@@ -564,7 +566,8 @@ class _Concatenator:
         else:
             # filter out the empties if we have not multi-index possibilities
             # note to keep empty Series as it affect to result columns / name
-            non_empties = [obj for obj in objs if sum(obj.shape) > 0 or obj.ndim == 1]
+            non_empties = [obj for obj in objs if sum(
+                obj.shape) > 0 or obj.ndim == 1]
 
             if len(non_empties) and (
                 keys is None and names is None and levels is None and not self.intersect
@@ -700,7 +703,8 @@ class _Concatenator:
     def new_axes(self) -> list[Index]:
         ndim = self._get_result_dim()
         return [
-            self._get_concat_axis if i == self.bm_axis else self._get_comb_axis(i)
+            self._get_concat_axis if i == self.bm_axis else self._get_comb_axis(
+                i)
             for i in range(ndim)
         ]
 

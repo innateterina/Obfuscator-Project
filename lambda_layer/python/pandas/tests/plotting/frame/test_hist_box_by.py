@@ -100,7 +100,8 @@ class TestHistWithBy:
         df = hist_df.copy()
         df = df.rename(columns={"C": 0})
 
-        axes = _check_plot_works(df.plot.hist, default_axes=True, column=column, by=by)
+        axes = _check_plot_works(
+            df.plot.hist, default_axes=True, column=column, by=by)
         result_titles = [ax.get_title() for ax in axes]
         result_legends = [
             [legend.get_text() for legend in ax.get_legend().texts] for ax in axes
@@ -278,7 +279,8 @@ class TestBoxWithBy:
         df = hist_df.copy()
         df = df.rename(columns={"C": 0})
 
-        axes = _check_plot_works(df.plot.box, default_axes=True, column=column, by=by)
+        axes = _check_plot_works(
+            df.plot.box, default_axes=True, column=column, by=by)
         result_titles = [ax.get_title() for ax in axes]
         result_xticklabels = [
             [label.get_text() for label in ax.get_xticklabels()] for ax in axes
@@ -300,7 +302,8 @@ class TestBoxWithBy:
         # GH 15079
         msg = "No group keys passed"
         with pytest.raises(ValueError, match=msg):
-            _check_plot_works(hist_df.plot.box, default_axes=True, column=column, by=by)
+            _check_plot_works(hist_df.plot.box,
+                              default_axes=True, column=column, by=by)
 
     @pytest.mark.slow
     @pytest.mark.parametrize(

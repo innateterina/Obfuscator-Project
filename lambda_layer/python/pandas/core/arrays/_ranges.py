@@ -157,7 +157,8 @@ def _generate_range_overflow_safe(
     remaining = periods - mid_periods
     assert 0 < remaining < periods, (remaining, periods, endpoint, stride)
 
-    midpoint = int(_generate_range_overflow_safe(endpoint, mid_periods, stride, side))
+    midpoint = int(_generate_range_overflow_safe(
+        endpoint, mid_periods, stride, side))
     return _generate_range_overflow_safe(midpoint, remaining, stride, side)
 
 

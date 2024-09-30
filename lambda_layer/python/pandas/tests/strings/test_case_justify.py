@@ -13,12 +13,14 @@ from pandas import (
 def test_title(any_string_dtype):
     s = Series(["FOO", "BAR", np.nan, "Blah", "blurg"], dtype=any_string_dtype)
     result = s.str.title()
-    expected = Series(["Foo", "Bar", np.nan, "Blah", "Blurg"], dtype=any_string_dtype)
+    expected = Series(["Foo", "Bar", np.nan, "Blah",
+                      "Blurg"], dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
 
 
 def test_title_mixed_object():
-    s = Series(["FOO", np.nan, "bar", True, datetime.today(), "blah", None, 1, 2.0])
+    s = Series(["FOO", np.nan, "bar", True,
+               datetime.today(), "blah", None, 1, 2.0])
     result = s.str.title()
     expected = Series(
         ["Foo", np.nan, "Bar", np.nan, np.nan, "Blah", None, np.nan, np.nan],
@@ -73,7 +75,8 @@ def test_capitalize(data, expected, any_string_dtype):
 
 
 def test_capitalize_mixed_object():
-    s = Series(["FOO", np.nan, "bar", True, datetime.today(), "blah", None, 1, 2.0])
+    s = Series(["FOO", np.nan, "bar", True,
+               datetime.today(), "blah", None, 1, 2.0])
     result = s.str.capitalize()
     expected = Series(
         ["Foo", np.nan, "Bar", np.nan, np.nan, "Blah", None, np.nan, np.nan],
@@ -85,12 +88,14 @@ def test_capitalize_mixed_object():
 def test_swapcase(any_string_dtype):
     s = Series(["FOO", "BAR", np.nan, "Blah", "blurg"], dtype=any_string_dtype)
     result = s.str.swapcase()
-    expected = Series(["foo", "bar", np.nan, "bLAH", "BLURG"], dtype=any_string_dtype)
+    expected = Series(["foo", "bar", np.nan, "bLAH",
+                      "BLURG"], dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
 
 
 def test_swapcase_mixed_object():
-    s = Series(["FOO", np.nan, "bar", True, datetime.today(), "Blah", None, 1, 2.0])
+    s = Series(["FOO", np.nan, "bar", True,
+               datetime.today(), "Blah", None, 1, 2.0])
     result = s.str.swapcase()
     expected = Series(
         ["foo", np.nan, "BAR", np.nan, np.nan, "bLAH", None, np.nan, np.nan],
@@ -119,7 +124,8 @@ def test_casemethods(any_string_dtype):
 
 
 def test_pad(any_string_dtype):
-    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"], dtype=any_string_dtype)
+    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"],
+               dtype=any_string_dtype)
 
     result = s.str.pad(5, side="left")
     expected = Series(
@@ -166,7 +172,8 @@ def test_pad_mixed_object():
 
 
 def test_pad_fillchar(any_string_dtype):
-    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"], dtype=any_string_dtype)
+    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"],
+               dtype=any_string_dtype)
 
     result = s.str.pad(5, side="left", fillchar="X")
     expected = Series(
@@ -188,7 +195,8 @@ def test_pad_fillchar(any_string_dtype):
 
 
 def test_pad_fillchar_bad_arg_raises(any_string_dtype):
-    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"], dtype=any_string_dtype)
+    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"],
+               dtype=any_string_dtype)
 
     msg = "fillchar must be a character, not str"
     with pytest.raises(TypeError, match=msg):
@@ -211,7 +219,8 @@ def test_pad_width_bad_arg_raises(method_name, any_string_dtype):
 
 
 def test_center_ljust_rjust(any_string_dtype):
-    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"], dtype=any_string_dtype)
+    s = Series(["a", "b", np.nan, "c", np.nan, "eeeeee"],
+               dtype=any_string_dtype)
 
     result = s.str.center(5)
     expected = Series(
@@ -233,7 +242,8 @@ def test_center_ljust_rjust(any_string_dtype):
 
 
 def test_center_ljust_rjust_mixed_object():
-    s = Series(["a", np.nan, "b", True, datetime.today(), "c", "eee", None, 1, 2.0])
+    s = Series(["a", np.nan, "b", True, datetime.today(),
+               "c", "eee", None, 1, 2.0])
 
     result = s.str.center(5)
     expected = Series(
@@ -303,7 +313,8 @@ def test_center_ljust_rjust_fillchar(any_string_dtype):
         ["XXaXX", "XXbbX", "Xcccc", "ddddd", "eeeeee"], dtype=any_string_dtype
     )
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.center(5, "X") for v in np.array(s)], dtype=np.object_)
+    expected = np.array([v.center(5, "X")
+                        for v in np.array(s)], dtype=np.object_)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.object_), expected)
 
     result = s.str.ljust(5, fillchar="X")
@@ -311,7 +322,8 @@ def test_center_ljust_rjust_fillchar(any_string_dtype):
         ["aXXXX", "bbXXX", "ccccX", "ddddd", "eeeeee"], dtype=any_string_dtype
     )
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.ljust(5, "X") for v in np.array(s)], dtype=np.object_)
+    expected = np.array([v.ljust(5, "X")
+                        for v in np.array(s)], dtype=np.object_)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.object_), expected)
 
     result = s.str.rjust(5, fillchar="X")
@@ -319,7 +331,8 @@ def test_center_ljust_rjust_fillchar(any_string_dtype):
         ["XXXXa", "XXXbb", "Xcccc", "ddddd", "eeeeee"], dtype=any_string_dtype
     )
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.rjust(5, "X") for v in np.array(s)], dtype=np.object_)
+    expected = np.array([v.rjust(5, "X")
+                        for v in np.array(s)], dtype=np.object_)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.object_), expected)
 
 
@@ -362,7 +375,8 @@ def test_zfill(any_string_dtype):
     tm.assert_numpy_array_equal(np.array(result, dtype=np.object_), expected)
 
     result = s.str.zfill(3)
-    expected = Series(["001", "022", "aaa", "333", "45678"], dtype=any_string_dtype)
+    expected = Series(["001", "022", "aaa", "333", "45678"],
+                      dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
     expected = np.array([v.zfill(3) for v in np.array(s)], dtype=np.object_)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.object_), expected)

@@ -45,7 +45,7 @@ def show_runtime():
         "numpy_version": np.__version__,
         "python": sys.version,
         "uname": platform.uname(),
-        }]
+    }]
     features_found, features_not_found = [], []
     for feature in __cpu_dispatch__:
         if __cpu_features__[feature]:
@@ -304,7 +304,7 @@ def deprecate_with_doc(msg):
     return _Deprecate(message=msg)
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 # NOTE:  pydoc defines a help function which works similarly to this
@@ -332,14 +332,17 @@ def _split_line(name, arguments, width):
             newstr = newstr + addstr + argument
     return newstr
 
+
 _namedict = None
 _dictlist = None
 
 # Traverse all module directories underneath globals
 # to see if something is defined
+
+
 def _makenamedict(module='numpy'):
     module = __import__(module, globals(), locals(), [])
-    thedict = {module.__name__:module.__dict__}
+    thedict = {module.__name__: module.__dict__}
     dictlist = [module.__name__]
     totraverse = [module.__dict__]
     while True:
@@ -377,7 +380,7 @@ def _info(obj, output=None):
     """
     extra = ""
     tic = ""
-    bp = lambda x: x
+    def bp(x): return x
     cls = getattr(obj, '__class__', type(obj))
     nm = getattr(cls, '__name__', cls)
     strides = obj.strides
@@ -396,7 +399,7 @@ def _info(obj, output=None):
     print(
         "data pointer: %s%s" % (hex(obj.ctypes._as_parameter_.value), extra),
         file=output
-        )
+    )
     print("byteorder: ", end=' ', file=output)
     if endian in ['|', '=']:
         print("%s%s%s" % (tic, sys.byteorder, tic), file=output)
@@ -481,7 +484,7 @@ def info(object=None, maxwidth=76, output=None, toplevel='numpy'):
     import inspect
 
     if (hasattr(object, '_ppimport_importer') or
-           hasattr(object, '_ppimport_module')):
+            hasattr(object, '_ppimport_module')):
         object = object._ppimport_module
     elif hasattr(object, '_ppimport_attr'):
         object = object._ppimport_attr
@@ -566,8 +569,8 @@ def info(object=None, maxwidth=76, output=None, toplevel='numpy'):
                 thisobj = getattr(object, meth, None)
                 if thisobj is not None:
                     methstr, other = pydoc.splitdoc(
-                            inspect.getdoc(thisobj) or "None"
-                            )
+                        inspect.getdoc(thisobj) or "None"
+                    )
                 print("  %s  --  %s" % (meth, methstr), file=output)
 
     elif hasattr(object, '__doc__'):
@@ -683,6 +686,7 @@ def _median_nancheck(data, result, axis):
     np.copyto(result, potential_nans, where=n)
     return result
 
+
 def _opt_info():
     """
     Returns a string containing the CPU features supported
@@ -712,6 +716,7 @@ def _opt_info():
             enabled_features += f" {feature}?"
 
     return enabled_features
+
 
 def drop_metadata(dtype, /):
     """

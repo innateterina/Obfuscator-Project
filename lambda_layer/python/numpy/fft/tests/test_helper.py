@@ -72,14 +72,20 @@ class TestFFTShift:
             [1, 0],
             [3, 2]
         ]
-        assert_array_almost_equal(fft.fftshift(freqs, axes=(0, 1)), shift_dim_both)
-        assert_array_almost_equal(fft.ifftshift(shift_dim_both, axes=(0, 1)), freqs)
-        assert_array_almost_equal(fft.fftshift(freqs, axes=[0, 1]), shift_dim_both)
-        assert_array_almost_equal(fft.ifftshift(shift_dim_both, axes=[0, 1]), freqs)
+        assert_array_almost_equal(fft.fftshift(
+            freqs, axes=(0, 1)), shift_dim_both)
+        assert_array_almost_equal(fft.ifftshift(
+            shift_dim_both, axes=(0, 1)), freqs)
+        assert_array_almost_equal(fft.fftshift(
+            freqs, axes=[0, 1]), shift_dim_both)
+        assert_array_almost_equal(fft.ifftshift(
+            shift_dim_both, axes=[0, 1]), freqs)
 
         # axes=None (default) shift in all dimensions
-        assert_array_almost_equal(fft.fftshift(freqs, axes=None), shift_dim_both)
-        assert_array_almost_equal(fft.ifftshift(shift_dim_both, axes=None), freqs)
+        assert_array_almost_equal(fft.fftshift(
+            freqs, axes=None), shift_dim_both)
+        assert_array_almost_equal(fft.ifftshift(
+            shift_dim_both, axes=None), freqs)
         assert_array_almost_equal(fft.fftshift(freqs), shift_dim_both)
         assert_array_almost_equal(fft.ifftshift(shift_dim_both), freqs)
 

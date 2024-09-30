@@ -87,7 +87,8 @@ def test_td64_summation_overflow():
 
     # mean
     result = (ser - ser.min()).mean()
-    expected = pd.Timedelta((pd.TimedeltaIndex(ser - ser.min()).asi8 / len(ser)).sum())
+    expected = pd.Timedelta(
+        (pd.TimedeltaIndex(ser - ser.min()).asi8 / len(ser)).sum())
 
     # the computation is converted to float so
     # might be some loss of precision

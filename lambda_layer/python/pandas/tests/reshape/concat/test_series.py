@@ -33,7 +33,8 @@ class TestSeriesConcat:
 
         ts.index = DatetimeIndex(np.array(ts.index.values, dtype="M8[ns]"))
 
-        exp_codes = [np.repeat([0, 1, 2], [len(x) for x in pieces]), np.arange(len(ts))]
+        exp_codes = [np.repeat([0, 1, 2], [len(x)
+                               for x in pieces]), np.arange(len(ts))]
         exp_index = MultiIndex(levels=[[0, 1, 2], ts.index], codes=exp_codes)
         expected.index = exp_index
         tm.assert_series_equal(result, expected)
@@ -103,10 +104,12 @@ class TestSeriesConcat:
         )
         tm.assert_frame_equal(result, expected)
 
-        result = concat([s, s2], axis=1, keys=[("a", 1), ("b", 2)], names=["A", "B"])
+        result = concat([s, s2], axis=1, keys=[
+                        ("a", 1), ("b", 2)], names=["A", "B"])
         expected = DataFrame(
             [[1, 4], [2, 5], [3, 6]],
-            columns=MultiIndex.from_tuples([("a", 1), ("b", 2)], names=["A", "B"]),
+            columns=MultiIndex.from_tuples(
+                [("a", 1), ("b", 2)], names=["A", "B"]),
         )
         tm.assert_frame_equal(result, expected)
 
@@ -145,7 +148,8 @@ class TestSeriesConcat:
         unnamed_series1 = Series([1, 2])
         unnamed_series2 = Series([4, 5])
 
-        result = concat([named_series, unnamed_series1, unnamed_series2], axis=1)
+        result = concat(
+            [named_series, unnamed_series1, unnamed_series2], axis=1)
         expected = DataFrame(
             {"foo": [1, 2], 0: [1, 2], 1: [4, 5]}, columns=["foo", 0, 1]
         )

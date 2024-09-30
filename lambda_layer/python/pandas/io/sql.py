@@ -201,7 +201,8 @@ def _wrap_result(
     dtype_backend: DtypeBackend | Literal["numpy"] = "numpy",
 ):
     """Wrap result set of a SQLAlchemy query in a DataFrame."""
-    frame = _convert_arrays_to_dataframe(data, columns, coerce_float, dtype_backend)
+    frame = _convert_arrays_to_dataframe(
+        data, columns, coerce_float, dtype_backend)
 
     if dtype:
         frame = frame.astype(dtype)
@@ -260,7 +261,8 @@ def execute(sql, con, params=None):
     sqlalchemy = import_optional_dependency("sqlalchemy", errors="ignore")
 
     if sqlalchemy is not None and isinstance(con, (str, sqlalchemy.engine.Engine)):
-        raise TypeError("pandas.io.sql.execute requires a connection")  # GH50185
+        raise TypeError(
+            "pandas.io.sql.execute requires a connection")  # GH50185
     with pandasSQL_builder(con, need_transaction=True) as pandas_sql:
         return pandas_sql.execute(sql, params)
 
@@ -905,7 +907,8 @@ def pandasSQL_builder(
     if sqlalchemy is not None and isinstance(con, (str, sqlalchemy.engine.Connectable)):
         return SQLDatabase(con, schema, need_transaction)
 
-    adbc = import_optional_dependency("adbc_driver_manager.dbapi", errors="ignore")
+    adbc = import_optional_dependency(
+        "adbc_driver_manager.dbapi", errors="ignore")
     if adbc and isinstance(con, adbc.Connection):
         return ADBCDatabase(con)
 
@@ -990,7 +993,8 @@ class SQLTable(PandasObject):
             elif self.if_exists == "append":
                 pass
             else:
-                raise ValueError(f"'{self.if_exists}' is not valid for if_exists")
+                raise ValueError(
+                    f"'{self.if_exists}' is not valid for if_exists")
         else:
             self._execute_create()
 
@@ -1034,7 +1038,8 @@ class SQLTable(PandasObject):
             try:
                 temp.reset_index(inplace=True)
             except ValueError as err:
-                raise ValueError(f"duplicate name in index/columns: {err}") from err
+                raise ValueError(
+                    f"duplicate name in index/columns: {err}") from err
         else:
             temp = self.frame
 
@@ -1054,9 +1059,11 @@ class SQLTable(PandasObject):
                         d = ser._values.to_numpy(dtype=object)
                     else:
                         with warnings.catch_warnings():
-                            warnings.filterwarnings("ignore", category=FutureWarning)
+                            warnings.filterwarnings(
+                                "ignore", category=FutureWarning)
                             # GH#52459 to_pydatetime will return Index[object]
-                            d = np.asarray(ser.dt.to_pydatetime(), dtype=object)
+                            d = np.asarray(
+                                ser.dt.to_pydatetime(), dtype=object)
                 else:
                     d = ser._values.to_pydatetime()
             elif ser.dtype.kind == "m":
@@ -1248,7 +1255,8 @@ class SQLTable(PandasObject):
                 column_names_and_types.append((str(idx_label), idx_type, True))
 
         column_names_and_types += [
-            (str(self.frame.columns[i]), dtype_mapper(self.frame.iloc[:, i]), False)
+            (str(self.frame.columns[i]), dtype_mapper(
+                self.frame.iloc[:, i]), False)
             for i in range(len(self.frame.columns))
         ]
 
@@ -1262,7 +1270,8 @@ class SQLTable(PandasObject):
         )
         from sqlalchemy.schema import MetaData
 
-        column_names_and_types = self._get_column_names_and_types(self._sqlalchemy_type)
+        column_names_and_types = self._get_column_names_and_types(
+            self._sqlalchemy_type)
 
         columns: list[Any] = [
             Column(name, typ, index=is_index)
@@ -1314,7 +1323,8 @@ class SQLTable(PandasObject):
                         fmt = parse_dates[col_name]
                     except TypeError:
                         fmt = None
-                    self.frame[col_name] = _handle_date_column(df_col, format=fmt)
+                    self.frame[col_name] = _handle_date_column(
+                        df_col, format=fmt)
                     continue
 
                 # the type the dataframe column should have
@@ -1335,7 +1345,8 @@ class SQLTable(PandasObject):
                 elif dtype_backend == "numpy" and len(df_col) == df_col.count():
                     # No NA values, can convert ints and bools
                     if col_type is np.dtype("int64") or col_type is bool:
-                        self.frame[col_name] = df_col.astype(col_type, copy=False)
+                        self.frame[col_name] = df_col.astype(
+                            col_type, copy=False)
             except KeyError:
                 pass  # this column not in results
 
@@ -1396,7 +1407,8 @@ class SQLTable(PandasObject):
             elif col.dtype.name.lower() in ("uint16", "int32"):
                 return Integer
             elif col.dtype.name.lower() == "uint64":
-                raise ValueError("Unsigned 64 bit integer datatype is not supported")
+                raise ValueError(
+                    "Unsigned 64 bit integer datatype is not supported")
             else:
                 return BigInteger
         elif col_type == "boolean":
@@ -1885,7 +1897,8 @@ class SQLDatabase(PandasSQL):
                 # Type[str], Type[float], Type[int], Type[complex], Type[bool],
                 # Type[object]]]]"; expected type "Union[ExtensionDtype, str,
                 # dtype[Any], Type[object]]"
-                dtype = {col_name: dtype for col_name in frame}  # type: ignore[misc]
+                # type: ignore[misc]
+                dtype = {col_name: dtype for col_name in frame}
             else:
                 dtype = cast(dict, dtype)
 
@@ -1897,7 +1910,8 @@ class SQLDatabase(PandasSQL):
                 elif isinstance(my_type, TypeEngine):
                     pass
                 else:
-                    raise ValueError(f"The type of {col} is not a SQLAlchemy type")
+                    raise ValueError(
+                        f"The type of {col} is not a SQLAlchemy type")
 
         table = SQLTable(
             name,
@@ -1927,7 +1941,8 @@ class SQLDatabase(PandasSQL):
             from sqlalchemy import inspect as sqlalchemy_inspect
 
             insp = sqlalchemy_inspect(self.con)
-            table_names = insp.get_table_names(schema=schema or self.meta.schema)
+            table_names = insp.get_table_names(
+                schema=schema or self.meta.schema)
             if name not in table_names:
                 msg = (
                     f"The provided table name '{name}' is not found exactly as "
@@ -2047,7 +2062,8 @@ class SQLDatabase(PandasSQL):
         )
 
         schema = schema or self.meta.schema
-        tbl = Table(table_name, self.meta, autoload_with=self.con, schema=schema)
+        tbl = Table(table_name, self.meta,
+                    autoload_with=self.con, schema=schema)
         for column in tbl.columns:
             if isinstance(column.type, Numeric):
                 column.type.asdecimal = False
@@ -2192,7 +2208,8 @@ class ADBCDatabase(PandasSQL):
                 "'coerce_float' is not implemented for ADBC drivers"
             )
         if chunksize:
-            raise NotImplementedError("'chunksize' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'chunksize' is not implemented for ADBC drivers")
 
         if columns:
             if index_col:
@@ -2288,9 +2305,11 @@ class ADBCDatabase(PandasSQL):
                 "'coerce_float' is not implemented for ADBC drivers"
             )
         if params:
-            raise NotImplementedError("'params' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'params' is not implemented for ADBC drivers")
         if chunksize:
-            raise NotImplementedError("'chunksize' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'chunksize' is not implemented for ADBC drivers")
 
         mapping: type[ArrowDtype] | None | Callable
         if dtype_backend == "pyarrow":
@@ -2363,11 +2382,14 @@ class ADBCDatabase(PandasSQL):
                 "'index_label' is not implemented for ADBC drivers"
             )
         if chunksize:
-            raise NotImplementedError("'chunksize' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'chunksize' is not implemented for ADBC drivers")
         if dtype:
-            raise NotImplementedError("'dtype' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'dtype' is not implemented for ADBC drivers")
         if method:
-            raise NotImplementedError("'method' is not implemented for ADBC drivers")
+            raise NotImplementedError(
+                "'method' is not implemented for ADBC drivers")
         if engine != "auto":
             raise NotImplementedError(
                 "engine != 'auto' not implemented for ADBC drivers"
@@ -2453,7 +2475,8 @@ def _get_unicode_name(name: object):
     try:
         uname = str(name).encode("utf-8", "strict").decode("utf-8")
     except UnicodeError as err:
-        raise ValueError(f"Cannot convert identifier to UTF-8: '{name}'") from err
+        raise ValueError(
+            f"Cannot convert identifier to UTF-8: '{name}'") from err
     return uname
 
 
@@ -2501,16 +2524,16 @@ class SQLiteTable(SQLTable):
         # xref https://docs.python.org/3.12/library/sqlite3.html#adapter-and-converter-recipes
         # Python 3.12+ doesn't auto-register adapters for us anymore
 
-        adapt_date_iso = lambda val: val.isoformat()
-        adapt_datetime_iso = lambda val: val.isoformat(" ")
+        def adapt_date_iso(val): return val.isoformat()
+        def adapt_datetime_iso(val): return val.isoformat(" ")
 
         sqlite3.register_adapter(time, _adapt_time)
 
         sqlite3.register_adapter(date, adapt_date_iso)
         sqlite3.register_adapter(datetime, adapt_datetime_iso)
 
-        convert_date = lambda val: date.fromisoformat(val.decode())
-        convert_timestamp = lambda val: datetime.fromisoformat(val.decode())
+        def convert_date(val): return date.fromisoformat(val.decode())
+        def convert_timestamp(val): return datetime.fromisoformat(val.decode())
 
         sqlite3.register_converter("date", convert_date)
         sqlite3.register_converter("timestamp", convert_timestamp)
@@ -2550,7 +2573,8 @@ class SQLiteTable(SQLTable):
     def _execute_insert_multi(self, conn, keys, data_iter) -> int:
         data_list = list(data_iter)
         flattened_data = [x for row in data_list for x in row]
-        conn.execute(self.insert_statement(num_rows=len(data_list)), flattened_data)
+        conn.execute(self.insert_statement(
+            num_rows=len(data_list)), flattened_data)
         return conn.rowcount
 
     def _create_table_setup(self):
@@ -2559,7 +2583,8 @@ class SQLiteTable(SQLTable):
         structure of a DataFrame.  The first entry will be a CREATE TABLE
         statement while the rest will be CREATE INDEX statements.
         """
-        column_names_and_types = self._get_column_names_and_types(self._sql_type_name)
+        column_names_and_types = self._get_column_names_and_types(
+            self._sql_type_name)
         escape = _get_valid_sqlite_name
 
         create_tbl_stmts = [
@@ -2588,7 +2613,8 @@ class SQLiteTable(SQLTable):
             + "\n)"
         ]
 
-        ix_cols = [cname for cname, _, is_index in column_names_and_types if is_index]
+        ix_cols = [cname for cname, _,
+                   is_index in column_names_and_types if is_index]
         if len(ix_cols):
             cnames = "_".join(ix_cols)
             cnames_br = ",".join([escape(c) for c in ix_cols])
@@ -2830,7 +2856,8 @@ class SQLiteDatabase(PandasSQL):
                 # Type[str], Type[float], Type[int], Type[complex], Type[bool],
                 # Type[object]]]]"; expected type "Union[ExtensionDtype, str,
                 # dtype[Any], Type[object]]"
-                dtype = {col_name: dtype for col_name in frame}  # type: ignore[misc]
+                # type: ignore[misc]
+                dtype = {col_name: dtype for col_name in frame}
             else:
                 dtype = cast(dict, dtype)
 

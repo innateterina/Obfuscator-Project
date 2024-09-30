@@ -323,7 +323,8 @@ def array(
     if dtype is None:
         inferred_dtype = lib.infer_dtype(data, skipna=True)
         if inferred_dtype == "period":
-            period_data = cast(Union[Sequence[Optional[Period]], AnyArrayLike], data)
+            period_data = cast(
+                Union[Sequence[Optional[Period]], AnyArrayLike], data)
             return PeriodArray._from_sequence(period_data, copy=copy)
 
         elif inferred_dtype == "interval":
@@ -565,7 +566,8 @@ def sanitize_array(
 
     if not is_list_like(data):
         if index is None:
-            raise ValueError("index must be specified when data is not list-like")
+            raise ValueError(
+                "index must be specified when data is not list-like")
         if (
             isinstance(data, str)
             and using_pyarrow_string_dtype()
@@ -728,7 +730,8 @@ def _sanitize_ndim(
             # error: Argument "dtype" to "asarray_tuplesafe" has incompatible type
             # "Union[dtype[Any], ExtensionDtype, None]"; expected "Union[str,
             # dtype[Any], None]"
-            result = com.asarray_tuplesafe(data, dtype=dtype)  # type: ignore[arg-type]
+            result = com.asarray_tuplesafe(
+                data, dtype=dtype)  # type: ignore[arg-type]
     return result
 
 

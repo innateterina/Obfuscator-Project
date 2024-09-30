@@ -415,7 +415,8 @@ class IndexOpsMixin(OpsMixin):
         """
         if len(self) == 1:
             return next(iter(self))
-        raise ValueError("can only convert an array of size 1 to a Python scalar")
+        raise ValueError(
+            "can only convert an array of size 1 to a Python scalar")
 
     @property
     def nbytes(self) -> int:

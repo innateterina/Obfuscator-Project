@@ -194,7 +194,8 @@ def test_align_with_dataframe_method(method):
 
 def test_align_dt64tzindex_mismatched_tzs():
     idx1 = date_range("2001", periods=5, freq="h", tz="US/Eastern")
-    ser = Series(np.random.default_rng(2).standard_normal(len(idx1)), index=idx1)
+    ser = Series(np.random.default_rng(
+        2).standard_normal(len(idx1)), index=idx1)
     ser_central = ser.tz_convert("US/Central")
     # different timezones convert to UTC
 
@@ -213,7 +214,8 @@ def test_align_periodindex(join_type):
 
 def test_align_left_fewer_levels():
     # GH#45224
-    left = Series([2], index=pd.MultiIndex.from_tuples([(1, 3)], names=["a", "c"]))
+    left = Series([2], index=pd.MultiIndex.from_tuples(
+        [(1, 3)], names=["a", "c"]))
     right = Series(
         [1], index=pd.MultiIndex.from_tuples([(1, 2, 3)], names=["a", "b", "c"])
     )

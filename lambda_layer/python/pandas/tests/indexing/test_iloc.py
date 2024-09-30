@@ -101,7 +101,8 @@ class TestiLocBaseIndependent:
         frame = DataFrame({0: np.array([0, 1, 2], dtype=object), 1: range(3)})
         df = frame.copy()
         indexer(df)[key, 0] = cat
-        expected = DataFrame({0: Series(cat.astype(object), dtype=object), 1: range(3)})
+        expected = DataFrame(
+            {0: Series(cat.astype(object), dtype=object), 1: range(3)})
         tm.assert_frame_equal(df, expected)
 
     @pytest.mark.parametrize("box", [array, Series])
@@ -147,7 +148,8 @@ class TestiLocBaseIndependent:
     def test_iloc_exceeds_bounds(self):
         # GH6296
         # iloc should allow indexers that exceed the bounds
-        df = DataFrame(np.random.default_rng(2).random((20, 5)), columns=list("ABCDE"))
+        df = DataFrame(np.random.default_rng(
+            2).random((20, 5)), columns=list("ABCDE"))
 
         # lists of positions should raise IndexError!
         msg = "positional indexers are out-of-bounds"
@@ -233,7 +235,8 @@ class TestiLocBaseIndependent:
         )
         tm.assert_frame_equal(
             dfl.iloc[:, 2:3],
-            DataFrame(index=dfl.index, columns=Index([], dtype=dfl.columns.dtype)),
+            DataFrame(index=dfl.index, columns=Index(
+                [], dtype=dfl.columns.dtype)),
         )
         tm.assert_frame_equal(dfl.iloc[:, 1:3], dfl.iloc[:, [1]])
         tm.assert_frame_equal(dfl.iloc[4:6], dfl.iloc[[4]])
@@ -257,7 +260,8 @@ class TestiLocBaseIndependent:
     def test_iloc_non_integer_raises(self, index, columns, index_vals, column_vals):
         # GH 25753
         df = DataFrame(
-            np.random.default_rng(2).standard_normal((len(index), len(columns))),
+            np.random.default_rng(2).standard_normal(
+                (len(index), len(columns))),
             index=index,
             columns=columns,
         )
@@ -325,7 +329,8 @@ class TestiLocBaseIndependent:
         assert isna(result)
 
         result = df.iloc[0, :]
-        expected = Series([np.nan, 1, 3, 3], index=["A", "B", "A", "B"], name=0)
+        expected = Series([np.nan, 1, 3, 3], index=[
+                          "A", "B", "A", "B"], name=0)
         tm.assert_series_equal(result, expected)
 
     def test_iloc_getitem_array(self):
@@ -340,10 +345,12 @@ class TestiLocBaseIndependent:
         expected = DataFrame([{"A": 1, "B": 2, "C": 3}])
         tm.assert_frame_equal(df.iloc[[0]], expected)
 
-        expected = DataFrame([{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
+        expected = DataFrame(
+            [{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
         tm.assert_frame_equal(df.iloc[[0, 1]], expected)
 
-        expected = DataFrame([{"B": 2, "C": 3}, {"B": 2000, "C": 3000}], index=[0, 2])
+        expected = DataFrame(
+            [{"B": 2, "C": 3}, {"B": 2000, "C": 3000}], index=[0, 2])
         result = df.iloc[[0, 2], [1, 2]]
         tm.assert_frame_equal(result, expected)
 
@@ -356,7 +363,8 @@ class TestiLocBaseIndependent:
             ]
         )
 
-        expected = DataFrame([{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
+        expected = DataFrame(
+            [{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
         result = df.iloc[[True, True, False]]
         tm.assert_frame_equal(result, expected)
 
@@ -383,7 +391,8 @@ class TestiLocBaseIndependent:
             ]
         )
 
-        expected = DataFrame([{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
+        expected = DataFrame(
+            [{"A": 1, "B": 2, "C": 3}, {"A": 100, "B": 200, "C": 300}])
         result = df.iloc[:2]
         tm.assert_frame_equal(result, expected)
 
@@ -516,8 +525,10 @@ class TestiLocBaseIndependent:
         tm.assert_frame_equal(df, expected)
 
         # reversed x 2
-        df.iloc[[1, 0], [0, 1]] = df.iloc[[1, 0], [0, 1]].reset_index(drop=True)
-        df.iloc[[1, 0], [0, 1]] = df.iloc[[1, 0], [0, 1]].reset_index(drop=True)
+        df.iloc[[1, 0], [0, 1]] = df.iloc[[
+            1, 0], [0, 1]].reset_index(drop=True)
+        df.iloc[[1, 0], [0, 1]] = df.iloc[[
+            1, 0], [0, 1]].reset_index(drop=True)
         tm.assert_frame_equal(df, expected)
 
     def test_iloc_setitem_frame_duplicate_columns_multiple_blocks(
@@ -647,14 +658,16 @@ class TestiLocBaseIndependent:
 
         result = df.iloc[3:5, 0:2]
 
-        expected = DataFrame(arr[3:5, 0:2], index=index[3:5], columns=columns[0:2])
+        expected = DataFrame(
+            arr[3:5, 0:2], index=index[3:5], columns=columns[0:2])
         tm.assert_frame_equal(result, expected)
 
         # for dups
         df.columns = list("aaaa")
         result = df.iloc[3:5, 0:2]
 
-        expected = DataFrame(arr[3:5, 0:2], index=index[3:5], columns=list("aa"))
+        expected = DataFrame(
+            arr[3:5, 0:2], index=index[3:5], columns=list("aa"))
         tm.assert_frame_equal(result, expected)
 
         # related
@@ -666,7 +679,8 @@ class TestiLocBaseIndependent:
         if not using_array_manager:
             df._mgr.blocks[0].mgr_locs
         result = df.iloc[1:5, 2:4]
-        expected = DataFrame(arr[1:5, 2:4], index=index[1:5], columns=columns[2:4])
+        expected = DataFrame(
+            arr[1:5, 2:4], index=index[1:5], columns=columns[2:4])
         tm.assert_frame_equal(result, expected)
 
     def test_iloc_setitem_series(self):
@@ -685,7 +699,8 @@ class TestiLocBaseIndependent:
         result = df.iloc[:, 2:3]
         tm.assert_frame_equal(result, expected)
 
-        s = Series(np.random.default_rng(2).standard_normal(10), index=range(0, 20, 2))
+        s = Series(np.random.default_rng(
+            2).standard_normal(10), index=range(0, 20, 2))
 
         s.iloc[1] = 1
         result = s.iloc[1]
@@ -707,17 +722,20 @@ class TestiLocBaseIndependent:
         # GH 7551
         # list-of-list is set incorrectly in mixed vs. single dtyped frames
         df = DataFrame(
-            {"A": np.arange(5, dtype="int64"), "B": np.arange(5, 10, dtype="int64")}
+            {"A": np.arange(5, dtype="int64"),
+             "B": np.arange(5, 10, dtype="int64")}
         )
         df.iloc[2:4] = [[10, 11], [12, 13]]
         expected = DataFrame({"A": [0, 1, 10, 12, 4], "B": [5, 6, 11, 13, 9]})
         tm.assert_frame_equal(df, expected)
 
         df = DataFrame(
-            {"A": ["a", "b", "c", "d", "e"], "B": np.arange(5, 10, dtype="int64")}
+            {"A": ["a", "b", "c", "d", "e"],
+                "B": np.arange(5, 10, dtype="int64")}
         )
         df.iloc[2:4] = [["x", 11], ["y", 13]]
-        expected = DataFrame({"A": ["a", "b", "x", "y", "e"], "B": [5, 6, 11, 13, 9]})
+        expected = DataFrame(
+            {"A": ["a", "b", "x", "y", "e"], "B": [5, 6, 11, 13, 9]})
         tm.assert_frame_equal(df, expected)
 
     @pytest.mark.parametrize("indexer", [[0], slice(None, 1, None), np.array([0])])
@@ -728,7 +746,8 @@ class TestiLocBaseIndependent:
         # elementwisely, not using "setter('A', ['Z'])".
 
         # Set object type to avoid upcast when setting "Z"
-        df = DataFrame([[1, 2], [3, 4]], columns=["A", "B"]).astype({"A": object})
+        df = DataFrame([[1, 2], [3, 4]], columns=[
+                       "A", "B"]).astype({"A": object})
         df.iloc[0, indexer] = value
         result = df.iloc[0, 0]
 
@@ -972,7 +991,8 @@ class TestiLocBaseIndependent:
             [nulls_fixture, nulls_fixture, nulls_fixture, nulls_fixture], dtype=dtype
         )
         ser.iloc[:3] = [nulls_fixture, not_na, nulls_fixture]
-        exp = Series([nulls_fixture, not_na, nulls_fixture, nulls_fixture], dtype=dtype)
+        exp = Series([nulls_fixture, not_na, nulls_fixture,
+                     nulls_fixture], dtype=dtype)
         tm.assert_series_equal(ser, exp)
 
     def test_iloc_setitem_empty_frame_raises_with_3d_ndarray(self):
@@ -999,7 +1019,8 @@ class TestiLocBaseIndependent:
         ro_array.setflags(write=False)
         ro_df = DataFrame(ro_array)
 
-        tm.assert_frame_equal(indexer(rw_df)[[1, 2, 3]], indexer(ro_df)[[1, 2, 3]])
+        tm.assert_frame_equal(
+            indexer(rw_df)[[1, 2, 3]], indexer(ro_df)[[1, 2, 3]])
         tm.assert_frame_equal(indexer(rw_df)[[1]], indexer(ro_df)[[1]])
         tm.assert_series_equal(indexer(rw_df)[1], indexer(ro_df)[1])
         tm.assert_frame_equal(indexer(rw_df)[1:3], indexer(ro_df)[1:3])
@@ -1022,7 +1043,8 @@ class TestiLocBaseIndependent:
         # GH 37593
         df = DataFrame(columns=["a"], index=[0])
         df.iloc[0, 0] = Series([1, 2, 3])
-        expected = DataFrame({"a": [Series([1, 2, 3])]}, columns=["a"], index=[0])
+        expected = DataFrame(
+            {"a": [Series([1, 2, 3])]}, columns=["a"], index=[0])
         tm.assert_frame_equal(df, expected)
 
     @pytest.mark.parametrize("klass", [list, np.array])
@@ -1040,7 +1062,8 @@ class TestiLocBaseIndependent:
         df1 = DataFrame({"a2": [11, 12, 13], "b2": [14, 15, 16]})
         df2 = DataFrame({"a": [1, 2, 3], "b": [4, 5, 6], "c": [7, 8, 9]})
         df2.iloc[:, indexer] = df1.iloc[:, [0]]
-        expected = DataFrame({"a": [1, 2, 3], "b": [11, 12, 13], "c": [7, 8, 9]})
+        expected = DataFrame(
+            {"a": [1, 2, 3], "b": [11, 12, 13], "c": [7, 8, 9]})
         tm.assert_frame_equal(df2, expected)
 
     def test_iloc_setitem_dictionary_value(self):
@@ -1198,7 +1221,8 @@ class TestiLocBaseIndependent:
         df = DataFrame({"status": ["a", "b", "c"]}, dtype="category")
         df.iloc[np.array([0, 1]), np.array([0])] = np.array([["a"], ["a"]])
 
-        expected = DataFrame({"status": ["a", "a", "c"]}, dtype=df["status"].dtype)
+        expected = DataFrame(
+            {"status": ["a", "a", "c"]}, dtype=df["status"].dtype)
         tm.assert_frame_equal(df, expected)
 
     @td.skip_array_manager_not_yet_implemented
@@ -1218,7 +1242,8 @@ class TestiLocBaseIndependent:
 
     def test_iloc_setitem_multicolumn_to_datetime(self):
         # GH#20511
-        df = DataFrame({"A": ["2022-01-01", "2022-01-02"], "B": ["2021", "2022"]})
+        df = DataFrame(
+            {"A": ["2022-01-01", "2022-01-02"], "B": ["2021", "2022"]})
 
         df.iloc[:, [0]] = DataFrame({"A": to_datetime(["2021", "2022"])})
         expected = DataFrame(
@@ -1339,7 +1364,8 @@ class TestILocSetItemDuplicateColumns:
 class TestILocCallable:
     def test_frame_iloc_getitem_callable(self):
         # GH#11485
-        df = DataFrame({"X": [1, 2, 3, 4], "Y": list("aabb")}, index=list("ABCD"))
+        df = DataFrame(
+            {"X": [1, 2, 3, 4], "Y": list("aabb")}, index=list("ABCD"))
 
         # return location
         res = df.iloc[lambda x: [1, 3]]

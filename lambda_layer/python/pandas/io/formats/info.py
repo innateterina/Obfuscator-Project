@@ -945,7 +945,8 @@ class _DataFrameTableBuilderVerbose(_DataFrameTableBuilder, _TableBuilderVerbose
         self.info = info
         self.with_counts = with_counts
         self.strrows: Sequence[Sequence[str]] = list(self._gen_rows())
-        self.gross_column_widths: Sequence[int] = self._get_gross_column_widths()
+        self.gross_column_widths: Sequence[int] = self._get_gross_column_widths(
+        )
 
     def _fill_non_empty_info(self) -> None:
         """Add lines to the info table, pertaining to non-empty dataframe."""
@@ -1057,7 +1058,8 @@ class _SeriesTableBuilderVerbose(_SeriesTableBuilder, _TableBuilderVerboseMixin)
         self.info = info
         self.with_counts = with_counts
         self.strrows: Sequence[Sequence[str]] = list(self._gen_rows())
-        self.gross_column_widths: Sequence[int] = self._get_gross_column_widths()
+        self.gross_column_widths: Sequence[int] = self._get_gross_column_widths(
+        )
 
     def _fill_non_empty_info(self) -> None:
         """Add lines to the info table, pertaining to non-empty series."""

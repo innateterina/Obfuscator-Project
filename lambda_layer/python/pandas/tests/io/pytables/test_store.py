@@ -81,14 +81,18 @@ def test_no_track_times(tmp_path, setup_path):
 
         return checksum(path)
 
-    checksum_0_tt_false = create_h5_and_return_checksum(tmp_path, track_times=False)
-    checksum_0_tt_true = create_h5_and_return_checksum(tmp_path, track_times=True)
+    checksum_0_tt_false = create_h5_and_return_checksum(
+        tmp_path, track_times=False)
+    checksum_0_tt_true = create_h5_and_return_checksum(
+        tmp_path, track_times=True)
 
     # sleep is necessary to create h5 with different creation time
     time.sleep(1)
 
-    checksum_1_tt_false = create_h5_and_return_checksum(tmp_path, track_times=False)
-    checksum_1_tt_true = create_h5_and_return_checksum(tmp_path, track_times=True)
+    checksum_1_tt_false = create_h5_and_return_checksum(
+        tmp_path, track_times=False)
+    checksum_1_tt_true = create_h5_and_return_checksum(
+        tmp_path, track_times=True)
 
     # checksums are the same if track_time = False
     assert checksum_0_tt_false == checksum_1_tt_false
@@ -424,7 +428,8 @@ def test_create_table_index(setup_path):
         assert col("f", "string2").is_indexed is True
 
         # specify index=columns
-        store.append("f2", df, index=["string"], data_columns=["string", "string2"])
+        store.append("f2", df, index=["string"],
+                     data_columns=["string", "string2"])
         assert col("f2", "index").is_indexed is False
         assert col("f2", "string").is_indexed is True
         assert col("f2", "string2").is_indexed is False
@@ -527,7 +532,8 @@ def test_calendar_roundtrip_issue(setup_path):
     mydt = dt.datetime(2013, 4, 30)
     dts = date_range(mydt, periods=5, freq=bday_egypt)
 
-    s = Series(dts.weekday, dts).map(Series("Mon Tue Wed Thu Fri Sat Sun".split()))
+    s = Series(dts.weekday, dts).map(
+        Series("Mon Tue Wed Thu Fri Sat Sun".split()))
 
     with ensure_clean_store(setup_path) as store:
         store.put("fixed", s)
@@ -1030,7 +1036,8 @@ def test_duplicate_column_name(tmp_path, setup_path):
 def test_preserve_timedeltaindex_type(setup_path):
     # GH9635
     df = DataFrame(np.random.default_rng(2).normal(size=(10, 5)))
-    df.index = timedelta_range(start="0s", periods=10, freq="1s", name="example")
+    df.index = timedelta_range(
+        start="0s", periods=10, freq="1s", name="example")
 
     with ensure_clean_store(setup_path) as store:
         store["df"] = df
@@ -1078,7 +1085,8 @@ def test_columns_multiindex_modified(tmp_path, setup_path):
 )
 def test_to_hdf_with_object_column_names_should_fail(tmp_path, setup_path, columns):
     # GH9057
-    df = DataFrame(np.random.default_rng(2).standard_normal((10, 2)), columns=columns)
+    df = DataFrame(np.random.default_rng(
+        2).standard_normal((10, 2)), columns=columns)
     path = tmp_path / setup_path
     msg = "cannot have non-object label DataIndexableCol"
     with pytest.raises(ValueError, match=msg):

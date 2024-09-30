@@ -759,7 +759,8 @@ def test_cast_to_extension_with_nested_storage():
     # With fixed-size list
     array = pa.array([[1, 2], [3, 4], [5, 6]], pa.list_(pa.float64(), 2))
     result = array.cast(MyFixedListType(pa.list_(pa.float64(), 2)))
-    expected = pa.ExtensionArray.from_storage(MyFixedListType(array.type), array)
+    expected = pa.ExtensionArray.from_storage(
+        MyFixedListType(array.type), array)
     assert result.equals(expected)
 
     ext_type = MyFixedListType(pa.list_(pa.float32(), 2))
@@ -1412,7 +1413,8 @@ def test_tensor_class_methods(value_type):
     bw = value_type.itemsize
     storage = pa.array(values, pa.list_(arrow_type, 12))
 
-    tensor_type = pa.fixed_shape_tensor(arrow_type, [2, 2, 3], permutation=[0, 1, 2])
+    tensor_type = pa.fixed_shape_tensor(
+        arrow_type, [2, 2, 3], permutation=[0, 1, 2])
     result = pa.ExtensionArray.from_storage(tensor_type, storage)
     expected = np.array(
         [[[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]], dtype=value_type)
@@ -1423,13 +1425,15 @@ def test_tensor_class_methods(value_type):
         [[[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]], dtype=value_type)
     np.testing.assert_array_equal(result, expected)
 
-    tensor_type = pa.fixed_shape_tensor(arrow_type, [2, 2, 3], permutation=[0, 2, 1])
+    tensor_type = pa.fixed_shape_tensor(
+        arrow_type, [2, 2, 3], permutation=[0, 2, 1])
     result = pa.ExtensionArray.from_storage(tensor_type, storage)
     expected = as_strided(flat_arr, shape=(1, 2, 3, 2),
                           strides=(bw * 12, bw * 6, bw, bw * 3))
     np.testing.assert_array_equal(result.to_numpy_ndarray(), expected)
 
-    tensor_type = pa.fixed_shape_tensor(arrow_type, [2, 2, 3], permutation=[2, 0, 1])
+    tensor_type = pa.fixed_shape_tensor(
+        arrow_type, [2, 2, 3], permutation=[2, 0, 1])
     result = pa.ExtensionArray.from_storage(tensor_type, storage)
     expected = as_strided(flat_arr, shape=(1, 3, 2, 2),
                           strides=(bw * 12, bw, bw * 6, bw * 2))
@@ -1458,7 +1462,8 @@ def test_tensor_array_from_numpy(value_type):
     with pytest.raises(ValueError, match="First stride needs to be largest"):
         pa.FixedShapeTensorArray.from_numpy_ndarray(arr)
 
-    flat_arr = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], dtype=value_type)
+    flat_arr = np.array(
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], dtype=value_type)
     bw = value_type.itemsize
 
     arr = flat_arr.reshape(1, 3, 4)
@@ -1480,9 +1485,11 @@ def test_tensor_array_from_numpy(value_type):
         [[[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]], dtype=value_type)
     np.testing.assert_array_equal(result.to_numpy_ndarray(), expected)
 
-    arr = np.array([[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]], dtype=value_type)
+    arr = np.array([[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]],
+                   dtype=value_type)
     expected = arr[1:]
-    result = pa.FixedShapeTensorArray.from_numpy_ndarray(arr)[1:].to_numpy_ndarray()
+    result = pa.FixedShapeTensorArray.from_numpy_ndarray(arr)[
+        1:].to_numpy_ndarray()
     np.testing.assert_array_equal(result, expected)
 
     arr = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], dtype=value_type)
@@ -1511,7 +1518,8 @@ def test_tensor_array_from_numpy(value_type):
     pa.fixed_shape_tensor(pa.int8(), [2, 2, 3], dim_names=['C', 'H', 'W'])
 ))
 def test_tensor_type_ipc(tensor_type):
-    storage = pa.array([[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]], pa.list_(pa.int8(), 12))
+    storage = pa.array([[1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]],
+                       pa.list_(pa.int8(), 12))
     arr = pa.ExtensionArray.from_storage(tensor_type, storage)
     batch = pa.RecordBatch.from_arrays([arr], ["ext"])
 
@@ -1635,7 +1643,8 @@ def test_tensor_type_is_picklable(pickle_module):
         'fixed_shape_tensor[value_type=int32, shape=[2,2,3], permutation=[0,2,1]]'
     ),
     (
-        pa.fixed_shape_tensor(pa.int64(), [2, 2, 3], dim_names=['C', 'H', 'W']),
+        pa.fixed_shape_tensor(
+            pa.int64(), [2, 2, 3], dim_names=['C', 'H', 'W']),
         'fixed_shape_tensor[value_type=int64, shape=[2,2,3], dim_names=[C,H,W]]'
     )
 ])

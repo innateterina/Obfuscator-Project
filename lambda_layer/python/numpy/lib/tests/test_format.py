@@ -284,7 +284,7 @@ import numpy as np
 from numpy.testing import (
     assert_, assert_array_equal, assert_raises, assert_raises_regex,
     assert_warns, IS_PYPY, IS_WASM
-    )
+)
 from numpy.testing._private.utils import requires_memory
 from numpy.lib import format
 
@@ -343,7 +343,7 @@ PbufferT = [
     # x     y                  z
     ([3, 2], [[6., 4.], [6., 4.]], 8),
     ([4, 3], [[7., 5.], [7., 5.]], 9),
-    ]
+]
 
 
 # This is the structure of the table used for nested objects (DON'T PANIC!):
@@ -385,7 +385,7 @@ NbufferT = [
      'cc', ('NN', 6j), [[6., 4.], [6., 4.]], 8),
     ([4, 3], (7j, 7., ('oo', [7j, 5j], [7., 5.], [2, 1]), 'OO', False),
      'dd', ('OO', 7j), [[7., 5.], [7., 5.]], 9),
-    ]
+]
 
 record_arrays = [
     np.array(PbufferT, dtype=np.dtype(Pdescr).newbyteorder('<')),
@@ -396,7 +396,7 @@ record_arrays = [
 ]
 
 
-#BytesIO that reads a random number of bytes at a time
+# BytesIO that reads a random number of bytes at a time
 class BytesIOSRandomSize(BytesIO):
     def read(self, size=None):
         import random
@@ -423,7 +423,7 @@ def roundtrip_randsize(arr):
 def roundtrip_truncated(arr):
     f = BytesIO()
     format.write_array(f, arr)
-    #BytesIO is one byte short
+    # BytesIO is one byte short
     f2 = BytesIO(f.getvalue()[0:-1])
     arr2 = format.read_array(f2)
     return arr2
@@ -515,6 +515,7 @@ dt5 = np.dtype({'names': ['a', 'b'], 'formats': ['i4', 'i4'],
 # empty
 dt6 = np.dtype({'names': [], 'formats': [], 'itemsize': 8})
 
+
 @pytest.mark.parametrize("dt", [dt1, dt2, dt3, dt4, dt5, dt6])
 def test_load_padded_dtype(tmpdir, dt):
     arr = np.zeros(3, dt)
@@ -599,45 +600,46 @@ def test_pickle_disallow(tmpdir):
     assert_raises(ValueError, np.save, path, np.array([None], dtype=object),
                   allow_pickle=False)
 
+
 @pytest.mark.parametrize('dt', [
     np.dtype(np.dtype([('a', np.int8),
                        ('b', np.int16),
                        ('c', np.int32),
-                      ], align=True),
+                       ], align=True),
              (3,)),
-    np.dtype([('x', np.dtype({'names':['a','b'],
-                              'formats':['i1','i1'],
-                              'offsets':[0,4],
-                              'itemsize':8,
-                             },
-                    (3,)),
+    np.dtype([('x', np.dtype({'names': ['a', 'b'],
+                              'formats': ['i1', 'i1'],
+                              'offsets': [0, 4],
+                              'itemsize': 8,
+                              },
+                             (3,)),
                (4,),
-             )]),
+               )]),
     np.dtype([('x',
-                   ('<f8', (5,)),
-                   (2,),
+               ('<f8', (5,)),
+               (2,),
                )]),
     np.dtype([('x', np.dtype((
         np.dtype((
-            np.dtype({'names':['a','b'],
-                      'formats':['i1','i1'],
-                      'offsets':[0,4],
-                      'itemsize':8}),
+            np.dtype({'names': ['a', 'b'],
+                      'formats': ['i1', 'i1'],
+                      'offsets': [0, 4],
+                      'itemsize': 8}),
             (3,)
-            )),
+        )),
         (4,)
-        )))
-        ]),
+    )))
+    ]),
     np.dtype([
         ('a', np.dtype((
             np.dtype((
                 np.dtype((
                     np.dtype([
                         ('a', int),
-                        ('b', np.dtype({'names':['a','b'],
-                                        'formats':['i1','i1'],
-                                        'offsets':[0,4],
-                                        'itemsize':8})),
+                        ('b', np.dtype({'names': ['a', 'b'],
+                                        'formats': ['i1', 'i1'],
+                                        'offsets': [0, 4],
+                                        'itemsize': 8})),
                     ]),
                     (3,),
                 )),
@@ -645,15 +647,15 @@ def test_pickle_disallow(tmpdir):
             )),
             (5,),
         )))
-        ]),
-    ])
-
+    ]),
+])
 def test_descr_to_dtype(dt):
     dt1 = format.descr_to_dtype(dt.descr)
     assert_equal_(dt1, dt)
     arr1 = np.zeros(3, dt)
     arr2 = roundtrip(arr1)
     assert_array_equal(arr1, arr2)
+
 
 def test_version_2_0():
     f = BytesIO()
@@ -690,7 +692,7 @@ def test_version_2_0_memmap(tmpdir):
 
     # 1.0 requested but data cannot be saved this way
     assert_raises(ValueError, format.open_memmap, tf1, mode='w+', dtype=d.dtype,
-                            shape=d.shape, version=(1, 0))
+                  shape=d.shape, version=(1, 0))
 
     ma = format.open_memmap(tf1, mode='w+', dtype=d.dtype,
                             shape=d.shape, version=(2, 0))
@@ -711,6 +713,7 @@ def test_version_2_0_memmap(tmpdir):
 
     assert_array_equal(ma, d)
 
+
 @pytest.mark.parametrize("mmap_mode", ["r", None])
 def test_huge_header(tmpdir, mmap_mode):
     f = os.path.join(tmpdir, f'large_header.npy')
@@ -718,7 +721,7 @@ def test_huge_header(tmpdir, mmap_mode):
 
     with pytest.warns(UserWarning, match=".*format 2.0"):
         np.save(f, arr)
-    
+
     with pytest.raises(ValueError, match="Header.*large"):
         np.load(f, mmap_mode=mmap_mode)
 
@@ -731,13 +734,14 @@ def test_huge_header(tmpdir, mmap_mode):
     res = np.load(f, mmap_mode=mmap_mode, max_header_size=180000)
     assert_array_equal(res, arr)
 
+
 def test_huge_header_npz(tmpdir):
     f = os.path.join(tmpdir, f'large_header.npz')
     arr = np.array(1, dtype="i,"*10000+"i")
 
     with pytest.warns(UserWarning, match=".*format 2.0"):
         np.savez(f, arr=arr)
-    
+
     # Only getting the array from the file actually reads it
     with pytest.raises(ValueError, match="Header.*large"):
         np.load(f)["arr"]
@@ -750,6 +754,7 @@ def test_huge_header_npz(tmpdir):
 
     res = np.load(f, max_header_size=180000)["arr"]
     assert_array_equal(res, arr)
+
 
 def test_write_version():
     f = BytesIO()
@@ -796,6 +801,7 @@ malformed_magic = [
     b'',
 ]
 
+
 def test_read_magic():
     s1 = BytesIO()
     s2 = BytesIO()
@@ -816,6 +822,7 @@ def test_read_magic():
 
     assert_(s1.tell() == format.MAGIC_LEN)
     assert_(s2.tell() == format.MAGIC_LEN)
+
 
 def test_read_magic_bad_magic():
     for magic in malformed_magic:
@@ -984,6 +991,7 @@ def test_unicode_field_names(tmpdir):
         with assert_warns(UserWarning):
             format.write_array(f, arr, version=None)
 
+
 def test_header_growth_axis():
     for is_fortran_array, dtype_space, expected_header_length in [
         [False, 22, 128], [False, 23, 192], [True, 23, 128], [True, 24, 192]
@@ -998,18 +1006,20 @@ def test_header_growth_axis():
 
             assert len(fp.getvalue()) == expected_header_length
 
+
 @pytest.mark.parametrize('dt', [
     np.dtype({'names': ['a', 'b'], 'formats':  [float, np.dtype('S3',
-                 metadata={'some': 'stuff'})]}),
+                                                                metadata={'some': 'stuff'})]}),
     np.dtype(int, metadata={'some': 'stuff'}),
     np.dtype([('subarray', (int, (2,)))], metadata={'some': 'stuff'}),
     # recursive: metadata on the field of a dtype
     np.dtype({'names': ['a', 'b'], 'formats': [
-        float, np.dtype({'names': ['c'], 'formats': [np.dtype(int, metadata={})]})
+        float, np.dtype({'names': ['c'], 'formats': [
+                        np.dtype(int, metadata={})]})
     ]}),
-    ])
+])
 @pytest.mark.skipif(IS_PYPY and sys.implementation.version <= (7, 3, 8),
-        reason="PyPy bug in error formatting")
+                    reason="PyPy bug in error formatting")
 def test_metadata_dtype(dt):
     # gh-14142
     arr = np.ones(10, dtype=dt)

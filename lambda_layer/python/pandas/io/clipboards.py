@@ -76,7 +76,8 @@ def read_clipboard(
     # only utf-8 is valid for passed value because that's what clipboard
     # supports
     if encoding is not None and encoding.lower().replace("-", "") != "utf8":
-        raise NotImplementedError("reading from clipboard only supports utf-8 encoding")
+        raise NotImplementedError(
+            "reading from clipboard only supports utf-8 encoding")
 
     check_dtype_backend(dtype_backend)
 
@@ -87,7 +88,8 @@ def read_clipboard(
 
     # Try to decode (if needed, as "text" might already be a string here).
     try:
-        text = text.decode(kwargs.get("encoding") or get_option("display.encoding"))
+        text = text.decode(kwargs.get("encoding")
+                           or get_option("display.encoding"))
     except AttributeError:
         pass
 

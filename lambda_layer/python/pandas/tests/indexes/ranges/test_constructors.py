@@ -27,7 +27,8 @@ class TestRangeIndexConstructors:
     )
     def test_constructor(self, args, kwargs, start, stop, step, name):
         result = RangeIndex(*args, name=name, **kwargs)
-        expected = Index(np.arange(start, stop, step, dtype=np.int64), name=name)
+        expected = Index(np.arange(start, stop, step,
+                         dtype=np.int64), name=name)
         assert isinstance(result, RangeIndex)
         assert result.name is name
         assert result._range == range(start, stop, step)

@@ -249,7 +249,8 @@ class Grouper:
     _gpr_index: Index | None
     _grouper: Index | None
 
-    _attributes: tuple[str, ...] = ("key", "level", "freq", "axis", "sort", "dropna")
+    _attributes: tuple[str, ...] = (
+        "key", "level", "freq", "axis", "sort", "dropna")
 
     def __new__(cls, *args, **kwargs):
         if kwargs.get("freq") is not None:
@@ -351,7 +352,8 @@ class Grouper:
         assert obj is not None
 
         if self.key is not None and self.level is not None:
-            raise ValueError("The Grouper cannot specify both a key and a level!")
+            raise ValueError(
+                "The Grouper cannot specify both a key and a level!")
 
         # Keep self._grouper value before overriding
         if self._grouper is None:
@@ -389,7 +391,8 @@ class Grouper:
                 # equivalent to the axis name
                 if isinstance(ax, MultiIndex):
                     level = ax._get_level_number(level)
-                    ax = Index(ax._get_level_values(level), name=ax.names[level])
+                    ax = Index(ax._get_level_values(
+                        level), name=ax.names[level])
 
                 else:
                     if level not in (0, ax.name):
@@ -423,7 +426,8 @@ class Grouper:
         )
         index = self._gpr_index
         if index is None:
-            raise ValueError("_set_grouper must be called before ax is accessed")
+            raise ValueError(
+                "_set_grouper must be called before ax is accessed")
         return index
 
     @final
@@ -576,7 +580,8 @@ class Grouping:
             # check again as we have by this point converted these
             # to an actual value (rather than a pd.Grouper)
             assert self.obj is not None  # for mypy
-            newgrouper, newobj = grouping_vector._get_grouper(self.obj, validate=False)
+            newgrouper, newobj = grouping_vector._get_grouper(
+                self.obj, validate=False)
             self.obj = newobj
 
             if isinstance(newgrouper, ops.BinGrouper):
@@ -588,7 +593,8 @@ class Grouping:
                 # TODO: 2023-02-03 no test cases with len(newgrouper.groupings) > 1.
                 #  If that were to occur, would we be throwing out information?
                 # error: Cannot determine type of "grouping_vector"  [has-type]
-                ng = newgrouper.groupings[0].grouping_vector  # type: ignore[has-type]
+                # type: ignore[has-type]
+                ng = newgrouper.groupings[0].grouping_vector
                 # use Index instead of ndarray so we can recover the name
                 grouping_vector = Index(ng, name=newgrouper.result_index.name)
 
@@ -839,7 +845,8 @@ class Grouping:
 
     @cache_readonly
     def groups(self) -> dict[Hashable, np.ndarray]:
-        cats = Categorical.from_codes(self.codes, self._group_index, validate=False)
+        cats = Categorical.from_codes(
+            self.codes, self._group_index, validate=False)
         return self._index.groupby(cats)
 
 
@@ -908,7 +915,8 @@ def get_grouper(
                 elif nlevels == 0:
                     raise ValueError("No group keys passed!")
                 else:
-                    raise ValueError("multiple levels only valid with MultiIndex")
+                    raise ValueError(
+                        "multiple levels only valid with MultiIndex")
 
             if isinstance(level, str):
                 if obj._get_axis(axis).name != level:
@@ -917,7 +925,8 @@ def get_grouper(
                         f"of the {obj._get_axis_name(axis)}"
                     )
             elif level > 0 or level < -1:
-                raise ValueError("level > 0 or level < -1 only valid with MultiIndex")
+                raise ValueError(
+                    "level > 0 or level < -1 only valid with MultiIndex")
 
             # NOTE: `group_axis` and `group_axis.get_level_values(level)`
             # are same in this section.
@@ -1070,7 +1079,8 @@ def get_grouper(
     if len(groupings) == 0 and len(obj):
         raise ValueError("No group keys passed!")
     if len(groupings) == 0:
-        groupings.append(Grouping(Index([], dtype="int"), np.array([], dtype=np.intp)))
+        groupings.append(Grouping(Index([], dtype="int"),
+                         np.array([], dtype=np.intp)))
 
     # create the internals grouper
     grouper = ops.BaseGrouper(group_axis, groupings, sort=sort, dropna=dropna)

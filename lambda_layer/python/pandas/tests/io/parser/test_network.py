@@ -49,7 +49,8 @@ def test_compressed_urls(
     if mode != "explicit":
         compression_only = mode
 
-    url_table = read_csv(url, sep="\t", compression=compression_only, engine=engine)
+    url_table = read_csv(
+        url, sep="\t", compression=compression_only, engine=engine)
     tm.assert_frame_equal(url_table, salaries_table)
 
 
@@ -157,7 +158,7 @@ class TestS3:
                     assert isinstance(df, DataFrame)
                     assert not df.empty
                     true_df = tips_df.iloc[
-                        chunksize * i_chunk : chunksize * (i_chunk + 1)
+                        chunksize * i_chunk: chunksize * (i_chunk + 1)
                     ]
                     tm.assert_frame_equal(true_df, df)
 
@@ -181,7 +182,7 @@ class TestS3:
                     assert isinstance(df, DataFrame)
                     assert not df.empty
                     true_df = tips_df.iloc[
-                        chunksize * i_chunk : chunksize * (i_chunk + 1)
+                        chunksize * i_chunk: chunksize * (i_chunk + 1)
                     ]
                     tm.assert_frame_equal(true_df, df)
 

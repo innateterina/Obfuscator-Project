@@ -98,7 +98,8 @@ baz,7,8,9
 
 
 @pytest.mark.parametrize(
-    "kwargs", [{"iterator": True, "chunksize": 1}, {"iterator": True}, {"chunksize": 1}]
+    "kwargs", [{"iterator": True, "chunksize": 1},
+               {"iterator": True}, {"chunksize": 1}]
 )
 def test_iterator_skipfooter_errors(all_parsers, kwargs):
     msg = "'skipfooter' not supported for iteration"

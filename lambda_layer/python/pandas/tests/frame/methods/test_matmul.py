@@ -34,7 +34,8 @@ class TestMatMul:
 
         # DataFrame @ Series
         result = operator.matmul(a, b.one)
-        expected = Series(np.dot(a.values, b.one.values), index=["a", "b", "c"])
+        expected = Series(np.dot(a.values, b.one.values),
+                          index=["a", "b", "c"])
         tm.assert_series_equal(result, expected)
 
         # np.array @ DataFrame

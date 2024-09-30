@@ -26,7 +26,8 @@ class TestSeriesRepr:
     def test_multilevel_name_print_0(self):
         # GH#55415 None does not get printed, but 0 does
         # (matching DataFrame and flat index behavior)
-        mi = pd.MultiIndex.from_product([range(2, 3), range(3, 4)], names=[0, None])
+        mi = pd.MultiIndex.from_product(
+            [range(2, 3), range(3, 4)], names=[0, None])
         ser = Series(1.5, index=mi)
 
         res = repr(ser)
@@ -74,7 +75,8 @@ class TestSeriesRepr:
         assert "Name:" not in repr(s)
 
     def test_empty_name_printing(self):
-        s = Series(index=date_range("20010101", "20020101"), name="test", dtype=object)
+        s = Series(index=date_range("20010101", "20020101"),
+                   name="test", dtype=object)
         assert "Name: test" in repr(s)
 
     @pytest.mark.parametrize("args", [(), (0, -1)])
@@ -215,7 +217,8 @@ class TestSeriesRepr:
         index = Index(
             [datetime(2000, 1, 1) + timedelta(i) for i in range(1000)], dtype=object
         )
-        ts = Series(np.random.default_rng(2).standard_normal(len(index)), index)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(index)), index)
         repr(ts)
 
         ts = Series(
@@ -418,7 +421,8 @@ Categories (5, datetime64[ns]): [2011-01-01 09:00:00, 2011-01-01 10:00:00, 2011-
 
         assert repr(s) == exp
 
-        idx = date_range("2011-01-01 09:00", freq="h", periods=5, tz="US/Eastern")
+        idx = date_range("2011-01-01 09:00", freq="h",
+                         periods=5, tz="US/Eastern")
         s = Series(Categorical(idx))
         exp = """0   2011-01-01 09:00:00-05:00
 1   2011-01-01 10:00:00-05:00
@@ -446,7 +450,8 @@ Categories (5, datetime64[ns]): [2011-01-01 09:00:00 < 2011-01-01 10:00:00 < 201
 
         assert repr(s) == exp
 
-        idx = date_range("2011-01-01 09:00", freq="h", periods=5, tz="US/Eastern")
+        idx = date_range("2011-01-01 09:00", freq="h",
+                         periods=5, tz="US/Eastern")
         s = Series(Categorical(idx, ordered=True))
         exp = """0   2011-01-01 09:00:00-05:00
 1   2011-01-01 10:00:00-05:00

@@ -349,7 +349,8 @@ class Resampler(BaseGroupBy, PandasObject):
         axis="",
     )
     def aggregate(self, func=None, *args, **kwargs):
-        result = ResamplerWindowApply(self, func, args=args, kwargs=kwargs).agg()
+        result = ResamplerWindowApply(
+            self, func, args=args, kwargs=kwargs).agg()
         if result is None:
             how = func
             result = self._groupby_and_aggregate(how, *args, **kwargs)
@@ -447,7 +448,7 @@ class Resampler(BaseGroupBy, PandasObject):
             if callable(how):
                 # TODO: test_resample_apply_with_additional_args fails if we go
                 #  through the non-lambda path, not clear that it should.
-                func = lambda x: how(x, *args, **kwargs)
+                def func(x): return how(x, *args, **kwargs)
                 result = grouped.aggregate(func)
             else:
                 result = grouped.aggregate(how, *args, **kwargs)
@@ -1673,14 +1674,16 @@ class _GroupByMixin(PandasObject, SelectionMixin):
         """
 
         def func(x):
-            x = self._resampler_cls(x, timegrouper=self._timegrouper, gpr_index=self.ax)
+            x = self._resampler_cls(
+                x, timegrouper=self._timegrouper, gpr_index=self.ax)
 
             if isinstance(f, str):
                 return getattr(x, f)(**kwargs)
 
             return x.apply(f, *args, **kwargs)
 
-        result = _apply(self._groupby, func, include_groups=self.include_groups)
+        result = _apply(self._groupby, func,
+                        include_groups=self.include_groups)
         return self._wrap_result(result)
 
     _upsample = _apply
@@ -2126,16 +2129,19 @@ class TimeGrouper(Grouper):
         if closed not in {None, "left", "right"}:
             raise ValueError(f"Unsupported value {closed} for `closed`")
         if convention not in {None, "start", "end", "e", "s"}:
-            raise ValueError(f"Unsupported value {convention} for `convention`")
+            raise ValueError(
+                f"Unsupported value {convention} for `convention`")
 
         if (
             key is None
             and obj is not None
-            and isinstance(obj.index, PeriodIndex)  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            and isinstance(obj.index, PeriodIndex)
             or (
                 key is not None
                 and obj is not None
-                and getattr(obj[key], "dtype", None) == "period"  # type: ignore[index]
+                # type: ignore[index]
+                and getattr(obj[key], "dtype", None) == "period"
             )
         ):
             freq = to_offset(freq, is_period=True)
@@ -2370,7 +2376,8 @@ class TimeGrouper(Grouper):
                 edges_dti = binner.tz_localize(None)
                 edges_dti = (
                     edges_dti
-                    + Timedelta(days=1, unit=edges_dti.unit).as_unit(edges_dti.unit)
+                    + Timedelta(days=1,
+                                unit=edges_dti.unit).as_unit(edges_dti.unit)
                     - Timedelta(1, unit=edges_dti.unit).as_unit(edges_dti.unit)
                 )
                 bin_edges = edges_dti.tz_localize(binner.tz).asi8
@@ -2400,7 +2407,8 @@ class TimeGrouper(Grouper):
             )
 
         if not len(ax):
-            binner = labels = TimedeltaIndex(data=[], freq=self.freq, name=ax.name)
+            binner = labels = TimedeltaIndex(
+                data=[], freq=self.freq, name=ax.name)
             return binner, [], labels
 
         start, end = ax.min(), ax.max()
@@ -2439,7 +2447,8 @@ class TimeGrouper(Grouper):
             )
             return binner, [], labels
 
-        labels = binner = period_range(start=ax[0], end=ax[-1], freq=freq, name=ax.name)
+        labels = binner = period_range(
+            start=ax[0], end=ax[-1], freq=freq, name=ax.name)
 
         end_stamps = (labels + freq).asfreq(freq, "s").to_timestamp()
         if ax.tz:
@@ -2468,10 +2477,12 @@ class TimeGrouper(Grouper):
         if not len(memb):
             # index contains no valid (non-NaT) values
             bins = np.array([], dtype=np.int64)
-            binner = labels = PeriodIndex(data=[], freq=self.freq, name=ax.name)
+            binner = labels = PeriodIndex(
+                data=[], freq=self.freq, name=ax.name)
             if len(ax) > 0:
                 # index is all NaT
-                binner, bins, labels = _insert_nat_bin(binner, bins, labels, len(ax))
+                binner, bins, labels = _insert_nat_bin(
+                    binner, bins, labels, len(ax))
             return binner, bins, labels
 
         freq_mult = self.freq.n
@@ -2495,7 +2506,8 @@ class TimeGrouper(Grouper):
             )
 
             # Get offset for bin edge (not label edge) adjustment
-            start_offset = Period(start, self.freq) - Period(p_start, self.freq)
+            start_offset = Period(start, self.freq) - \
+                Period(p_start, self.freq)
             # error: Item "Period" of "Union[Period, Any]" has no attribute "n"
             bin_shift = start_offset.n % freq_mult  # type: ignore[union-attr]
             start = p_start
@@ -2519,7 +2531,8 @@ class TimeGrouper(Grouper):
         bins = memb.searchsorted(prng, side="left")
 
         if nat_count > 0:
-            binner, bins, labels = _insert_nat_bin(binner, bins, labels, nat_count)
+            binner, bins, labels = _insert_nat_bin(
+                binner, bins, labels, nat_count)
 
         return binner, bins, labels
 
@@ -2547,9 +2560,11 @@ def _take_new_index(
     elif isinstance(obj, ABCDataFrame):
         if axis == 1:
             raise NotImplementedError("axis 1 is not supported")
-        new_mgr = obj._mgr.reindex_indexer(new_axis=new_index, indexer=indexer, axis=1)
+        new_mgr = obj._mgr.reindex_indexer(
+            new_axis=new_index, indexer=indexer, axis=1)
         # error: Incompatible return value type (got "DataFrame", expected "NDFrameT")
-        return obj._constructor_from_mgr(new_mgr, axes=new_mgr.axes)  # type: ignore[return-value]
+        # type: ignore[return-value]
+        return obj._constructor_from_mgr(new_mgr, axes=new_mgr.axes)
     else:
         raise ValueError("'obj' should be either a Series or a DataFrame")
 
@@ -2598,7 +2613,8 @@ def _get_timestamp_range_edges(
     if isinstance(freq, Tick):
         index_tz = first.tz
         if isinstance(origin, Timestamp) and (origin.tz is None) != (index_tz is None):
-            raise ValueError("The origin must have the same timezone as the index.")
+            raise ValueError(
+                "The origin must have the same timezone as the index.")
         if origin == "epoch":
             # set the epoch based on the timezone to have similar bins results when
             # resampling on the same kind of indexes on different timezones
@@ -2832,7 +2848,8 @@ def asfreq(
         if isinstance(obj.index, DatetimeIndex):
             # TODO: should we disallow non-DatetimeIndex?
             unit = obj.index.unit
-        dti = date_range(obj.index.min(), obj.index.max(), freq=freq, unit=unit)
+        dti = date_range(obj.index.min(), obj.index.max(),
+                         freq=freq, unit=unit)
         dti.name = obj.index.name
         new_obj = obj.reindex(dti, method=method, fill_value=fill_value)
         if normalize:
@@ -2863,9 +2880,11 @@ def _asfreq_compat(index: DatetimeIndex | PeriodIndex | TimedeltaIndex, freq):
     if isinstance(index, PeriodIndex):
         new_index = index.asfreq(freq=freq)
     elif isinstance(index, DatetimeIndex):
-        new_index = DatetimeIndex([], dtype=index.dtype, freq=freq, name=index.name)
+        new_index = DatetimeIndex(
+            [], dtype=index.dtype, freq=freq, name=index.name)
     elif isinstance(index, TimedeltaIndex):
-        new_index = TimedeltaIndex([], dtype=index.dtype, freq=freq, name=index.name)
+        new_index = TimedeltaIndex(
+            [], dtype=index.dtype, freq=freq, name=index.name)
     else:  # pragma: no cover
         raise TypeError(type(index))
     return new_index
@@ -2916,5 +2935,6 @@ def _apply(
         target_category=DeprecationWarning,
         new_message=new_message,
     ):
-        result = grouped.apply(how, *args, include_groups=include_groups, **kwargs)
+        result = grouped.apply(
+            how, *args, include_groups=include_groups, **kwargs)
     return result

@@ -328,7 +328,8 @@ class TestCommon:
         expected_duplicated = (
             pd.Series(duplicated_selection).duplicated(keep=keep).values
         )
-        tm.assert_numpy_array_equal(idx.duplicated(keep=keep), expected_duplicated)
+        tm.assert_numpy_array_equal(
+            idx.duplicated(keep=keep), expected_duplicated)
 
         # Series.drop_duplicates is tested separately
         expected_dropped = holder(pd.Series(idx).drop_duplicates(keep=keep))
@@ -351,7 +352,8 @@ class TestCommon:
 
         # check on unique index
         expected_duplicated = np.array([False] * len(unique_idx), dtype="bool")
-        tm.assert_numpy_array_equal(unique_idx.duplicated(), expected_duplicated)
+        tm.assert_numpy_array_equal(
+            unique_idx.duplicated(), expected_duplicated)
         result_dropped = unique_idx.drop_duplicates()
         tm.assert_index_equal(result_dropped, unique_idx)
         # validate shallow copy
@@ -372,7 +374,8 @@ class TestCommon:
             # MultiIndex tested separately in:
             #   tests/indexes/multi/test_unique_and_duplicates.
             # RangeIndex is unique by definition.
-            pytest.skip("Skip check for empty Index, MultiIndex, and RangeIndex")
+            pytest.skip(
+                "Skip check for empty Index, MultiIndex, and RangeIndex")
 
         idx = holder([index[0]] * 5)
         assert idx.is_unique is False
@@ -380,7 +383,8 @@ class TestCommon:
 
     @pytest.mark.parametrize(
         "dtype",
-        ["int64", "uint64", "float64", "category", "datetime64[ns]", "timedelta64[ns]"],
+        ["int64", "uint64", "float64", "category",
+            "datetime64[ns]", "timedelta64[ns]"],
     )
     def test_astype_preserves_name(self, index, dtype):
         # https://github.com/pandas-dev/pandas/issues/32013
@@ -397,7 +401,8 @@ class TestCommon:
             else:
                 warn = np.ComplexWarning
 
-        is_pyarrow_str = str(index.dtype) == "string[pyarrow]" and dtype == "category"
+        is_pyarrow_str = str(
+            index.dtype) == "string[pyarrow]" and dtype == "category"
         try:
             # Some of these conversions cannot succeed so we use a try / except
             with tm.assert_produces_warning(
@@ -475,7 +480,8 @@ def test_sort_values_with_missing(index_with_missing, na_position, request):
         sorted_values = np.concatenate([sorted_values, [None] * missing_count])
 
     # Explicitly pass dtype needed for Index backed by EA e.g. IntegerArray
-    expected = type(index_with_missing)(sorted_values, dtype=index_with_missing.dtype)
+    expected = type(index_with_missing)(
+        sorted_values, dtype=index_with_missing.dtype)
 
     result = index_with_missing.sort_values(na_position=na_position)
     tm.assert_index_equal(result, expected)

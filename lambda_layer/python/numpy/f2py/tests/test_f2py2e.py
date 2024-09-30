@@ -1,4 +1,8 @@
-import textwrap, re, sys, subprocess, shlex
+import textwrap
+import re
+import sys
+import subprocess
+import shlex
 from pathlib import Path
 from collections import namedtuple
 import platform
@@ -15,6 +19,7 @@ from numpy.testing._private.utils import NOGIL_BUILD
 
 # Tests for CLI commands which call meson will fail if no compilers are present, these are to be skipped
 
+
 def compiler_check_f2pycli():
     if not util.has_fortran_compiler():
         pytest.skip("CLI command needs a Fortran compiler")
@@ -24,6 +29,7 @@ def compiler_check_f2pycli():
 #########################
 # CLI utils and classes #
 #########################
+
 
 PPaths = namedtuple("PPaths", "finp, f90inp, pyf, wrap77, wrap90, cmodf")
 
@@ -79,7 +85,8 @@ def hello_world_f90(tmpdir_factory):
 @pytest.fixture(scope="session")
 def gh23598_warn(tmpdir_factory):
     """F90 file for testing warnings in gh23598"""
-    fdat = util.getpath("tests", "src", "crackfortran", "gh23598Warn.f90").read_text()
+    fdat = util.getpath("tests", "src", "crackfortran",
+                        "gh23598Warn.f90").read_text()
     fn = tmpdir_factory.getbasetemp() / "gh23598Warn.f90"
     fn.write_text(fdat, encoding="ascii")
     return fn
@@ -111,10 +118,12 @@ def retreal_f77(tmpdir_factory):
     fn.write_text(fdat, encoding="ascii")
     return fn
 
+
 @pytest.fixture(scope="session")
 def f2cmap_f90(tmpdir_factory):
     """Generates a single f90 file for testing"""
-    fdat = util.getpath("tests", "src", "f2cmap", "isoFortranEnvMap.f90").read_text()
+    fdat = util.getpath("tests", "src", "f2cmap",
+                        "isoFortranEnvMap.f90").read_text()
     f2cmap = util.getpath("tests", "src", "f2cmap", ".f2py_f2cmap").read_text()
     fn = tmpdir_factory.getbasetemp() / "f2cmap.f90"
     fmap = tmpdir_factory.getbasetemp() / "mapfile"
@@ -125,6 +134,7 @@ def f2cmap_f90(tmpdir_factory):
 #########
 # Tests #
 #########
+
 
 def test_gh22819_cli(capfd, gh22819_cli, monkeypatch):
     """Check that module names are handled correctly
@@ -138,8 +148,9 @@ def test_gh22819_cli(capfd, gh22819_cli, monkeypatch):
     monkeypatch.setattr(sys, "argv", f"f2py -m blah {ipath}".split())
     with util.switchdir(ipath.parent):
         f2pycli()
-        gen_paths = [item.name for item in ipath.parent.rglob("*") if item.is_file()]
-        assert "blahmodule.c" not in gen_paths # shouldn't be generated
+        gen_paths = [item.name for item in ipath.parent.rglob(
+            "*") if item.is_file()]
+        assert "blahmodule.c" not in gen_paths  # shouldn't be generated
         assert "blah-f2pywrappers.f" not in gen_paths
         assert "test_22819-f2pywrappers.f" in gen_paths
         assert "test_22819module.c" in gen_paths
@@ -221,7 +232,8 @@ def test_untitled_cli(capfd, hello_world_f90, monkeypatch):
     CLI :: defaults
     """
     ipath = Path(hello_world_f90)
-    monkeypatch.setattr(sys, "argv", f"f2py --backend meson -c {ipath}".split())
+    monkeypatch.setattr(
+        sys, "argv", f"f2py --backend meson -c {ipath}".split())
     with util.switchdir(ipath.parent):
         compiler_check_f2pycli()
         out, _ = capfd.readouterr()
@@ -250,7 +262,7 @@ def test_no_py312_distutils_fcompiler(capfd, hello_world_f90, monkeypatch):
         f2pycli()
         out, _ = capfd.readouterr()
         assert "Use --dep for meson builds" in out
-    MNAME = "hi2" # Needs to be different for a new -c
+    MNAME = "hi2"  # Needs to be different for a new -c
     monkeypatch.setattr(
         sys, "argv", f"f2py {ipath} -c -m {MNAME} --backend distutils".split()
     )
@@ -362,7 +374,8 @@ def test_mod_gen_gh25263(capfd, hello_world_f77, monkeypatch):
     MNAME = "hi"
     foutl = get_io_paths(hello_world_f77, mname=MNAME)
     ipath = foutl.finp
-    monkeypatch.setattr(sys, "argv", f'f2py {ipath} -m {MNAME} -h hi.pyf'.split())
+    monkeypatch.setattr(
+        sys, "argv", f'f2py {ipath} -m {MNAME} -h hi.pyf'.split())
     with util.switchdir(ipath.parent):
         f2pycli()
         with Path('hi.pyf').open() as hipyf:
@@ -588,7 +601,8 @@ def test_debugcapi_bld(hello_world_f90, monkeypatch):
 
     with util.switchdir(ipath.parent):
         f2pycli()
-        cmd_run = shlex.split(f"{sys.executable} -c \"import blah; blah.hi()\"")
+        cmd_run = shlex.split(
+            f"{sys.executable} -c \"import blah; blah.hi()\"")
         rout = subprocess.run(cmd_run, capture_output=True, encoding='UTF-8')
         eout = ' Hello World\n'
         eerr = textwrap.dedent("""\
@@ -693,7 +707,8 @@ def test_f2cmap(capfd, f2cmap_f90, monkeypatch):
     CLI :: --f2cmap
     """
     ipath = Path(f2cmap_f90)
-    monkeypatch.setattr(sys, "argv", f'f2py -m blah {ipath} --f2cmap mapfile'.split())
+    monkeypatch.setattr(
+        sys, "argv", f'f2py -m blah {ipath} --f2cmap mapfile'.split())
 
     with util.switchdir(ipath.parent):
         f2pycli()
@@ -757,7 +772,8 @@ def test_npdistop(hello_world_f90, monkeypatch):
 
     with util.switchdir(ipath.parent):
         f2pycli()
-        cmd_run = shlex.split(f"{sys.executable} -c \"import blah; blah.hi()\"")
+        cmd_run = shlex.split(
+            f"{sys.executable} -c \"import blah; blah.hi()\"")
         rout = subprocess.run(cmd_run, capture_output=True, encoding='UTF-8')
         eout = ' Hello World\n'
         assert rout.stdout == eout
@@ -770,7 +786,8 @@ def test_no_freethreading_compatible(hello_world_f90, monkeypatch):
     CLI :: --no-freethreading-compatible
     """
     ipath = Path(hello_world_f90)
-    monkeypatch.setattr(sys, "argv", f'f2py -m blah {ipath} -c --no-freethreading-compatible'.split())
+    monkeypatch.setattr(
+        sys, "argv", f'f2py -m blah {ipath} -c --no-freethreading-compatible'.split())
 
     with util.switchdir(ipath.parent):
         compiler_check_f2pycli()
@@ -795,7 +812,8 @@ def test_freethreading_compatible(hello_world_f90, monkeypatch):
     CLI :: --freethreading_compatible
     """
     ipath = Path(hello_world_f90)
-    monkeypatch.setattr(sys, "argv", f'f2py -m blah {ipath} -c --freethreading-compatible'.split())
+    monkeypatch.setattr(
+        sys, "argv", f'f2py -m blah {ipath} -c --freethreading-compatible'.split())
 
     with util.switchdir(ipath.parent):
         compiler_check_f2pycli()

@@ -6,6 +6,7 @@ import pytest
 from numpy.testing import assert_equal, assert_, assert_array_equal
 from numpy.random import (Generator, MT19937, PCG64, PCG64DXSM, Philox, SFC64)
 
+
 @pytest.fixture(scope='module',
                 params=(np.bool, np.int8, np.int16, np.int32, np.int64,
                         np.uint8, np.uint16, np.uint32, np.uint64))
@@ -478,7 +479,7 @@ class RNG:
                            self.seed_vector_bits - 1) + 1
         bg = self.bit_generator(seed)
         state1 = bg.state
-        bg  = self.bit_generator(seed[0])
+        bg = self.bit_generator(seed[0])
         state2 = bg.state
         assert_(not comp_state(state1, state2))
 

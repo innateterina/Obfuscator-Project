@@ -243,6 +243,7 @@ def outmess(line, flag=1):
             sys.stdout.write(filepositiontext)
         sys.stdout.write(line)
 
+
 re._MAXCACHE = 50
 defaultimplicitrules = {}
 for c in "abcdefghopqrstuvwxyz$_":
@@ -366,7 +367,7 @@ def readfortrancode(ffile, dowithline=show, istop=1):
     global beginpattern, quiet, verbose, dolowercase, include_paths
 
     if not istop:
-        saveglobals = gotnextfile, filepositiontext, currentfilename, sourcecodeform, strictf77,\
+        saveglobals = gotnextfile, filepositiontext, currentfilename, sourcecodeform, strictf77, \
             beginpattern, quiet, verbose, dolowercase
     if ffile == []:
         return
@@ -468,7 +469,7 @@ def readfortrancode(ffile, dowithline=show, istop=1):
             else:
                 r = cont1.match(l)
                 if r:
-                    l = r.group('line') # Continuation follows ..
+                    l = r.group('line')  # Continuation follows ..
                 if cont:
                     ll = ll + cont2.match(l).group('line')
                     finalline = ''
@@ -568,8 +569,9 @@ def readfortrancode(ffile, dowithline=show, istop=1):
     if istop:
         dowithline('', 1)
     else:
-        gotnextfile, filepositiontext, currentfilename, sourcecodeform, strictf77,\
+        gotnextfile, filepositiontext, currentfilename, sourcecodeform, strictf77, \
             beginpattern, quiet, verbose, dolowercase = saveglobals
+
 
 # Crack line
 beforethisafter = r'\s*(?P<before>%s(?=\s*(\b(%s)\b)))' + \
@@ -653,13 +655,15 @@ multilinepattern = re.compile(
     r"\s*(?P<before>''')(?P<this>.*?)(?P<after>''')\s*\Z", re.S), 'multiline'
 ##
 
+
 def split_by_unquoted(line, characters):
     """
     Splits the line into (line[:i], line[i:]),
     where i is the index of first occurrence of one of the characters
     not within quotes, or len(line) if no such index exists
     """
-    assert not (set('"\'') & set(characters)), "cannot split by unquoted quotes"
+    assert not (set('"\'') & set(characters)
+                ), "cannot split by unquoted quotes"
     r = re.compile(
         r"\A(?P<before>({single_quoted}|{double_quoted}|{not_quoted})*)"
         r"(?P<after>{char}.*)\Z".format(
@@ -673,6 +677,7 @@ def split_by_unquoted(line, characters):
         return (d["before"], d["after"])
     return (line, "")
 
+
 def _simplifyargs(argsline):
     a = []
     for n in markoutercomma(argsline).split('@,@'):
@@ -681,9 +686,12 @@ def _simplifyargs(argsline):
         a.append(n)
     return ','.join(a)
 
+
 crackline_re_1 = re.compile(r'\s*(?P<result>\b[a-z]+\w*\b)\s*=.*', re.I)
 crackline_bind_1 = re.compile(r'\s*(?P<bind>\b[a-z]+\w*\b)\s*=.*', re.I)
-crackline_bindlang = re.compile(r'\s*bind\(\s*(?P<lang>[^,]+)\s*,\s*name\s*=\s*"(?P<lang_name>[^"]+)"\s*\)', re.I)
+crackline_bindlang = re.compile(
+    r'\s*bind\(\s*(?P<lang>[^,]+)\s*,\s*name\s*=\s*"(?P<lang_name>[^"]+)"\s*\)', re.I)
+
 
 def crackline(line, reset=0):
     """
@@ -699,7 +707,7 @@ def crackline(line, reset=0):
 
     _, has_semicolon = split_by_unquoted(line, ";")
     if has_semicolon and not (f2pyenhancementspattern[0].match(line) or
-                               multilinepattern[0].match(line)):
+                              multilinepattern[0].match(line)):
         # XXX: non-zero reset values need testing
         assert reset == 0, repr(reset)
         # split line on unquoted semicolons
@@ -881,6 +889,7 @@ def markoutercomma(line, comma=','):
     assert not f, repr((f, line, l))
     return l
 
+
 def unmarkouterparen(line):
     r = line.replace('@(@', '(').replace('@)@', ')')
     return r
@@ -916,6 +925,7 @@ def appenddecl(decl, decl2, force=1):
             raise Exception('appenddecl: Unknown variable definition key: ' +
                             str(k))
     return decl
+
 
 selectpattern = re.compile(
     r'\s*(?P<this>(@\(@.*?@\)@|\*[\d*]+|\*\s*@\(@.*?@\)@|))(?P<after>.*)\Z', re.I)
@@ -954,8 +964,10 @@ def _resolvetypedefpattern(line):
         return m1.group('name'), attrs, m1.group('params')
     return None, [], None
 
+
 def parse_name_for_bind(line):
-    pattern = re.compile(r'bind\(\s*(?P<lang>[^,]+)(?:\s*,\s*name\s*=\s*["\'](?P<name>[^"\']+)["\']\s*)?\)', re.I)
+    pattern = re.compile(
+        r'bind\(\s*(?P<lang>[^,]+)(?:\s*,\s*name\s*=\s*["\'](?P<name>[^"\']+)["\']\s*)?\)', re.I)
     match = pattern.search(line)
     bind_statement = None
     if match:
@@ -963,6 +975,7 @@ def parse_name_for_bind(line):
         # Remove the 'bind' construct from the line.
         line = line[:match.start()] + line[match.end():]
     return line, bind_statement
+
 
 def _resolvenameargspattern(line):
     line, bind_cname = parse_name_for_bind(line)
@@ -1025,11 +1038,12 @@ def analyzeline(m, case, line):
             block = 'abstract interface'
         if block == 'type':
             name, attrs, _ = _resolvetypedefpattern(m.group('after'))
-            groupcache[groupcounter]['vars'][name] = dict(attrspec = attrs)
+            groupcache[groupcounter]['vars'][name] = dict(attrspec=attrs)
             args = []
             result = None
         else:
-            name, args, result, bindcline = _resolvenameargspattern(m.group('after'))
+            name, args, result, bindcline = _resolvenameargspattern(
+                m.group('after'))
         if name is None:
             if block == 'block data':
                 name = '_BLOCK_DATA_'
@@ -1151,10 +1165,12 @@ def analyzeline(m, case, line):
             if bindcline:
                 bindcdat = re.search(crackline_bindlang, bindcline)
                 if bindcdat:
-                    groupcache[groupcounter]['bindlang'] = {name : {}}
-                    groupcache[groupcounter]['bindlang'][name]["lang"] = bindcdat.group('lang')
+                    groupcache[groupcounter]['bindlang'] = {name: {}}
+                    groupcache[groupcounter]['bindlang'][name]["lang"] = bindcdat.group(
+                        'lang')
                     if bindcdat.group('lang_name'):
-                        groupcache[groupcounter]['bindlang'][name]["name"] = bindcdat.group('lang_name')
+                        groupcache[groupcounter]['bindlang'][name]["name"] = bindcdat.group(
+                            'lang_name')
             try:
                 groupcache[groupcounter]['vars'][name] = appenddecl(
                     groupcache[groupcounter]['vars'][name], groupcache[groupcounter - 2]['vars'][''])
@@ -1188,7 +1204,7 @@ def analyzeline(m, case, line):
             groupcounter = groupcounter - 1  # end interface
 
     elif case == 'entry':
-        name, args, result, _= _resolvenameargspattern(m.group('after'))
+        name, args, result, _ = _resolvenameargspattern(m.group('after'))
         if name is not None:
             if args:
                 args = rmbadname([x.strip()
@@ -1428,11 +1444,13 @@ def analyzeline(m, case, line):
             if l[0].startswith(','):
                 l[0] = l[0][1:]
             if l[0].startswith('('):
-                outmess('analyzeline: implied-DO list "%s" is not supported. Skipping.\n' % l[0])
+                outmess(
+                    'analyzeline: implied-DO list "%s" is not supported. Skipping.\n' % l[0])
                 continue
             for idx, v in enumerate(rmbadname([x.strip() for x in markoutercomma(l[0]).split('@,@')])):
                 if v.startswith('('):
-                    outmess('analyzeline: implied-DO list "%s" is not supported. Skipping.\n' % v)
+                    outmess(
+                        'analyzeline: implied-DO list "%s" is not supported. Skipping.\n' % v)
                     # XXX: subsequent init expressions may get wrong values.
                     # Ignoring since data statements are irrelevant for
                     # wrapping.
@@ -1443,14 +1461,17 @@ def analyzeline(m, case, line):
                     # integer dimension(3) :: mytab
                     # common /mycom/ mytab
                     # Since in any case it is initialized in the Fortran code
-                    outmess('Comment line in declaration "%s" is not supported. Skipping.\n' % l[1])
+                    outmess(
+                        'Comment line in declaration "%s" is not supported. Skipping.\n' % l[1])
                     continue
                 vars.setdefault(v, {})
                 vtype = vars[v].get('typespec')
                 vdim = getdimension(vars[v])
-                matches = re.findall(r"\(.*?\)", l[1]) if vtype == 'complex' else l[1].split(',')
+                matches = re.findall(
+                    r"\(.*?\)", l[1]) if vtype == 'complex' else l[1].split(',')
                 try:
-                    new_val = "(/{}/)".format(", ".join(matches)) if vdim else matches[idx]
+                    new_val = "(/{}/)".format(", ".join(matches)
+                                              ) if vdim else matches[idx]
                 except IndexError:
                     # gh-24746
                     # Runs only if above code fails. Fixes the line
@@ -1462,16 +1483,19 @@ def analyzeline(m, case, line):
                             if "*" in match:
                                 try:
                                     multiplier, value = match.split("*")
-                                    expanded_list.extend([value.strip()] * int(multiplier))
-                                except ValueError: # if int(multiplier) fails
+                                    expanded_list.extend(
+                                        [value.strip()] * int(multiplier))
+                                except ValueError:  # if int(multiplier) fails
                                     expanded_list.append(match.strip())
                             else:
                                 expanded_list.append(match.strip())
                         matches = expanded_list
-                    new_val = "(/{}/)".format(", ".join(matches)) if vdim else matches[idx]
+                    new_val = "(/{}/)".format(", ".join(matches)
+                                              ) if vdim else matches[idx]
                 current_val = vars[v].get('=')
                 if current_val and (current_val != new_val):
-                    outmess('analyzeline: changing init expression of "%s" ("%s") to "%s"\n' % (v, current_val, new_val))
+                    outmess('analyzeline: changing init expression of "%s" ("%s") to "%s"\n' % (
+                        v, current_val, new_val))
                 vars[v]['='] = new_val
                 last_name = v
         groupcache[groupcounter]['vars'] = vars
@@ -1610,6 +1634,8 @@ def cracktypespec0(typespec, ll):
         attr = ll[:i].strip()
         ll = ll[i + 2:]
     return typespec, selector, attr, ll
+
+
 #####
 namepattern = re.compile(r'\s*(?P<name>\b\w+\b)\s*(?P<after>.*)\s*\Z', re.I)
 kindselector = re.compile(
@@ -1654,7 +1680,7 @@ def markinnerspaces(line):
     -------
     str
 
-    """  
+    """
     fragment = ''
     inside = False
     current_quote = None
@@ -2293,6 +2319,7 @@ def myeval(e, g=None, l=None):
         return r
     raise ValueError('r=%r' % (r))
 
+
 getlincoef_re_1 = re.compile(r'\A\b\w+\b\Z', re.I)
 
 
@@ -2517,8 +2544,9 @@ def get_parameters(vars, global_params={}):
                 if not selected_kind_re.match(v):
                     v_ = v.split('_')
                     # In case there are additive parameters
-                    if len(v_) > 1: 
-                        v = ''.join(v_[:-1]).lower().replace(v_[-1].lower(), '')
+                    if len(v_) > 1:
+                        v = ''.join(
+                            v_[:-1]).lower().replace(v_[-1].lower(), '')
 
             # Currently this will not work for complex numbers.
             # There is missing code for extracting a complex number,
@@ -2640,7 +2668,7 @@ def analyzevars(block):
         if n[0] in list(attrrules.keys()):
             vars[n] = setattrspec(vars[n], attrrules[n[0]])
         if 'typespec' not in vars[n]:
-            if not('attrspec' in vars[n] and 'external' in vars[n]['attrspec']):
+            if not ('attrspec' in vars[n] and 'external' in vars[n]['attrspec']):
                 if implicitrules:
                     ln0 = n[0].lower()
                     for k in list(implicitrules[ln0].keys()):
@@ -2817,8 +2845,8 @@ def analyzevars(block):
                             all_deps = set()
                             compute_deps(v, all_deps)
                             if (v in n_deps
-                                 or '=' in vars[v]
-                                 or 'depend' in vars[v]):
+                                or '=' in vars[v]
+                                    or 'depend' in vars[v]):
                                 # Skip a variable that
                                 # - n depends on
                                 # - has user-defined initialization expression
@@ -3190,6 +3218,7 @@ def analyzeargs(block):
         block['vars'][block['result']] = {}
     return block
 
+
 determineexprtype_re_1 = re.compile(r'\A\(.+?,.+?\)\Z', re.I)
 determineexprtype_re_2 = re.compile(r'\A[+-]?\d+(_(?P<name>\w+)|)\Z', re.I)
 determineexprtype_re_3 = re.compile(
@@ -3311,7 +3340,8 @@ def crack2fortrangen(block, tab='\n', as_interface=False):
         result = ' result (%s)' % block['result']
         if block['result'] not in argsl:
             argsl.append(block['result'])
-    body = crack2fortrangen(block['body'], tab + tabchar, as_interface=as_interface)
+    body = crack2fortrangen(
+        block['body'], tab + tabchar, as_interface=as_interface)
     vars = vars2fortran(
         block, block['vars'], argsl, tab + tabchar, as_interface=as_interface)
     mess = ''

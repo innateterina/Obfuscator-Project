@@ -31,7 +31,8 @@ def _check_is_partition(parts: Iterable, whole: Iterable):
     whole = set(whole)
     parts = [set(x) for x in parts]
     if set.intersection(*parts) != set():
-        raise ValueError("Is not a partition because intersection is not null.")
+        raise ValueError(
+            "Is not a partition because intersection is not null.")
     if set.union(*parts) != whole:
         raise ValueError("Is not a partition because union is not the whole.")
 
@@ -194,7 +195,8 @@ def coo_to_sparse_series(
     from pandas import SparseDtype
 
     try:
-        ser = Series(A.data, MultiIndex.from_arrays((A.row, A.col)), copy=False)
+        ser = Series(A.data, MultiIndex.from_arrays(
+            (A.row, A.col)), copy=False)
     except AttributeError as err:
         raise TypeError(
             f"Expected coo_matrix. Got {type(A).__name__} instead."

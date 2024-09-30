@@ -14,7 +14,7 @@ cflags = -I/usr/include
 libs = -L/usr/lib
 """
 simple_d = {'cflags': '-I/usr/include', 'libflags': '-L/usr/lib',
-        'version': '0.1', 'name': 'foo'}
+            'version': '0.1', 'name': 'foo'}
 
 simple_variable = """\
 [meta]
@@ -32,7 +32,8 @@ cflags = -I${includedir}
 libs = -L${libdir}
 """
 simple_variable_d = {'cflags': '-I/foo/bar/include', 'libflags': '-L/foo/bar/lib',
-        'version': '0.1', 'name': 'foo'}
+                     'version': '0.1', 'name': 'foo'}
+
 
 class TestLibraryInfo:
     def test_simple(self):
@@ -60,6 +61,7 @@ class TestLibraryInfo:
         assert_(out.version == simple_variable_d['version'])
         out.vars['prefix'] = '/Users/david'
         assert_(out.cflags() == '-I/Users/david/include')
+
 
 class TestParseFlags:
     def test_simple_cflags(self):

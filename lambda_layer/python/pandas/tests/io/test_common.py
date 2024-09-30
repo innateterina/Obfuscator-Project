@@ -161,7 +161,8 @@ Look,a snake,🐍"""
 ©,®,®
 Look,a snake,🐍"""
         expected = pd.DataFrame(
-            {"a": ["1", "©", "Look"], "b": ["2", "®", "a snake"], "c": ["3", "®", "🐍"]}
+            {"a": ["1", "©", "Look"], "b": [
+                "2", "®", "a snake"], "c": ["3", "®", "🐍"]}
         )
         s = StringIO(data)
         with icom.get_handle(s, "rb", is_text=False) as handles:
@@ -236,9 +237,11 @@ Look,a snake,🐍"""
     def test_write_missing_parent_directory(self, method, module, error_class, fn_ext):
         pytest.importorskip(module)
 
-        dummy_frame = pd.DataFrame({"a": [1, 2, 3], "b": [2, 3, 4], "c": [3, 4, 5]})
+        dummy_frame = pd.DataFrame(
+            {"a": [1, 2, 3], "b": [2, 3, 4], "c": [3, 4, 5]})
 
-        path = os.path.join(HERE, "data", "missing_folder", "does_not_exist." + fn_ext)
+        path = os.path.join(HERE, "data", "missing_folder",
+                            "does_not_exist." + fn_ext)
 
         with pytest.raises(
             error_class,
@@ -267,7 +270,8 @@ Look,a snake,🐍"""
         pytest.importorskip(module)
 
         path = os.path.join("~", "does_not_exist." + fn_ext)
-        monkeypatch.setattr(icom, "_expand_user", lambda x: os.path.join("foo", x))
+        monkeypatch.setattr(icom, "_expand_user",
+                            lambda x: os.path.join("foo", x))
 
         msg1 = rf"File (b')?.+does_not_exist\.{fn_ext}'? does not exist"
         msg2 = rf"\[Errno 2\] No such file or directory: '.+does_not_exist\.{fn_ext}'"
@@ -344,7 +348,8 @@ Look,a snake,🐍"""
             ("to_json", {}, "os"),
             ("to_latex", {}, "os"),
             ("to_pickle", {}, "os"),
-            ("to_stata", {"time_stamp": pd.to_datetime("2019-01-01 00:00")}, "os"),
+            ("to_stata", {"time_stamp": pd.to_datetime(
+                "2019-01-01 00:00")}, "os"),
         ],
     )
     def test_write_fspath_all(self, writer_name, writer_kwargs, module):

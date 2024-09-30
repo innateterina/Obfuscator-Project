@@ -58,7 +58,8 @@ def test_parse_datetime_string_with_reso():
 
 def test_parse_datetime_string_with_reso_nanosecond_reso():
     # GH#46811
-    parsed, reso = parse_datetime_string_with_reso("2022-04-20 09:19:19.123456789")
+    parsed, reso = parse_datetime_string_with_reso(
+        "2022-04-20 09:19:19.123456789")
     assert reso == "nanosecond"
 
 
@@ -167,7 +168,8 @@ def test_parsers_quarter_invalid(date_str):
 
 @pytest.mark.parametrize(
     "date_str,expected",
-    [("201101", datetime(2011, 1, 1, 0, 0)), ("200005", datetime(2000, 5, 1, 0, 0))],
+    [("201101", datetime(2011, 1, 1, 0, 0)),
+     ("200005", datetime(2000, 5, 1, 0, 0))],
 )
 def test_parsers_month_freq(date_str, expected):
     result, _ = parsing.parse_datetime_string_with_reso(date_str, freq="ME")
@@ -311,7 +313,8 @@ def test_guess_datetime_format_no_padding(string, fmt, dayfirst, warning):
 
 def test_try_parse_dates():
     arr = np.array(["5/1/2000", "6/1/2000", "7/1/2000"], dtype=object)
-    result = parsing.try_parse_dates(arr, parser=lambda x: du_parse(x, dayfirst=True))
+    result = parsing.try_parse_dates(
+        arr, parser=lambda x: du_parse(x, dayfirst=True))
 
     expected = np.array([du_parse(d, dayfirst=True) for d in arr])
     tm.assert_numpy_array_equal(result, expected)

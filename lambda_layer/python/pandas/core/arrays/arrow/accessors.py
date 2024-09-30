@@ -173,7 +173,8 @@ class ListAccessor(ArrowAccessor):
             sliced = pc.list_slice(self._pa_array, start, stop, step)
             return Series(sliced, dtype=ArrowDtype(sliced.type))
         else:
-            raise ValueError(f"key must be an int or slice, got {type(key).__name__}")
+            raise ValueError(
+                f"key must be an int or slice, got {type(key).__name__}")
 
     def __iter__(self) -> Iterator:
         raise TypeError(f"'{type(self).__name__}' object is not iterable")
@@ -412,7 +413,8 @@ class StructAccessor(ArrowAccessor):
                     level_name_or_index = cast(list, level_name_or_index)
                     name_or_index = level_name_or_index.pop()
                     name = get_name(name_or_index, selected)
-                    selected = selected.type.field(selected.type.get_field_index(name))
+                    selected = selected.type.field(
+                        selected.type.get_field_index(name))
                     name = selected.name
             else:
                 raise ValueError(

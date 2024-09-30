@@ -700,7 +700,8 @@ def _maybe_promote(dtype: np.dtype, fill_value=np.nan):
             dtype = np.dtype(np.object_)
 
         elif issubclass(dtype.type, np.integer):
-            if not np_can_cast_scalar(fill_value, dtype):  # type: ignore[arg-type]
+            # type: ignore[arg-type]
+            if not np_can_cast_scalar(fill_value, dtype):
                 # upcast to prevent overflow
                 mst = np.min_scalar_type(fill_value)
                 dtype = np.promote_types(dtype, mst)
@@ -1689,7 +1690,8 @@ def maybe_cast_to_integer_array(arr: list | np.ndarray, dtype: np.dtype) -> np.n
 
     if dtype.kind == "u" and (arr < 0).any():
         # TODO: can this be hit anymore after numpy 2.0?
-        raise OverflowError("Trying to coerce negative values to unsigned integers")
+        raise OverflowError(
+            "Trying to coerce negative values to unsigned integers")
 
     if arr.dtype.kind == "f":
         if not np.isfinite(arr).all():
@@ -1846,7 +1848,8 @@ def np_can_hold_element(dtype: np.dtype, element: Any) -> Any:
             if not isinstance(tipo, np.dtype):
                 # i.e. nullable IntegerDtype; we can put this into an ndarray
                 #  losslessly iff it has no NAs
-                arr = element._values if isinstance(element, ABCSeries) else element
+                arr = element._values if isinstance(
+                    element, ABCSeries) else element
                 if arr._hasna:
                     raise LossySetitemError
                 return element

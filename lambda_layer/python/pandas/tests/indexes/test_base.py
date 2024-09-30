@@ -126,7 +126,8 @@ class TestIndex:
         "index,has_tz",
         [
             (
-                date_range("2015-01-01 10:00", freq="D", periods=3, tz="US/Eastern"),
+                date_range("2015-01-01 10:00", freq="D",
+                           periods=3, tz="US/Eastern"),
                 True,
             ),  # datetimetz
             (timedelta_range("1 days", freq="D", periods=3), False),  # td
@@ -310,7 +311,8 @@ class TestIndex:
             (PeriodIndex(iter([]), freq="D"), PeriodIndex),
             (PeriodIndex((_ for _ in []), freq="D"), PeriodIndex),
             (RangeIndex(step=1), RangeIndex),
-            (MultiIndex(levels=[[1, 2], ["blue", "red"]], codes=[[], []]), MultiIndex),
+            (MultiIndex(levels=[[1, 2], ["blue", "red"]],
+             codes=[[], []]), MultiIndex),
         ],
     )
     def test_constructor_empty_special(self, empty, klass):
@@ -342,7 +344,8 @@ class TestIndex:
         "index",
         [
             "string",
-            pytest.param("categorical", marks=pytest.mark.xfail(reason="gh-25464")),
+            pytest.param("categorical", marks=pytest.mark.xfail(
+                reason="gh-25464")),
             "bool-object",
             "bool-dtype",
             "empty",
@@ -475,7 +478,8 @@ class TestIndex:
     @pytest.mark.parametrize("dtype", [int, np.bool_])
     def test_empty_fancy(self, index, dtype, request, using_infer_string):
         if dtype is np.bool_ and using_infer_string and index.dtype == "string":
-            request.applymarker(pytest.mark.xfail(reason="numpy behavior is buggy"))
+            request.applymarker(pytest.mark.xfail(
+                reason="numpy behavior is buggy"))
         empty_arr = np.array([], dtype=dtype)
         empty_index = type(index)([], dtype=index.dtype)
 
@@ -610,7 +614,8 @@ class TestIndex:
 
     @pytest.mark.parametrize(
         "mapper",
-        [Series(["foo", 2.0, "baz"], index=[0, 2, -1]), {0: "foo", 2: 2.0, -1: "baz"}],
+        [Series(["foo", 2.0, "baz"], index=[0, 2, -1]),
+         {0: "foo", 2: 2.0, -1: "baz"}],
     )
     def test_map_with_non_function_missing_values(self, mapper):
         # GH 12756
@@ -718,7 +723,8 @@ class TestIndex:
         msg = r"Index\.format is deprecated"
         with tm.assert_produces_warning(FutureWarning, match=msg):
             formatted = index.format()
-        null_repr = "NaN" if isinstance(nulls_fixture, float) else str(nulls_fixture)
+        null_repr = "NaN" if isinstance(
+            nulls_fixture, float) else str(nulls_fixture)
         expected = [str(index[0]), str(index[1]), str(index[2]), null_repr]
 
         assert formatted == expected
@@ -797,7 +803,8 @@ class TestIndex:
 
     @pytest.mark.parametrize(
         "values",
-        [["a", "b", ("c", "d")], ["a", ("c", "d"), "b"], [("c", "d"), "a", "b"]],
+        [["a", "b", ("c", "d")], ["a", ("c", "d"), "b"],
+         [("c", "d"), "a", "b"]],
     )
     @pytest.mark.parametrize("to_drop", [[("c", "d"), "a"], ["a", ("c", "d")]])
     def test_drop_tuple(self, values, to_drop):
@@ -825,7 +832,8 @@ class TestIndex:
         if len(index) == 0 or isinstance(index, MultiIndex):
             pytest.skip("Test doesn't make sense for empty MultiIndex")
         if isinstance(index, IntervalIndex) and not IS64:
-            pytest.skip("Cannot test IntervalIndex with int64 dtype on 32 bit platform")
+            pytest.skip(
+                "Cannot test IntervalIndex with int64 dtype on 32 bit platform")
         index = index.unique().repeat(2)
         expected = index[2:]
         result = index.drop(index[0])
@@ -848,7 +856,8 @@ class TestIndex:
     @pytest.mark.parametrize(
         "index,expected",
         [
-            (Index(["qux", "baz", "foo", "bar"]), np.array([False, False, True, True])),
+            (Index(["qux", "baz", "foo", "bar"]),
+             np.array([False, False, True, True])),
             (Index([]), np.array([], dtype=bool)),  # empty
         ],
     )
@@ -933,7 +942,8 @@ class TestIndex:
         tm.assert_numpy_array_equal(expected, index.isin(values, level=level))
 
         index.name = "foobar"
-        tm.assert_numpy_array_equal(expected, index.isin(values, level="foobar"))
+        tm.assert_numpy_array_equal(
+            expected, index.isin(values, level="foobar"))
 
     def test_isin_level_kwarg_bad_level_raises(self, index):
         for level in [10, index.nlevels, -(index.nlevels + 1)]:
@@ -1082,7 +1092,8 @@ class TestIndex:
         tm.assert_series_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "index,expected", [(Index(list("abcd")), True), (Index(range(4)), False)]
+        "index,expected", [(Index(list("abcd")), True),
+                           (Index(range(4)), False)]
     )
     def test_tab_completion(self, index, expected):
         # GH 9910
@@ -1103,7 +1114,8 @@ class TestIndex:
             result = left_index.join(right_index, how="outer")
 
         with tm.assert_produces_warning(RuntimeWarning):
-            expected = left_index.astype(object).union(right_index.astype(object))
+            expected = left_index.astype(object).union(
+                right_index.astype(object))
 
         tm.assert_index_equal(result, expected)
 
@@ -1120,7 +1132,8 @@ class TestIndex:
         tm.assert_index_equal(result, expected)
 
         # allow_fill=False
-        result = index.take(np.array([1, 0, -1]), allow_fill=False, fill_value=True)
+        result = index.take(np.array([1, 0, -1]),
+                            allow_fill=False, fill_value=True)
         expected = Index(["B", "A", "C"], name="xxx")
         tm.assert_index_equal(result, expected)
 
@@ -1215,7 +1228,8 @@ class TestIndex:
         "mi,expected",
         [
             (MultiIndex.from_tuples([(1, 2), (4, 5)]), np.array([True, True])),
-            (MultiIndex.from_tuples([(1, 2), (4, 6)]), np.array([True, False])),
+            (MultiIndex.from_tuples([(1, 2), (4, 6)]),
+             np.array([True, False])),
         ],
     )
     def test_equals_op_multiindex(self, mi, expected):
@@ -1463,7 +1477,8 @@ class TestMixedIntIndex:
                 DatetimeIndex(["2011-01-01", "2011-01-02", "2011-01-03"]),
             ),
             (
-                DatetimeIndex(["2011-01-01", "2011-01-02", "2011-01-03", pd.NaT]),
+                DatetimeIndex(
+                    ["2011-01-01", "2011-01-02", "2011-01-03", pd.NaT]),
                 DatetimeIndex(["2011-01-01", "2011-01-02", "2011-01-03"]),
             ),
             (
@@ -1479,7 +1494,8 @@ class TestMixedIntIndex:
                 PeriodIndex(["2012-02", "2012-04", "2012-05"], freq="M"),
             ),
             (
-                PeriodIndex(["2012-02", "2012-04", "NaT", "2012-05"], freq="M"),
+                PeriodIndex(
+                    ["2012-02", "2012-04", "NaT", "2012-05"], freq="M"),
                 PeriodIndex(["2012-02", "2012-04", "2012-05"], freq="M"),
             ),
         ],
@@ -1563,7 +1579,8 @@ class TestIndexUtils:
             (
                 [["a", "a"], ["c", "d"]],
                 ["L1", "L2"],
-                MultiIndex([["a"], ["c", "d"]], [[0, 0], [0, 1]], names=["L1", "L2"]),
+                MultiIndex([["a"], ["c", "d"]], [
+                           [0, 0], [0, 1]], names=["L1", "L2"]),
             ),
         ],
     )
@@ -1701,7 +1718,8 @@ def test_validate_1d_input(dtype):
     "klass, extra_kwargs",
     [
         [Index, {}],
-        *[[lambda x: Index(x, dtype=dtyp), {}] for dtyp in tm.ALL_REAL_NUMPY_DTYPES],
+        *[[lambda x: Index(x, dtype=dtyp), {}]
+          for dtyp in tm.ALL_REAL_NUMPY_DTYPES],
         [DatetimeIndex, {}],
         [TimedeltaIndex, {}],
         [PeriodIndex, {"freq": "Y"}],

@@ -15,6 +15,7 @@ from numpy._core.function_base import add_newdoc
 #
 ##############################################################################
 
+
 def numeric_type_aliases(aliases):
     def type_aliases_gen():
         for alias, doc in aliases:
@@ -48,7 +49,7 @@ possible_aliases = numeric_type_aliases([
     ('complex128', 'Complex number type composed of 2 64-bit-precision floating-point numbers'),
     ('complex192', 'Complex number type composed of 2 96-bit extended-precision floating-point numbers'),
     ('complex256', 'Complex number type composed of 2 128-bit extended-precision floating-point numbers'),
-    ])
+])
 
 
 def _get_platform_and_machine():
@@ -58,7 +59,7 @@ def _get_platform_and_machine():
         system = sys.platform
         if system == 'win32':
             machine = os.environ.get('PROCESSOR_ARCHITEW6432', '') \
-                    or os.environ.get('PROCESSOR_ARCHITECTURE', '')
+                or os.environ.get('PROCESSOR_ARCHITECTURE', '')
         else:
             machine = 'unknown'
     return system, machine
@@ -74,7 +75,7 @@ def add_newdoc_for_scalar_type(obj, fixed_aliases, doc):
 
     character_code = dtype(o).char
     canonical_name_doc = "" if obj == o.__name__ else \
-                        f":Canonical name: `numpy.{obj}`\n    "
+        f":Canonical name: `numpy.{obj}`\n    "
     if fixed_aliases:
         alias_doc = ''.join(f":Alias: `numpy.{alias}`\n    "
                             for alias in fixed_aliases)
@@ -111,106 +112,106 @@ add_newdoc_for_scalar_type('bool', [], _bool_docstring)
 add_newdoc_for_scalar_type('bool_', [], _bool_docstring)
 
 add_newdoc_for_scalar_type('byte', [],
-    """
+                           """
     Signed integer type, compatible with C ``char``.
     """)
 
 add_newdoc_for_scalar_type('short', [],
-    """
+                           """
     Signed integer type, compatible with C ``short``.
     """)
 
 add_newdoc_for_scalar_type('intc', [],
-    """
+                           """
     Signed integer type, compatible with C ``int``.
     """)
 
 # TODO: These docs probably need an if to highlight the default rather than
 #       the C-types (and be correct).
 add_newdoc_for_scalar_type('int_', [],
-    """
+                           """
     Default signed integer type, 64bit on 64bit systems and 32bit on 32bit
     systems.
     """)
 
 add_newdoc_for_scalar_type('longlong', [],
-    """
+                           """
     Signed integer type, compatible with C ``long long``.
     """)
 
 add_newdoc_for_scalar_type('ubyte', [],
-    """
+                           """
     Unsigned integer type, compatible with C ``unsigned char``.
     """)
 
 add_newdoc_for_scalar_type('ushort', [],
-    """
+                           """
     Unsigned integer type, compatible with C ``unsigned short``.
     """)
 
 add_newdoc_for_scalar_type('uintc', [],
-    """
+                           """
     Unsigned integer type, compatible with C ``unsigned int``.
     """)
 
 add_newdoc_for_scalar_type('uint', [],
-    """
+                           """
     Unsigned signed integer type, 64bit on 64bit systems and 32bit on 32bit
     systems.
     """)
 
 add_newdoc_for_scalar_type('ulonglong', [],
-    """
+                           """
     Signed integer type, compatible with C ``unsigned long long``.
     """)
 
 add_newdoc_for_scalar_type('half', [],
-    """
+                           """
     Half-precision floating-point number type.
     """)
 
 add_newdoc_for_scalar_type('single', [],
-    """
+                           """
     Single-precision floating-point number type, compatible with C ``float``.
     """)
 
 add_newdoc_for_scalar_type('double', [],
-    """
+                           """
     Double-precision floating-point number type, compatible with Python
     :class:`float` and C ``double``.
     """)
 
 add_newdoc_for_scalar_type('longdouble', [],
-    """
+                           """
     Extended-precision floating-point number type, compatible with C
     ``long double`` but not necessarily with IEEE 754 quadruple-precision.
     """)
 
 add_newdoc_for_scalar_type('csingle', [],
-    """
+                           """
     Complex number type composed of two single-precision floating-point
     numbers.
     """)
 
 add_newdoc_for_scalar_type('cdouble', [],
-    """
+                           """
     Complex number type composed of two double-precision floating-point
     numbers, compatible with Python :class:`complex`.
     """)
 
 add_newdoc_for_scalar_type('clongdouble', [],
-    """
+                           """
     Complex number type composed of two extended-precision floating-point
     numbers.
     """)
 
 add_newdoc_for_scalar_type('object_', [],
-    """
+                           """
     Any Python object.
     """)
 
 add_newdoc_for_scalar_type('str_', [],
-    r"""
+                           r"""
     A unicode string.
 
     This type strips trailing null codepoints.
@@ -230,14 +231,14 @@ add_newdoc_for_scalar_type('str_', [],
     """)
 
 add_newdoc_for_scalar_type('bytes_', [],
-    r"""
+                           r"""
     A byte string.
 
     When used in arrays, this type strips trailing null bytes.
     """)
 
 add_newdoc_for_scalar_type('void', [],
-    r"""
+                           r"""
     np.void(length_or_data, /, dtype=None)
 
     Create a new structured or unstructured void scalar.
@@ -287,7 +288,7 @@ add_newdoc_for_scalar_type('void', [],
     """)
 
 add_newdoc_for_scalar_type('datetime64', [],
-    """
+                           """
     If created from a 64-bit integer, it represents an offset from
     ``1970-01-01T00:00:00``.
     If created from string, the string can be in ISO 8601 date
@@ -311,14 +312,14 @@ add_newdoc_for_scalar_type('datetime64', [],
     """)
 
 add_newdoc_for_scalar_type('timedelta64', [],
-    """
+                           """
     A timedelta stored as a 64-bit integer.
 
     See :ref:`arrays.datetime` for more information.
     """)
 
 add_newdoc('numpy._core.numerictypes', "integer", ('is_integer',
-    """
+                                                   """
     integer.is_integer() -> bool
 
     Return ``True`` if the number is finite with integral value.
@@ -337,7 +338,7 @@ add_newdoc('numpy._core.numerictypes', "integer", ('is_integer',
 # TODO: work out how to put this on the base class, np.floating
 for float_name in ('half', 'single', 'double', 'longdouble'):
     add_newdoc('numpy._core.numerictypes', float_name, ('as_integer_ratio',
-        """
+                                                        """
         {ftype}.as_integer_ratio() -> (int, int)
 
         Return a pair of integers, whose ratio is exactly equal to the original
@@ -353,7 +354,7 @@ for float_name in ('half', 'single', 'double', 'longdouble'):
         """.format(ftype=float_name)))
 
     add_newdoc('numpy._core.numerictypes', float_name, ('is_integer',
-        f"""
+                                                        f"""
         {float_name}.is_integer() -> bool
 
         Return ``True`` if the floating point number is finite with integral
@@ -370,10 +371,10 @@ for float_name in ('half', 'single', 'double', 'longdouble'):
         """))
 
 for int_name in ('int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32',
-        'int64', 'uint64', 'int64', 'uint64', 'int64', 'uint64'):
+                 'int64', 'uint64', 'int64', 'uint64', 'int64', 'uint64'):
     # Add negative examples for signed cases by checking typecode
     add_newdoc('numpy._core.numerictypes', int_name, ('bit_count',
-        f"""
+                                                      f"""
         {int_name}.bit_count() -> int
 
         Computes the number of 1-bits in the absolute value of the input.
@@ -383,7 +384,7 @@ for int_name in ('int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32',
         --------
         >>> np.{int_name}(127).bit_count()
         7""" +
-        (f"""
+                                                      (f"""
         >>> np.{int_name}(-127).bit_count()
         7
         """ if dtype(int_name).char.islower() else "")))

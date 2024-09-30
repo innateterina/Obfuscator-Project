@@ -229,7 +229,8 @@ class TestIsNA:
         dta[-1] = NaT
         expected = np.array([False, False, True], dtype=bool)
 
-        objs = [dta, dta.tz_localize("US/Eastern"), dta - dta, dta.to_period("D")]
+        objs = [dta, dta.tz_localize(
+            "US/Eastern"), dta - dta, dta.to_period("D")]
 
         for obj in objs:
             msg = "use_inf_as_na option is deprecated"
@@ -244,7 +245,8 @@ class TestIsNA:
         [
             (np.complex128(np.nan), True),
             (np.float64(1), False),
-            (np.array([1, 1 + 0j, np.nan, 3]), np.array([False, False, True, False])),
+            (np.array([1, 1 + 0j, np.nan, 3]),
+             np.array([False, False, True, False])),
             (
                 np.array([1, 1 + 0j, np.nan, 3], dtype=object),
                 np.array([False, False, True, False]),
@@ -403,8 +405,10 @@ def test_array_equivalent(dtype_equal):
     )
     # Check the handling of nested arrays in array_equivalent_object
     assert array_equivalent(
-        np.array([np.array([np.nan, None], dtype="object"), None], dtype="object"),
-        np.array([np.array([np.nan, None], dtype="object"), None], dtype="object"),
+        np.array([np.array([np.nan, None], dtype="object"), None],
+                 dtype="object"),
+        np.array([np.array([np.nan, None], dtype="object"), None],
+                 dtype="object"),
         dtype_equal=dtype_equal,
     )
     assert array_equivalent(
@@ -477,18 +481,21 @@ def test_array_equivalent_dti(dtype_equal):
         dti1,
     )
 
-    assert not array_equivalent(DatetimeIndex([0, np.nan]), TimedeltaIndex([0, np.nan]))
+    assert not array_equivalent(DatetimeIndex(
+        [0, np.nan]), TimedeltaIndex([0, np.nan]))
 
 
 @pytest.mark.parametrize(
-    "val", [1, 1.1, 1 + 1j, True, "abc", [1, 2], (1, 2), {1, 2}, {"a": 1}, None]
+    "val", [1, 1.1, 1 + 1j, True, "abc",
+            [1, 2], (1, 2), {1, 2}, {"a": 1}, None]
 )
 def test_array_equivalent_series(val):
     arr = np.array([1, 2])
     msg = "elementwise comparison failed"
     cm = (
         # stacklevel is chosen to make sense when called from .equals
-        tm.assert_produces_warning(FutureWarning, match=msg, check_stacklevel=False)
+        tm.assert_produces_warning(
+            FutureWarning, match=msg, check_stacklevel=False)
         if isinstance(val, str) and not np_version_gte1p25
         else nullcontext()
     )
@@ -578,7 +585,8 @@ def test_array_equivalent_nested(strict_nan):
     # reached in groupby aggregations, make sure we use np.any when checking
     #  if the comparison is truthy
     left = np.array([np.array([50, 70, 90]), np.array([20, 30])], dtype=object)
-    right = np.array([np.array([50, 70, 90]), np.array([20, 30])], dtype=object)
+    right = np.array(
+        [np.array([50, 70, 90]), np.array([20, 30])], dtype=object)
 
     assert array_equivalent(left, right, strict_nan=strict_nan)
     assert not array_equivalent(left, right[::-1], strict_nan=strict_nan)
@@ -616,7 +624,8 @@ def test_array_equivalent_nested2(strict_nan):
     assert array_equivalent(left, right, strict_nan=strict_nan)
     assert not array_equivalent(left, right[::-1], strict_nan=strict_nan)
 
-    left = np.array([np.array([np.array([50, 50, 50])], dtype=object)], dtype=object)
+    left = np.array(
+        [np.array([np.array([50, 50, 50])], dtype=object)], dtype=object)
     right = np.array([50])
     assert not array_equivalent(left, right, strict_nan=strict_nan)
 
@@ -650,7 +659,8 @@ def test_array_equivalent_nested_mixed_list(strict_nan):
     left = np.array(
         [
             np.array([np.array([1, 2, 3]), np.array([4, 5])], dtype=object),
-            np.array([np.array([6]), np.array([7, 8]), np.array([9])], dtype=object),
+            np.array([np.array([6]), np.array([7, 8]),
+                     np.array([9])], dtype=object),
         ],
         dtype=object,
     )
@@ -673,7 +683,8 @@ def test_array_equivalent_nested_mixed_list(strict_nan):
 @pytest.mark.xfail(reason="failing")
 @pytest.mark.parametrize("strict_nan", [True, False])
 def test_array_equivalent_nested_dicts(strict_nan):
-    left = np.array([{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object)
+    left = np.array(
+        [{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object)
     right = np.array(
         [{"f1": 1, "f2": np.array(["a", "b"], dtype=object)}], dtype=object
     )
@@ -708,7 +719,8 @@ def test_array_equivalent_index_with_tuples():
         # Datetime-like
         (np.dtype("M8[ns]"), np.datetime64("NaT", "ns")),
         (np.dtype("m8[ns]"), np.timedelta64("NaT", "ns")),
-        (DatetimeTZDtype.construct_from_string("datetime64[ns, US/Eastern]"), NaT),
+        (DatetimeTZDtype.construct_from_string(
+            "datetime64[ns, US/Eastern]"), NaT),
         (PeriodDtype("M"), NaT),
         # Integer
         ("u1", 0),

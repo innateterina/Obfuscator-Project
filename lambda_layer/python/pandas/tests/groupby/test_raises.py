@@ -29,7 +29,8 @@ from pandas.tests.groupby import get_groupby_method_args
         np.array([0, 0, 0, 1, 2, 2, 2, 3, 3]),
         dict(zip(range(9), [0, 0, 0, 1, 2, 2, 2, 3, 3])),
         Series([1, 1, 1, 1, 1, 2, 2, 2, 2]),
-        [Series([1, 1, 1, 1, 1, 2, 2, 2, 2]), Series([3, 3, 4, 4, 4, 4, 4, 3, 3])],
+        [Series([1, 1, 1, 1, 1, 2, 2, 2, 2]),
+         Series([3, 3, 4, 4, 4, 4, 4, 3, 3])],
     ]
 )
 def by(request):
@@ -240,7 +241,8 @@ def test_groupby_raises_string_np(
         warn_msg = "using SeriesGroupBy.[sum|mean]"
     else:
         warn_msg = "using DataFrameGroupBy.[sum|mean]"
-    _call_and_check(klass, msg, how, gb, groupby_func_np, (), warn_msg=warn_msg)
+    _call_and_check(klass, msg, how, gb, groupby_func_np,
+                    (), warn_msg=warn_msg)
 
 
 @pytest.mark.parametrize("how", ["method", "agg", "transform"])
@@ -349,7 +351,8 @@ def test_groupby_raises_datetime_np(
         warn_msg = "using SeriesGroupBy.[sum|mean]"
     else:
         warn_msg = "using DataFrameGroupBy.[sum|mean]"
-    _call_and_check(klass, msg, how, gb, groupby_func_np, (), warn_msg=warn_msg)
+    _call_and_check(klass, msg, how, gb, groupby_func_np,
+                    (), warn_msg=warn_msg)
 
 
 @pytest.mark.parametrize("func", ["prod", "cumprod", "skew", "var"])
@@ -551,7 +554,8 @@ def test_groupby_raises_category_np(
         warn_msg = "using SeriesGroupBy.[sum|mean]"
     else:
         warn_msg = "using DataFrameGroupBy.[sum|mean]"
-    _call_and_check(klass, msg, how, gb, groupby_func_np, (), warn_msg=warn_msg)
+    _call_and_check(klass, msg, how, gb, groupby_func_np,
+                    (), warn_msg=warn_msg)
 
 
 @pytest.mark.parametrize("how", ["method", "agg", "transform"])
@@ -581,7 +585,8 @@ def test_groupby_raises_category_on_category(
             assert not hasattr(gb, "corrwith")
             return
 
-    empty_groups = not observed and any(group.empty for group in gb.groups.values())
+    empty_groups = not observed and any(
+        group.empty for group in gb.groups.values())
     if (
         not observed
         and how != "transform"

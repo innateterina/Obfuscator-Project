@@ -38,7 +38,8 @@ def test_equals(arr, idx):
 
 
 @pytest.mark.parametrize(
-    "val", [1, 1.1, 1 + 1j, True, "abc", [1, 2], (1, 2), {1, 2}, {"a": 1}, None]
+    "val", [1, 1.1, 1 + 1j, True, "abc",
+            [1, 2], (1, 2), {1, 2}, {"a": 1}, None]
 )
 def test_equals_list_array(val):
     # GH20676 Verify equals operator for list of Numpy arrays
@@ -96,7 +97,8 @@ def test_equals_matching_nas():
     left = Series([np.float64("NaN")], dtype=object)
     right = Series([np.float64("NaN")], dtype=object)
     assert left.equals(right)
-    assert Index(left, dtype=left.dtype).equals(Index(right, dtype=right.dtype))
+    assert Index(left, dtype=left.dtype).equals(
+        Index(right, dtype=right.dtype))
     assert left.array.equals(right.array)
 
 
@@ -132,7 +134,8 @@ def test_equals_none_vs_nan():
 
 def test_equals_None_vs_float():
     # GH#44190
-    left = Series([-np.inf, np.nan, -1.0, 0.0, 1.0, 10 / 3, np.inf], dtype=object)
+    left = Series([-np.inf, np.nan, -1.0, 0.0, 1.0,
+                  10 / 3, np.inf], dtype=object)
     right = Series([None] * len(left))
 
     # these series were found to be equal due to a bug, check that they are correctly

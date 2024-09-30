@@ -68,7 +68,8 @@ def test_read_csv_with_custom_date_parser(all_parsers):
         index_col="time",
     )
     time = [41047, 41048, 41049, 41050, 41051]
-    time = pd.TimedeltaIndex([pd.to_timedelta(i, unit="s") for i in time], name="time")
+    time = pd.TimedeltaIndex([pd.to_timedelta(i, unit="s")
+                             for i in time], name="time")
     expected = DataFrame(
         {
             "e": [-98573.7297, -98573.7299, -98573.7300, -98573.7299, -98573.7302],
@@ -107,7 +108,8 @@ def test_read_csv_with_custom_date_parser_parse_dates_false(all_parsers):
         date_parser=__custom_date_parser,
         index_col="time",
     )
-    time = Series([41047.00, 41048.00, 41049.00, 41050.00, 41051.00], name="time")
+    time = Series([41047.00, 41048.00, 41049.00,
+                  41050.00, 41051.00], name="time")
     expected = DataFrame(
         {"e": [-93.77, -95.79, -98.73, -93.99, -97.72]},
         index=time,
@@ -522,8 +524,10 @@ def test_multiple_date_cols_int_cast(all_parsers):
 
     expected = DataFrame(
         [
-            [datetime(1999, 1, 27, 19, 0), datetime(1999, 1, 27, 18, 56), "KORD", 0.81],
-            [datetime(1999, 1, 27, 20, 0), datetime(1999, 1, 27, 19, 56), "KORD", 0.01],
+            [datetime(1999, 1, 27, 19, 0), datetime(
+                1999, 1, 27, 18, 56), "KORD", 0.81],
+            [datetime(1999, 1, 27, 20, 0), datetime(
+                1999, 1, 27, 19, 56), "KORD", 0.01],
             [
                 datetime(1999, 1, 27, 21, 0),
                 datetime(1999, 1, 27, 20, 56),
@@ -617,7 +621,8 @@ KORD,19990127, 23:00:00, 22:56:00, -0.5900, 1.7100, 4.6000, 0.0000, 280.0000"""
     with tm.assert_produces_warning(
         FutureWarning, match=depr_msg, check_stacklevel=False
     ):
-        result = parser.read_csv(StringIO(data), parse_dates={"nominal": [1, 2]})
+        result = parser.read_csv(
+            StringIO(data), parse_dates={"nominal": [1, 2]})
     expected = DataFrame(
         [
             [
@@ -783,7 +788,8 @@ def test_date_parser_int_bug(all_parsers):
             "silo",
             "method",
         ],
-        index=Index([Timestamp("2012-07-24 04:12:30")], name="posix_timestamp"),
+        index=Index([Timestamp("2012-07-24 04:12:30")],
+                    name="posix_timestamp"),
     )
     tm.assert_frame_equal(result, expected)
 
@@ -849,7 +855,8 @@ def test_parse_dates_string(all_parsers):
 20090103,c,4,5
 """
     parser = all_parsers
-    result = parser.read_csv(StringIO(data), index_col="date", parse_dates=["date"])
+    result = parser.read_csv(
+        StringIO(data), index_col="date", parse_dates=["date"])
     # freq doesn't round-trip
     index = date_range("1/1/2009", periods=3, name="date")._with_freq(None)
 
@@ -981,7 +988,8 @@ def test_parse_dates_custom_euro_format(all_parsers, kwargs):
             na_values=["NA"],
         )
         exp_index = Index(
-            [datetime(2010, 1, 31), datetime(2010, 2, 1), datetime(2010, 2, 2)],
+            [datetime(2010, 1, 31), datetime(
+                2010, 2, 1), datetime(2010, 2, 2)],
             name="time",
         )
         expected = DataFrame(
@@ -1288,7 +1296,8 @@ KORD,19990127, 23:00:00, 22:56:00, -0.5900, 1.7100, 4.6000, 0.0000, 280.0000
     with tm.assert_produces_warning(
         (FutureWarning, DeprecationWarning), match=depr_msg, check_stacklevel=False
     ):
-        expected = parser.read_csv(StringIO(data), parse_dates={"nominal": [1, 2]})
+        expected = parser.read_csv(
+            StringIO(data), parse_dates={"nominal": [1, 2]})
 
     expected = expected.set_index(["nominal", "ID"])
     tm.assert_frame_equal(result, expected)
@@ -1377,7 +1386,8 @@ def test_parse_dates_empty_string(all_parsers):
     # see gh-2263
     parser = all_parsers
     data = "Date,test\n2012-01-01,1\n,2"
-    result = parser.read_csv(StringIO(data), parse_dates=["Date"], na_filter=False)
+    result = parser.read_csv(StringIO(data), parse_dates=[
+                             "Date"], na_filter=False)
 
     expected = DataFrame(
         [[datetime(2012, 1, 1), 1], [pd.NaT, 2]], columns=["Date", "test"]
@@ -1436,7 +1446,8 @@ def test_parse_dates_date_parser_and_date_format(all_parsers, reader):
         (
             "a\n04.15.2016",
             {"parse_dates": True, "index_col": 0},
-            DataFrame(index=DatetimeIndex(["2016-04-15"], name="a"), columns=[]),
+            DataFrame(index=DatetimeIndex(
+                ["2016-04-15"], name="a"), columns=[]),
         ),
         (
             "a,b\n04.15.2016,09.16.2013",
@@ -1487,7 +1498,8 @@ date, time,a,b
         [datetime(2001, 1, 5, 9, 0, 0), 0.0, 10.0],
         [datetime(2001, 1, 6, 0, 0, 0), 1.0, 11.0],
     ]
-    expected = DataFrame(expected_data, columns=["date_time", ("A", "a"), ("B", "b")])
+    expected = DataFrame(expected_data, columns=[
+                         "date_time", ("A", "a"), ("B", "b")])
     tm.assert_frame_equal(result, expected)
 
 
@@ -1518,7 +1530,8 @@ date,time,a,b
                 "KORD,19990127, 22:00:00, 21:56:00, -0.5900\n"
                 "KORD,19990127, 23:00:00, 22:56:00, -0.5900"
             ),
-            {"header": None, "parse_dates": {"actual": [1, 2], "nominal": [1, 3]}},
+            {"header": None, "parse_dates": {
+                "actual": [1, 2], "nominal": [1, 3]}},
             DataFrame(
                 [
                     [
@@ -1754,11 +1767,13 @@ def test_parse_date_column_with_empty_string(all_parsers):
     [
         (
             "a\n135217135789158401\n1352171357E+5",
-            DataFrame({"a": [135217135789158401, 135217135700000]}, dtype="float64"),
+            DataFrame(
+                {"a": [135217135789158401, 135217135700000]}, dtype="float64"),
         ),
         (
             "a\n99999999999\n123456789012345\n1234E+0",
-            DataFrame({"a": [99999999999, 123456789012345, 1234]}, dtype="float64"),
+            DataFrame(
+                {"a": [99999999999, 123456789012345, 1234]}, dtype="float64"),
         ),
     ],
 )
@@ -1800,7 +1815,8 @@ def test_parse_timezone(all_parsers):
 @skip_pyarrow  # pandas.errors.ParserError: CSV parse error
 @pytest.mark.parametrize(
     "date_string",
-    ["32/32/2019", "02/30/2019", "13/13/2019", "13/2019", "a3/11/2018", "10/11/2o17"],
+    ["32/32/2019", "02/30/2019", "13/13/2019",
+        "13/2019", "a3/11/2018", "10/11/2o17"],
 )
 def test_invalid_parse_delimited_date(all_parsers, date_string):
     parser = all_parsers
@@ -1886,7 +1902,8 @@ def test_parse_multiple_delimited_dates_with_swap_warnings():
             r"at position 1. You might want to try:"
         ),
     ):
-        pd.to_datetime(["01/01/2000", "31/05/2000", "31/05/2001", "01/02/2000"])
+        pd.to_datetime(["01/01/2000", "31/05/2000",
+                       "31/05/2001", "01/02/2000"])
 
 
 # ArrowKeyError: Column 'fdate1' in include_columns does not exist in CSV file
@@ -1960,7 +1977,8 @@ def test_date_parser_multiindex_columns(all_parsers):
     data = """a,b
 1,2
 2019-12-31,6"""
-    result = parser.read_csv(StringIO(data), parse_dates=[("a", "1")], header=[0, 1])
+    result = parser.read_csv(StringIO(data), parse_dates=[
+                             ("a", "1")], header=[0, 1])
     expected = DataFrame(
         {("a", "1"): Timestamp("2019-12-31").as_unit("ns"), ("b", "2"): [6]}
     )
@@ -2027,7 +2045,8 @@ def test_date_parser_usecols_thousands(all_parsers):
         usecols=[1, 2],
         thousands="-",
     )
-    expected = DataFrame({"B": [3, 4], "C": [Timestamp("20-09-2001 01:00:00")] * 2})
+    expected = DataFrame(
+        {"B": [3, 4], "C": [Timestamp("20-09-2001 01:00:00")] * 2})
     tm.assert_frame_equal(result, expected)
 
 
@@ -2151,7 +2170,8 @@ def test_infer_first_column_as_index(all_parsers):
 @pytest.mark.parametrize(
     ("key", "value", "warn"),
     [
-        ("date_parser", lambda x: pd.to_datetime(x, format="%Y-%m-%d"), FutureWarning),
+        ("date_parser", lambda x: pd.to_datetime(
+            x, format="%Y-%m-%d"), FutureWarning),
         ("date_format", "%Y-%m-%d", None),
     ],
 )
@@ -2296,7 +2316,8 @@ def test_parse_dates_dict_format_index(all_parsers):
         {
             "b": ["31-12-2019", "31-12-2020"],
         },
-        index=Index([Timestamp("2019-12-31"), Timestamp("2020-12-31")], name="a"),
+        index=Index([Timestamp("2019-12-31"),
+                    Timestamp("2020-12-31")], name="a"),
     )
     tm.assert_frame_equal(result, expected)
 

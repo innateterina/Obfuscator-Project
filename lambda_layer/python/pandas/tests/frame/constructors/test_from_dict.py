@@ -144,7 +144,8 @@ class TestFromDict:
             orient="index",
             columns=["one", "two"],
         )
-        expected = DataFrame([[1, 2], [4, 5]], index=["A", "B"], columns=["one", "two"])
+        expected = DataFrame([[1, 2], [4, 5]], index=[
+                             "A", "B"], columns=["one", "two"])
         tm.assert_frame_equal(result, expected)
 
         msg = "cannot use columns parameter with orient='columns'"
@@ -155,7 +156,8 @@ class TestFromDict:
                 columns=["one", "two"],
             )
         with pytest.raises(ValueError, match=msg):
-            DataFrame.from_dict({"A": [1, 2], "B": [4, 5]}, columns=["one", "two"])
+            DataFrame.from_dict(
+                {"A": [1, 2], "B": [4, 5]}, columns=["one", "two"])
 
     @pytest.mark.parametrize(
         "data_dict, orient, expected",
@@ -171,7 +173,8 @@ class TestFromDict:
                 "columns",
                 Index([("a",), ("b",)], tupleize_cols=False),
             ),
-            ([{("a", "b"): 1}], "columns", Index([("a", "b")], tupleize_cols=False)),
+            ([{("a", "b"): 1}], "columns", Index(
+                [("a", "b")], tupleize_cols=False)),
         ],
     )
     def test_constructor_from_dict_tuples(self, data_dict, orient, expected):

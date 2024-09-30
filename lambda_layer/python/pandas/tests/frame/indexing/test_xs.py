@@ -49,7 +49,8 @@ class TestXS:
                 assert value == float_frame[item][idx]
 
         # mixed-type xs
-        test_data = {"A": {"1": 1, "2": 2}, "B": {"1": "1", "2": "2", "3": "3"}}
+        test_data = {"A": {"1": 1, "2": 2},
+                     "B": {"1": "1", "2": "2", "3": "3"}}
         frame = DataFrame(test_data)
         xs = frame.xs("1")
         assert xs.dtype == np.object_
@@ -87,7 +88,8 @@ class TestXS:
         df["E"] = 3.0
 
         xs = df.xs(0)
-        exp = Series([1.0, "foo", 2.0, "bar", 3.0], index=list("ABCDE"), name=0)
+        exp = Series([1.0, "foo", 2.0, "bar", 3.0],
+                     index=list("ABCDE"), name=0)
         tm.assert_series_equal(xs, exp)
 
         # no columns but Index(dtype=object)
@@ -128,7 +130,8 @@ class TestXS:
         # in 0.14 this will return a view if possible a copy otherwise, but
         # this is numpy dependent
 
-        dm = DataFrame(np.arange(20.0).reshape(4, 5), index=range(4), columns=range(5))
+        dm = DataFrame(np.arange(20.0).reshape(4, 5),
+                       index=range(4), columns=range(5))
         df_orig = dm.copy()
 
         if using_copy_on_write:
@@ -268,7 +271,8 @@ class TestXSWithMultiIndex:
             ("z", "zbcde", 25),
             ("z", "ybcde", 26),
         ]
-        df = DataFrame(acc, columns=["a1", "a2", "cnt"]).set_index(["a1", "a2"])
+        df = DataFrame(acc, columns=["a1", "a2", "cnt"]).set_index(
+            ["a1", "a2"])
         expected = DataFrame(
             {"cnt": [24, 26, 25, 26]},
             index=Index(["xbcde", np.nan, "zbcde", "ybcde"], name="a2"),
@@ -280,7 +284,8 @@ class TestXSWithMultiIndex:
     @pytest.mark.parametrize(
         "key, level, exp_arr, exp_index",
         [
-            ("a", "lvl0", lambda x: x[:, 0:2], Index(["bar", "foo"], name="lvl1")),
+            ("a", "lvl0", lambda x: x[:, 0:2],
+             Index(["bar", "foo"], name="lvl1")),
             ("foo", "lvl1", lambda x: x[:, 1:2], Index(["a"], name="lvl0")),
         ],
     )
@@ -353,11 +358,13 @@ class TestXSWithMultiIndex:
         # GH#35301
 
         index = MultiIndex(
-            levels=[[("foo", "bar", 0), ("foo", "baz", 0), ("foo", "qux", 0)], [0, 1]],
+            levels=[[("foo", "bar", 0), ("foo", "baz", 0),
+                     ("foo", "qux", 0)], [0, 1]],
             codes=[[0, 0, 1, 1, 2, 2], [0, 1, 0, 1, 0, 1]],
         )
 
-        obj = DataFrame(np.random.default_rng(2).standard_normal((6, 4)), index=index)
+        obj = DataFrame(np.random.default_rng(
+            2).standard_normal((6, 4)), index=index)
         if frame_or_series is Series:
             obj = obj[0]
 
@@ -407,7 +414,8 @@ class TestXSWithMultiIndex:
         df = DataFrame([[1, 2, 3]], columns=Index(["a", "b", "c"]))
         result = df.xs("a", axis=1, drop_level=False)
         # check that result still views the same data as df
-        assert np.shares_memory(result.iloc[:, 0]._values, df.iloc[:, 0]._values)
+        assert np.shares_memory(
+            result.iloc[:, 0]._values, df.iloc[:, 0]._values)
 
         with tm.assert_cow_warning(warn_copy_on_write):
             df.iloc[0, 0] = 2
@@ -438,7 +446,8 @@ class TestXSWithMultiIndex:
 
     def test_xs_list_indexer_droplevel_false(self):
         # GH#41760
-        mi = MultiIndex.from_tuples([("x", "m", "a"), ("x", "n", "b"), ("y", "o", "c")])
+        mi = MultiIndex.from_tuples(
+            [("x", "m", "a"), ("x", "n", "b"), ("y", "o", "c")])
         df = DataFrame([[1, 2, 3], [4, 5, 6]], columns=mi)
         with pytest.raises(KeyError, match="y"):
             df.xs(("x", "y"), drop_level=False, axis=1)

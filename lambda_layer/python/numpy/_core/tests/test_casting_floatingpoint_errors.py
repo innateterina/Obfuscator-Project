@@ -136,6 +136,7 @@ def check_operations(dtype, value):
 
     yield flat_assignment
 
+
 @pytest.mark.skipif(IS_WASM, reason="no wasm fp exception support")
 @pytest.mark.parametrize(["value", "dtype"], values_and_dtypes())
 @pytest.mark.filterwarnings("ignore::numpy.exceptions.ComplexWarning")
@@ -151,4 +152,3 @@ def test_floatingpoint_errors_casting(dtype, value):
         with np.errstate(all="raise"):
             with pytest.raises(FloatingPointError, match=match):
                 operation()
-

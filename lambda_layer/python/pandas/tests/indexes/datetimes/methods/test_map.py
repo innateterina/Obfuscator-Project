@@ -14,7 +14,7 @@ class TestMap:
     def test_map(self):
         rng = date_range("1/1/2000", periods=10)
 
-        f = lambda x: x.strftime("%Y%m%d")
+        def f(x): return x.strftime("%Y%m%d")
         result = rng.map(f)
         exp = Index([f(x) for x in rng])
         tm.assert_index_equal(result, exp)
@@ -43,5 +43,6 @@ class TestMap:
         index = date_range("2018-01-01", periods=count, freq="ME", name=name).map(
             lambda x: (x.year, x.month)
         )
-        exp_index = MultiIndex.from_product(((2018,), range(1, 7)), names=[name, name])
+        exp_index = MultiIndex.from_product(
+            ((2018,), range(1, 7)), names=[name, name])
         tm.assert_index_equal(index, exp_index)

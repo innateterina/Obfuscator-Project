@@ -46,7 +46,8 @@ class DateDtype(ExtensionDtype):
         if string == cls.__name__:
             return cls()
         else:
-            raise TypeError(f"Cannot construct a '{cls.__name__}' from '{string}'")
+            raise TypeError(
+                f"Cannot construct a '{cls.__name__}' from '{string}'")
 
     @classmethod
     def construct_array_type(cls):
@@ -140,7 +141,8 @@ class DateArray(ExtensionArray):
         return self._year.nbytes + self._month.nbytes + self._day.nbytes
 
     def __len__(self) -> int:
-        return len(self._year)  # all 3 arrays are enforced to have the same length
+        # all 3 arrays are enforced to have the same length
+        return len(self._year)
 
     def __getitem__(self, item: PositionalIndexer):
         if isinstance(item, int):

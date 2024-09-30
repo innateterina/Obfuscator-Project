@@ -317,7 +317,8 @@ STAT_DDOF_FUNC_DEFAULTS: dict[str, bool | None] = {}
 STAT_DDOF_FUNC_DEFAULTS["dtype"] = None
 STAT_DDOF_FUNC_DEFAULTS["out"] = None
 STAT_DDOF_FUNC_DEFAULTS["keepdims"] = False
-validate_stat_ddof_func = CompatValidator(STAT_DDOF_FUNC_DEFAULTS, method="kwargs")
+validate_stat_ddof_func = CompatValidator(
+    STAT_DDOF_FUNC_DEFAULTS, method="kwargs")
 
 TAKE_DEFAULTS: dict[str, str | None] = {}
 TAKE_DEFAULTS["out"] = None
@@ -397,7 +398,8 @@ def validate_minmax_axis(axis: AxisInt | None, ndim: int = 1) -> None:
     if axis is None:
         return
     if axis >= ndim or (axis < 0 and ndim + axis < 0):
-        raise ValueError(f"`axis` must be fewer than the number of dimensions ({ndim})")
+        raise ValueError(
+            f"`axis` must be fewer than the number of dimensions ({ndim})")
 
 
 _validation_funcs = {

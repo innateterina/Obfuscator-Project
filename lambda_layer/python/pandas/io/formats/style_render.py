@@ -1,4 +1,5 @@
 from __future__ import annotations
+from markupsafe import escape as escape_html  # markupsafe is jinja2 dependency
 
 from collections import defaultdict
 from collections.abc import Sequence
@@ -45,8 +46,8 @@ if TYPE_CHECKING:
         Axis,
         Level,
     )
-jinja2 = import_optional_dependency("jinja2", extra="DataFrame.style requires jinja2.")
-from markupsafe import escape as escape_html  # markupsafe is jinja2 dependency
+jinja2 = import_optional_dependency(
+    "jinja2", extra="DataFrame.style requires jinja2.")
 
 BaseFormatter = Union[str, Callable]
 ExtFormatter = Union[BaseFormatter, dict[Any, Optional[BaseFormatter]]]
@@ -97,7 +98,8 @@ class StylerRenderer:
         self.index: Index = data.index
         self.columns: Index = data.columns
         if not isinstance(uuid_len, int) or uuid_len < 0:
-            raise TypeError("``uuid_len`` must be an integer in range [0, 32].")
+            raise TypeError(
+                "``uuid_len`` must be an integer in range [0, 32].")
         self.uuid = uuid or uuid4().hex[: min(32, uuid_len)]
         self.uuid_len = len(self.uuid)
         self.table_styles = table_styles
@@ -123,16 +125,20 @@ class StylerRenderer:
         self.hide_column_names: bool = False
         self.hide_index_: list = [False] * self.index.nlevels
         self.hide_columns_: list = [False] * self.columns.nlevels
-        self.hidden_rows: Sequence[int] = []  # sequence for specific hidden rows/cols
+        # sequence for specific hidden rows/cols
+        self.hidden_rows: Sequence[int] = []
         self.hidden_columns: Sequence[int] = []
         self.ctx: DefaultDict[tuple[int, int], CSSList] = defaultdict(list)
-        self.ctx_index: DefaultDict[tuple[int, int], CSSList] = defaultdict(list)
-        self.ctx_columns: DefaultDict[tuple[int, int], CSSList] = defaultdict(list)
+        self.ctx_index: DefaultDict[tuple[int, int],
+                                    CSSList] = defaultdict(list)
+        self.ctx_columns: DefaultDict[tuple[int,
+                                            int], CSSList] = defaultdict(list)
         self.cell_context: DefaultDict[tuple[int, int], str] = defaultdict(str)
         self._todo: list[tuple[Callable, tuple, dict]] = []
         self.tooltips: Tooltips | None = None
         precision = (
-            get_option("styler.format.precision") if precision is None else precision
+            get_option(
+                "styler.format.precision") if precision is None else precision
         )
         self._display_funcs: DefaultDict[  # maps (row, col) -> format func
             tuple[int, int], Callable[[Any], str]
@@ -201,7 +207,8 @@ class StylerRenderer:
         Renders the ``Styler`` including all applied styles to HTML.
         Generates a dict with necessary kwargs passed to jinja2 template.
         """
-        d = self._render(sparse_index, sparse_columns, max_rows, max_cols, "&nbsp;")
+        d = self._render(sparse_index, sparse_columns,
+                         max_rows, max_cols, "&nbsp;")
         d.update(kwargs)
         return self.template_html.render(
             **d,
@@ -304,8 +311,10 @@ class StylerRenderer:
         }
 
         max_elements = get_option("styler.render.max_elements")
-        max_rows = max_rows if max_rows else get_option("styler.render.max_rows")
-        max_cols = max_cols if max_cols else get_option("styler.render.max_columns")
+        max_rows = max_rows if max_rows else get_option(
+            "styler.render.max_rows")
+        max_cols = max_cols if max_cols else get_option(
+            "styler.render.max_columns")
         max_rows, max_cols = _get_trimming_maximums(
             len(self.data.index),
             len(self.data.columns),
@@ -358,7 +367,8 @@ class StylerRenderer:
         if not get_option("styler.html.mathjax"):
             table_attr = table_attr or ""
             if 'class="' in table_attr:
-                table_attr = table_attr.replace('class="', 'class="tex2jax_ignore ')
+                table_attr = table_attr.replace(
+                    'class="', 'class="tex2jax_ignore ')
             else:
                 table_attr += ' class="tex2jax_ignore"'
         d.update({"table_attributes": table_attr})
@@ -562,7 +572,8 @@ class StylerRenderer:
         if clabels:
             last_level = self.columns.nlevels - 1  # use last level since never sparsed
             for c, value in enumerate(clabels[last_level]):
-                header_element_visible = _is_visible(c, last_level, col_lengths)
+                header_element_visible = _is_visible(
+                    c, last_level, col_lengths)
                 if header_element_visible:
                     visible_col_count += 1
                 if self._check_trim(
@@ -853,7 +864,8 @@ class StylerRenderer:
         visible_index_level_n = index_levels - sum(self.hide_index_)
         d["head"] = [
             [
-                {**col, "cellstyle": self.ctx_columns[r, c - visible_index_level_n]}
+                {**col,
+                    "cellstyle": self.ctx_columns[r, c - visible_index_level_n]}
                 for c, col in enumerate(row)
                 if col["is_visible"]
             ]
@@ -865,7 +877,8 @@ class StylerRenderer:
             Extract all visible row indices recursively from concatenated stylers.
             """
             row_indices.extend(
-                [r + n for r in range(len(obj.index)) if r not in obj.hidden_rows]
+                [r + n for r in range(len(obj.index))
+                 if r not in obj.hidden_rows]
             )
             n += len(obj.index)
             for concatenated in obj.concatenated:
@@ -922,7 +935,8 @@ class StylerRenderer:
                 f"of 'all;data', 'all;index', 'skip-last;data', 'skip-last;index'."
             )
         if clines is not None:
-            data_len = len(row_body_cells) if "data" in clines and d["body"] else 0
+            data_len = len(
+                row_body_cells) if "data" in clines and d["body"] else 0
 
             d["clines"] = defaultdict(list)
             visible_row_indexes: list[int] = [
@@ -1652,7 +1666,8 @@ def _get_level_lengths(
         Result is a dictionary of (level, initial_position): span
     """
     if isinstance(index, MultiIndex):
-        levels = index._format_multi(sparsify=lib.no_default, include_names=False)
+        levels = index._format_multi(
+            sparsify=lib.no_default, include_names=False)
     else:
         levels = index._format_flat(include_name=False)
 
@@ -1766,7 +1781,8 @@ def _wrap_decimal_thousands(
             if decimal != "." and thousands is not None and thousands != ",":
                 return (
                     formatter(x)
-                    .replace(",", "§_§-")  # rare string to avoid "," <-> "." clash.
+                    # rare string to avoid "," <-> "." clash.
+                    .replace(",", "§_§-")
                     .replace(".", decimal)
                     .replace("§_§-", thousands)
                 )
@@ -1804,7 +1820,8 @@ def _render_href(x, format):
         elif format == "latex":
             href = r"\href{{{0}}}{{{0}}}"
         else:
-            raise ValueError("``hyperlinks`` format can only be 'html' or 'latex'")
+            raise ValueError(
+                "``hyperlinks`` format can only be 'html' or 'latex'")
         pat = r"((http|ftp)s?:\/\/|www.)[\w/\-?=%.:@]+\.[\w/\-&?=%.,':;~!@#$*()\[\]]+"
         return re.sub(pat, lambda m: href.format(m.group(0)), x)
     return x
@@ -1826,34 +1843,38 @@ def _maybe_wrap_formatter(
     """
     # Get initial func from input string, input callable, or from default factory
     if isinstance(formatter, str):
-        func_0 = lambda x: formatter.format(x)
+        def func_0(x): return formatter.format(x)
     elif callable(formatter):
         func_0 = formatter
     elif formatter is None:
         precision = (
-            get_option("styler.format.precision") if precision is None else precision
+            get_option(
+                "styler.format.precision") if precision is None else precision
         )
         func_0 = partial(
-            _default_formatter, precision=precision, thousands=(thousands is not None)
+            _default_formatter, precision=precision, thousands=(
+                thousands is not None)
         )
     else:
-        raise TypeError(f"'formatter' expected str or callable, got {type(formatter)}")
+        raise TypeError(
+            f"'formatter' expected str or callable, got {type(formatter)}")
 
     # Replace chars if escaping
     if escape is not None:
-        func_1 = lambda x: func_0(_str_escape(x, escape=escape))
+        def func_1(x): return func_0(_str_escape(x, escape=escape))
     else:
         func_1 = func_0
 
     # Replace decimals and thousands if non-standard inputs detected
     if decimal != "." or (thousands is not None and thousands != ","):
-        func_2 = _wrap_decimal_thousands(func_1, decimal=decimal, thousands=thousands)
+        func_2 = _wrap_decimal_thousands(
+            func_1, decimal=decimal, thousands=thousands)
     else:
         func_2 = func_1
 
     # Render links
     if hyperlinks is not None:
-        func_3 = lambda x: func_2(_render_href(x, format=hyperlinks))
+        def func_3(x): return func_2(_render_href(x, format=hyperlinks))
     else:
         func_3 = func_2
 
@@ -1903,7 +1924,8 @@ def non_reducing_slice(slice_: Subset):
     else:
         # error: Item "slice" of "Union[slice, Sequence[Any]]" has no attribute
         # "__iter__" (not iterable) -> is specifically list_like in conditional
-        slice_ = [p if pred(p) else [p] for p in slice_]  # type: ignore[union-attr]
+        slice_ = [p if pred(p) else [p]
+                  for p in slice_]  # type: ignore[union-attr]
     return tuple(slice_)
 
 
@@ -1959,7 +1981,8 @@ def refactor_levels(
             for lev in level
         ]
     else:
-        raise ValueError("`level` must be of type `int`, `str` or list of such")
+        raise ValueError(
+            "`level` must be of type `int`, `str` or list of such")
     return levels_
 
 
@@ -2098,11 +2121,13 @@ class Tooltips:
             return d
 
         name = self.class_name
-        mask = (self.tt_data.isna()) | (self.tt_data.eq(""))  # empty string = no ttip
+        mask = (self.tt_data.isna()) | (
+            self.tt_data.eq(""))  # empty string = no ttip
         self.table_styles = [
             style
             for sublist in [
-                self._pseudo_css(styler.uuid, name, i, j, str(self.tt_data.iloc[i, j]))
+                self._pseudo_css(styler.uuid, name, i, j,
+                                 str(self.tt_data.iloc[i, j]))
                 for i in range(len(self.tt_data.index))
                 for j in range(len(self.tt_data.columns))
                 if not (
@@ -2198,7 +2223,8 @@ def _parse_latex_cell_styles(
     """
     if convert_css:
         latex_styles = _parse_latex_css_conversion(latex_styles)
-    for command, options in latex_styles[::-1]:  # in reverse for most recent style
+    # in reverse for most recent style
+    for command, options in latex_styles[::-1]:
         formatter = {
             "--wrap": f"{{\\{command}--to_parse {display_value}}}",
             "--nowrap": f"\\{command}--to_parse {display_value}",
@@ -2210,7 +2236,8 @@ def _parse_latex_cell_styles(
         for arg in ["--nowrap", "--wrap", "--lwrap", "--rwrap", "--dwrap"]:
             if arg in str(options):
                 display_value = formatter[arg].replace(
-                    "--to_parse", _parse_latex_options_strip(value=options, arg=arg)
+                    "--to_parse", _parse_latex_options_strip(
+                        value=options, arg=arg)
                 )
                 break  # only ever one purposeful entry
     return display_value
@@ -2248,7 +2275,8 @@ def _parse_latex_header_span(
     if "attributes" in cell:
         attrs = cell["attributes"]
         if 'colspan="' in attrs:
-            colspan = attrs[attrs.find('colspan="') + 9 :]  # len('colspan="') = 9
+            # len('colspan="') = 9
+            colspan = attrs[attrs.find('colspan="') + 9:]
             colspan = int(colspan[: colspan.find('"')])
             if "naive-l" == multicol_align:
                 out = f"{{{display_val}}}" if wrap else f"{display_val}"
@@ -2262,7 +2290,7 @@ def _parse_latex_header_span(
         elif 'rowspan="' in attrs:
             if multirow_align == "naive":
                 return display_val
-            rowspan = attrs[attrs.find('rowspan="') + 9 :]
+            rowspan = attrs[attrs.find('rowspan="') + 9:]
             rowspan = int(rowspan[: rowspan.find('"')])
             return f"\\multirow[{multirow_align}]{{{rowspan}}}{{*}}{{{display_val}}}"
     if wrap:
@@ -2375,8 +2403,10 @@ def _escape_latex(s: str) -> str:
         Escaped string
     """
     return (
-        s.replace("\\", "ab2§=§8yz")  # rare string for final conversion: avoid \\ clash
-        .replace("ab2§=§8yz ", "ab2§=§8yz\\space ")  # since \backslash gobbles spaces
+        # rare string for final conversion: avoid \\ clash
+        s.replace("\\", "ab2§=§8yz")
+        # since \backslash gobbles spaces
+        .replace("ab2§=§8yz ", "ab2§=§8yz\\space ")
         .replace("&", "\\&")
         .replace("%", "\\%")
         .replace("$", "\\$")
@@ -2416,12 +2446,12 @@ def _math_mode_with_dollar(s: str) -> str:
     ps = pattern.search(s, pos)
     res = []
     while ps:
-        res.append(_escape_latex(s[pos : ps.span()[0]]))
+        res.append(_escape_latex(s[pos: ps.span()[0]]))
         res.append(ps.group())
         pos = ps.span()[1]
         ps = pattern.search(s, pos)
 
-    res.append(_escape_latex(s[pos : len(s)]))
+    res.append(_escape_latex(s[pos: len(s)]))
     return "".join(res).replace(r"rt8§=§7wz", r"\$")
 
 
@@ -2450,7 +2480,8 @@ def _math_mode_with_parentheses(s: str) -> str:
             res.append(item.replace("LEFT", r"\(").replace("RIGHT", r"\)"))
         elif "LEFT" in item and "RIGHT" in item:
             res.append(
-                _escape_latex(item).replace("LEFT", r"\(").replace("RIGHT", r"\)")
+                _escape_latex(item).replace(
+                    "LEFT", r"\(").replace("RIGHT", r"\)")
             )
         else:
             res.append(
@@ -2491,7 +2522,7 @@ def _escape_latex_math(s: str) -> str:
         return _escape_latex(s.replace(r"rt8§=§7wz", r"\$"))
     if s[mode[0]] == r"$":
         return _math_mode_with_dollar(s.replace(r"rt8§=§7wz", r"\$"))
-    if s[mode[0] - 1 : mode[0] + 1] == r"\(":
+    if s[mode[0] - 1: mode[0] + 1] == r"\(":
         return _math_mode_with_parentheses(s.replace(r"rt8§=§7wz", r"\$"))
     else:
         return _escape_latex(s.replace(r"rt8§=§7wz", r"\$"))

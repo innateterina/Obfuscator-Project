@@ -95,7 +95,8 @@ class PandasColumn(Column):
                 "using the interchange protocol."
             )
         if not isinstance(column, pd.Series):
-            raise NotImplementedError(f"Columns of type {type(column)} not handled yet")
+            raise NotImplementedError(
+                f"Columns of type {type(column)} not handled yet")
 
         # Store the column as a private attribute
         self._col = column
@@ -141,7 +142,8 @@ class PandasColumn(Column):
                     dtype_to_arrow_c_fmt(dtype),
                     Endianness.NATIVE,
                 )
-            raise NotImplementedError("Non-string object dtypes are not supported yet")
+            raise NotImplementedError(
+                "Non-string object dtypes are not supported yet")
         else:
             return self._dtype_from_pandasdtype(dtype)
 
@@ -156,7 +158,8 @@ class PandasColumn(Column):
         kind = _NP_KINDS.get(dtype.kind, None)
         if kind is None:
             # Not a NumPy dtype. Check if it's a categorical maybe
-            raise ValueError(f"Data type {dtype} not supported by interchange protocol")
+            raise ValueError(
+                f"Data type {dtype} not supported by interchange protocol")
         if isinstance(dtype, ArrowDtype):
             byteorder = dtype.numpy_dtype.byteorder
         elif isinstance(dtype, DatetimeTZDtype):
@@ -216,7 +219,8 @@ class PandasColumn(Column):
         if isinstance(self._col.dtype, ArrowDtype):
             # We already rechunk (if necessary / allowed) upon initialization, so this
             # is already single-chunk by the time we get here.
-            if self._col.array._pa_array.chunks[0].buffers()[0] is None:  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            if self._col.array._pa_array.chunks[0].buffers()[0] is None:
                 return ColumnNullType.NON_NULLABLE, None
             return ColumnNullType.USE_BITMASK, 0
         kind = self.dtype[0]
@@ -259,7 +263,7 @@ class PandasColumn(Column):
                 step += 1
             for start in range(0, step * n_chunks, step):
                 yield PandasColumn(
-                    self._col.iloc[start : start + step], self._allow_copy
+                    self._col.iloc[start: start + step], self._allow_copy
                 )
         else:
             yield self
@@ -359,7 +363,8 @@ class PandasColumn(Column):
             # https://github.com/pandas-dev/pandas/issues/54781
             dtype = self.dtype
         else:
-            raise NotImplementedError(f"Data type {self._col.dtype} not handled yet")
+            raise NotImplementedError(
+                f"Data type {self._col.dtype} not handled yet")
 
         return buffer, dtype
 
@@ -374,7 +379,8 @@ class PandasColumn(Column):
         if isinstance(self._col.dtype, ArrowDtype):
             # We already rechunk (if necessary / allowed) upon initialization, so this
             # is already single-chunk by the time we get here.
-            arr = self._col.array._pa_array.chunks[0]  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            arr = self._col.array._pa_array.chunks[0]
             dtype = (DtypeKind.BOOL, 1, ArrowCTypes.BOOL, Endianness.NATIVE)
             if arr.buffers()[0] is None:
                 return None

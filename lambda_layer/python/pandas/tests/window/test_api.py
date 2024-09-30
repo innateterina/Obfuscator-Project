@@ -30,10 +30,12 @@ def test_getitem(step):
 
     # technically this is allowed
     r = frame.rolling(window=5, step=step)[1, 3]
-    tm.assert_index_equal(r._selected_obj.columns, frame[::step].columns[[1, 3]])
+    tm.assert_index_equal(r._selected_obj.columns,
+                          frame[::step].columns[[1, 3]])
 
     r = frame.rolling(window=5, step=step)[[1, 3]]
-    tm.assert_index_equal(r._selected_obj.columns, frame[::step].columns[[1, 3]])
+    tm.assert_index_equal(r._selected_obj.columns,
+                          frame[::step].columns[[1, 3]])
 
 
 def test_select_bad_cols():
@@ -116,7 +118,8 @@ def test_agg(step):
 
     with pytest.raises(SpecificationError, match=msg):
         r.aggregate(
-            {"A": {"mean": "mean", "sum": "sum"}, "B": {"mean2": "mean", "sum2": "sum"}}
+            {"A": {"mean": "mean", "sum": "sum"},
+                "B": {"mean2": "mean", "sum2": "sum"}}
         )
 
     result = r.aggregate({"A": ["mean", "std"], "B": ["mean", "std"]})
@@ -128,7 +131,8 @@ def test_agg(step):
 
 
 @pytest.mark.parametrize(
-    "func", [["min"], ["mean", "max"], {"b": "sum"}, {"b": "prod", "c": "median"}]
+    "func", [["min"], ["mean", "max"], {
+        "b": "sum"}, {"b": "prod", "c": "median"}]
 )
 def test_multi_axis_1_raises(func):
     # GH#46904
@@ -181,7 +185,8 @@ def test_agg_nested_dicts():
 
     msg = "nested renamer is not supported"
     with pytest.raises(SpecificationError, match=msg):
-        r.aggregate({"r1": {"A": ["mean", "sum"]}, "r2": {"B": ["mean", "sum"]}})
+        r.aggregate({"r1": {"A": ["mean", "sum"]},
+                    "r2": {"B": ["mean", "sum"]}})
 
     expected = concat(
         [r["A"].mean(), r["A"].std(), r["B"].mean(), r["B"].std()], axis=1
@@ -190,7 +195,8 @@ def test_agg_nested_dicts():
         [("ra", "mean"), ("ra", "std"), ("rb", "mean"), ("rb", "std")]
     )
     with pytest.raises(SpecificationError, match=msg):
-        r[["A", "B"]].agg({"A": {"ra": ["mean", "std"]}, "B": {"rb": ["mean", "std"]}})
+        r[["A", "B"]].agg({"A": {"ra": ["mean", "std"]},
+                          "B": {"rb": ["mean", "std"]}})
 
     with pytest.raises(SpecificationError, match=msg):
         r.agg({"A": {"ra": ["mean", "std"]}, "B": {"rb": ["mean", "std"]}})
@@ -211,7 +217,8 @@ def test_count_nonnumeric_types(step):
         "dt_nat",
         "periods_nat",
     ]
-    dt_nat_col = [Timestamp("20170101"), Timestamp("20170203"), Timestamp(None)]
+    dt_nat_col = [Timestamp("20170101"), Timestamp(
+        "20170203"), Timestamp(None)]
 
     df = DataFrame(
         {
@@ -356,12 +363,14 @@ def test_centered_axis_validation(step):
     # ok
     msg = "The 'axis' keyword in Series.rolling is deprecated"
     with tm.assert_produces_warning(FutureWarning, match=msg):
-        Series(np.ones(10)).rolling(window=3, center=True, axis=0, step=step).mean()
+        Series(np.ones(10)).rolling(
+            window=3, center=True, axis=0, step=step).mean()
 
     # bad axis
     msg = "No axis named 1 for object type Series"
     with pytest.raises(ValueError, match=msg):
-        Series(np.ones(10)).rolling(window=3, center=True, axis=1, step=step).mean()
+        Series(np.ones(10)).rolling(
+            window=3, center=True, axis=1, step=step).mean()
 
     # ok ok
     df = DataFrame(np.ones((10, 10)))

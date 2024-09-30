@@ -66,7 +66,8 @@ class TestConstructors:
         assert arr.dtype == SparseDtype(object)
         assert np.isnan(arr.fill_value)
 
-        arr = SparseArray(["A", "A", np.nan, "B"], dtype=object, fill_value="A")
+        arr = SparseArray(["A", "A", np.nan, "B"],
+                          dtype=object, fill_value="A")
         assert arr.dtype == SparseDtype(object, "A")
         assert arr.fill_value == "A"
 
@@ -153,7 +154,8 @@ class TestConstructors:
         assert arr.fill_value == 0
 
         with tm.assert_produces_warning(FutureWarning, match=msg):
-            arr = SparseArray(data=1, sparse_index=IntIndex(1, [0]), dtype=None)
+            arr = SparseArray(
+                data=1, sparse_index=IntIndex(1, [0]), dtype=None)
         exp = SparseArray([1], dtype=None)
         tm.assert_sp_array_equal(arr, exp)
         assert arr.dtype == SparseDtype(np.int64)
@@ -248,7 +250,8 @@ class TestConstructors:
         tm.assert_numpy_array_equal(arr.sp_values, np.array([True, True]))
         # Behavior change: np.asarray densifies.
         # tm.assert_numpy_array_equal(arr.sp_values, np.asarray(arr))
-        tm.assert_numpy_array_equal(arr.sp_index.indices, np.array([2, 3], np.int32))
+        tm.assert_numpy_array_equal(
+            arr.sp_index.indices, np.array([2, 3], np.int32))
 
         dense = arr.to_dense()
         assert dense.dtype == bool
@@ -273,7 +276,8 @@ class TestConstructors:
         arr = SparseArray(data, dtype=np.float32)
 
         assert arr.dtype == SparseDtype(np.float32)
-        tm.assert_numpy_array_equal(arr.sp_values, np.array([1, 3], dtype=np.float32))
+        tm.assert_numpy_array_equal(
+            arr.sp_values, np.array([1, 3], dtype=np.float32))
         # Behavior change: np.asarray densifies.
         # tm.assert_numpy_array_equal(arr.sp_values, np.asarray(arr))
         tm.assert_numpy_array_equal(

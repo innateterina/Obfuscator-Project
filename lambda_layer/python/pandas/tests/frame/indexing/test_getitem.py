@@ -37,7 +37,8 @@ class TestGetitem:
 
     def test_getitem_periodindex(self):
         rng = period_range("1/1/2000", periods=5)
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 5)), columns=rng)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 5)), columns=rng)
 
         ts = df[rng[0]]
         tm.assert_series_equal(ts, df.iloc[:, 0])
@@ -49,7 +50,8 @@ class TestGetitem:
         # GH#16115
         cats = Categorical([Timestamp("12-31-1999"), Timestamp("12-31-2000")])
 
-        expected = DataFrame([[1, 0], [0, 1]], dtype="bool", index=[0, 1], columns=cats)
+        expected = DataFrame([[1, 0], [0, 1]], dtype="bool",
+                             index=[0, 1], columns=cats)
         dummies = get_dummies(cats)
         result = dummies[list(dummies.columns)]
         tm.assert_frame_equal(result, expected)
@@ -176,7 +178,8 @@ class TestGetitemListLike:
         # GH 46671
         df = DataFrame(
             list(range(10)),
-            index=date_range("01-01-2022", periods=10, freq=DateOffset(days=1)),
+            index=date_range("01-01-2022", periods=10,
+                             freq=DateOffset(days=1)),
         )
         result = df.loc["2022-01-01":"2022-01-03"]
         expected = DataFrame(
@@ -208,7 +211,8 @@ class TestGetitemListLike:
 
         df = DataFrame(
             list(range(10)),
-            index=date_range("01-01-2022", periods=10, freq=DateOffset(minutes=3)),
+            index=date_range("01-01-2022", periods=10,
+                             freq=DateOffset(minutes=3)),
         )
         result = df.loc["2022-01-01":"2022-01-03"]
         tm.assert_frame_equal(result, df)
@@ -344,7 +348,8 @@ class TestGetitemBooleanMask:
     @pytest.fixture
     def df_dup_cols(self):
         dups = ["A", "A", "C", "D"]
-        df = DataFrame(np.arange(12).reshape(3, 4), columns=dups, dtype="float64")
+        df = DataFrame(np.arange(12).reshape(3, 4),
+                       columns=dups, dtype="float64")
         return df
 
     def test_getitem_boolean_frame_unaligned_with_duplicate_columns(self, df_dup_cols):
@@ -403,12 +408,14 @@ class TestGetitemBooleanMask:
         if using_copy_on_write:
             expected = df_orig
         else:
-            expected = DataFrame([[1, 2, 100], [4, 5, 100]], columns=["a", "a", "b"])
+            expected = DataFrame(
+                [[1, 2, 100], [4, 5, 100]], columns=["a", "a", "b"])
         tm.assert_frame_equal(df, expected)
 
     def test_getitem_frozenset_unique_in_column(self):
         # GH#41062
-        df = DataFrame([[1, 2, 3, 4]], columns=[frozenset(["KEY"]), "B", "C", "C"])
+        df = DataFrame([[1, 2, 3, 4]], columns=[
+                       frozenset(["KEY"]), "B", "C", "C"])
         result = df[frozenset(["KEY"])]
         expected = Series([1], name=frozenset(["KEY"]))
         tm.assert_series_equal(result, expected)

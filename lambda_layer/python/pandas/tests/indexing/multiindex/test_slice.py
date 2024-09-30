@@ -180,7 +180,8 @@ class TestMultiIndexSlicers:
         )
         assert not df.index.is_unique
         expected = (
-            DataFrame({"A": ["foo", "foo"], "B": ["a", "a"], "C": [1, 1], "D": [1, 3]})
+            DataFrame({"A": ["foo", "foo"], "B": [
+                      "a", "a"], "C": [1, 1], "D": [1, 3]})
             .set_index(["A", "B", "C"])
             .sort_index()
         )
@@ -205,7 +206,8 @@ class TestMultiIndexSlicers:
         )
         assert not df.index.is_unique
         expected = (
-            DataFrame({"A": ["foo", "foo"], "B": ["a", "a"], "C": [1, 1], "D": [1, 3]})
+            DataFrame({"A": ["foo", "foo"], "B": [
+                      "a", "a"], "C": [1, 1], "D": [1, 3]})
             .set_index(["A", "B", "C"])
             .sort_index()
         )
@@ -250,9 +252,11 @@ class TestMultiIndexSlicers:
     def test_multiindex_slicers_datetimelike(self):
         # GH 7429
         # buggy/inconsistent behavior when slicing with datetime-like
-        dates = [datetime(2012, 1, 1, 12, 12, 12) + timedelta(days=i) for i in range(6)]
+        dates = [datetime(2012, 1, 1, 12, 12, 12) + timedelta(days=i)
+                 for i in range(6)]
         freq = [1, 2]
-        index = MultiIndex.from_product([dates, freq], names=["date", "frequency"])
+        index = MultiIndex.from_product(
+            [dates, freq], names=["date", "frequency"])
 
         df = DataFrame(
             np.arange(6 * 2 * 4, dtype="int64").reshape(-1, 4),
@@ -266,7 +270,8 @@ class TestMultiIndexSlicers:
         result = df.loc[
             (
                 slice(
-                    Timestamp("2012-01-01 12:12:12"), Timestamp("2012-01-03 12:12:12")
+                    Timestamp(
+                        "2012-01-01 12:12:12"), Timestamp("2012-01-03 12:12:12")
                 ),
                 slice(1, 1),
             ),
@@ -277,7 +282,7 @@ class TestMultiIndexSlicers:
         result = df.loc[
             (
                 idx[
-                    Timestamp("2012-01-01 12:12:12") : Timestamp("2012-01-03 12:12:12")
+                    Timestamp("2012-01-01 12:12:12"): Timestamp("2012-01-03 12:12:12")
                 ],
                 idx[1:1],
             ),
@@ -288,7 +293,8 @@ class TestMultiIndexSlicers:
         result = df.loc[
             (
                 slice(
-                    Timestamp("2012-01-01 12:12:12"), Timestamp("2012-01-03 12:12:12")
+                    Timestamp(
+                        "2012-01-01 12:12:12"), Timestamp("2012-01-03 12:12:12")
                 ),
                 1,
             ),
@@ -356,7 +362,8 @@ class TestMultiIndexSlicers:
         tm.assert_frame_equal(result, expected)
 
         # A4 - Get all values between 2013-07-02 and 2013-07-09
-        result = df1.loc[(slice(None), slice(None), slice("20130702", "20130709")), :]
+        result = df1.loc[(slice(None), slice(
+            None), slice("20130702", "20130709")), :]
         expected = df1.iloc[[1, 2, 6, 7, 12]]
         tm.assert_frame_equal(result, expected)
 
@@ -372,13 +379,15 @@ class TestMultiIndexSlicers:
         tm.assert_frame_equal(result, expected)
 
         # B3 - Get all values from B1 to B2 and up to 2013-08-06
-        result = df1.loc[(slice(None), slice("B1", "B2"), slice("2013-08-06")), :]
+        result = df1.loc[(slice(None), slice(
+            "B1", "B2"), slice("2013-08-06")), :]
         expected = df1.iloc[[2, 3, 4, 7, 8, 9, 12, 13]]
         tm.assert_frame_equal(result, expected)
 
         # B4 - Same as A4 but the start of the date slice is not a key.
         #      shows indexing on a partial selection slice
-        result = df1.loc[(slice(None), slice(None), slice("20130701", "20130709")), :]
+        result = df1.loc[(slice(None), slice(
+            None), slice("20130701", "20130709")), :]
         expected = df1.iloc[[1, 2, 6, 7, 12]]
         tm.assert_frame_equal(result, expected)
 
@@ -527,7 +536,8 @@ class TestMultiIndexSlicers:
         # GH29519
         df = DataFrame(
             np.arange(27).reshape(3, 9),
-            columns=MultiIndex.from_product([["a1", "a2", "a3"], ["b1", "b2", "b3"]]),
+            columns=MultiIndex.from_product(
+                [["a1", "a2", "a3"], ["b1", "b2", "b3"]]),
         )
         result = df.loc(axis=1)["a1":"a2"]
         expected = df.iloc[:, :-3]
@@ -538,7 +548,8 @@ class TestMultiIndexSlicers:
         # GH29519
         df = DataFrame(
             np.arange(27).reshape(3, 9),
-            columns=MultiIndex.from_product([["a1", "a2", "a3"], ["b1", "b2", "b3"]]),
+            columns=MultiIndex.from_product(
+                [["a1", "a2", "a3"], ["b1", "b2", "b3"]]),
         )
         result = df.loc(axis=1)["a1"]
         expected = df.iloc[:, :3]
@@ -693,7 +704,8 @@ class TestMultiIndexSlicers:
 
     def test_multiindex_label_slicing_with_negative_step(self):
         ser = Series(
-            np.arange(20), MultiIndex.from_product([list("abcde"), np.arange(4)])
+            np.arange(20), MultiIndex.from_product(
+                [list("abcde"), np.arange(4)])
         )
         SLC = pd.IndexSlice
 
@@ -705,14 +717,20 @@ class TestMultiIndexSlicers:
         tm.assert_indexing_slices_equivalent(ser, SLC[:"d":-1], SLC[:11:-1])
         tm.assert_indexing_slices_equivalent(ser, SLC[:("d",):-1], SLC[:11:-1])
 
-        tm.assert_indexing_slices_equivalent(ser, SLC["d":"b":-1], SLC[15:3:-1])
-        tm.assert_indexing_slices_equivalent(ser, SLC[("d",):"b":-1], SLC[15:3:-1])
-        tm.assert_indexing_slices_equivalent(ser, SLC["d":("b",):-1], SLC[15:3:-1])
-        tm.assert_indexing_slices_equivalent(ser, SLC[("d",):("b",):-1], SLC[15:3:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC["d":"b":-1], SLC[15:3:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[("d",):"b":-1], SLC[15:3:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC["d":("b",):-1], SLC[15:3:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[("d",):("b",):-1], SLC[15:3:-1])
         tm.assert_indexing_slices_equivalent(ser, SLC["b":"d":-1], SLC[:0])
 
-        tm.assert_indexing_slices_equivalent(ser, SLC[("c", 2)::-1], SLC[10::-1])
-        tm.assert_indexing_slices_equivalent(ser, SLC[:("c", 2):-1], SLC[:9:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[("c", 2)::-1], SLC[10::-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[:("c", 2):-1], SLC[:9:-1])
         tm.assert_indexing_slices_equivalent(
             ser, SLC[("e", 0):("c", 2):-1], SLC[16:9:-1]
         )
@@ -724,7 +742,8 @@ class TestMultiIndexSlicers:
         df = DataFrame(list(range(2000)), index=idx, columns=["Test"])
         df_slice = df.loc[pd.IndexSlice[:, 30:70], :]
         result = df_slice.loc["a"]
-        expected = DataFrame(list(range(30, 71)), columns=["Test"], index=range(30, 71))
+        expected = DataFrame(list(range(30, 71)), columns=[
+                             "Test"], index=range(30, 71))
         tm.assert_frame_equal(result, expected)
         result = df_slice.loc["d"]
         expected = DataFrame(

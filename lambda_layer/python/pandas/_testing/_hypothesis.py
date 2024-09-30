@@ -26,11 +26,14 @@ from pandas.tseries.offsets import (
     YearEnd,
 )
 
-OPTIONAL_INTS = st.lists(st.one_of(st.integers(), st.none()), max_size=10, min_size=3)
+OPTIONAL_INTS = st.lists(
+    st.one_of(st.integers(), st.none()), max_size=10, min_size=3)
 
-OPTIONAL_FLOATS = st.lists(st.one_of(st.floats(), st.none()), max_size=10, min_size=3)
+OPTIONAL_FLOATS = st.lists(
+    st.one_of(st.floats(), st.none()), max_size=10, min_size=3)
 
-OPTIONAL_TEXT = st.lists(st.one_of(st.none(), st.text()), max_size=10, min_size=3)
+OPTIONAL_TEXT = st.lists(
+    st.one_of(st.none(), st.text()), max_size=10, min_size=3)
 
 OPTIONAL_DICTS = st.lists(
     st.one_of(st.none(), st.dictionaries(st.text(), st.integers())),

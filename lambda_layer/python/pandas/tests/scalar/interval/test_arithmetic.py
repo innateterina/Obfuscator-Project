@@ -114,7 +114,8 @@ class TestIntervalArithmetic:
         "interval",
         [
             Interval(
-                Timestamp("2017-01-01 00:00:00"), Timestamp("2018-01-01 00:00:00")
+                Timestamp(
+                    "2017-01-01 00:00:00"), Timestamp("2018-01-01 00:00:00")
             ),
             Interval(Timedelta(days=7), Timedelta(days=14)),
         ],

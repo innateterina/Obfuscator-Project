@@ -250,13 +250,16 @@ class TestPeriodConstruction:
         assert Period("1/1/2005", freq=offsets.MonthEnd()) == Period(
             "1/1/2005", freq="M"
         )
-        assert Period("2005", freq=offsets.YearEnd()) == Period("2005", freq="Y")
-        assert Period("2005", freq=offsets.MonthEnd()) == Period("2005", freq="M")
+        assert Period("2005", freq=offsets.YearEnd()
+                      ) == Period("2005", freq="Y")
+        assert Period("2005", freq=offsets.MonthEnd()
+                      ) == Period("2005", freq="M")
         with tm.assert_produces_warning(FutureWarning, match=bday_msg):
             assert Period("3/10/12", freq=offsets.BusinessDay()) == Period(
                 "3/10/12", freq="B"
             )
-        assert Period("3/10/12", freq=offsets.Day()) == Period("3/10/12", freq="D")
+        assert Period("3/10/12", freq=offsets.Day()
+                      ) == Period("3/10/12", freq="D")
 
         assert Period(
             year=2005, quarter=1, freq=offsets.QuarterEnd(startingMonth=12)
@@ -274,7 +277,8 @@ class TestPeriodConstruction:
             )
 
         expected = Period("2005-03-01", freq="3D")
-        assert Period(year=2005, month=3, day=1, freq=offsets.Day(3)) == expected
+        assert Period(year=2005, month=3, day=1,
+                      freq=offsets.Day(3)) == expected
         assert Period(year=2005, month=3, day=1, freq="3D") == expected
 
         with tm.assert_produces_warning(FutureWarning, match=bday_msg):
@@ -282,7 +286,8 @@ class TestPeriodConstruction:
                 year=2012, month=3, day=10, freq="3B"
             )
 
-        assert Period(200701, freq=offsets.MonthEnd()) == Period(200701, freq="M")
+        assert Period(200701, freq=offsets.MonthEnd()
+                      ) == Period(200701, freq="M")
 
         i1 = Period(ordinal=200701, freq=offsets.MonthEnd())
         i2 = Period(ordinal=200701, freq="M")
@@ -621,13 +626,17 @@ class TestPeriodMethods:
         assert new_p == p
 
     def test_hash(self):
-        assert hash(Period("2011-01", freq="M")) == hash(Period("2011-01", freq="M"))
+        assert hash(Period("2011-01", freq="M")
+                    ) == hash(Period("2011-01", freq="M"))
 
-        assert hash(Period("2011-01-01", freq="D")) != hash(Period("2011-01", freq="M"))
+        assert hash(Period("2011-01-01", freq="D")
+                    ) != hash(Period("2011-01", freq="M"))
 
-        assert hash(Period("2011-01", freq="3M")) != hash(Period("2011-01", freq="2M"))
+        assert hash(Period("2011-01", freq="3M")
+                    ) != hash(Period("2011-01", freq="2M"))
 
-        assert hash(Period("2011-01", freq="M")) != hash(Period("2011-02", freq="M"))
+        assert hash(Period("2011-01", freq="M")
+                    ) != hash(Period("2011-02", freq="M"))
 
     # --------------------------------------------------------------
     # to_timestamp
@@ -751,9 +760,12 @@ class TestPeriodMethods:
                 "2000-12-15 13:45:26.123456789",
                 "ns",
             ),
-            ("2000-12-15 13:45:26.123456789", "us", "2000-12-15 13:45:26.123456", "us"),
-            ("2000-12-15 13:45:26.123456", None, "2000-12-15 13:45:26.123456", "us"),
-            ("2000-12-15 13:45:26.123456789", "ms", "2000-12-15 13:45:26.123", "ms"),
+            ("2000-12-15 13:45:26.123456789", "us",
+             "2000-12-15 13:45:26.123456", "us"),
+            ("2000-12-15 13:45:26.123456", None,
+             "2000-12-15 13:45:26.123456", "us"),
+            ("2000-12-15 13:45:26.123456789", "ms",
+             "2000-12-15 13:45:26.123", "ms"),
             ("2000-12-15 13:45:26.123", None, "2000-12-15 13:45:26.123", "ms"),
             ("2000-12-15 13:45:26", "s", "2000-12-15 13:45:26", "s"),
             ("2000-12-15 13:45:26", "min", "2000-12-15 13:45", "min"),
@@ -1034,7 +1046,8 @@ class TestPeriodProperties:
         assert b_date.dayofyear == 1
         assert b_date.days_in_month == 31
         with tm.assert_produces_warning(FutureWarning, match=bday_msg):
-            assert Period(freq="B", year=2012, month=2, day=1).days_in_month == 29
+            assert Period(freq="B", year=2012, month=2,
+                          day=1).days_in_month == 29
 
         d_date = Period(freq="D", year=2007, month=1, day=1)
 
@@ -1062,12 +1075,14 @@ class TestPeriodProperties:
             assert h_date.hour == 0
             assert h_date.days_in_month == 31
             assert (
-                Period(freq="h", year=2012, month=2, day=1, hour=0).days_in_month == 29
+                Period(freq="h", year=2012, month=2,
+                       day=1, hour=0).days_in_month == 29
             )
 
     def test_properties_minutely(self):
         # Test properties on Periods with minutely frequency.
-        t_date = Period(freq="Min", year=2007, month=1, day=1, hour=0, minute=0)
+        t_date = Period(freq="Min", year=2007, month=1,
+                        day=1, hour=0, minute=0)
         #
         assert t_date.quarter == 1
         assert t_date.month == 1
@@ -1078,7 +1093,8 @@ class TestPeriodProperties:
         assert t_date.minute == 0
         assert t_date.days_in_month == 31
         assert (
-            Period(freq="D", year=2012, month=2, day=1, hour=0, minute=0).days_in_month
+            Period(freq="D", year=2012, month=2, day=1,
+                   hour=0, minute=0).days_in_month
             == 29
         )
 

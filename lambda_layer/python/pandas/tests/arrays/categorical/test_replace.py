@@ -56,7 +56,8 @@ def test_replace_categorical_series(to_replace, value, expected, flip_categories
         ("c", "d", ["a", "b"], None),
         # https://github.com/pandas-dev/pandas/issues/33288
         ("a", "a", ["a", "b"], None),
-        ("b", None, ["a", None], "Categorical.categories length are different"),
+        ("b", None, ["a", None],
+         "Categorical.categories length are different"),
     ],
 )
 def test_replace_categorical(to_replace, value, result, expected_error_msg):

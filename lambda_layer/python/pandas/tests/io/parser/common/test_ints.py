@@ -44,7 +44,8 @@ def test_int_conversion(all_parsers):
         ),
         (
             "A,B\nYES,1\nno,2\nyes,3\nNo,3\nYes,3",
-            {"true_values": ["yes", "Yes", "YES"], "false_values": ["no", "NO", "No"]},
+            {"true_values": ["yes", "Yes", "YES"],
+                "false_values": ["no", "NO", "No"]},
             DataFrame(
                 [[True, 1], [False, 2], [True, 3], [False, 3], [True, 3]],
                 columns=["A", "B"],
@@ -182,7 +183,8 @@ def test_int64_overflow(all_parsers, conv, request):
 
 @skip_pyarrow  # CSV parse error: Empty CSV file or block
 @pytest.mark.parametrize(
-    "val", [np.iinfo(np.uint64).max, np.iinfo(np.int64).max, np.iinfo(np.int64).min]
+    "val", [np.iinfo(np.uint64).max, np.iinfo(
+        np.int64).max, np.iinfo(np.int64).min]
 )
 def test_int64_uint64_range(all_parsers, val):
     # These numbers fall right inside the int64-uint64

@@ -125,7 +125,8 @@ class IOHandles(Generic[AnyStr]):
     # handle might not implement the IO-interface
     handle: IO[AnyStr]
     compression: CompressionDict
-    created_handles: list[IO[bytes] | IO[str]] = dataclasses.field(default_factory=list)
+    created_handles: list[IO[bytes] | IO[str]
+                          ] = dataclasses.field(default_factory=list)
     is_wrapped: bool = False
 
     def close(self) -> None:
@@ -221,7 +222,8 @@ def validate_header_arg(header: object) -> None:
         if not all(map(is_integer, header)):
             raise ValueError("header must be integer or list of integers")
         if any(i < 0 for i in header):
-            raise ValueError("cannot specify multi-index header with negative integers")
+            raise ValueError(
+                "cannot specify multi-index header with negative integers")
         return
     if is_bool(header):
         raise TypeError(
@@ -336,7 +338,8 @@ def _get_filepath_or_buffer(
 
     # handle compression dict
     compression_method, compression = get_compression_method(compression)
-    compression_method = infer_compression(filepath_or_buffer, compression_method)
+    compression_method = infer_compression(
+        filepath_or_buffer, compression_method)
 
     # GH21227 internal compression is not used for non-binary handles.
     if compression_method and hasattr(filepath_or_buffer, "write") and "b" not in mode:
@@ -380,7 +383,8 @@ def _get_filepath_or_buffer(
         import urllib.request
 
         # assuming storage_options is to be interpreted as headers
-        req_info = urllib.request.Request(filepath_or_buffer, headers=storage_options)
+        req_info = urllib.request.Request(
+            filepath_or_buffer, headers=storage_options)
         with urlopen(req_info) as req:
             content_encoding = req.headers.get("Content-Encoding", None)
             if content_encoding == "gzip":
@@ -466,7 +470,8 @@ def _get_filepath_or_buffer(
     # is_file_like requires (read | write) & __iter__ but __iter__ is only
     # needed for read_csv(engine=python)
     if not (
-        hasattr(filepath_or_buffer, "read") or hasattr(filepath_or_buffer, "write")
+        hasattr(filepath_or_buffer, "read") or hasattr(
+            filepath_or_buffer, "write")
     ):
         msg = f"Invalid file path or buffer object type: {type(filepath_or_buffer)}"
         raise ValueError(msg)
@@ -540,7 +545,8 @@ def get_compression_method(
         try:
             compression_method = compression_args.pop("method")
         except KeyError as err:
-            raise ValueError("If mapping, compression must have key 'method'") from err
+            raise ValueError(
+                "If mapping, compression must have key 'method'") from err
     else:
         compression_args = {}
         compression_method = compression
@@ -579,7 +585,8 @@ def infer_compression(
     # Infer compression
     if compression == "infer":
         # Convert all path types (e.g. pathlib.Path) to strings
-        filepath_or_buffer = stringify_path(filepath_or_buffer, convert_file_like=True)
+        filepath_or_buffer = stringify_path(
+            filepath_or_buffer, convert_file_like=True)
         if not isinstance(filepath_or_buffer, str):
             # Cannot infer compression of a buffer, assume no compression
             return None
@@ -613,7 +620,8 @@ def check_parent_directory(path: Path | str) -> None:
     """
     parent = Path(path).parent
     if not parent.is_dir():
-        raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+        raise OSError(
+            rf"Cannot save file into a non-existent directory: '{parent}'")
 
 
 @overload
@@ -792,7 +800,8 @@ def get_handle(
             # "Union[str, BaseBuffer]"; expected "Union[Union[str, PathLike[str]],
             # ReadBuffer[bytes], WriteBuffer[bytes]]"
             handle = _BytesZipFile(
-                handle, ioargs.mode, **compression_args  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                handle, ioargs.mode, **compression_args
             )
             if handle.buffer.mode == "r":
                 handles.append(handle)
@@ -800,7 +809,8 @@ def get_handle(
                 if len(zip_names) == 1:
                     handle = handle.buffer.open(zip_names.pop())
                 elif not zip_names:
-                    raise ValueError(f"Zero files found in ZIP file {path_or_buf}")
+                    raise ValueError(
+                        f"Zero files found in ZIP file {path_or_buf}")
                 else:
                     raise ValueError(
                         "Multiple files found in ZIP file. "
@@ -817,7 +827,8 @@ def get_handle(
                 # type "BaseBuffer"; expected "Union[ReadBuffer[bytes],
                 # WriteBuffer[bytes], None]"
                 handle = _BytesTarFile(
-                    fileobj=handle, **compression_args  # type: ignore[arg-type]
+                    # type: ignore[arg-type]
+                    fileobj=handle, **compression_args
                 )
             assert isinstance(handle, _BytesTarFile)
             if "r" in handle.buffer.mode:
@@ -828,7 +839,8 @@ def get_handle(
                     assert file is not None
                     handle = file
                 elif not files:
-                    raise ValueError(f"Zero files found in TAR archive {path_or_buf}")
+                    raise ValueError(
+                        f"Zero files found in TAR archive {path_or_buf}")
                 else:
                     raise ValueError(
                         "Multiple files found in TAR archive. "
@@ -841,7 +853,8 @@ def get_handle(
             # BaseBuffer]"; expected "Optional[Union[Union[str, bytes, PathLike[str],
             # PathLike[bytes]], IO[bytes]], None]"
             handle = get_lzma_file()(
-                handle, ioargs.mode, **compression_args  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                handle, ioargs.mode, **compression_args
             )
 
         # Zstd Compression
@@ -1137,7 +1150,8 @@ def _maybe_memory_map(
         # expected "BaseBuffer"
         wrapped = _IOWrapper(
             mmap.mmap(
-                handle.fileno(), 0, access=mmap.ACCESS_READ  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                handle.fileno(), 0, access=mmap.ACCESS_READ
             )
         )
     finally:

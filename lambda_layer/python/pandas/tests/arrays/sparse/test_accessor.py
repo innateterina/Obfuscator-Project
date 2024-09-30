@@ -112,7 +112,8 @@ class TestFrameAccessor:
         sp_dtype = SparseDtype(dtype, np.array(0, dtype=dtype).item())
 
         mat = sp_sparse.eye(10, format=format, dtype=dtype)
-        result = pd.DataFrame.sparse.from_spmatrix(mat, index=labels, columns=labels)
+        result = pd.DataFrame.sparse.from_spmatrix(
+            mat, index=labels, columns=labels)
         expected = pd.DataFrame(
             np.eye(10, dtype=dtype), index=labels, columns=labels
         ).astype(sp_dtype)
@@ -131,7 +132,8 @@ class TestFrameAccessor:
 
     @pytest.mark.parametrize(
         "columns",
-        [["a", "b"], pd.MultiIndex.from_product([["A"], ["a", "b"]]), ["a", "a"]],
+        [["a", "b"], pd.MultiIndex.from_product(
+            [["A"], ["a", "b"]]), ["a", "a"]],
     )
     def test_from_spmatrix_columns(self, columns):
         sp_sparse = pytest.importorskip("scipy.sparse")
@@ -144,7 +146,8 @@ class TestFrameAccessor:
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "colnames", [("A", "B"), (1, 2), (1, pd.NA), (0.1, 0.2), ("x", "x"), (0, 0)]
+        "colnames", [("A", "B"), (1, 2), (1, pd.NA),
+                     (0.1, 0.2), ("x", "x"), (0, 0)]
     )
     def test_to_coo(self, colnames):
         sp_sparse = pytest.importorskip("scipy.sparse")
@@ -231,9 +234,11 @@ class TestFrameAccessor:
                 np.array([2, 2], dtype=np.int32),
             ],
         )
-        expected = pd.Series(SparseArray(np.array([1, 1, 1], dtype=dtype)), index=index)
+        expected = pd.Series(SparseArray(
+            np.array([1, 1, 1], dtype=dtype)), index=index)
         if dense_index:
-            expected = expected.reindex(pd.MultiIndex.from_product(index.levels))
+            expected = expected.reindex(
+                pd.MultiIndex.from_product(index.levels))
 
         tm.assert_series_equal(result, expected)
 
@@ -250,4 +255,5 @@ class TestFrameAccessor:
     def test_with_column_named_sparse(self):
         # https://github.com/pandas-dev/pandas/issues/30758
         df = pd.DataFrame({"sparse": pd.arrays.SparseArray([1, 2])})
-        assert isinstance(df.sparse, pd.core.arrays.sparse.accessor.SparseFrameAccessor)
+        assert isinstance(
+            df.sparse, pd.core.arrays.sparse.accessor.SparseFrameAccessor)

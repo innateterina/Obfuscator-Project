@@ -130,6 +130,7 @@ chebtrim = pu.trimcoef
 # functions and do minimal error checking.
 #
 
+
 def _cseries_to_zseries(c):
     """Convert Chebyshev series to z-series.
 
@@ -1775,7 +1776,7 @@ def chebroots(c):
         return np.array([-c[0]/c[1]])
 
     # rotated companion matrix reduces error
-    m = chebcompanion(c)[::-1,::-1]
+    m = chebcompanion(c)[::-1, ::-1]
     r = la.eigvals(m)
     r.sort()
     return r
@@ -2076,7 +2077,8 @@ class Chebyshev(ABCPolyBase):
         """
         if domain is None:
             domain = cls.domain
-        xfunc = lambda x: func(pu.mapdomain(x, cls.window, domain), *args)
+
+        def xfunc(x): return func(pu.mapdomain(x, cls.window, domain), *args)
         coef = chebinterpolate(xfunc, deg)
         return cls(coef, domain=domain)
 

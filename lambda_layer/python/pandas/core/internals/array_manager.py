@@ -666,7 +666,8 @@ class ArrayManager(BaseArrayManager):
         elif is_datetime64_ns_dtype(dtype):
             result = DatetimeArray._from_sequence(values, dtype=dtype)._ndarray
         elif is_timedelta64_ns_dtype(dtype):
-            result = TimedeltaArray._from_sequence(values, dtype=dtype)._ndarray
+            result = TimedeltaArray._from_sequence(
+                values, dtype=dtype)._ndarray
         else:
             result = np.array(values, dtype=dtype)
         return SingleArrayManager([result], [self._axes[1]])
@@ -872,7 +873,8 @@ class ArrayManager(BaseArrayManager):
 
         # error: Argument 1 to "ArrayManager" has incompatible type "List[ndarray]";
         # expected "List[Union[ndarray, ExtensionArray]]"
-        return type(self)(result_arrays, [index, columns])  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        return type(self)(result_arrays, [index, columns])
 
     def reduce(self, func: Callable) -> Self:
         """
@@ -895,15 +897,18 @@ class ArrayManager(BaseArrayManager):
             # what if datetime results in timedelta? (eg std)
             dtype = arr.dtype if res is NaT else None
             result_arrays.append(
-                sanitize_array([res], None, dtype=dtype)  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                sanitize_array([res], None, dtype=dtype)
             )
 
-        index = Index._simple_new(np.array([None], dtype=object))  # placeholder
+        index = Index._simple_new(
+            np.array([None], dtype=object))  # placeholder
         columns = self.items
 
         # error: Argument 1 to "ArrayManager" has incompatible type "List[ndarray]";
         # expected "List[Union[ndarray, ExtensionArray]]"
-        new_mgr = type(self)(result_arrays, [index, columns])  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        new_mgr = type(self)(result_arrays, [index, columns])
         return new_mgr
 
     def operate_blockwise(self, other: ArrayManager, array_op) -> ArrayManager:
@@ -983,7 +988,8 @@ class ArrayManager(BaseArrayManager):
                         mask=new_mask2D[:, i],  # type: ignore[index]
                     )
                 else:
-                    new_arr = take_1d(arr, new_indexer2D[:, i], allow_fill=False)
+                    new_arr = take_1d(
+                        arr, new_indexer2D[:, i], allow_fill=False)
                 new_arrays.append(new_arr)
 
         new_index = unstacker.new_index
@@ -1046,7 +1052,8 @@ class ArrayManager(BaseArrayManager):
         Concatenate uniformly-indexed ArrayManagers horizontally.
         """
         # concatting along the columns -> combine reindexed arrays in a single manager
-        arrays = list(itertools.chain.from_iterable([mgr.arrays for mgr in mgrs]))
+        arrays = list(itertools.chain.from_iterable(
+            [mgr.arrays for mgr in mgrs]))
         new_mgr = cls(arrays, [axes[1], axes[0]], verify_integrity=False)
         return new_mgr
 
@@ -1303,7 +1310,8 @@ def concat_arrays(to_concat: list) -> ArrayLike:
     np.ndarray or ExtensionArray
     """
     # ignore the all-NA proxies to determine the resulting dtype
-    to_concat_no_proxy = [x for x in to_concat if not isinstance(x, NullArrayProxy)]
+    to_concat_no_proxy = [
+        x for x in to_concat if not isinstance(x, NullArrayProxy)]
 
     dtypes = {x.dtype for x in to_concat_no_proxy}
     single_dtype = len(dtypes) == 1
@@ -1314,7 +1322,8 @@ def concat_arrays(to_concat: list) -> ArrayLike:
         # GH#42092
         target_dtype = np_find_common_type(*dtypes)
     else:
-        target_dtype = find_common_type([arr.dtype for arr in to_concat_no_proxy])
+        target_dtype = find_common_type(
+            [arr.dtype for arr in to_concat_no_proxy])
 
     to_concat = [
         arr.to_array(target_dtype)

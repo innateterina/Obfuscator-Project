@@ -214,7 +214,8 @@ def to_orc(
         )
 
     if df.index.name is not None:
-        raise ValueError("orc does not serialize index meta-data on a default index")
+        raise ValueError(
+            "orc does not serialize index meta-data on a default index")
 
     if engine != "pyarrow":
         raise ValueError("engine must be 'pyarrow'")

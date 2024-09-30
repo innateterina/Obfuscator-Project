@@ -162,7 +162,8 @@ b,3,4
 c,4,5
 """
     parser = all_parsers
-    expected = DataFrame({"A": ["a", "b", "c"], "B": [1, 3, 4], "C": [2, 4, 5]})
+    expected = DataFrame(
+        {"A": ["a", "b", "c"], "B": [1, 3, 4], "C": [2, 4, 5]})
     result = parser.read_csv(StringIO(data))
     tm.assert_frame_equal(result, expected)
 
@@ -183,10 +184,12 @@ def test_read_csv_low_memory_no_rows_with_index(all_parsers):
     if parser.engine == "pyarrow":
         msg = "The 'nrows' option is not supported with the 'pyarrow' engine"
         with pytest.raises(ValueError, match=msg):
-            parser.read_csv(StringIO(data), low_memory=True, index_col=0, nrows=0)
+            parser.read_csv(StringIO(data), low_memory=True,
+                            index_col=0, nrows=0)
         return
 
-    result = parser.read_csv(StringIO(data), low_memory=True, index_col=0, nrows=0)
+    result = parser.read_csv(
+        StringIO(data), low_memory=True, index_col=0, nrows=0)
     expected = DataFrame(columns=["A", "B", "C"])
     tm.assert_frame_equal(result, expected)
 
@@ -579,7 +582,8 @@ b\n"""
     "sep,skip_blank_lines,exp_data",
     [
         (",", True, [[1.0, 2.0, 4.0], [5.0, np.nan, 10.0], [-70.0, 0.4, 1.0]]),
-        (r"\s+", True, [[1.0, 2.0, 4.0], [5.0, np.nan, 10.0], [-70.0, 0.4, 1.0]]),
+        (r"\s+", True, [[1.0, 2.0, 4.0],
+         [5.0, np.nan, 10.0], [-70.0, 0.4, 1.0]]),
         (
             ",",
             False,
@@ -617,7 +621,8 @@ A,B,C
                 )
             return
 
-    result = parser.read_csv(StringIO(data), sep=sep, skip_blank_lines=skip_blank_lines)
+    result = parser.read_csv(StringIO(data), sep=sep,
+                             skip_blank_lines=skip_blank_lines)
     expected = DataFrame(exp_data, columns=["A", "B", "C"])
     tm.assert_frame_equal(result, expected)
 
@@ -633,7 +638,8 @@ A,B,C
 \t    1,2.,4.
 5.,NaN,10.0
 """
-    expected = DataFrame([[1, 2.0, 4.0], [5.0, np.nan, 10.0]], columns=["A", "B", "C"])
+    expected = DataFrame(
+        [[1, 2.0, 4.0], [5.0, np.nan, 10.0]], columns=["A", "B", "C"])
     result = parser.read_csv(StringIO(data))
     tm.assert_frame_equal(result, expected)
 
@@ -655,7 +661,8 @@ c   1   2   3   4
         ),
         (
             "    a b c\n1 2 3 \n4 5  6\n 7 8 9",
-            DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["a", "b", "c"]),
+            DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                      columns=["a", "b", "c"]),
         ),
     ],
 )
@@ -781,7 +788,8 @@ def test_blank_lines_between_header_and_data_rows(all_parsers, nrows):
             )
         return
 
-    df = parser.read_csv(StringIO(csv), header=3, nrows=nrows, skip_blank_lines=False)
+    df = parser.read_csv(StringIO(csv), header=3,
+                         nrows=nrows, skip_blank_lines=False)
     tm.assert_frame_equal(df, ref[:nrows])
 
 
@@ -928,7 +936,8 @@ def test_encoding_surrogatepass(all_parsers):
         Path(path).write_bytes(
             content * 2 + b"," + content + b"\n" + content * 2 + b"," + content
         )
-        df = parser.read_csv(path, encoding_errors="surrogatepass", index_col=0)
+        df = parser.read_csv(
+            path, encoding_errors="surrogatepass", index_col=0)
         tm.assert_frame_equal(df, expected)
         with pytest.raises(UnicodeDecodeError, match="'utf-8' codec can't decode byte"):
             parser.read_csv(path)

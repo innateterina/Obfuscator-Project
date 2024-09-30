@@ -31,7 +31,8 @@ from pandas.core.resample import _asfreq_compat
 # in this module we override the fixture values defined in conftest.py
 # tuples of '_index_factory,_series_name,_index_start,_index_end'
 DATE_RANGE = (date_range, "dti", datetime(2005, 1, 1), datetime(2005, 1, 10))
-PERIOD_RANGE = (period_range, "pi", datetime(2005, 1, 1), datetime(2005, 1, 10))
+PERIOD_RANGE = (period_range, "pi", datetime(
+    2005, 1, 1), datetime(2005, 1, 10))
 TIMEDELTA_RANGE = (timedelta_range, "tdi", "1 day", "10 day")
 
 all_ts = pytest.mark.parametrize(
@@ -51,7 +52,8 @@ def create_index(_index_factory):
 
 @pytest.mark.parametrize("freq", ["2D", "1h"])
 @pytest.mark.parametrize(
-    "_index_factory,_series_name,_index_start,_index_end", [DATE_RANGE, TIMEDELTA_RANGE]
+    "_index_factory,_series_name,_index_start,_index_end", [
+        DATE_RANGE, TIMEDELTA_RANGE]
 )
 def test_asfreq(series_and_frame, freq, create_index):
     obj = series_and_frame
@@ -63,7 +65,8 @@ def test_asfreq(series_and_frame, freq, create_index):
 
 
 @pytest.mark.parametrize(
-    "_index_factory,_series_name,_index_start,_index_end", [DATE_RANGE, TIMEDELTA_RANGE]
+    "_index_factory,_series_name,_index_start,_index_end", [
+        DATE_RANGE, TIMEDELTA_RANGE]
 )
 def test_asfreq_fill_value(series, create_index):
     # test for fill value during resampling, issue 3715
@@ -154,7 +157,8 @@ def test_resample_empty_series(freq, empty_series_dti, resample_method):
 @pytest.mark.parametrize(
     "freq",
     [
-        pytest.param("ME", marks=pytest.mark.xfail(reason="Don't know why this fails")),
+        pytest.param("ME", marks=pytest.mark.xfail(
+            reason="Don't know why this fails")),
         "D",
         "h",
     ],
@@ -243,7 +247,8 @@ def test_resample_empty_dataframe(empty_frame_dti, freq, resample_method):
     result = getattr(rs, resample_method)()
     if resample_method == "ohlc":
         # TODO: no tests with len(df.columns) > 0
-        mi = MultiIndex.from_product([df.columns, ["open", "high", "low", "close"]])
+        mi = MultiIndex.from_product(
+            [df.columns, ["open", "high", "low", "close"]])
         expected = DataFrame(
             [], index=df.index[:0].copy(), columns=mi, dtype=np.float64
         )
@@ -293,7 +298,8 @@ def test_resample_count_empty_dataframe(freq, empty_frame_dti):
 
     index = _asfreq_compat(empty_frame_dti.index, freq)
 
-    expected = DataFrame(dtype="int64", index=index, columns=Index(["a"], dtype=object))
+    expected = DataFrame(dtype="int64", index=index,
+                         columns=Index(["a"], dtype=object))
 
     tm.assert_frame_equal(result, expected)
 
@@ -430,7 +436,8 @@ def test_resample_quantile(series):
         warn = FutureWarning
     with tm.assert_produces_warning(warn, match=msg):
         result = ser.resample(freq).quantile(q)
-        expected = ser.resample(freq).agg(lambda x: x.quantile(q)).rename(ser.name)
+        expected = ser.resample(freq).agg(
+            lambda x: x.quantile(q)).rename(ser.name)
     tm.assert_series_equal(result, expected)
 
 

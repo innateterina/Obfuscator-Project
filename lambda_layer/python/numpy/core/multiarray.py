@@ -10,6 +10,7 @@ for item in ["_reconstruct", "scalar"]:
 # without a warning.
 _ARRAY_API = multiarray._ARRAY_API
 
+
 def __getattr__(attr_name):
     from numpy._core import multiarray
     from ._utils import _raise_warning

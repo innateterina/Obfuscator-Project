@@ -26,7 +26,8 @@ class TestFillNA:
         self, using_copy_on_write, warn_copy_on_write
     ):
         df = DataFrame(
-            {"A": [np.nan] * 3, "B": [NaT, Timestamp(1), NaT], "C": [np.nan, "foo", 2]}
+            {"A": [np.nan] * 3, "B": [NaT,
+                                      Timestamp(1), NaT], "C": [np.nan, "foo", 2]}
         )
         df.columns = ["A", "A", "A"]
         orig = df[:]
@@ -81,7 +82,8 @@ class TestFillNA:
             padded = datetime_frame.fillna(method="pad")
         assert np.isnan(padded.loc[padded.index[:5], "A"]).all()
         assert (
-            padded.loc[padded.index[-5:], "A"] == padded.loc[padded.index[-5], "A"]
+            padded.loc[padded.index[-5:],
+                       "A"] == padded.loc[padded.index[-5], "A"]
         ).all()
 
         msg = "Must specify a fill 'value' or 'method'"
@@ -116,7 +118,8 @@ class TestFillNA:
 
     def test_fillna_empty(self, using_copy_on_write):
         if using_copy_on_write:
-            pytest.skip("condition is unnecessary complex and is deprecated anyway")
+            pytest.skip(
+                "condition is unnecessary complex and is deprecated anyway")
         # empty frame (GH#2778)
         df = DataFrame(columns=["x"])
         for m in ["pad", "backfill"]:
@@ -172,7 +175,8 @@ class TestFillNA:
         )
 
         expected = df.copy()
-        expected["Date"] = expected["Date"].fillna(df.loc[df.index[0], "Date2"])
+        expected["Date"] = expected["Date"].fillna(
+            df.loc[df.index[0], "Date2"])
         result = df.fillna(value={"Date": df["Date2"]})
         tm.assert_frame_equal(result, expected)
 
@@ -284,7 +288,8 @@ class TestFillNA:
 
         res = df.fillna(median)
         v_exp = [np.nan, np.nan, np.nan]
-        df_exp = DataFrame({"cats": [2, 2, 2], "vals": v_exp}, dtype="category")
+        df_exp = DataFrame(
+            {"cats": [2, 2, 2], "vals": v_exp}, dtype="category")
         tm.assert_frame_equal(res, df_exp)
 
         result = df.cats.fillna(np.nan)
@@ -299,7 +304,8 @@ class TestFillNA:
         df = DataFrame({"a": Categorical(idx)})
         tm.assert_frame_equal(df.fillna(value=NaT), df)
 
-        idx = PeriodIndex(["2011-01", "2011-01", "2011-01", NaT, NaT], freq="M")
+        idx = PeriodIndex(
+            ["2011-01", "2011-01", "2011-01", NaT, NaT], freq="M")
         df = DataFrame({"a": Categorical(idx)})
         tm.assert_frame_equal(df.fillna(value=NaT), df)
 
@@ -464,7 +470,8 @@ class TestFillNA:
 
     def test_frame_pad_backfill_limit(self):
         index = np.arange(10)
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 4)), index=index)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 4)), index=index)
 
         result = df[:2].reindex(index, method="pad", limit=5)
 
@@ -483,7 +490,8 @@ class TestFillNA:
 
     def test_frame_fillna_limit(self):
         index = np.arange(10)
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 4)), index=index)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 4)), index=index)
 
         result = df[:2].reindex(index)
         msg = "DataFrame.fillna with 'method' is deprecated"
@@ -507,14 +515,16 @@ class TestFillNA:
     def test_fillna_skip_certain_blocks(self):
         # don't try to fill boolean, int blocks
 
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 4)).astype(int))
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 4)).astype(int))
 
         # it works!
         df.fillna(np.nan)
 
     @pytest.mark.parametrize("type", [int, float])
     def test_fillna_positive_limit(self, type):
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 4))).astype(type)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 4))).astype(type)
 
         msg = "Limit must be greater than 0"
         with pytest.raises(ValueError, match=msg):
@@ -522,7 +532,8 @@ class TestFillNA:
 
     @pytest.mark.parametrize("type", [int, float])
     def test_fillna_integer_limit(self, type):
-        df = DataFrame(np.random.default_rng(2).standard_normal((10, 4))).astype(type)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((10, 4))).astype(type)
 
         msg = "Limit must be an integer"
         with pytest.raises(ValueError, match=msg):

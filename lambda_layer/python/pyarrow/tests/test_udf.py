@@ -322,7 +322,8 @@ def struct_vector_func_fixture():
     Register a vector function that returns a struct array
     """
     def pivot(ctx, k, v, c):
-        df = pa.RecordBatch.from_arrays([k, v, c], names=['k', 'v', 'c']).to_pandas()
+        df = pa.RecordBatch.from_arrays(
+            [k, v, c], names=['k', 'v', 'c']).to_pandas()
         df_pivot = df.pivot(columns='c', values='v', index='k').reset_index()
         return pa.RecordBatch.from_pandas(df_pivot).to_struct_array()
 

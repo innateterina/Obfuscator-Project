@@ -132,7 +132,8 @@ def test_transform_mixed_column_name_dtypes():
 
 
 @pytest.mark.parametrize(
-    "how, args", [("pct_change", ()), ("nsmallest", (1, ["a", "b"])), ("tail", 1)]
+    "how, args", [("pct_change", ()), ("nsmallest",
+                                       (1, ["a", "b"])), ("tail", 1)]
 )
 def test_apply_str_axis_1_raises(how, args):
     # GH 39211 - some ops don't support axis=1
@@ -347,7 +348,8 @@ def test_transform_wont_agg_series(string_series, func):
 
 
 @pytest.mark.parametrize(
-    "op_wrapper", [lambda x: x, lambda x: [x], lambda x: {"A": x}, lambda x: {"A": [x]}]
+    "op_wrapper", [lambda x: x, lambda x: [x],
+                   lambda x: {"A": x}, lambda x: {"A": [x]}]
 )
 def test_transform_reducer_raises(all_reductions, frame_or_series, op_wrapper):
     # GH 35964

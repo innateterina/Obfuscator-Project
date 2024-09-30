@@ -37,7 +37,8 @@ class TestCartesianProduct:
         tm.assert_index_equal(result1, expected)
 
     def test_tzaware_retained_categorical(self):
-        x = date_range("2000-01-01", periods=2, tz="US/Pacific").astype("category")
+        x = date_range("2000-01-01", periods=2,
+                       tz="US/Pacific").astype("category")
         y = np.array([3, 4])
         result1, result2 = cartesian_product([x, y])
 

@@ -8,14 +8,12 @@ terms of the NumPy License.
 
 NO WARRANTY IS EXPRESSED OR IMPLIED.  USE AT YOUR OWN RISK.
 """
-__version__ = "$Revision: 1.3 $"[10:-1]
-
-f2py_version = 'See `f2py -v`'
-
-
 from .auxfuncs import (
     applyrules, dictappend, gentitle, hasnote, outmess
 )
+__version__ = "$Revision: 1.3 $"[10:-1]
+
+f2py_version = 'See `f2py -v`'
 
 
 usemodule_rules = {

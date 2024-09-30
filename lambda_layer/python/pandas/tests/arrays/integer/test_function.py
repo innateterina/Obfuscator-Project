@@ -113,7 +113,8 @@ def test_value_counts_na():
     result = arr.value_counts(dropna=False)
     ex_index = pd.Index([1, 2, pd.NA], dtype="Int64")
     assert ex_index.dtype == "Int64"
-    expected = pd.Series([2, 1, 1], index=ex_index, dtype="Int64", name="count")
+    expected = pd.Series([2, 1, 1], index=ex_index,
+                         dtype="Int64", name="count")
     tm.assert_series_equal(result, expected)
 
     result = arr.value_counts(dropna=True)
@@ -136,7 +137,8 @@ def test_value_counts_with_normalize():
     # GH 33172
     ser = pd.Series([1, 2, 1, pd.NA], dtype="Int64")
     result = ser.value_counts(normalize=True)
-    expected = pd.Series([2, 1], index=ser[:2], dtype="Float64", name="proportion") / 3
+    expected = pd.Series([2, 1], index=ser[:2],
+                         dtype="Float64", name="proportion") / 3
     assert expected.index.dtype == ser.dtype
     tm.assert_series_equal(result, expected)
 

@@ -68,9 +68,9 @@ def test_drop_metadata():
 
 
 @pytest.mark.parametrize("dtype",
-        [np.dtype("i,i,i,i")[["f1", "f3"]],
-        np.dtype("f8"),
-        np.dtype("10i")])
+                         [np.dtype("i,i,i,i")[["f1", "f3"]],
+                          np.dtype("f8"),
+                             np.dtype("10i")])
 def test_drop_metadata_identity_and_copy(dtype):
     # If there is no metadata, the identity is preserved:
     assert _utils_impl.drop_metadata(dtype) is dtype

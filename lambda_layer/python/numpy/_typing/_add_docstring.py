@@ -58,7 +58,7 @@ def _parse_docstrings() -> str:
 
 
 add_newdoc('ArrayLike', 'typing.Union[...]',
-    """
+           """
     A `~typing.Union` representing objects that can be coerced
     into an `~numpy.ndarray`.
 
@@ -88,7 +88,7 @@ add_newdoc('ArrayLike', 'typing.Union[...]',
     """)
 
 add_newdoc('DTypeLike', 'typing.Union[...]',
-    """
+           """
     A `~typing.Union` representing objects that can be coerced
     into a `~numpy.dtype`.
 
@@ -119,7 +119,7 @@ add_newdoc('DTypeLike', 'typing.Union[...]',
     """)
 
 add_newdoc('NDArray', repr(NDArray),
-    """
+           """
     A `np.ndarray[Any, np.dtype[+ScalarType]] <numpy.ndarray>` type alias 
     :term:`generic <generic type>` w.r.t. its `dtype.type <numpy.dtype.type>`.
 

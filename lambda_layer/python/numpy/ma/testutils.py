@@ -5,6 +5,7 @@
 :version: $Id: testutils.py 3529 2007-11-13 08:01:14Z jarrod.millman $
 
 """
+from unittest import TestCase
 import operator
 
 import numpy as np
@@ -14,7 +15,7 @@ import numpy.testing
 from numpy.testing import (
     assert_, assert_allclose, assert_array_almost_equal_nulp,
     assert_raises, build_err_msg
-    )
+)
 from .core import mask_or, getmask, masked_array, nomask, masked, filled
 
 __all__masked = [
@@ -23,17 +24,16 @@ __all__masked = [
     'assert_array_equal', 'assert_array_less', 'assert_close',
     'assert_equal', 'assert_equal_records', 'assert_mask_equal',
     'assert_not_equal', 'fail_if_array_equal',
-    ]
+]
 
 # Include some normal test functions to avoid breaking other projects who
 # have mistakenly included them from this file. SciPy is one. That is
 # unfortunate, as some of these functions are not intended to work with
 # masked arrays. But there was no way to tell before.
-from unittest import TestCase
 __some__from_testing = [
     'TestCase', 'assert_', 'assert_allclose', 'assert_array_almost_equal_nulp',
     'assert_raises'
-    ]
+]
 
 __all__ = __all__masked + __some__from_testing
 

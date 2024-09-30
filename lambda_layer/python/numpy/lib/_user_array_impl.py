@@ -29,6 +29,7 @@ class container:
     astype
 
     """
+
     def __init__(self, data, dtype=None, copy=True):
         self.array = array(data, dtype, copy=copy)
 

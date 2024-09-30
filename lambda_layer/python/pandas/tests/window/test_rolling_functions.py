@@ -41,7 +41,8 @@ def test_series(series, compare_func, roll_func, kwargs, step):
     result = getattr(series.rolling(50, step=step), roll_func)(**kwargs)
     assert isinstance(result, Series)
     end = range(0, len(series), step or 1)[-1] + 1
-    tm.assert_almost_equal(result.iloc[-1], compare_func(series[end - 50 : end]))
+    tm.assert_almost_equal(
+        result.iloc[-1], compare_func(series[end - 50: end]))
 
 
 @pytest.mark.parametrize(
@@ -69,7 +70,7 @@ def test_frame(raw, frame, compare_func, roll_func, kwargs, step):
     end = range(0, len(frame), step or 1)[-1] + 1
     tm.assert_series_equal(
         result.iloc[-1, :],
-        frame.iloc[end - 50 : end, :].apply(compare_func, axis=0, raw=raw),
+        frame.iloc[end - 50: end, :].apply(compare_func, axis=0, raw=raw),
         check_names=False,
     )
 
@@ -249,7 +250,8 @@ def test_center(roll_func, kwargs, minp):
     )
     expected = (
         getattr(
-            concat([obj, Series([np.nan] * 9)]).rolling(20, min_periods=minp), roll_func
+            concat([obj, Series([np.nan] * 9)]).rolling(20,
+                                                        min_periods=minp), roll_func
         )(**kwargs)
         .iloc[9:]
         .reset_index(drop=True)
@@ -278,7 +280,8 @@ def test_center_reindex_series(series, roll_func, kwargs, minp, fill_value):
 
     series_xp = (
         getattr(
-            series.reindex(list(series.index) + s).rolling(window=25, min_periods=minp),
+            series.reindex(list(series.index) +
+                           s).rolling(window=25, min_periods=minp),
             roll_func,
         )(**kwargs)
         .shift(-12)
@@ -313,7 +316,8 @@ def test_center_reindex_frame(frame, roll_func, kwargs, minp, fill_value):
 
     frame_xp = (
         getattr(
-            frame.reindex(list(frame.index) + s).rolling(window=25, min_periods=minp),
+            frame.reindex(list(frame.index) +
+                          s).rolling(window=25, min_periods=minp),
             roll_func,
         )(**kwargs)
         .shift(-12)
@@ -345,7 +349,8 @@ def test_center_reindex_frame(frame, roll_func, kwargs, minp, fill_value):
         lambda x: x.rolling(window=10, min_periods=5).apply(sum, raw=False),
         lambda x: x.rolling(window=10, min_periods=5).apply(sum, raw=True),
         pytest.param(
-            lambda x: x.rolling(win_type="boxcar", window=10, min_periods=5).mean(),
+            lambda x: x.rolling(win_type="boxcar",
+                                window=10, min_periods=5).mean(),
             marks=td.skip_if_no("scipy"),
         ),
     ],
@@ -377,7 +382,8 @@ def test_rolling_max_gh6297(step):
 
     expected = Series(
         [1.0, 2.0, 6.0, 4.0, 5.0],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )[::step]
     x = series.resample("D").max().rolling(window=1, step=step).max()
     tm.assert_series_equal(expected, x)
@@ -397,7 +403,8 @@ def test_rolling_max_resample(step):
     # Default how should be max
     expected = Series(
         [0.0, 1.0, 2.0, 3.0, 20.0],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )[::step]
     x = series.resample("D").max().rolling(window=1, step=step).max()
     tm.assert_series_equal(expected, x)
@@ -405,7 +412,8 @@ def test_rolling_max_resample(step):
     # Now specify median (10.0)
     expected = Series(
         [0.0, 1.0, 2.0, 3.0, 10.0],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )[::step]
     x = series.resample("D").median().rolling(window=1, step=step).max()
     tm.assert_series_equal(expected, x)
@@ -414,7 +422,8 @@ def test_rolling_max_resample(step):
     v = (4.0 + 10.0 + 20.0) / 3.0
     expected = Series(
         [0.0, 1.0, 2.0, 3.0, v],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )[::step]
     x = series.resample("D").mean().rolling(window=1, step=step).max()
     tm.assert_series_equal(expected, x)
@@ -434,7 +443,8 @@ def test_rolling_min_resample(step):
     # Default how should be min
     expected = Series(
         [0.0, 1.0, 2.0, 3.0, 4.0],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )[::step]
     r = series.resample("D").min().rolling(window=1, step=step)
     tm.assert_series_equal(expected, r.min())
@@ -454,7 +464,8 @@ def test_rolling_median_resample():
     # Default how should be median
     expected = Series(
         [0.0, 1.0, 2.0, 3.0, 10],
-        index=DatetimeIndex([datetime(1975, 1, i, 0) for i in range(1, 6)], freq="D"),
+        index=DatetimeIndex([datetime(1975, 1, i, 0)
+                            for i in range(1, 6)], freq="D"),
     )
     x = series.resample("D").median().rolling(window=1).median()
     tm.assert_series_equal(expected, x)
@@ -507,7 +518,8 @@ def test_rolling_min_max_numeric_types(data_type):
         lambda x: x.rolling(window=10, min_periods=5).apply(sum, raw=False),
         lambda x: x.rolling(window=10, min_periods=5).apply(sum, raw=True),
         pytest.param(
-            lambda x: x.rolling(win_type="boxcar", window=10, min_periods=5).mean(),
+            lambda x: x.rolling(win_type="boxcar",
+                                window=10, min_periods=5).mean(),
             marks=td.skip_if_no("scipy"),
         ),
     ],

@@ -94,7 +94,8 @@ class BaseOpsUtil:
         if exc is None:
             result = op(ser, other)
             expected = self._combine(ser, other, op)
-            expected = self._cast_pointwise_result(op_name, ser, other, expected)
+            expected = self._cast_pointwise_result(
+                op_name, ser, other, expected)
             assert isinstance(result, type(ser))
             tm.assert_equal(result, expected)
         else:
@@ -225,7 +226,8 @@ class BaseComparisonOpsTests(BaseOpsUtil):
             # comparison should match point-wise comparisons
             result = op(ser, other)
             expected = ser.combine(other, op)
-            expected = self._cast_pointwise_result(op.__name__, ser, other, expected)
+            expected = self._cast_pointwise_result(
+                op.__name__, ser, other, expected)
             tm.assert_series_equal(result, expected)
 
         else:

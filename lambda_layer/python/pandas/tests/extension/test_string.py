@@ -58,9 +58,11 @@ def dtype(string_storage):
 
 @pytest.fixture
 def data(dtype, chunked):
-    strings = np.random.default_rng(2).choice(list(string.ascii_letters), size=100)
+    strings = np.random.default_rng(2).choice(
+        list(string.ascii_letters), size=100)
     while strings[0] == strings[1]:
-        strings = np.random.default_rng(2).choice(list(string.ascii_letters), size=100)
+        strings = np.random.default_rng(2).choice(
+            list(string.ascii_letters), size=100)
 
     arr = dtype.construct_array_type()._from_sequence(strings, dtype=dtype)
     return maybe_split_array(arr, chunked)
@@ -69,19 +71,22 @@ def data(dtype, chunked):
 @pytest.fixture
 def data_missing(dtype, chunked):
     """Length 2 array with [NA, Valid]"""
-    arr = dtype.construct_array_type()._from_sequence([pd.NA, "A"], dtype=dtype)
+    arr = dtype.construct_array_type()._from_sequence(
+        [pd.NA, "A"], dtype=dtype)
     return maybe_split_array(arr, chunked)
 
 
 @pytest.fixture
 def data_for_sorting(dtype, chunked):
-    arr = dtype.construct_array_type()._from_sequence(["B", "C", "A"], dtype=dtype)
+    arr = dtype.construct_array_type()._from_sequence(
+        ["B", "C", "A"], dtype=dtype)
     return maybe_split_array(arr, chunked)
 
 
 @pytest.fixture
 def data_missing_for_sorting(dtype, chunked):
-    arr = dtype.construct_array_type()._from_sequence(["B", pd.NA, "A"], dtype=dtype)
+    arr = dtype.construct_array_type()._from_sequence(
+        ["B", pd.NA, "A"], dtype=dtype)
     return maybe_split_array(arr, chunked)
 
 
@@ -105,7 +110,8 @@ class TestStringArray(base.ExtensionTests):
 
     def test_view(self, data, request, arrow_string_storage):
         if data.dtype.storage in arrow_string_storage:
-            pytest.skip(reason="2D support not implemented for ArrowStringArray")
+            pytest.skip(
+                reason="2D support not implemented for ArrowStringArray")
         super().test_view(data)
 
     def test_from_dtype(self, data):
@@ -114,12 +120,14 @@ class TestStringArray(base.ExtensionTests):
 
     def test_transpose(self, data, request, arrow_string_storage):
         if data.dtype.storage in arrow_string_storage:
-            pytest.skip(reason="2D support not implemented for ArrowStringArray")
+            pytest.skip(
+                reason="2D support not implemented for ArrowStringArray")
         super().test_transpose(data)
 
     def test_setitem_preserves_views(self, data, request, arrow_string_storage):
         if data.dtype.storage in arrow_string_storage:
-            pytest.skip(reason="2D support not implemented for ArrowStringArray")
+            pytest.skip(
+                reason="2D support not implemented for ArrowStringArray")
         super().test_setitem_preserves_views(data)
 
     def test_dropna_array(self, data_missing):
@@ -222,7 +230,8 @@ class Test2DCompat(base.Dim2CompatTests):
     @pytest.fixture(autouse=True)
     def arrow_not_supported(self, data):
         if isinstance(data, ArrowStringArray):
-            pytest.skip(reason="2D support not implemented for ArrowStringArray")
+            pytest.skip(
+                reason="2D support not implemented for ArrowStringArray")
 
 
 def test_searchsorted_with_na_raises(data_for_sorting, as_series):

@@ -61,7 +61,8 @@ def df(request):
         return DataFrame({"a": ["µasd", "Ωœ∑`"], "b": ["øπ∆˚¬", "œ∑`®"]})
     elif data_type == "utf16":
         return DataFrame(
-            {"a": ["\U0001f44d\U0001f44d", "\U0001f44d\U0001f44d"], "b": ["abc", "def"]}
+            {"a": ["\U0001f44d\U0001f44d", "\U0001f44d\U0001f44d"],
+                "b": ["abc", "def"]}
         )
     elif data_type == "string":
         return DataFrame(
@@ -200,7 +201,8 @@ class TestClipboard:
     @pytest.mark.parametrize("encoding", [None, "UTF-8", "utf-8", "utf8"])
     def test_round_trip_frame_sep(self, df, sep, encoding):
         df.to_clipboard(excel=None, sep=sep, encoding=encoding)
-        result = read_clipboard(sep=sep or "\t", index_col=0, encoding=encoding)
+        result = read_clipboard(
+            sep=sep or "\t", index_col=0, encoding=encoding)
         tm.assert_frame_equal(df, result)
 
     # Test white space separator
@@ -312,7 +314,8 @@ class TestClipboard:
             ),
             (
                 "\n".join(
-                    ["\t\tcol1\tcol2", "A\t0\t1\tred", "A\t1\t\tblue", "B\t0\t2\tgreen"]
+                    ["\t\tcol1\tcol2", "A\t0\t1\tred",
+                        "A\t1\t\tblue", "B\t0\t2\tgreen"]
                 ),
                 [["A", "A", "B"], [0, 1, 0]],
             ),
@@ -357,7 +360,8 @@ class TestClipboard:
 
         if string_storage == "python":
             string_array = StringArray(np.array(["x", "y"], dtype=np.object_))
-            string_array_na = StringArray(np.array(["x", NA], dtype=np.object_))
+            string_array_na = StringArray(
+                np.array(["x", NA], dtype=np.object_))
 
         elif dtype_backend == "pyarrow" and engine != "c":
             pa = pytest.importorskip("pyarrow")
@@ -376,7 +380,8 @@ y,2,5.0,,,,,False,"""
         clipboard.setText(text)
 
         with pd.option_context("mode.string_storage", string_storage):
-            result = read_clipboard(sep=",", dtype_backend=dtype_backend, engine=engine)
+            result = read_clipboard(
+                sep=",", dtype_backend=dtype_backend, engine=engine)
 
         expected = DataFrame(
             {
@@ -396,7 +401,8 @@ y,2,5.0,,,,,False,"""
 
             expected = DataFrame(
                 {
-                    col: ArrowExtensionArray(pa.array(expected[col], from_pandas=True))
+                    col: ArrowExtensionArray(
+                        pa.array(expected[col], from_pandas=True))
                     for col in expected.columns
                 }
             )

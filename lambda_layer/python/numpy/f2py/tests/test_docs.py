@@ -4,6 +4,7 @@ from numpy.testing import assert_array_equal, assert_equal
 from . import util
 from pathlib import Path
 
+
 def get_docdir():
     parents = Path(__file__).resolve().parents
     try:
@@ -18,14 +19,17 @@ def get_docdir():
     # Assumes that an editable install is used to run tests
     return parents[3] / "doc" / "source" / "f2py" / "code"
 
+
 pytestmark = pytest.mark.skipif(
     not get_docdir().is_dir(),
     reason=f"Could not find f2py documentation sources"
     f"({get_docdir()} does not exist)",
 )
 
+
 def _path(*args):
     return get_docdir().joinpath(*args)
+
 
 @pytest.mark.slow
 class TestDocAdvanced(util.F2PyTest):

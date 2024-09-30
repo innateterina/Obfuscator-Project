@@ -10,7 +10,7 @@ from numpy.lib._nanfunctions_impl import _nan_mask, _replace_nan
 from numpy.testing import (
     assert_, assert_equal, assert_almost_equal, assert_raises,
     assert_raises_regex, assert_array_equal, suppress_warnings
-    )
+)
 
 
 # Test data
@@ -210,7 +210,8 @@ class TestNanFunctions_MinMax:
                 assert_(len(w) == 0)
 
     def test_object_array(self):
-        arr = np.array([[1.0, 2.0], [np.nan, 4.0], [np.nan, np.nan]], dtype=object)
+        arr = np.array([[1.0, 2.0], [np.nan, 4.0], [
+                       np.nan, np.nan]], dtype=object)
         assert_equal(np.nanmin(arr), 1.0)
         assert_equal(np.nanmin(arr, axis=0), [1.0, 2.0])
 
@@ -306,9 +307,9 @@ class TestNanFunctions_ArgminArgmax:
         for f in self.nanfuncs:
             for axis in [0, None]:
                 assert_raises_regex(
-                        ValueError,
-                        "attempt to get argm.. of an empty sequence",
-                        f, mat, axis=axis)
+                    ValueError,
+                    "attempt to get argm.. of an empty sequence",
+                    f, mat, axis=axis)
             for axis in [1]:
                 res = f(mat, axis=axis)
                 assert_equal(res, np.zeros(0))
@@ -356,7 +357,6 @@ class TestNanFunctions_ArgminArgmax:
             ret = f(ar, out=out)
             assert ret is out
             assert ret == reference
-
 
 
 _TEST_ARRAYS = {
@@ -679,7 +679,7 @@ class TestNanFunctions_CumSumProd(SharedNanFunctionsTestsMixin):
             tgt = np.cumprod(_ndat_ones, axis=axis)
             res = np.nancumprod(_ndat, axis=axis)
             assert_almost_equal(res, tgt)
-            tgt = np.cumsum(_ndat_zeros,axis=axis)
+            tgt = np.cumsum(_ndat_zeros, axis=axis)
             res = np.nancumsum(_ndat, axis=axis)
             assert_almost_equal(res, tgt)
 
@@ -800,18 +800,18 @@ class TestNanFunctions_MeanVarStd(SharedNanFunctionsTestsMixin):
         std_out = np.zeros((10, 1, 5))
 
         mean = np.nanmean(A,
-                       out=mean_out,
-                       axis=1,
-                       keepdims=True)
+                          out=mean_out,
+                          axis=1,
+                          keepdims=True)
 
         # The returned  object should be the object specified during calling
         assert mean_out is mean
 
         std = np.nanstd(A,
-                     out=std_out,
-                     axis=1,
-                     keepdims=True,
-                     mean=mean)
+                        out=std_out,
+                        axis=1,
+                        keepdims=True,
+                        mean=mean)
 
         # The returned  object should be the object specified during calling
         assert std_out is std
@@ -825,6 +825,7 @@ class TestNanFunctions_MeanVarStd(SharedNanFunctionsTestsMixin):
 
         assert std_old.shape == mean.shape
         assert_almost_equal(std, std_old)
+
 
 _TIME_UNITS = (
     "Y", "M", "W", "D", "h", "m", "s", "ms", "us", "ns", "ps", "fs", "as"
@@ -923,7 +924,7 @@ class TestNanFunctions_Median:
             # Randomly set some elements to NaN:
             w = np.random.randint(0, d.size, size=d.size // 5)
             d.ravel()[w] = np.nan
-            d[:,0] = 1.  # ensure at least one good value
+            d[:, 0] = 1.  # ensure at least one good value
             # use normal median without nans to compare
             tgt = []
             for x in d:
@@ -933,9 +934,9 @@ class TestNanFunctions_Median:
             assert_array_equal(np.nanmedian(d, axis=-1), tgt)
 
     def test_result_values(self):
-            tgt = [np.median(d) for d in _rdat]
-            res = np.nanmedian(_ndat, axis=1)
-            assert_almost_equal(res, tgt)
+        tgt = [np.median(d) for d in _rdat]
+        res = np.nanmedian(_ndat, axis=1)
+        assert_almost_equal(res, tgt)
 
     @pytest.mark.parametrize("axis", [None, 0, 1])
     @pytest.mark.parametrize("dtype", _TYPE_CODES)
@@ -1012,12 +1013,13 @@ class TestNanFunctions_Median:
                 a = np.array([[inf, 7, -inf, -9],
                               [-10, np.nan, np.nan, 5],
                               [4, np.nan, np.nan, inf]],
-                              dtype=np.float32)
+                             dtype=np.float32)
                 if inf > 0:
                     assert_equal(np.nanmedian(a, axis=0), [4., 7., -inf, 5.])
                     assert_equal(np.nanmedian(a), 4.5)
                 else:
-                    assert_equal(np.nanmedian(a, axis=0), [-10., 7., -inf, -9.])
+                    assert_equal(np.nanmedian(a, axis=0),
+                                 [-10., 7., -inf, -9.])
                     assert_equal(np.nanmedian(a), -2.5)
                 assert_equal(np.nanmedian(a, axis=-1), [-1., -2.5, inf])
 
@@ -1200,7 +1202,8 @@ class TestNanFunctions_Percentile:
         for axis in [1]:
             with warnings.catch_warnings(record=True) as w:
                 warnings.simplefilter('always')
-                assert_equal(np.nanpercentile(mat, 40, axis=axis), np.zeros([]))
+                assert_equal(np.nanpercentile(
+                    mat, 40, axis=axis), np.zeros([]))
                 assert_(len(w) == 0)
 
     def test_scalar(self):
@@ -1364,6 +1367,7 @@ class TestNanFunctions_Quantile:
         assert np.isnan(out).all()
         assert out.dtype == array.dtype
 
+
 @pytest.mark.parametrize("arr, expected", [
     # array of floats with some nans
     (np.array([np.nan, 5.0, np.nan, np.inf]),
@@ -1379,7 +1383,7 @@ class TestNanFunctions_Quantile:
                [np.nan, np.inf]], dtype=np.complex64),
      np.array([[False, True],
                [False, True]])),
-    ])
+])
 def test__nan_mask(arr, expected):
     for out in [None, np.empty(arr.shape, dtype=np.bool)]:
         actual = _nan_mask(arr, out=out)

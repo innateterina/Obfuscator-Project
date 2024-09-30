@@ -156,7 +156,7 @@ class TestDataFrameFormatting:
                 }
             )
             r = repr(df)
-            r = r[r.find("\n") + 1 :]
+            r = r[r.find("\n") + 1:]
 
             adj = printing.get_adjustment()
 
@@ -340,7 +340,8 @@ class TestDataFrameFormatting:
     def test_repr_max_columns_max_rows(self):
         term_width, term_height = get_terminal_size()
         if term_width < 10 or term_height < 10:
-            pytest.skip(f"terminal size too small, {term_width} x {term_height}")
+            pytest.skip(
+                f"terminal size too small, {term_width} x {term_height}")
 
         def mkframe(n):
             index = [f"{i:05d}" for i in range(n)]
@@ -912,7 +913,8 @@ class TestDataFrameFormatting:
 
     def test_datetimelike_frame(self):
         # GH 12211
-        df = DataFrame({"date": [Timestamp("20130101").tz_localize("UTC")] + [NaT] * 5})
+        df = DataFrame(
+            {"date": [Timestamp("20130101").tz_localize("UTC")] + [NaT] * 5})
 
         with option_context("display.max_rows", 5):
             result = str(df)
@@ -980,7 +982,8 @@ class TestDataFrameFormatting:
         # GH19030
         # Check that high-precision time values for the end of day are
         # included in repr for DatetimeIndex
-        df = DataFrame({"A": date_range(start=start_date, freq="D", periods=5)})
+        df = DataFrame(
+            {"A": date_range(start=start_date, freq="D", periods=5)})
         result = str(df)
         assert start_date in result
 
@@ -1112,7 +1115,8 @@ class TestDataFrameFormatting:
 
     def test_wide_repr_wide_long_columns(self):
         with option_context("mode.sim_interactive", True):
-            df = DataFrame({"a": ["a" * 30, "b" * 30], "b": ["c" * 70, "d" * 80]})
+            df = DataFrame({"a": ["a" * 30, "b" * 30],
+                           "b": ["c" * 70, "d" * 80]})
 
             result = repr(df)
             assert "ccccc" in result
@@ -1884,7 +1888,8 @@ class TestGenericArrayFormatter:
         assert res[1] == " False"
 
     def test_2d_array(self):
-        obj = fmt._GenericArrayFormatter(np.array([[True, False], [False, True]]))
+        obj = fmt._GenericArrayFormatter(
+            np.array([[True, False], [False, True]]))
         res = obj.get_result()
         assert len(res) == 2
         assert res[0] == " [True, False]"
@@ -1892,7 +1897,8 @@ class TestGenericArrayFormatter:
 
     def test_3d_array(self):
         obj = fmt._GenericArrayFormatter(
-            np.array([[[True, True], [False, False]], [[False, True], [True, False]]])
+            np.array([[[True, True], [False, False]],
+                     [[False, True], [True, False]]])
         )
         res = obj.get_result()
         assert len(res) == 2
@@ -2107,7 +2113,8 @@ class TestTimedelta64Formatter:
 
 class TestDatetime64Formatter:
     def test_mixed(self):
-        x = Series([datetime(2013, 1, 1), datetime(2013, 1, 1, 12), NaT])._values
+        x = Series([datetime(2013, 1, 1), datetime(
+            2013, 1, 1, 12), NaT])._values
         result = fmt._Datetime64Formatter(x).get_result()
         assert result[0].strip() == "2013-01-01 00:00:00"
         assert result[1].strip() == "2013-01-01 12:00:00"
@@ -2173,7 +2180,8 @@ class TestDatetime64Formatter:
 
     def test_datetime64formatter_hoursecond(self):
         x = Series(
-            pd.to_datetime(["10:10:10.100", "12:12:12.120"], format="%H:%M:%S.%f")
+            pd.to_datetime(["10:10:10.100", "12:12:12.120"],
+                           format="%H:%M:%S.%f")
         )._values
 
         def format_func(x):
@@ -2186,7 +2194,8 @@ class TestDatetime64Formatter:
     def test_datetime64formatter_tz_ms(self):
         x = (
             Series(
-                np.array(["2999-01-01", "2999-01-02", "NaT"], dtype="datetime64[ms]")
+                np.array(["2999-01-01", "2999-01-02", "NaT"],
+                         dtype="datetime64[ms]")
             )
             .dt.tz_localize("US/Pacific")
             ._values

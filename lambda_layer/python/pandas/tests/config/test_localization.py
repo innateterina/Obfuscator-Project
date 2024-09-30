@@ -15,7 +15,8 @@ from pandas.compat import ISMUSL
 import pandas as pd
 
 _all_locales = get_locales()
-_current_locale = locale.setlocale(locale.LC_ALL)  # getlocale() is wrong, see GH#46595
+# getlocale() is wrong, see GH#46595
+_current_locale = locale.setlocale(locale.LC_ALL)
 
 # Don't run any of these tests if we have no locales.
 pytestmark = pytest.mark.skipif(not _all_locales, reason="Need locales")
@@ -148,7 +149,8 @@ def test_set_locale(lang, enc):
 
 def test_encoding_detected():
     system_locale = os.environ.get("LC_ALL")
-    system_encoding = system_locale.split(".")[-1] if system_locale else "utf-8"
+    system_encoding = system_locale.split(
+        ".")[-1] if system_locale else "utf-8"
 
     assert (
         codecs.lookup(pd.options.display.encoding).name

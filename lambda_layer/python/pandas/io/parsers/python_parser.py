@@ -160,7 +160,8 @@ class PythonParser(ParserBase):
         if self._col_indices is None:
             self._col_indices = list(range(len(self.columns)))
 
-        self._parse_date_cols = self._validate_parse_dates_presence(self.columns)
+        self._parse_date_cols = self._validate_parse_dates_presence(
+            self.columns)
         self._no_thousands_columns = self._set_no_thousand_columns()
 
         if len(self.decimal) != 1:
@@ -275,7 +276,8 @@ class PythonParser(ParserBase):
                 names,
                 self.dtype,
             )
-            conv_columns = self._maybe_make_multi_index_columns(columns, self.col_names)
+            conv_columns = self._maybe_make_multi_index_columns(
+                columns, self.col_names)
             return index, conv_columns, col_dict
 
         # handle new style for names in index
@@ -412,7 +414,8 @@ class PythonParser(ParserBase):
                     ):
                         # If no rows we want to raise a different message and if
                         # we have mi columns, the last line is not part of the header
-                        joi = list(map(str, header[:-1] if have_mi_columns else header))
+                        joi = list(
+                            map(str, header[:-1] if have_mi_columns else header))
                         msg = f"[{','.join(joi)}], len of {len(joi)}, "
                         raise ValueError(
                             f"Passed header={msg}"
@@ -429,7 +432,8 @@ class PythonParser(ParserBase):
                         return columns, num_original_columns, unnamed_cols
 
                     if not self.names:
-                        raise EmptyDataError("No columns to parse from file") from err
+                        raise EmptyDataError(
+                            "No columns to parse from file") from err
 
                     line = self.names[:]
 
@@ -479,7 +483,8 @@ class PythonParser(ParserBase):
                                 and self.dtype.get(old_col) is not None
                                 and self.dtype.get(col) is None
                             ):
-                                self.dtype.update({col: self.dtype.get(old_col)})
+                                self.dtype.update(
+                                    {col: self.dtype.get(old_col)})
                         this_columns[i] = col
                         counts[col] = cur_count + 1
                 elif have_mi_columns:
@@ -500,7 +505,8 @@ class PythonParser(ParserBase):
                             self.buf = [self.buf[-1]]
 
                 columns.append(this_columns)
-                unnamed_cols.update({this_columns[i] for i in this_unnamed_cols})
+                unnamed_cols.update(
+                    {this_columns[i] for i in this_unnamed_cols})
 
                 if len(columns) == 1:
                     num_original_columns = len(this_columns)
@@ -516,7 +522,8 @@ class PythonParser(ParserBase):
                 except StopIteration:
                     first_line = None
 
-                len_first_data_row = 0 if first_line is None else len(first_line)
+                len_first_data_row = 0 if first_line is None else len(
+                    first_line)
 
                 if len(names) > len(columns[0]) and len(names) > len_first_data_row:
                     raise ValueError(
@@ -524,7 +531,8 @@ class PythonParser(ParserBase):
                         "number of header fields in the file"
                     )
                 if len(columns) > 1:
-                    raise TypeError("Cannot pass names with multi-index columns")
+                    raise TypeError(
+                        "Cannot pass names with multi-index columns")
 
                 if self.usecols is not None:
                     # Set _use_cols. We don't store columns because they are
@@ -606,7 +614,8 @@ class PythonParser(ParserBase):
                         try:
                             col_indices.append(usecols_key.index(col))
                         except ValueError:
-                            self._validate_usecols_names(self.usecols, usecols_key)
+                            self._validate_usecols_names(
+                                self.usecols, usecols_key)
                     else:
                         col_indices.append(col)
             else:
@@ -680,7 +689,7 @@ class PythonParser(ParserBase):
             # Extract any remaining data after the second
             # quotation mark.
             if len(first_row_bom) > end + 1:
-                new_row += first_row_bom[end + 1 :]
+                new_row += first_row_bom[end + 1:]
 
         else:
             # No quotation so just remove BOM from first element
@@ -1063,7 +1072,8 @@ class PythonParser(ParserBase):
                 self._alert_malformed(msg, row_num + 1)
 
         # see gh-13320
-        zipped_content = list(lib.to_object_array(content, min_width=col_len).T)
+        zipped_content = list(lib.to_object_array(
+            content, min_width=col_len).T)
 
         if self.usecols:
             assert self._col_indices is not None
@@ -1103,10 +1113,10 @@ class PythonParser(ParserBase):
                 if self.pos > len(self.data):
                     raise StopIteration
                 if rows is None:
-                    new_rows = self.data[self.pos :]
+                    new_rows = self.data[self.pos:]
                     new_pos = len(self.data)
                 else:
-                    new_rows = self.data[self.pos : self.pos + rows]
+                    new_rows = self.data[self.pos: self.pos + rows]
                     new_pos = self.pos + rows
 
                 new_rows = self._remove_skipped_rows(new_rows)
@@ -1137,7 +1147,8 @@ class PythonParser(ParserBase):
                         rows = 0
 
                         while True:
-                            next_row = self._next_iter_line(row_num=self.pos + rows + 1)
+                            next_row = self._next_iter_line(
+                                row_num=self.pos + rows + 1)
                             rows += 1
 
                             if next_row is not None:
@@ -1294,7 +1305,7 @@ class FixedWidthReader(abc.Iterator):
             rows = [row.partition(self.comment)[0] for row in rows]
         for row in rows:
             for m in pattern.finditer(row):
-                mask[m.start() : m.end()] = 1
+                mask[m.start(): m.end()] = 1
         shifted = np.roll(mask, 1)
         shifted[0] = 0
         edges = np.where((mask ^ shifted) == 1)[0]

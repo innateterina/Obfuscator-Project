@@ -241,7 +241,8 @@ def assert_index_equal(
         ):
             if check_categorical:
                 assert_attr_equal("dtype", left, right, obj=obj)
-                assert_index_equal(left.categories, right.categories, exact=exact)
+                assert_index_equal(
+                    left.categories, right.categories, exact=exact)
             return
 
         assert_attr_equal("dtype", left, right, obj=obj)
@@ -346,7 +347,8 @@ def assert_index_equal(
         if isinstance(left.dtype, CategoricalDtype) or isinstance(
             right.dtype, CategoricalDtype
         ):
-            assert_categorical_equal(left._values, right._values, obj=f"{obj} category")
+            assert_categorical_equal(
+                left._values, right._values, obj=f"{obj} category")
 
 
 def assert_class_equal(
@@ -550,7 +552,8 @@ def assert_interval_array_equal(
 def assert_period_array_equal(left, right, obj: str = "PeriodArray") -> None:
     _check_isinstance(left, right, PeriodArray)
 
-    assert_numpy_array_equal(left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
+    assert_numpy_array_equal(
+        left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
     assert_attr_equal("dtype", left, right, obj=obj)
 
 
@@ -560,7 +563,8 @@ def assert_datetime_array_equal(
     __tracebackhide__ = True
     _check_isinstance(left, right, DatetimeArray)
 
-    assert_numpy_array_equal(left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
+    assert_numpy_array_equal(
+        left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
     if check_freq:
         assert_attr_equal("freq", left, right, obj=obj)
     assert_attr_equal("tz", left, right, obj=obj)
@@ -571,7 +575,8 @@ def assert_timedelta_array_equal(
 ) -> None:
     __tracebackhide__ = True
     _check_isinstance(left, right, TimedeltaArray)
-    assert_numpy_array_equal(left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
+    assert_numpy_array_equal(
+        left._ndarray, right._ndarray, obj=f"{obj}._ndarray")
     if check_freq:
         assert_attr_equal("freq", left, right, obj=obj)
 
@@ -661,7 +666,8 @@ def assert_numpy_array_equal(
 
     if check_same == "same":
         if left_base is not right_base:
-            raise AssertionError(f"{repr(left_base)} is not {repr(right_base)}")
+            raise AssertionError(
+                f"{repr(left_base)} is not {repr(right_base)}")
     elif check_same == "copy":
         if left_base is right_base:
             raise AssertionError(f"{repr(left_base)} is {repr(right_base)}")
@@ -681,7 +687,8 @@ def assert_numpy_array_equal(
 
             diff = diff * 100.0 / left.size
             msg = f"{obj} values are different ({np.round(diff, 5)} %)"
-            raise_assert_detail(obj, msg, left, right, index_values=index_values)
+            raise_assert_detail(obj, msg, left, right,
+                                index_values=index_values)
 
         raise AssertionError(err_msg)
 

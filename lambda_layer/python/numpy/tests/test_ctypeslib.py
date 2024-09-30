@@ -81,7 +81,7 @@ class TestNdpointer:
         p = ndpointer(dtype=dt)
         p.from_param(np.array([1], dt))
         assert_raises(TypeError, p.from_param,
-                          np.array([1], dt.newbyteorder('swap')))
+                      np.array([1], dt.newbyteorder('swap')))
         dtnames = ['x', 'y']
         dtformats = [np.intc, np.float64]
         dtdescr = {'names': dtnames, 'formats': dtformats}
@@ -133,6 +133,7 @@ class TestNdpointer:
         # 1.12 <= v < 1.16 had a bug that made these fail
         assert_(ndpointer(shape=2) is not ndpointer(ndim=2))
         assert_(ndpointer(ndim=2) is not ndpointer(shape=2))
+
 
 @pytest.mark.skipif(ctypes is None,
                     reason="ctypes not available on this python installation")
@@ -221,8 +222,8 @@ class TestAsArray:
         assert_raises(TypeError, as_array, p)
 
     @pytest.mark.skipif(
-            sys.version_info[:2] == (3, 12),
-            reason="Broken in 3.12.0rc1, see gh-24399",
+        sys.version_info[:2] == (3, 12),
+        reason="Broken in 3.12.0rc1, see gh-24399",
     )
     def test_struct_array_pointer(self):
         from ctypes import c_int16, Structure, pointer
@@ -289,6 +290,7 @@ class TestAsArray:
                     reason="ctypes not available on this python installation")
 class TestAsCtypesType:
     """ Test conversion from dtypes to ctypes types """
+
     def test_scalar(self):
         dt = np.dtype('<u2')
         ct = np.ctypeslib.as_ctypes_type(dt)

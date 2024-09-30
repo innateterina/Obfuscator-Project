@@ -107,7 +107,8 @@ class TestSeriesPlots:
 
     def test_plot_series_bar_ax(self):
         ax = _check_plot_works(
-            Series(np.random.default_rng(2).standard_normal(10)).plot.bar, color="black"
+            Series(np.random.default_rng(2).standard_normal(
+                10)).plot.bar, color="black"
         )
         _check_colors([ax.patches[0]], facecolors=["black"])
 
@@ -250,7 +251,8 @@ class TestSeriesPlots:
         # remove nan for comparison purpose
         exp = np.array([1, 2, 3], dtype=np.float64)
         tm.assert_numpy_array_equal(np.delete(masked.data, 2), exp)
-        tm.assert_numpy_array_equal(masked.mask, np.array([False, False, True, False]))
+        tm.assert_numpy_array_equal(
+            masked.mask, np.array([False, False, True, False]))
 
         expected = np.array([1, 2, 0, 3], dtype=np.float64)
         ax = _check_plot_works(d.plot, stacked=True)
@@ -409,7 +411,8 @@ class TestSeriesPlots:
         # with labels and colors
         labels = ["A", "B", "C", "D", "E"]
         color_args = ["r", "g", "b", "c", "m"]
-        ax = _check_plot_works(series.plot.pie, labels=labels, colors=color_args)
+        ax = _check_plot_works(
+            series.plot.pie, labels=labels, colors=color_args)
         _check_text_labels(ax.texts, labels)
         _check_colors(ax.patches, facecolors=color_args)
 
@@ -437,7 +440,8 @@ class TestSeriesPlots:
 
     def test_pie_series_nan(self):
         # includes nan
-        series = Series([1, 2, np.nan, 4], index=["a", "b", "c", "d"], name="YLABEL")
+        series = Series([1, 2, np.nan, 4], index=[
+                        "a", "b", "c", "d"], name="YLABEL")
         ax = _check_plot_works(series.plot.pie)
         _check_text_labels(ax.texts, ["a", "b", "", "d"])
 
@@ -668,7 +672,8 @@ class TestSeriesPlots:
 
         ax = s.plot(yerr=err, xerr=err)
 
-        result = np.vstack([i.vertices[:, 1] for i in ax.collections[1].get_paths()])
+        result = np.vstack([i.vertices[:, 1]
+                           for i in ax.collections[1].get_paths()])
         expected = (err.T * np.array([-1, 1])) + s.to_numpy().reshape(-1, 1)
         tm.assert_numpy_array_equal(result, expected)
 

@@ -41,7 +41,8 @@ class TestSeriesReplace:
 
     def test_replace_noop_doesnt_downcast(self):
         # GH#44498
-        ser = pd.Series([None, None, pd.Timestamp("2021-12-16 17:31")], dtype=object)
+        ser = pd.Series([None, None, pd.Timestamp(
+            "2021-12-16 17:31")], dtype=object)
         res = ser.replace({np.nan: None})  # should be a no-op
         tm.assert_series_equal(res, ser)
         assert res.dtype == object
@@ -103,7 +104,8 @@ class TestSeriesReplace:
 
         # replace inplace
         with tm.assert_produces_warning(FutureWarning, match=msg):
-            return_value = ser.replace([np.nan, "foo", "bar"], -1, inplace=True)
+            return_value = ser.replace(
+                [np.nan, "foo", "bar"], -1, inplace=True)
         assert return_value is None
 
         assert (ser[:5] == -1).all()
@@ -161,9 +163,11 @@ class TestSeriesReplace:
         ser = pd.Series(pd.date_range("20130101", periods=5))
         expected = ser.copy()
         expected.loc[2] = pd.Timestamp("20120101")
-        result = ser.replace({pd.Timestamp("20130103"): pd.Timestamp("20120101")})
+        result = ser.replace(
+            {pd.Timestamp("20130103"): pd.Timestamp("20120101")})
         tm.assert_series_equal(result, expected)
-        result = ser.replace(pd.Timestamp("20130103"), pd.Timestamp("20120101"))
+        result = ser.replace(pd.Timestamp("20130103"),
+                             pd.Timestamp("20120101"))
         tm.assert_series_equal(result, expected)
 
     def test_replace_nat_with_tz(self):
@@ -209,7 +213,8 @@ class TestSeriesReplace:
         msg3 = "The 'method' keyword in Series.replace is deprecated"
         with pytest.raises(ValueError, match=msg):
             with tm.assert_produces_warning(FutureWarning, match=msg3):
-                return_value = s.replace([1, 2, 3], inplace=True, method="crash_cymbal")
+                return_value = s.replace(
+                    [1, 2, 3], inplace=True, method="crash_cymbal")
             assert return_value is None
         tm.assert_series_equal(s, ser)
 
@@ -252,7 +257,8 @@ class TestSeriesReplace:
 
         # test an object with dates + floats + integers + strings
         dr = pd.Series(pd.date_range("1/1/2001", "1/10/2001", freq="D"))
-        result = dr.astype(object).replace([dr[0], dr[1], dr[2]], [1.0, 2, "a"])
+        result = dr.astype(object).replace(
+            [dr[0], dr[1], dr[2]], [1.0, 2, "a"])
         expected = pd.Series([1.0, 2, "a"] + dr[3:].tolist(), dtype=object)
         tm.assert_series_equal(result, expected)
 
@@ -326,7 +332,8 @@ class TestSeriesReplace:
 
         # replace inplace
         with tm.assert_produces_warning(FutureWarning, match=msg):
-            return_value = ser.replace([np.nan, "foo", "bar"], -1, inplace=True)
+            return_value = ser.replace(
+                [np.nan, "foo", "bar"], -1, inplace=True)
         assert return_value is None
         assert (ser[:5] == -1).all()
         assert (ser[6:10] == -1).all()
@@ -454,7 +461,8 @@ class TestSeriesReplace:
         with tm.assert_produces_warning(FutureWarning, match=msg):
             return_value = c.replace(c[1], c[0], inplace=True)
         assert return_value is None
-        assert c[0] == c[1] == first_value  # test replacing with existing value
+        # test replacing with existing value
+        assert c[0] == c[1] == first_value
 
     def test_replace_with_no_overflowerror(self):
         # GH 25616
@@ -628,7 +636,8 @@ class TestSeriesReplace:
 
     def test_pandas_replace_na(self):
         # GH#43344
-        ser = pd.Series(["AA", "BB", "CC", "DD", "EE", "", pd.NA], dtype="string")
+        ser = pd.Series(["AA", "BB", "CC", "DD", "EE",
+                        "", pd.NA], dtype="string")
         regex_mapping = {
             "AA": "CC",
             "BB": "CC",
@@ -636,7 +645,8 @@ class TestSeriesReplace:
             "CC": "CC-REPL",
         }
         result = ser.replace(regex_mapping, regex=True)
-        exp = pd.Series(["CC", "CC", "CC-REPL", "DD", "CC", "", pd.NA], dtype="string")
+        exp = pd.Series(["CC", "CC", "CC-REPL", "DD",
+                        "CC", "", pd.NA], dtype="string")
         tm.assert_series_equal(result, exp)
 
     @pytest.mark.parametrize(
@@ -658,12 +668,14 @@ class TestSeriesReplace:
                 pd.IntervalDtype("float64"),
                 IntervalArray([pd.Interval(1.0, 2.7), pd.Interval(2.8, 3.1)]),
                 {pd.Interval(1.0, 2.7): pd.Interval(10.6, 20.8)},
-                IntervalArray([pd.Interval(10.6, 20.8), pd.Interval(2.8, 3.1)]),
+                IntervalArray(
+                    [pd.Interval(10.6, 20.8), pd.Interval(2.8, 3.1)]),
             ),
             (
                 pd.PeriodDtype("M"),
                 [pd.Period("2020-05", freq="M")],
-                {pd.Period("2020-05", freq="M"): pd.Period("2020-06", freq="M")},
+                {pd.Period("2020-05", freq="M")
+                           : pd.Period("2020-06", freq="M")},
                 [pd.Period("2020-06", freq="M")],
             ),
         ],

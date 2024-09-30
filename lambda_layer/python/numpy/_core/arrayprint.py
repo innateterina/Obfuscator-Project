@@ -423,15 +423,18 @@ def _object_format(o):
         fmt = '{!r}'
     return fmt.format(o)
 
+
 def repr_format(x):
     if isinstance(x, (np.str_, np.bytes_)):
         return repr(x.item())
     return repr(x)
 
+
 def str_format(x):
     if isinstance(x, (np.str_, np.bytes_)):
         return str(x.item())
     return str(x)
+
 
 def _get_formatdict(data, *, precision, floatmode, suppress, sign, legacy,
                     formatter, **kwargs):
@@ -482,6 +485,7 @@ def _get_formatdict(data, *, precision, floatmode, suppress, sign, legacy,
                 formatdict[key] = indirect(formatter[key])
 
     return formatdict
+
 
 def _get_format_function(data, **options):
     """
@@ -817,6 +821,7 @@ def _extendLine_pretty(s, line, word, line_width, next_line_prefix, legacy):
 
     return s, line
 
+
 def _formatArray(a, format_function, line_width, next_line_prefix,
                  separator, edge_items, summary_insert, legacy):
     """formatArray is designed for two modes of operation:
@@ -941,6 +946,7 @@ def _formatArray(a, format_function, line_width, next_line_prefix,
         # performance and PyPy friendliness, we break the cycle:
         recurser = None
 
+
 def _none_or_positive_arg(x, name):
     if x is None:
         return -1
@@ -948,8 +954,10 @@ def _none_or_positive_arg(x, name):
         raise ValueError("{} must be >= 0".format(name))
     return x
 
+
 class FloatingFormat:
     """ Formatter for subtypes of np.floating """
+
     def __init__(self, data, precision, floatmode, suppress_small, sign=False,
                  *, legacy=None):
         # for backcompatibility, accept bools
@@ -987,7 +995,7 @@ class FloatingFormat:
             min_val = np.min(abs_non_zero)
             with errstate(over='ignore'):  # division can overflow
                 if max_val >= 1.e8 or (not self.suppress_small and
-                        (min_val < 0.0001 or max_val/min_val > 1000.)):
+                                       (min_val < 0.0001 or max_val/min_val > 1000.)):
                     self.exp_format = True
 
         # do a first pass of printing all the numbers, to determine sizes
@@ -1003,7 +1011,7 @@ class FloatingFormat:
             if self.floatmode == 'fixed' or self._legacy <= 113:
                 trim, unique = 'k', False
             strs = (dragon4_scientific(x, precision=self.precision,
-                               unique=unique, trim=trim, sign=self.sign == '+')
+                                       unique=unique, trim=trim, sign=self.sign == '+')
                     for x in finite_vals)
             frac_strs, _, exp_strs = zip(*(s.partition('e') for s in strs))
             int_part, frac_part = zip(*(s.split('.') for s in frac_strs))
@@ -1270,6 +1278,7 @@ def format_float_positional(x, precision=None, unique=True,
                               sign=sign, pad_left=pad_left,
                               pad_right=pad_right, min_digits=min_digits)
 
+
 class IntegerFormat:
     def __init__(self, data, sign='-'):
         if data.size > 0:
@@ -1289,6 +1298,7 @@ class IntegerFormat:
     def __call__(self, x):
         return self.format.format(x)
 
+
 class BoolFormat:
     def __init__(self, data, **kwargs):
         # add an extra space so " True" and "False" have the same length and
@@ -1301,6 +1311,7 @@ class BoolFormat:
 
 class ComplexFloatingFormat:
     """ Formatter for subtypes of np.complexfloating """
+
     def __init__(self, x, precision, floatmode, suppress_small,
                  sign=False, *, legacy=None):
         # for backcompatibility, accept bools
@@ -1385,9 +1396,9 @@ class DatetimeFormat(_TimelikeFormat):
 
     def _format_non_nat(self, x):
         return "'%s'" % datetime_as_string(x,
-                                    unit=self.unit,
-                                    timezone=self.timezone,
-                                    casting=self.casting)
+                                           unit=self.unit,
+                                           timezone=self.timezone,
+                                           casting=self.casting)
 
 
 class TimedeltaFormat(_TimelikeFormat):
@@ -1429,6 +1440,7 @@ class StructuredVoidFormat:
     np.dtype(('i4', 'i2,i2')), as alias scalars lose their field information,
     and the implementation relies upon np.void.__getitem__.
     """
+
     def __init__(self, format_functions):
         self.format_functions = format_functions
 

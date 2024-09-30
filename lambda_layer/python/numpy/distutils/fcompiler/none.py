@@ -3,6 +3,7 @@ from numpy.distutils import customized_fcompiler
 
 compilers = ['NoneFCompiler']
 
+
 class NoneFCompiler(FCompiler):
 
     compiler_type = 'none'

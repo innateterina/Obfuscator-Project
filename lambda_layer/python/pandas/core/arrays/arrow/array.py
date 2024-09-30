@@ -345,7 +345,8 @@ class ArrowExtensionArray(
                 # duration to string casting behavior
                 mask = isna(scalars)
                 if not isinstance(strings, (pa.Array, pa.ChunkedArray)):
-                    strings = pa.array(strings, type=pa.string(), from_pandas=True)
+                    strings = pa.array(
+                        strings, type=pa.string(), from_pandas=True)
                 strings = pc.if_else(mask, None, strings)
                 try:
                     scalars = strings.cast(pa.int64())
@@ -492,7 +493,8 @@ class ArrowExtensionArray(
                 # Workaround https://github.com/apache/arrow/issues/37291
                 from pandas.core.tools.timedeltas import to_timedelta
 
-                value = to_timedelta(value, unit=pa_type.unit).as_unit(pa_type.unit)
+                value = to_timedelta(
+                    value, unit=pa_type.unit).as_unit(pa_type.unit)
                 value = value.to_numpy()
 
             try:
@@ -736,9 +738,11 @@ class ArrowExtensionArray(
             if op in [operator.add, roperator.radd]:
                 sep = pa.scalar("", type=pa_type)
                 if op is operator.add:
-                    result = pc.binary_join_element_wise(self._pa_array, other, sep)
+                    result = pc.binary_join_element_wise(
+                        self._pa_array, other, sep)
                 elif op is roperator.radd:
-                    result = pc.binary_join_element_wise(other, self._pa_array, sep)
+                    result = pc.binary_join_element_wise(
+                        other, self._pa_array, sep)
                 return type(self)(result)
             elif op in [operator.mul, roperator.rmul]:
                 binary = self._pa_array
@@ -973,7 +977,8 @@ class ArrowExtensionArray(
         **kwargs,
     ) -> np.ndarray:
         order = "ascending" if ascending else "descending"
-        null_placement = {"last": "at_end", "first": "at_start"}.get(na_position, None)
+        null_placement = {"last": "at_end",
+                          "first": "at_start"}.get(na_position, None)
         if null_placement is None:
             raise ValueError(f"invalid na_position: {na_position}")
 
@@ -1110,7 +1115,8 @@ class ArrowExtensionArray(
         if not len(values):
             return np.zeros(len(self), dtype=bool)
 
-        result = pc.is_in(self._pa_array, value_set=pa.array(values, from_pandas=True))
+        result = pc.is_in(self._pa_array, value_set=pa.array(
+            values, from_pandas=True))
         # pyarrow 2.0.0 returned nulls, so we explicitly specify dtype to convert nulls
         # to False
         return np.array(result, dtype=np.bool_)
@@ -1151,7 +1157,8 @@ class ArrowExtensionArray(
             encoded = data.dictionary_encode(null_encoding=null_encoding)
         if encoded.length() == 0:
             indices = np.array([], dtype=np.intp)
-            uniques = type(self)(pa.chunked_array([], type=encoded.type.value_type))
+            uniques = type(self)(pa.chunked_array(
+                [], type=encoded.type.value_type))
         else:
             # GH 54844
             combined = encoded.combine_chunks()
@@ -1216,7 +1223,8 @@ class ArrowExtensionArray(
         if isinstance(self.dtype, ArrowDtype):
             pa_dtype = self.dtype.pyarrow_dtype
             if (
-                pa.types.is_timestamp(pa_dtype) or pa.types.is_duration(pa_dtype)
+                pa.types.is_timestamp(
+                    pa_dtype) or pa.types.is_duration(pa_dtype)
             ) and pa_dtype.unit == "ns":
                 # np.array[datetime/timedelta].searchsorted(datetime/timedelta)
                 # erroneously fails when numpy type resolution is nanoseconds
@@ -1363,7 +1371,8 @@ class ArrowExtensionArray(
         na_value: object = lib.no_default,
     ) -> np.ndarray:
         original_na_value = na_value
-        dtype, na_value = to_numpy_dtype_inference(self, dtype, na_value, self._hasna)
+        dtype, na_value = to_numpy_dtype_inference(
+            self, dtype, na_value, self._hasna)
         pa_type = self._pa_array.type
         if not self._hasna or isna(na_value) or pa.types.is_null(pa_type):
             data = self
@@ -1403,7 +1412,8 @@ class ArrowExtensionArray(
                 result = result.copy()
         else:
             if dtype is None:
-                empty = pa.array([], type=pa_type).to_numpy(zero_copy_only=False)
+                empty = pa.array([], type=pa_type).to_numpy(
+                    zero_copy_only=False)
                 if can_hold_element(empty, na_value):
                     dtype = empty.dtype
                 else:
@@ -1671,7 +1681,8 @@ class ArrowExtensionArray(
             # error: Incompatible types in assignment
             # (expression has type "Optional[Any]", variable has type
             # "Callable[[Any, Any, KwArg(Any)], Any]")
-            pyarrow_meth = getattr(pc, pyarrow_name, None)  # type: ignore[assignment]
+            # type: ignore[assignment]
+            pyarrow_meth = getattr(pc, pyarrow_name, None)
             if pyarrow_meth is None:
                 # Let ExtensionArray._reduce raise the TypeError
                 return super()._reduce(name, skipna=skipna, **kwargs)
@@ -1751,7 +1762,8 @@ class ArrowExtensionArray(
         ------
         TypeError : subclass does not define reductions
         """
-        result = self._reduce_calc(name, skipna=skipna, keepdims=keepdims, **kwargs)
+        result = self._reduce_calc(
+            name, skipna=skipna, keepdims=keepdims, **kwargs)
         if isinstance(result, pa.Array):
             return type(self)(result)
         else:
@@ -1768,7 +1780,8 @@ class ArrowExtensionArray(
             else:
                 result = pa.array(
                     [pa_result],
-                    type=to_pyarrow_type(infer_dtype_from_scalar(pa_result)[0]),
+                    type=to_pyarrow_type(
+                        infer_dtype_from_scalar(pa_result)[0]),
                 )
             return result
 
@@ -1850,7 +1863,7 @@ class ArrowExtensionArray(
             chunks = [
                 *self._pa_array[:key].chunks,
                 pa.array([value], type=self._pa_array.type, from_pandas=True),
-                *self._pa_array[key + 1 :].chunks,
+                *self._pa_array[key + 1:].chunks,
             ]
             data = pa.chunked_array(chunks).combine_chunks()
 
@@ -2261,7 +2274,8 @@ class ArrowExtensionArray(
         self, pat, case: bool = True, flags: int = 0, na=None, regex: bool = True
     ):
         if flags:
-            raise NotImplementedError(f"contains not implemented with {flags=}")
+            raise NotImplementedError(
+                f"contains not implemented with {flags=}")
 
         if regex:
             pa_contains = pc.match_substring_regex
@@ -2284,7 +2298,8 @@ class ArrowExtensionArray(
                 result = pc.starts_with(self._pa_array, pattern=pat[0])
 
                 for p in pat[1:]:
-                    result = pc.or_(result, pc.starts_with(self._pa_array, pattern=p))
+                    result = pc.or_(result, pc.starts_with(
+                        self._pa_array, pattern=p))
         if not isna(na):
             result = result.fill_null(na)
         return type(self)(result)
@@ -2301,7 +2316,8 @@ class ArrowExtensionArray(
                 result = pc.ends_with(self._pa_array, pattern=pat[0])
 
                 for p in pat[1:]:
-                    result = pc.or_(result, pc.ends_with(self._pa_array, pattern=p))
+                    result = pc.or_(result, pc.ends_with(
+                        self._pa_array, pattern=p))
         if not isna(na):
             result = result.fill_null(na)
         return type(self)(result)
@@ -2383,12 +2399,12 @@ class ArrowExtensionArray(
         return type(self)(pc.binary_join(result, sep))
 
     def _str_partition(self, sep: str, expand: bool):
-        predicate = lambda val: val.partition(sep)
+        def predicate(val): return val.partition(sep)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_rpartition(self, sep: str, expand: bool):
-        predicate = lambda val: val.rpartition(sep)
+        def predicate(val): return val.rpartition(sep)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
@@ -2400,7 +2416,8 @@ class ArrowExtensionArray(
         if step is None:
             step = 1
         return type(self)(
-            pc.utf8_slice_codeunits(self._pa_array, start=start, stop=stop, step=step)
+            pc.utf8_slice_codeunits(
+                self._pa_array, start=start, stop=stop, step=step)
         )
 
     def _str_isalnum(self):
@@ -2466,17 +2483,18 @@ class ArrowExtensionArray(
             removed = pc.utf8_slice_codeunits(self._pa_array, len(prefix))
             result = pc.if_else(starts_with, removed, self._pa_array)
             return type(self)(result)
-        predicate = lambda val: val.removeprefix(prefix)
+
+        def predicate(val): return val.removeprefix(prefix)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_casefold(self):
-        predicate = lambda val: val.casefold()
+        def predicate(val): return val.casefold()
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_encode(self, encoding: str, errors: str = "strict"):
-        predicate = lambda val: val.encode(encoding, errors)
+        def predicate(val): return val.encode(encoding, errors)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
@@ -2497,7 +2515,7 @@ class ArrowExtensionArray(
 
     def _str_findall(self, pat: str, flags: int = 0):
         regex = re.compile(pat, flags=flags)
-        predicate = lambda val: regex.findall(val)
+        def predicate(val): return regex.findall(val)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
@@ -2518,22 +2536,22 @@ class ArrowExtensionArray(
         return result, uniques_sorted.to_pylist()
 
     def _str_index(self, sub: str, start: int = 0, end: int | None = None):
-        predicate = lambda val: val.index(sub, start, end)
+        def predicate(val): return val.index(sub, start, end)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_rindex(self, sub: str, start: int = 0, end: int | None = None):
-        predicate = lambda val: val.rindex(sub, start, end)
+        def predicate(val): return val.rindex(sub, start, end)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_normalize(self, form: str):
-        predicate = lambda val: unicodedata.normalize(form, val)
+        def predicate(val): return unicodedata.normalize(form, val)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_rfind(self, sub: str, start: int = 0, end=None):
-        predicate = lambda val: val.rfind(sub, start, end)
+        def predicate(val): return val.rfind(sub, start, end)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
@@ -2559,29 +2577,32 @@ class ArrowExtensionArray(
             n = None
         if pat is None:
             return type(self)(
-                pc.utf8_split_whitespace(self._pa_array, max_splits=n, reverse=True)
+                pc.utf8_split_whitespace(
+                    self._pa_array, max_splits=n, reverse=True)
             )
         else:
             return type(self)(
-                pc.split_pattern(self._pa_array, pat, max_splits=n, reverse=True)
+                pc.split_pattern(self._pa_array, pat,
+                                 max_splits=n, reverse=True)
             )
 
     def _str_translate(self, table: dict[int, str]):
-        predicate = lambda val: val.translate(table)
+        def predicate(val): return val.translate(table)
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     def _str_wrap(self, width: int, **kwargs):
         kwargs["width"] = width
         tw = textwrap.TextWrapper(**kwargs)
-        predicate = lambda val: "\n".join(tw.wrap(val))
+        def predicate(val): return "\n".join(tw.wrap(val))
         result = self._apply_elementwise(predicate)
         return type(self)(pa.chunked_array(result))
 
     @property
     def _dt_days(self):
         return type(self)(
-            pa.array(self._to_timedeltaarray().days, from_pandas=True, type=pa.int32())
+            pa.array(self._to_timedeltaarray().days,
+                     from_pandas=True, type=pa.int32())
         )
 
     @property
@@ -2654,7 +2675,8 @@ class ArrowExtensionArray(
 
     def _dt_total_seconds(self):
         return type(self)(
-            pa.array(self._to_timedeltaarray().total_seconds(), from_pandas=True)
+            pa.array(self._to_timedeltaarray(
+            ).total_seconds(), from_pandas=True)
         )
 
     def _dt_as_unit(self, unit: str):
@@ -2888,7 +2910,8 @@ class ArrowExtensionArray(
             )
         data = self._pa_array.to_pylist()
         if self._dtype.pyarrow_dtype.unit == "ns":
-            data = [None if ts is None else ts.to_pydatetime(warn=False) for ts in data]
+            data = [None if ts is None else ts.to_pydatetime(
+                warn=False) for ts in data]
         return np.array(data, dtype=object)
 
     def _dt_tz_localize(
@@ -2909,7 +2932,8 @@ class ArrowExtensionArray(
         if nonexistent_pa is None:
             raise NotImplementedError(f"{nonexistent=} is not supported")
         if tz is None:
-            result = self._pa_array.cast(pa.timestamp(self.dtype.pyarrow_dtype.unit))
+            result = self._pa_array.cast(
+                pa.timestamp(self.dtype.pyarrow_dtype.unit))
         else:
             result = pc.assume_timezone(
                 self._pa_array, str(tz), ambiguous=ambiguous, nonexistent=nonexistent_pa
@@ -2937,6 +2961,7 @@ def transpose_homogeneous_pyarrow(
     arrays = list(arrays)
     nrows, ncols = len(arrays[0]), len(arrays)
     indices = np.arange(nrows * ncols).reshape(ncols, nrows).T.flatten()
-    arr = pa.chunked_array([chunk for arr in arrays for chunk in arr._pa_array.chunks])
+    arr = pa.chunked_array(
+        [chunk for arr in arrays for chunk in arr._pa_array.chunks])
     arr = arr.take(indices)
     return [ArrowExtensionArray(arr.slice(i * ncols, ncols)) for i in range(nrows)]

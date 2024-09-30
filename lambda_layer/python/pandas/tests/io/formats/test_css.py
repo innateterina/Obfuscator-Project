@@ -68,8 +68,10 @@ def test_css_parse_invalid(invalid_css, remainder):
 @pytest.mark.parametrize(
     "shorthand,expansions",
     [
-        ("margin", ["margin-top", "margin-right", "margin-bottom", "margin-left"]),
-        ("padding", ["padding-top", "padding-right", "padding-bottom", "padding-left"]),
+        ("margin", ["margin-top", "margin-right",
+         "margin-bottom", "margin-left"]),
+        ("padding", ["padding-top", "padding-right",
+         "padding-bottom", "padding-left"]),
         (
             "border-width",
             [
@@ -107,7 +109,8 @@ def test_css_side_shorthands(shorthand, expansions):
     )
 
     assert_resolves(
-        f"{shorthand}: 1pt 4pt", {top: "1pt", right: "4pt", bottom: "1pt", left: "4pt"}
+        f"{shorthand}: 1pt 4pt", {top: "1pt",
+                                  right: "4pt", bottom: "1pt", left: "4pt"}
     )
 
     assert_resolves(
@@ -147,7 +150,8 @@ def test_css_border_shorthand_sides(shorthand, sides):
         return resolved
 
     assert_resolves(
-        f"{shorthand}: 1pt red solid", create_border_dict(sides, "red", "solid", "1pt")
+        f"{shorthand}: 1pt red solid", create_border_dict(
+            sides, "red", "solid", "1pt")
     )
 
 
@@ -246,13 +250,15 @@ def test_css_none_absent(style, equiv):
         ("101.6q", "72pt"),
     ],
 )
-@pytest.mark.parametrize("relative_to", [None, "16pt"])  # invariant to inherited size
+# invariant to inherited size
+@pytest.mark.parametrize("relative_to", [None, "16pt"])
 def test_css_absolute_font_size(size, relative_to, resolved):
     if relative_to is None:
         inherited = None
     else:
         inherited = {"font-size": relative_to}
-    assert_resolves(f"font-size: {size}", {"font-size": resolved}, inherited=inherited)
+    assert_resolves(f"font-size: {size}",
+                    {"font-size": resolved}, inherited=inherited)
 
 
 @pytest.mark.parametrize(
@@ -286,4 +292,5 @@ def test_css_relative_font_size(size, relative_to, resolved):
         inherited = None
     else:
         inherited = {"font-size": relative_to}
-    assert_resolves(f"font-size: {size}", {"font-size": resolved}, inherited=inherited)
+    assert_resolves(f"font-size: {size}",
+                    {"font-size": resolved}, inherited=inherited)

@@ -360,7 +360,8 @@ class Apply(metaclass=abc.ABCMeta):
         # degenerate case
         if selected_obj.ndim == 1:
             for a in func:
-                colg = obj._gotitem(selected_obj.name, ndim=1, subset=selected_obj)
+                colg = obj._gotitem(selected_obj.name,
+                                    ndim=1, subset=selected_obj)
                 args = (
                     [self.axis, *self.args]
                     if include_axis(op_name, colg)
@@ -376,7 +377,8 @@ class Apply(metaclass=abc.ABCMeta):
         else:
             indices = []
             for index, col in enumerate(selected_obj):
-                colg = obj._gotitem(col, ndim=1, subset=selected_obj.iloc[:, index])
+                colg = obj._gotitem(
+                    col, ndim=1, subset=selected_obj.iloc[:, index])
                 args = (
                     [self.axis, *self.args]
                     if include_axis(op_name, colg)
@@ -387,7 +389,8 @@ class Apply(metaclass=abc.ABCMeta):
                 indices.append(index)
             # error: Incompatible types in assignment (expression has type "Any |
             # Index", variable has type "list[Any | Callable[..., Any] | str]")
-            keys = selected_obj.columns.take(indices)  # type: ignore[assignment]
+            keys = selected_obj.columns.take(
+                indices)  # type: ignore[assignment]
 
         return keys, results
 
@@ -469,7 +472,8 @@ class Apply(metaclass=abc.ABCMeta):
         if selected_obj.ndim == 1:
             # key only used for output
             colg = obj._gotitem(selection, ndim=1)
-            results = [getattr(colg, op_name)(how, **kwargs) for _, how in func.items()]
+            results = [getattr(colg, op_name)(how, **kwargs)
+                       for _, how in func.items()]
             keys = list(func.keys())
         elif not is_groupby and is_non_unique_col:
             # key used for column selection and output
@@ -484,7 +488,8 @@ class Apply(metaclass=abc.ABCMeta):
                     label_to_indices[label].append(index)
 
                 key_data = [
-                    getattr(selected_obj._ixs(indice, axis=1), op_name)(how, **kwargs)
+                    getattr(selected_obj._ixs(indice, axis=1),
+                            op_name)(how, **kwargs)
                     for label, indices in label_to_indices.items()
                     for indice in indices
                 ]
@@ -695,7 +700,8 @@ class Apply(metaclass=abc.ABCMeta):
             # people may aggregate on a non-callable attribute
             # but don't let them think they can pass args to it
             assert len(args) == 0
-            assert len([kwarg for kwarg in kwargs if kwarg not in ["axis"]]) == 0
+            assert len(
+                [kwarg for kwarg in kwargs if kwarg not in ["axis"]]) == 0
             return f
         elif hasattr(np, func) and hasattr(obj, "__array__"):
             # in particular exclude Window
@@ -934,7 +940,8 @@ class FrameApply(NDFrameApply):
             result = result.T if result is not None else result
 
         if result is None:
-            result = self.obj.apply(self.func, axis, args=self.args, **self.kwargs)
+            result = self.obj.apply(
+                self.func, axis, args=self.args, **self.kwargs)
 
         return result
 
@@ -976,7 +983,8 @@ class FrameApply(NDFrameApply):
 
         if should_reduce:
             if len(self.agg_axis):
-                r = self.func(Series([], dtype=np.float64), *self.args, **self.kwargs)
+                r = self.func(Series([], dtype=np.float64),
+                              *self.args, **self.kwargs)
             else:
                 r = np.nan
 
@@ -1160,7 +1168,8 @@ class FrameRowApply(FrameApply):
             for j in range(values.shape[1]):
                 # Create the series
                 ser = Series(
-                    values[:, j], index=df_index, name=maybe_cast_str(col_names[j])
+                    values[:, j], index=df_index, name=maybe_cast_str(
+                        col_names[j])
                 )
                 results[j] = jitted_udf(ser)
             return results
@@ -1255,7 +1264,8 @@ class FrameColumnApply(FrameApply):
         ser = self.obj._ixs(0, axis=0)
         mgr = ser._mgr
 
-        is_view = mgr.blocks[0].refs.has_reference()  # type: ignore[union-attr]
+        # type: ignore[union-attr]
+        is_view = mgr.blocks[0].refs.has_reference()
 
         if isinstance(ser.dtype, ExtensionDtype):
             # values will be incorrect for this block
@@ -1277,7 +1287,8 @@ class FrameColumnApply(FrameApply):
                     # -> if that happened and `ser` is already a copy, then we reset
                     # the refs here to avoid triggering a unnecessary CoW inside the
                     # applied function (https://github.com/pandas-dev/pandas/pull/56212)
-                    mgr.blocks[0].refs = BlockValuesRefs(mgr.blocks[0])  # type: ignore[union-attr]
+                    mgr.blocks[0].refs = BlockValuesRefs(
+                        mgr.blocks[0])  # type: ignore[union-attr]
                 yield ser
 
     @staticmethod
@@ -1447,7 +1458,8 @@ class SeriesApply(NDFrameApply):
                     f"has been deprecated. Use {type(obj).__name__}.transform to "
                     f"keep behavior unchanged."
                 )
-                warnings.warn(msg, FutureWarning, stacklevel=find_stack_level())
+                warnings.warn(msg, FutureWarning,
+                              stacklevel=find_stack_level())
 
         return result
 
@@ -1568,7 +1580,8 @@ class GroupByApply(Apply):
         with com.temp_setattr(
             obj, "as_index", True, condition=hasattr(obj, "as_index")
         ):
-            keys, results = self.compute_list_like(op_name, selected_obj, kwargs)
+            keys, results = self.compute_list_like(
+                op_name, selected_obj, kwargs)
         result = self.wrap_results_list_like(keys, results)
         return result
 
@@ -1608,7 +1621,8 @@ class GroupByApply(Apply):
             result_index, result_data = self.compute_dict_like(
                 op_name, selected_obj, selection, kwargs
             )
-        result = self.wrap_results_dict_like(selected_obj, result_index, result_data)
+        result = self.wrap_results_dict_like(
+            selected_obj, result_index, result_data)
         return result
 
 
@@ -1693,7 +1707,8 @@ def reconstruct_func(
             )
         if func is None:
             # nicer error message
-            raise TypeError("Must provide 'func' or tuples of '(column, aggfunc).")
+            raise TypeError(
+                "Must provide 'func' or tuples of '(column, aggfunc).")
 
     if relabeling:
         # error: Incompatible types in assignment (expression has type
@@ -1809,7 +1824,8 @@ def _make_unique_kwarg_list(
     [('a', '<lambda>_0'), ('a', '<lambda>_1'), ('b', '<lambda>')]
     """
     return [
-        (pair[0], f"{pair[1]}_{seq[:i].count(pair)}") if seq.count(pair) > 1 else pair
+        (pair[0], f"{pair[1]}_{seq[:i].count(pair)}") if seq.count(
+            pair) > 1 else pair
         for i, pair in enumerate(seq)
     ]
 
@@ -1857,7 +1873,8 @@ def relabel_result(
     reordered_result_in_dict: dict[Hashable, Series] = {}
     idx = 0
 
-    reorder_mask = not isinstance(result, ABCSeries) and len(result.columns) > 1
+    reorder_mask = not isinstance(
+        result, ABCSeries) and len(result.columns) > 1
     for col, fun in func.items():
         s = result[col].dropna()
 
@@ -1890,7 +1907,7 @@ def relabel_result(
 
         # assign the new user-provided "named aggregation" as index names, and reindex
         # it based on the whole user-provided names.
-        s.index = reordered_indexes[idx : idx + len(fun)]
+        s.index = reordered_indexes[idx: idx + len(fun)]
         reordered_result_in_dict[col] = s.reindex(columns, copy=False)
         idx = idx + len(fun)
     return reordered_result_in_dict
@@ -2028,7 +2045,8 @@ def validate_func_kwargs(
     func = []
     for col_func in kwargs.values():
         if not (isinstance(col_func, str) or callable(col_func)):
-            raise TypeError(tuple_given_message.format(type(col_func).__name__))
+            raise TypeError(tuple_given_message.format(
+                type(col_func).__name__))
         func.append(col_func)
     if not columns:
         no_arg_message = "Must provide 'func' or named aggregation **kwargs."

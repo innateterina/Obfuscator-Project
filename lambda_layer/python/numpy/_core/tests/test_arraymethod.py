@@ -53,7 +53,7 @@ class TestSimpleStridedCall:
         (((np.ones((2, 2), dtype="d"), np.ones((2, 2), dtype="f")),),
          ValueError),  # not 1-D
         (((np.ones(3, dtype="d"), np.ones(4, dtype="f")),),
-          ValueError),  # different length
+         ValueError),  # different length
         (((np.frombuffer(b"\0x00"*3*2, dtype="d"),
            np.frombuffer(b"\0x00"*3, dtype="f")),),
          ValueError),  # output not writeable

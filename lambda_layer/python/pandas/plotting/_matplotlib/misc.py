@@ -47,7 +47,8 @@ def scatter_matrix(
     df = frame._get_numeric_data()
     n = df.columns.size
     naxes = n * n
-    fig, axes = create_subplots(naxes=naxes, figsize=figsize, ax=ax, squeeze=False)
+    fig, axes = create_subplots(
+        naxes=naxes, figsize=figsize, ax=ax, squeeze=False)
 
     # no gaps between subplots
     maybe_adjust_figure(fig, wspace=0, hspace=0)
@@ -169,7 +170,8 @@ def radviz(
 
     m = len(frame.columns) - 1
     s = np.array(
-        [(np.cos(t), np.sin(t)) for t in [2 * np.pi * (i / m) for i in range(m)]]
+        [(np.cos(t), np.sin(t))
+         for t in [2 * np.pi * (i / m) for i in range(m)]]
     )
 
     for i in range(n):

@@ -17,7 +17,8 @@ class TestDataFrameSortValues:
     @pytest.mark.parametrize("dtype", [np.uint8, bool])
     def test_sort_values_sparse_no_warning(self, dtype):
         # GH#45618
-        ser = pd.Series(Categorical(["a", "b", "a"], categories=["a", "b", "c"]))
+        ser = pd.Series(Categorical(
+            ["a", "b", "a"], categories=["a", "b", "c"]))
         df = pd.get_dummies(ser, dtype=dtype, sparse=True)
 
         with tm.assert_produces_warning(None):
@@ -75,7 +76,8 @@ class TestDataFrameSortValues:
         expected = frame.reindex(columns=["B", "A", "C"])
         tm.assert_frame_equal(sorted_df, expected)
 
-        sorted_df = frame.sort_values(by=[1, 3], axis=1, ascending=[True, False])
+        sorted_df = frame.sort_values(
+            by=[1, 3], axis=1, ascending=[True, False])
         tm.assert_frame_equal(sorted_df, expected)
 
         sorted_df = frame.sort_values(by=[1, 3], axis=1, ascending=False)
@@ -113,7 +115,8 @@ class TestDataFrameSortValues:
         tm.assert_frame_equal(sorted_df, expected)
 
         sorted_df = frame.copy()
-        return_value = sorted_df.sort_values(by="A", ascending=False, inplace=True)
+        return_value = sorted_df.sort_values(
+            by="A", ascending=False, inplace=True)
         assert return_value is None
         expected = frame.sort_values(by="A", ascending=False)
         tm.assert_frame_equal(sorted_df, expected)
@@ -132,7 +135,8 @@ class TestDataFrameSortValues:
         np.random.default_rng(2).shuffle(A)
         np.random.default_rng(2).shuffle(B)
         frame = DataFrame(
-            {"A": A, "B": B, "C": np.random.default_rng(2).standard_normal(100)}
+            {"A": A, "B": B, "C": np.random.default_rng(
+                2).standard_normal(100)}
         )
 
         result = frame.sort_values(by=["A", "B"])
@@ -142,7 +146,8 @@ class TestDataFrameSortValues:
 
         result = frame.sort_values(by=["A", "B"], ascending=False)
         indexer = np.lexsort(
-            (frame["B"].rank(ascending=False), frame["A"].rank(ascending=False))
+            (frame["B"].rank(ascending=False),
+             frame["A"].rank(ascending=False))
         )
         expected = frame.take(indexer)
         tm.assert_frame_equal(result, expected)
@@ -221,7 +226,8 @@ class TestDataFrameSortValues:
             {"A": [np.nan, 1, 1, 2, 4, 6, 8], "B": [5, 9, 2, np.nan, 5, 5, 4]},
             index=[2, 0, 3, 1, 6, 4, 5],
         )
-        sorted_df = df.sort_values(["A", "B"], ascending=[1, 0], na_position="first")
+        sorted_df = df.sort_values(["A", "B"], ascending=[
+                                   1, 0], na_position="first")
         tm.assert_frame_equal(sorted_df, expected)
 
         # na_position='last', not order
@@ -229,7 +235,8 @@ class TestDataFrameSortValues:
             {"A": [8, 6, 4, 2, 1, 1, np.nan], "B": [4, 5, 5, np.nan, 2, 9, 5]},
             index=[5, 4, 6, 1, 3, 0, 2],
         )
-        sorted_df = df.sort_values(["A", "B"], ascending=[0, 1], na_position="last")
+        sorted_df = df.sort_values(["A", "B"], ascending=[
+                                   0, 1], na_position="last")
         tm.assert_frame_equal(sorted_df, expected)
 
     def test_sort_values_stable_descending_sort(self):
@@ -238,7 +245,8 @@ class TestDataFrameSortValues:
             [[2, "first"], [2, "second"], [1, "a"], [1, "b"]],
             columns=["sort_col", "order"],
         )
-        sorted_df = df.sort_values(by="sort_col", kind="mergesort", ascending=False)
+        sorted_df = df.sort_values(
+            by="sort_col", kind="mergesort", ascending=False)
         tm.assert_frame_equal(df, sorted_df)
 
     @pytest.mark.parametrize(
@@ -288,7 +296,8 @@ class TestDataFrameSortValues:
 
     def test_sort_values_stable_categorial(self):
         # GH#16793
-        df = DataFrame({"x": Categorical(np.repeat([1, 2, 3, 4], 5), ordered=True)})
+        df = DataFrame(
+            {"x": Categorical(np.repeat([1, 2, 3, 4], 5), ordered=True)})
         expected = df.copy()
         sorted_df = df.sort_values("x", kind="mergesort")
         tm.assert_frame_equal(sorted_df, expected)
@@ -384,12 +393,14 @@ class TestDataFrameSortValues:
         # and now check if NaT is still considered as "na" for datetime64
         # columns:
         df = DataFrame(
-            {"datetime": [Timestamp("2016-01-01"), NaT], "float": float_values},
+            {"datetime": [Timestamp("2016-01-01"), NaT],
+             "float": float_values},
             columns=["datetime", "float"],
         )
 
         df_reversed = DataFrame(
-            {"datetime": [NaT, Timestamp("2016-01-01")], "float": float_values[::-1]},
+            {"datetime": [NaT, Timestamp("2016-01-01")],
+             "float": float_values[::-1]},
             columns=["datetime", "float"],
             index=[1, 0],
         )
@@ -407,14 +418,16 @@ class TestDataFrameSortValues:
     def test_sort_nat(self):
         # GH 16836
 
-        d1 = [Timestamp(x) for x in ["2016-01-01", "2015-01-01", np.nan, "2016-01-01"]]
+        d1 = [Timestamp(x)
+              for x in ["2016-01-01", "2015-01-01", np.nan, "2016-01-01"]]
         d2 = [
             Timestamp(x)
             for x in ["2017-01-01", "2014-01-01", "2016-01-01", "2015-01-01"]
         ]
         df = DataFrame({"a": d1, "b": d2}, index=[0, 1, 2, 3])
 
-        d3 = [Timestamp(x) for x in ["2015-01-01", "2016-01-01", "2016-01-01", np.nan]]
+        d3 = [Timestamp(x)
+              for x in ["2015-01-01", "2016-01-01", "2016-01-01", np.nan]]
         d4 = [
             Timestamp(x)
             for x in ["2014-01-01", "2015-01-01", "2017-01-01", "2016-01-01"]
@@ -512,14 +525,16 @@ class TestDataFrameSortValues:
     def test_sort_values_nat(self):
         # GH#16836
 
-        d1 = [Timestamp(x) for x in ["2016-01-01", "2015-01-01", np.nan, "2016-01-01"]]
+        d1 = [Timestamp(x)
+              for x in ["2016-01-01", "2015-01-01", np.nan, "2016-01-01"]]
         d2 = [
             Timestamp(x)
             for x in ["2017-01-01", "2014-01-01", "2016-01-01", "2015-01-01"]
         ]
         df = DataFrame({"a": d1, "b": d2}, index=[0, 1, 2, 3])
 
-        d3 = [Timestamp(x) for x in ["2015-01-01", "2016-01-01", "2016-01-01", np.nan]]
+        d3 = [Timestamp(x)
+              for x in ["2015-01-01", "2016-01-01", "2016-01-01", np.nan]]
         d4 = [
             Timestamp(x)
             for x in ["2014-01-01", "2015-01-01", "2017-01-01", "2016-01-01"]
@@ -652,7 +667,8 @@ class TestDataFrameSortKey:  # test key sorting (issue 27237)
         )
 
         sorted_df = frame.copy()
-        return_value = sorted_df.sort_values(by="A", inplace=True, key=sort_by_key)
+        return_value = sorted_df.sort_values(
+            by="A", inplace=True, key=sort_by_key)
         assert return_value is None
         expected = frame.sort_values(by="A", key=sort_by_key)
         tm.assert_frame_equal(sorted_df, expected)
@@ -677,7 +693,8 @@ class TestDataFrameSortKey:  # test key sorting (issue 27237)
         sorted_df.sort_values(
             by=["A", "B"], ascending=False, inplace=True, key=sort_by_key
         )
-        expected = frame.sort_values(by=["A", "B"], ascending=False, key=sort_by_key)
+        expected = frame.sort_values(
+            by=["A", "B"], ascending=False, key=sort_by_key)
         tm.assert_frame_equal(sorted_df, expected)
 
     def test_sort_values_key(self):
@@ -711,7 +728,8 @@ class TestDataFrameSortKey:  # test key sorting (issue 27237)
         expected = df.iloc[[3, 1, 4, 0, 2, 5]]
         tm.assert_frame_equal(result, expected)
 
-        result = df.sort_values(by=["a", "b"], key=lambda x: -x, ascending=False)
+        result = df.sort_values(
+            by=["a", "b"], key=lambda x: -x, ascending=False)
         expected = df.iloc[[0, 4, 1, 3, 2, 5]]
         tm.assert_frame_equal(result, expected)
 
@@ -758,7 +776,8 @@ class TestDataFrameSortKey:  # test key sorting (issue 27237)
         result = df.sort_values(
             [0, 1], key=lambda col: col.str.lower(), ascending=False
         )
-        expected = df.sort_values(1, key=lambda col: col.str.lower(), ascending=False)
+        expected = df.sort_values(
+            1, key=lambda col: col.str.lower(), ascending=False)
         tm.assert_frame_equal(result, expected)
 
     def test_sort_values_key_empty(self, sort_by_key):
@@ -904,7 +923,8 @@ class TestSortValuesLevelAsStr:
         )
 
         # Compute result by transposing and sorting on axis=1.
-        result = df_idx.T.sort_values(by=sort_names, ascending=ascending, axis=1)
+        result = df_idx.T.sort_values(
+            by=sort_names, ascending=ascending, axis=1)
 
         if Version(np.__version__) >= Version("1.25"):
             request.applymarker(

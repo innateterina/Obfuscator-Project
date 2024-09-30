@@ -109,7 +109,8 @@ class TestMultiLevel:
                 ("f3", "s2"),
             ]
         )
-        df = DataFrame([[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]], columns=midx)
+        df = DataFrame(
+            [[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12]], columns=midx)
         df1 = df.loc(axis=1)[df.columns.map(lambda u: u[0] in ["f2", "f3"])]
 
         msg = "DataFrame.groupby with axis=1 is deprecated"
@@ -177,12 +178,15 @@ class TestMultiLevel:
 
     def test_level_with_tuples(self):
         index = MultiIndex(
-            levels=[[("foo", "bar", 0), ("foo", "baz", 0), ("foo", "qux", 0)], [0, 1]],
+            levels=[[("foo", "bar", 0), ("foo", "baz", 0),
+                     ("foo", "qux", 0)], [0, 1]],
             codes=[[0, 0, 1, 1, 2, 2], [0, 1, 0, 1, 0, 1]],
         )
 
-        series = Series(np.random.default_rng(2).standard_normal(6), index=index)
-        frame = DataFrame(np.random.default_rng(2).standard_normal((6, 4)), index=index)
+        series = Series(np.random.default_rng(
+            2).standard_normal(6), index=index)
+        frame = DataFrame(np.random.default_rng(
+            2).standard_normal((6, 4)), index=index)
 
         result = series[("foo", "bar", 0)]
         result2 = series.loc[("foo", "bar", 0)]
@@ -206,8 +210,10 @@ class TestMultiLevel:
             codes=[[0, 0, 1, 1, 2, 2], [0, 1, 0, 1, 0, 1]],
         )
 
-        series = Series(np.random.default_rng(2).standard_normal(6), index=index)
-        frame = DataFrame(np.random.default_rng(2).standard_normal((6, 4)), index=index)
+        series = Series(np.random.default_rng(
+            2).standard_normal(6), index=index)
+        frame = DataFrame(np.random.default_rng(
+            2).standard_normal((6, 4)), index=index)
 
         result = series[("foo", "bar")]
         result2 = series.loc[("foo", "bar")]
@@ -335,7 +341,8 @@ class TestSorted:
         # have a satisfying result :<
         # GH 15797
         idx = MultiIndex(
-            [["A", "B", "C"], ["c", "b", "a"]], [[0, 1, 2, 0, 1, 2], [0, 2, 1, 1, 0, 2]]
+            [["A", "B", "C"], ["c", "b", "a"]], [
+                [0, 1, 2, 0, 1, 2], [0, 2, 1, 1, 0, 2]]
         )
 
         df = DataFrame({"col": range(len(idx))}, index=idx, dtype="int64")

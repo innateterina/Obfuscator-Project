@@ -19,7 +19,8 @@ def test_getattr_warning():
 
         def __getattr__(self, name):
             if name.startswith("__array_"):
-                warnings.warn("object got converted", UserWarning, stacklevel=1)
+                warnings.warn("object got converted",
+                              UserWarning, stacklevel=1)
 
             return getattr(self.array, name)
 
@@ -37,7 +38,6 @@ def test_array_called():
 
         def __array__(self, dtype=None, copy=None):
             return np.array([self.val], dtype=dtype, copy=copy)
-
 
     wrapped = Wrapper()
     arr = np.array(wrapped, dtype=str)

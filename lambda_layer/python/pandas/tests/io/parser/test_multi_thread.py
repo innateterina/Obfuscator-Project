@@ -32,13 +32,15 @@ def test_multi_thread_string_io_read_csv(all_parsers, request):
         pa = pytest.importorskip("pyarrow")
         if Version(pa.__version__) < Version("16.0"):
             request.applymarker(
-                pytest.mark.xfail(reason="# ValueError: Found non-unique column index")
+                pytest.mark.xfail(
+                    reason="# ValueError: Found non-unique column index")
             )
     max_row_range = 100
     num_files = 10
 
     bytes_to_df = (
-        "\n".join([f"{i:d},{i:d},{i:d}" for i in range(max_row_range)]).encode()
+        "\n".join(
+            [f"{i:d},{i:d},{i:d}" for i in range(max_row_range)]).encode()
         for _ in range(num_files)
     )
 

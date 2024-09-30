@@ -87,7 +87,8 @@ def _field_accessor(name: str, alias: str, docstring: str):
             # error: Incompatible types in assignment (
             # expression has type "ndarray[Any, dtype[signedinteger[_32Bit]]]",
             # variable has type "ndarray[Any, dtype[signedinteger[_64Bit]]]
-            result = get_timedelta_field(values, alias, reso=self._creso)  # type: ignore[assignment]
+            # type: ignore[assignment]
+            result = get_timedelta_field(values, alias, reso=self._creso)
         if self._hasna:
             result = self._maybe_mask_results(
                 result, fill_value=None, convert="float64"
@@ -141,7 +142,7 @@ class TimedeltaArray(dtl.TimelikeOps):
     _typ = "timedeltaarray"
     _internal_fill_value = np.timedelta64("NaT", "ns")
     _recognized_scalars = (timedelta, np.timedelta64, Tick)
-    _is_recognized_dtype = lambda x: lib.is_np_dtype(x, "m")
+    def _is_recognized_dtype(x): return lib.is_np_dtype(x, "m")
     _infer_matches = ("timedelta", "timedelta64")
 
     @property
@@ -154,7 +155,8 @@ class TimedeltaArray(dtl.TimelikeOps):
     _bool_ops: list[str] = []
     _object_ops: list[str] = ["freq"]
     _field_ops: list[str] = ["days", "seconds", "microseconds", "nanoseconds"]
-    _datetimelike_ops: list[str] = _field_ops + _object_ops + _bool_ops + ["unit"]
+    _datetimelike_ops: list[str] = _field_ops + \
+        _object_ops + _bool_ops + ["unit"]
     _datetimelike_methods: list[str] = [
         "to_pytimedelta",
         "total_seconds",
@@ -255,7 +257,8 @@ class TimedeltaArray(dtl.TimelikeOps):
         if dtype:
             dtype = _validate_td64_dtype(dtype)
 
-        assert unit not in ["Y", "y", "M"]  # caller is responsible for checking
+        # caller is responsible for checking
+        assert unit not in ["Y", "y", "M"]
 
         data, inferred_freq = sequence_to_td64ns(data, copy=copy, unit=unit)
 
@@ -273,7 +276,8 @@ class TimedeltaArray(dtl.TimelikeOps):
     ) -> Self:
         periods = dtl.validate_periods(periods)
         if freq is None and any(x is None for x in [periods, start, end]):
-            raise ValueError("Must provide freq argument if no data is supplied")
+            raise ValueError(
+                "Must provide freq argument if no data is supplied")
 
         if com.count_not_none(start, end, periods, freq) != 3:
             raise ValueError(
@@ -301,7 +305,8 @@ class TimedeltaArray(dtl.TimelikeOps):
         left_closed, right_closed = validate_endpoints(closed)
 
         if freq is not None:
-            index = generate_regular_range(start, end, periods, freq, unit=unit)
+            index = generate_regular_range(
+                start, end, periods, freq, unit=unit)
         else:
             index = np.linspace(start._value, end._value, periods).astype("i8")
 
@@ -350,7 +355,8 @@ class TimedeltaArray(dtl.TimelikeOps):
 
             if is_supported_dtype(dtype):
                 # unit conversion e.g. timedelta64[s]
-                res_values = astype_overflowsafe(self._ndarray, dtype, copy=False)
+                res_values = astype_overflowsafe(
+                    self._ndarray, dtype, copy=False)
                 return type(self)._simple_new(
                     res_values, dtype=res_values.dtype, freq=self.freq
                 )
@@ -393,7 +399,8 @@ class TimedeltaArray(dtl.TimelikeOps):
         min_count: int = 0,
     ):
         nv.validate_sum(
-            (), {"dtype": dtype, "out": out, "keepdims": keepdims, "initial": initial}
+            (), {"dtype": dtype, "out": out,
+                 "keepdims": keepdims, "initial": initial}
         )
 
         result = nanops.nansum(
@@ -415,7 +422,8 @@ class TimedeltaArray(dtl.TimelikeOps):
             (), {"dtype": dtype, "out": out, "keepdims": keepdims}, fname="std"
         )
 
-        result = nanops.nanstd(self._ndarray, axis=axis, skipna=skipna, ddof=ddof)
+        result = nanops.nanstd(self._ndarray, axis=axis,
+                               skipna=skipna, ddof=ddof)
         if axis is None or self.ndim == 1:
             return self._box_func(result)
         return self._from_backing_data(result)
@@ -1078,7 +1086,8 @@ def sequence_to_td64ns(
 
     else:
         # This includes datetime64-dtype, see GH#23539, GH#29794
-        raise TypeError(f"dtype {data.dtype} cannot be converted to timedelta64[ns]")
+        raise TypeError(
+            f"dtype {data.dtype} cannot be converted to timedelta64[ns]")
 
     if not copy:
         data = np.asarray(data)
@@ -1178,8 +1187,10 @@ def _validate_td64_dtype(dtype) -> DtypeObj:
         raise ValueError(msg)
 
     if not lib.is_np_dtype(dtype, "m"):
-        raise ValueError(f"dtype '{dtype}' is invalid, should be np.timedelta64 dtype")
+        raise ValueError(
+            f"dtype '{dtype}' is invalid, should be np.timedelta64 dtype")
     elif not is_supported_dtype(dtype):
-        raise ValueError("Supported timedelta64 resolutions are 's', 'ms', 'us', 'ns'")
+        raise ValueError(
+            "Supported timedelta64 resolutions are 's', 'ms', 'us', 'ns'")
 
     return dtype

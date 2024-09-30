@@ -20,7 +20,8 @@ from pandas.tests.strings import (
 
 @pytest.mark.parametrize("method", ["split", "rsplit"])
 def test_split(any_string_dtype, method):
-    values = Series(["a_b_c", "c_d_e", np.nan, "f_g_h"], dtype=any_string_dtype)
+    values = Series(["a_b_c", "c_d_e", np.nan, "f_g_h"],
+                    dtype=any_string_dtype)
 
     result = getattr(values.str, method)("_")
     exp = Series([["a", "b", "c"], ["c", "d", "e"], np.nan, ["f", "g", "h"]])
@@ -31,7 +32,8 @@ def test_split(any_string_dtype, method):
 @pytest.mark.parametrize("method", ["split", "rsplit"])
 def test_split_more_than_one_char(any_string_dtype, method):
     # more than one char
-    values = Series(["a__b__c", "c__d__e", np.nan, "f__g__h"], dtype=any_string_dtype)
+    values = Series(["a__b__c", "c__d__e", np.nan, "f__g__h"],
+                    dtype=any_string_dtype)
     result = getattr(values.str, method)("__")
     exp = Series([["a", "b", "c"], ["c", "d", "e"], np.nan, ["f", "g", "h"]])
     exp = _convert_na_value(values, exp)
@@ -43,7 +45,8 @@ def test_split_more_than_one_char(any_string_dtype, method):
 
 def test_split_more_regex_split(any_string_dtype):
     # regex split
-    values = Series(["a,b_c", "c_d,e", np.nan, "f,g,h"], dtype=any_string_dtype)
+    values = Series(["a,b_c", "c_d,e", np.nan, "f,g,h"],
+                    dtype=any_string_dtype)
     result = values.str.split("[,_]")
     exp = Series([["a", "b", "c"], ["c", "d", "e"], np.nan, ["f", "g", "h"]])
     exp = _convert_na_value(values, exp)
@@ -93,7 +96,8 @@ def test_split_regex_explicit(any_string_dtype):
 @pytest.mark.parametrize("expand", [None, False])
 @pytest.mark.parametrize("method", ["split", "rsplit"])
 def test_split_object_mixed(expand, method):
-    mixed = Series(["a_b_c", np.nan, "d_e_f", True, datetime.today(), None, 1, 2.0])
+    mixed = Series(["a_b_c", np.nan, "d_e_f", True,
+                   datetime.today(), None, 1, 2.0])
     result = getattr(mixed.str, method)("_", expand=expand)
     exp = Series(
         [
@@ -123,7 +127,8 @@ def test_split_n(any_string_dtype, method, n):
 
 def test_rsplit(any_string_dtype):
     # regex split is not supported by rsplit
-    values = Series(["a,b_c", "c_d,e", np.nan, "f,g,h"], dtype=any_string_dtype)
+    values = Series(["a,b_c", "c_d,e", np.nan, "f,g,h"],
+                    dtype=any_string_dtype)
     result = values.str.rsplit("[,_]")
     exp = Series([["a,b_c"], ["c_d,e"], np.nan, ["f,g,h"]])
     exp = _convert_na_value(values, exp)
@@ -132,7 +137,8 @@ def test_rsplit(any_string_dtype):
 
 def test_rsplit_max_number(any_string_dtype):
     # setting max number of splits, make sure it's from reverse
-    values = Series(["a_b_c", "c_d_e", np.nan, "f_g_h"], dtype=any_string_dtype)
+    values = Series(["a_b_c", "c_d_e", np.nan, "f_g_h"],
+                    dtype=any_string_dtype)
     result = values.str.rsplit("_", n=1)
     exp = Series([["a_b", "c"], ["c_d", "e"], np.nan, ["f_g", "h"]])
     exp = _convert_na_value(values, exp)
@@ -143,12 +149,14 @@ def test_split_blank_string(any_string_dtype):
     # expand blank split GH 20067
     values = Series([""], name="test", dtype=any_string_dtype)
     result = values.str.split(expand=True)
-    exp = DataFrame([[]], dtype=any_string_dtype)  # NOTE: this is NOT an empty df
+    # NOTE: this is NOT an empty df
+    exp = DataFrame([[]], dtype=any_string_dtype)
     tm.assert_frame_equal(result, exp)
 
 
 def test_split_blank_string_with_non_empty(any_string_dtype):
-    values = Series(["a b c", "a b", "", " "], name="test", dtype=any_string_dtype)
+    values = Series(["a b c", "a b", "", " "],
+                    name="test", dtype=any_string_dtype)
     result = values.str.split(expand=True)
     exp = DataFrame(
         [
@@ -213,7 +221,8 @@ def test_split_no_pat_with_nonzero_n(data, pat, expected, any_string_dtype):
 def test_split_to_dataframe_no_splits(any_string_dtype):
     s = Series(["nosplit", "alsonosplit"], dtype=any_string_dtype)
     result = s.str.split("_", expand=True)
-    exp = DataFrame({0: Series(["nosplit", "alsonosplit"], dtype=any_string_dtype)})
+    exp = DataFrame(
+        {0: Series(["nosplit", "alsonosplit"], dtype=any_string_dtype)})
     tm.assert_frame_equal(result, exp)
 
 
@@ -288,7 +297,8 @@ def test_split_to_multiindex_expand():
 
 
 def test_split_to_multiindex_expand_unequal_splits():
-    idx = Index(["some_unequal_splits", "one_of_these_things_is_not", np.nan, None])
+    idx = Index(
+        ["some_unequal_splits", "one_of_these_things_is_not", np.nan, None])
     result = idx.str.split("_", expand=True)
     exp = MultiIndex.from_tuples(
         [
@@ -308,7 +318,8 @@ def test_split_to_multiindex_expand_unequal_splits():
 def test_rsplit_to_dataframe_expand_no_splits(any_string_dtype):
     s = Series(["nosplit", "alsonosplit"], dtype=any_string_dtype)
     result = s.str.rsplit("_", expand=True)
-    exp = DataFrame({0: Series(["nosplit", "alsonosplit"])}, dtype=any_string_dtype)
+    exp = DataFrame(
+        {0: Series(["nosplit", "alsonosplit"])}, dtype=any_string_dtype)
     tm.assert_frame_equal(result, exp)
 
 
@@ -359,7 +370,8 @@ def test_rsplit_to_multiindex_expand_no_split():
 def test_rsplit_to_multiindex_expand():
     idx = Index(["some_equal_splits", "with_no_nans"])
     result = idx.str.rsplit("_", expand=True)
-    exp = MultiIndex.from_tuples([("some", "equal", "splits"), ("with", "no", "nans")])
+    exp = MultiIndex.from_tuples(
+        [("some", "equal", "splits"), ("with", "no", "nans")])
     tm.assert_index_equal(result, exp)
     assert result.nlevels == 3
 
@@ -367,7 +379,8 @@ def test_rsplit_to_multiindex_expand():
 def test_rsplit_to_multiindex_expand_n():
     idx = Index(["some_equal_splits", "with_no_nans"])
     result = idx.str.rsplit("_", expand=True, n=1)
-    exp = MultiIndex.from_tuples([("some_equal", "splits"), ("with_no", "nans")])
+    exp = MultiIndex.from_tuples(
+        [("some_equal", "splits"), ("with_no", "nans")])
     tm.assert_index_equal(result, exp)
     assert result.nlevels == 2
 
@@ -446,7 +459,8 @@ def test_split_with_name_index():
 def test_partition_series_more_than_one_char(method, exp, any_string_dtype):
     # https://github.com/pandas-dev/pandas/issues/23558
     # more than one char
-    s = Series(["a__b__c", "c__d__e", np.nan, "f__g__h", None], dtype=any_string_dtype)
+    s = Series(["a__b__c", "c__d__e", np.nan, "f__g__h", None],
+               dtype=any_string_dtype)
     result = getattr(s.str, method)("__", expand=False)
     expected = Series(exp)
     expected = _convert_na_value(s, expected)
@@ -458,18 +472,21 @@ def test_partition_series_more_than_one_char(method, exp, any_string_dtype):
     [
         [
             "partition",
-            [("a", " ", "b c"), ("c", " ", "d e"), np.nan, ("f", " ", "g h"), None],
+            [("a", " ", "b c"), ("c", " ", "d e"),
+             np.nan, ("f", " ", "g h"), None],
         ],
         [
             "rpartition",
-            [("a b", " ", "c"), ("c d", " ", "e"), np.nan, ("f g", " ", "h"), None],
+            [("a b", " ", "c"), ("c d", " ", "e"),
+             np.nan, ("f g", " ", "h"), None],
         ],
     ],
 )
 def test_partition_series_none(any_string_dtype, method, exp):
     # https://github.com/pandas-dev/pandas/issues/23558
     # None
-    s = Series(["a b c", "c d e", np.nan, "f g h", None], dtype=any_string_dtype)
+    s = Series(["a b c", "c d e", np.nan, "f g h", None],
+               dtype=any_string_dtype)
     result = getattr(s.str, method)(expand=False)
     expected = Series(exp)
     expected = _convert_na_value(s, expected)
@@ -539,7 +556,8 @@ def test_partition_series_stdlib(any_string_dtype, method):
             "partition",
             False,
             np.array(
-                [("a", "_", "b_c"), ("c", "_", "d_e"), ("f", "_", "g_h"), np.nan, None],
+                [("a", "_", "b_c"), ("c", "_", "d_e"),
+                 ("f", "_", "g_h"), np.nan, None],
                 dtype=object,
             ),
             1,
@@ -548,7 +566,8 @@ def test_partition_series_stdlib(any_string_dtype, method):
             "rpartition",
             False,
             np.array(
-                [("a_b", "_", "c"), ("c_d", "_", "e"), ("f_g", "_", "h"), np.nan, None],
+                [("a_b", "_", "c"), ("c_d", "_", "e"),
+                 ("f_g", "_", "h"), np.nan, None],
                 dtype=object,
             ),
             1,
@@ -590,7 +609,8 @@ def test_partition_index(method, expand, exp, exp_levels):
 def test_partition_to_dataframe(any_string_dtype, method, exp):
     # https://github.com/pandas-dev/pandas/issues/23558
 
-    s = Series(["a_b_c", "c_d_e", np.nan, "f_g_h", None], dtype=any_string_dtype)
+    s = Series(["a_b_c", "c_d_e", np.nan, "f_g_h", None],
+               dtype=any_string_dtype)
     result = getattr(s.str, method)("_")
     expected = DataFrame(
         exp,
@@ -622,7 +642,8 @@ def test_partition_to_dataframe(any_string_dtype, method, exp):
 )
 def test_partition_to_dataframe_from_series(any_string_dtype, method, exp):
     # https://github.com/pandas-dev/pandas/issues/23558
-    s = Series(["a_b_c", "c_d_e", np.nan, "f_g_h", None], dtype=any_string_dtype)
+    s = Series(["a_b_c", "c_d_e", np.nan, "f_g_h", None],
+               dtype=any_string_dtype)
     result = getattr(s.str, method)("_", expand=True)
     expected = DataFrame(
         exp,
@@ -686,7 +707,8 @@ def test_get():
 
 
 def test_get_mixed_object():
-    ser = Series(["a_b_c", np.nan, "c_d_e", True, datetime.today(), None, 1, 2.0])
+    ser = Series(["a_b_c", np.nan, "c_d_e", True,
+                 datetime.today(), None, 1, 2.0])
     result = ser.str.split("_").str.get(1)
     expected = Series(
         ["b", np.nan, "d", np.nan, np.nan, None, np.nan, np.nan], dtype=object

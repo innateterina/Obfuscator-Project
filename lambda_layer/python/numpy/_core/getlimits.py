@@ -31,6 +31,7 @@ def _fr1(a):
 
 class MachArLike:
     """ Object to simulate MachAr instance """
+
     def __init__(self, ftype, *, eps, epsneg, huge, tiny,
                  ibeta, smallest_subnormal=None, **kwargs):
         self.params = _MACHAR_PARAMS[ftype]
@@ -123,27 +124,27 @@ _convert_to_float = {
     ntypes.csingle: ntypes.single,
     ntypes.complex128: ntypes.float64,
     ntypes.clongdouble: ntypes.longdouble
-    }
+}
 
 # Parameters for creating MachAr / MachAr-like objects
 _title_fmt = 'numpy {} precision floating point number'
 _MACHAR_PARAMS = {
     ntypes.double: dict(
-        itype = ntypes.int64,
-        fmt = '%24.16e',
-        title = _title_fmt.format('double')),
+        itype=ntypes.int64,
+        fmt='%24.16e',
+        title=_title_fmt.format('double')),
     ntypes.single: dict(
-        itype = ntypes.int32,
-        fmt = '%15.7e',
-        title = _title_fmt.format('single')),
+        itype=ntypes.int32,
+        fmt='%15.7e',
+        title=_title_fmt.format('single')),
     ntypes.longdouble: dict(
-        itype = ntypes.longlong,
-        fmt = '%s',
-        title = _title_fmt.format('long double')),
+        itype=ntypes.longlong,
+        fmt='%s',
+        title=_title_fmt.format('long double')),
     ntypes.half: dict(
-        itype = ntypes.int16,
-        fmt = '%12.5e',
-        title = _title_fmt.format('half'))}
+        itype=ntypes.int16,
+        fmt='%12.5e',
+        title=_title_fmt.format('half'))}
 
 # Key to identify the floating point type.  Key is result of
 #
@@ -156,6 +157,8 @@ _MACHAR_PARAMS = {
 # https://perl5.git.perl.org/perl.git/blob/3118d7d684b56cbeb702af874f4326683c45f045:/Configure
 
 _KNOWN_TYPES = {}
+
+
 def _register_type(machar, bytepat):
     _KNOWN_TYPES[bytepat] = machar
 
@@ -247,7 +250,7 @@ def _register_known_types():
                              tiny=tiny_f128)
     # IEEE 754 128-bit binary float
     _register_type(float128_ma,
-        b'\x9a\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\xfb\xbf')
+                   b'\x9a\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\x99\xfb\xbf')
     _float_ma[128] = float128_ma
 
     # Known parameters for float80 (Intel 80-bit extended precision)
@@ -301,10 +304,10 @@ def _register_known_types():
                              smallest_subnormal=smallest_subnormal_dd)
     # double double; low, high order (e.g. PPC 64)
     _register_type(float_dd_ma,
-        b'\x9a\x99\x99\x99\x99\x99Y<\x9a\x99\x99\x99\x99\x99\xb9\xbf')
+                   b'\x9a\x99\x99\x99\x99\x99Y<\x9a\x99\x99\x99\x99\x99\xb9\xbf')
     # double double; high, low order (e.g. PPC 64 le)
     _register_type(float_dd_ma,
-        b'\x9a\x99\x99\x99\x99\x99\xb9\xbf\x9a\x99\x99\x99\x99\x99Y<')
+                   b'\x9a\x99\x99\x99\x99\x99\xb9\xbf\x9a\x99\x99\x99\x99\x99Y<')
     _float_ma['dd'] = float_dd_ma
 
 
@@ -582,7 +585,7 @@ class finfo:
             'smallest_normal = %(_str_smallest_normal)s   '
             'smallest_subnormal = %(_str_smallest_subnormal)s\n'
             '---------------------------------------------------------------\n'
-            )
+        )
         return fmt % self.__dict__
 
     def __repr__(self):
@@ -734,9 +737,9 @@ class iinfo:
             'min = %(min)s\n'
             'max = %(max)s\n'
             '---------------------------------------------------------------\n'
-            )
+        )
         return fmt % {'dtype': self.dtype, 'min': self.min, 'max': self.max}
 
     def __repr__(self):
         return "%s(min=%s, max=%s, dtype=%s)" % (self.__class__.__name__,
-                                    self.min, self.max, self.dtype)
+                                                 self.min, self.max, self.dtype)

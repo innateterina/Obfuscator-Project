@@ -90,7 +90,8 @@ def test_to_read_gcs(gcs_buffer, format, monkeypatch, capsys, request):
             @staticmethod
             def from_uri(path):
                 print("Using pyarrow filesystem")
-                to_local = pathlib.Path(path.replace("gs://", "")).absolute().as_uri()
+                to_local = pathlib.Path(path.replace(
+                    "gs://", "")).absolute().as_uri()
                 return pa_fs.LocalFileSystem(to_local)
 
         request.applymarker(
@@ -190,7 +191,8 @@ def test_to_csv_compression_encoding_gcs(
     expected = buffer.getvalue()
     assert_equal_zip_safe(res, expected, compression_only)
 
-    read_df = read_csv(path_gcs, index_col=0, compression="infer", encoding=encoding)
+    read_df = read_csv(path_gcs, index_col=0,
+                       compression="infer", encoding=encoding)
     tm.assert_frame_equal(df, read_df)
 
 

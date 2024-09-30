@@ -38,7 +38,8 @@ from pandas.core import (
     nanops,
 )
 
-is_windows_np2_or_is32 = (is_platform_windows() and not np_version_gt2) or not IS64
+is_windows_np2_or_is32 = (is_platform_windows()
+                          and not np_version_gt2) or not IS64
 is_windows_or_is32 = is_platform_windows() or not IS64
 
 
@@ -350,7 +351,8 @@ class TestDataFrameAnalytics:
         assert_stat_op_calc(
             "sum", np.sum, float_frame_with_na, skipna_alternative=np.nansum
         )
-        assert_stat_op_calc("mean", np.mean, float_frame_with_na, check_dates=True)
+        assert_stat_op_calc(
+            "mean", np.mean, float_frame_with_na, check_dates=True)
         assert_stat_op_calc(
             "product", np.prod, float_frame_with_na, skipna_alternative=np.nanprod
         )
@@ -390,7 +392,8 @@ class TestDataFrameAnalytics:
                 return np.nan
             return np.median(x)
 
-        assert_stat_op_calc("median", wrapper, float_frame_with_na, check_dates=True)
+        assert_stat_op_calc("median", wrapper,
+                            float_frame_with_na, check_dates=True)
         assert_stat_op_calc(
             "median", wrapper, int_frame, check_dtype=False, check_dates=True
         )
@@ -418,7 +421,8 @@ class TestDataFrameAnalytics:
                 index=["foo", "bar", "baz"],
                 dtype="O",
             ),
-            DataFrame({0: [np.nan, 2], 1: [np.nan, 3], 2: [np.nan, 4]}, dtype=object),
+            DataFrame({0: [np.nan, 2], 1: [np.nan, 3],
+                      2: [np.nan, 4]}, dtype=object),
         ],
     )
     @pytest.mark.filterwarnings("ignore:Mismatched null-like values:FutureWarning")
@@ -597,7 +601,8 @@ class TestDataFrameAnalytics:
 
     def test_sem(self, datetime_frame):
         result = datetime_frame.sem(ddof=4)
-        expected = datetime_frame.apply(lambda x: x.std(ddof=4) / np.sqrt(len(x)))
+        expected = datetime_frame.apply(
+            lambda x: x.std(ddof=4) / np.sqrt(len(x)))
         tm.assert_almost_equal(result, expected)
 
         arr = np.repeat(np.random.default_rng(2).random((1, 1000)), 1000, 0)
@@ -708,7 +713,8 @@ class TestDataFrameAnalytics:
     def test_mode_empty_df(self):
         df = DataFrame([], columns=["a", "b"])
         result = df.mode()
-        expected = DataFrame([], columns=["a", "b"], index=Index([], dtype=np.int64))
+        expected = DataFrame([], columns=["a", "b"],
+                             index=Index([], dtype=np.int64))
         tm.assert_frame_equal(result, expected)
 
     def test_operators_timedelta64(self):
@@ -815,7 +821,8 @@ class TestDataFrameAnalytics:
         tm.assert_series_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "values", [["2022-01-01", "2022-01-02", pd.NaT, "2022-01-03"], 4 * [pd.NaT]]
+        "values", [["2022-01-01", "2022-01-02",
+                    pd.NaT, "2022-01-03"], 4 * [pd.NaT]]
     )
     def test_std_datetime64_with_nat(
         self, values, skipna, using_array_manager, request, unit
@@ -835,7 +842,8 @@ class TestDataFrameAnalytics:
             expected = Series({"a": pd.NaT}, dtype=f"timedelta64[{unit}]")
         else:
             # 86400000000000ns == 1 day
-            expected = Series({"a": 86400000000000}, dtype=f"timedelta64[{unit}]")
+            expected = Series({"a": 86400000000000},
+                              dtype=f"timedelta64[{unit}]")
         tm.assert_series_equal(result, expected)
 
     def test_sum_corner(self):
@@ -875,7 +883,8 @@ class TestDataFrameAnalytics:
     @pytest.mark.parametrize("numeric_only", [None, True, False])
     def test_sum_prod_nanops(self, method, unit, numeric_only):
         idx = ["a", "b", "c"]
-        df = DataFrame({"a": [unit, unit], "b": [unit, np.nan], "c": [np.nan, np.nan]})
+        df = DataFrame({"a": [unit, unit], "b": [
+                       unit, np.nan], "c": [np.nan, np.nan]})
         # The default
         result = getattr(df, method)(numeric_only=numeric_only)
         expected = Series([unit, unit, unit], index=idx, dtype="float64")
@@ -891,7 +900,8 @@ class TestDataFrameAnalytics:
         expected = Series([unit, unit, unit], index=idx, dtype="float64")
         tm.assert_series_equal(result, expected)
 
-        result = getattr(df.iloc[1:], method)(numeric_only=numeric_only, min_count=1)
+        result = getattr(df.iloc[1:], method)(
+            numeric_only=numeric_only, min_count=1)
         expected = Series([unit, np.nan, np.nan], index=idx)
         tm.assert_series_equal(result, expected)
 
@@ -944,7 +954,8 @@ class TestDataFrameAnalytics:
     )
     def test_sum_nanops_dtype_min_count(self, float_type, kwargs, expected_result):
         # GH#46947
-        df = DataFrame({"a": [1.0, 2.3, 4.4], "b": [2.2, 3, np.nan]}, dtype=float_type)
+        df = DataFrame({"a": [1.0, 2.3, 4.4], "b": [
+                       2.2, 3, np.nan]}, dtype=float_type)
         result = df.sum(**kwargs)
         expected = Series(expected_result).astype(float_type)
         tm.assert_series_equal(result, expected)
@@ -969,7 +980,8 @@ class TestDataFrameAnalytics:
 
     def test_sum_object(self, float_frame):
         values = float_frame.values.astype(int)
-        frame = DataFrame(values, index=float_frame.index, columns=float_frame.columns)
+        frame = DataFrame(values, index=float_frame.index,
+                          columns=float_frame.columns)
         deltas = frame * timedelta(1)
         deltas.sum()
 
@@ -1164,7 +1176,8 @@ class TestDataFrameAnalytics:
         # GH#55368
         pytest.importorskip("pyarrow")
 
-        df = DataFrame({"a": [2, 3, 1], "b": [2, 1, 1]}, dtype="int64[pyarrow]")
+        df = DataFrame({"a": [2, 3, 1], "b": [2, 1, 1]},
+                       dtype="int64[pyarrow]")
         result = df.idxmax()
         expected = Series([1, 0], index=["a", "b"])
         tm.assert_series_equal(result, expected)
@@ -1194,7 +1207,8 @@ class TestDataFrameAnalytics:
 
         # Copying dti is needed for ArrayManager otherwise when we set
         #  df.loc[0, 3] = pd.NaT below it edits dti
-        df = DataFrame({1: [0, 2, 1], 2: range(3)[::-1], 3: dti.copy(deep=True)})
+        df = DataFrame({1: [0, 2, 1], 2: range(
+            3)[::-1], 3: dti.copy(deep=True)})
 
         result = df.idxmax()
         expected = Series([1, 0, 2], index=[1, 2, 3])
@@ -1272,7 +1286,8 @@ class TestDataFrameAnalytics:
     def test_any_all_mixed_float(self, opname, axis, bool_only, float_string_frame):
         # make sure op works on mixed-type frame
         mixed = float_string_frame
-        mixed["_bool_"] = np.random.default_rng(2).standard_normal(len(mixed)) > 0.5
+        mixed["_bool_"] = np.random.default_rng(
+            2).standard_normal(len(mixed)) > 0.5
 
         getattr(mixed, opname)(axis=axis, bool_only=bool_only)
 
@@ -1450,13 +1465,17 @@ class TestDataFrameAnalytics:
             (np.all, {"A": Series([0, 1], dtype=int)}, False),
             (np.any, {"A": Series([0, 1], dtype=int)}, True),
             pytest.param(np.all, {"A": Series([0, 1], dtype="M8[ns]")}, False),
-            pytest.param(np.all, {"A": Series([0, 1], dtype="M8[ns, UTC]")}, False),
+            pytest.param(np.all, {"A": Series(
+                [0, 1], dtype="M8[ns, UTC]")}, False),
             pytest.param(np.any, {"A": Series([0, 1], dtype="M8[ns]")}, True),
-            pytest.param(np.any, {"A": Series([0, 1], dtype="M8[ns, UTC]")}, True),
+            pytest.param(np.any, {"A": Series(
+                [0, 1], dtype="M8[ns, UTC]")}, True),
             pytest.param(np.all, {"A": Series([1, 2], dtype="M8[ns]")}, True),
-            pytest.param(np.all, {"A": Series([1, 2], dtype="M8[ns, UTC]")}, True),
+            pytest.param(np.all, {"A": Series(
+                [1, 2], dtype="M8[ns, UTC]")}, True),
             pytest.param(np.any, {"A": Series([1, 2], dtype="M8[ns]")}, True),
-            pytest.param(np.any, {"A": Series([1, 2], dtype="M8[ns, UTC]")}, True),
+            pytest.param(np.any, {"A": Series(
+                [1, 2], dtype="M8[ns, UTC]")}, True),
             pytest.param(np.all, {"A": Series([0, 1], dtype="m8[ns]")}, False),
             pytest.param(np.any, {"A": Series([0, 1], dtype="m8[ns]")}, True),
             pytest.param(np.all, {"A": Series([1, 2], dtype="m8[ns]")}, True),
@@ -1634,8 +1653,10 @@ class TestDataFrameReductions:
         df = DataFrame({"x": to_datetime([])})
         expected_dt_series = Series(to_datetime([]))
         # check axis 0
-        assert (df.min(axis=0).x is pd.NaT) == (expected_dt_series.min() is pd.NaT)
-        assert (df.max(axis=0).x is pd.NaT) == (expected_dt_series.max() is pd.NaT)
+        assert (df.min(axis=0).x is pd.NaT) == (
+            expected_dt_series.min() is pd.NaT)
+        assert (df.max(axis=0).x is pd.NaT) == (
+            expected_dt_series.max() is pd.NaT)
 
         # check axis 1
         tm.assert_series_equal(df.min(axis=1), expected_dt_series)
@@ -1647,8 +1668,10 @@ class TestDataFrameReductions:
         df = DataFrame({"x": []})
         expected_float_series = Series([], dtype=float)
         # check axis 0
-        assert np.isnan(df.min(axis=0).x) == np.isnan(expected_float_series.min())
-        assert np.isnan(df.max(axis=0).x) == np.isnan(expected_float_series.max())
+        assert np.isnan(df.min(axis=0).x) == np.isnan(
+            expected_float_series.min())
+        assert np.isnan(df.max(axis=0).x) == np.isnan(
+            expected_float_series.max())
         # check axis 1
         tm.assert_series_equal(df.min(axis=1), expected_float_series)
         tm.assert_series_equal(df.min(axis=1), expected_float_series)
@@ -1671,7 +1694,8 @@ class TestDataFrameReductions:
         # GH#51242
         val = to_datetime("1900-01-01", utc=True)
         df = DataFrame(
-            {"a": Series([pd.NaT, pd.NaT, val]), "b": Series([pd.NaT, val, val])}
+            {"a": Series([pd.NaT, pd.NaT, val]),
+             "b": Series([pd.NaT, val, val])}
         )
         op = getattr(df, method)
         result = op(axis=1, skipna=skipna)
@@ -2015,7 +2039,8 @@ def test_prod_sum_min_count_mixed_object():
 def test_reduction_axis_none_returns_scalar(method, numeric_only, dtype):
     # GH#21597 As of 2.0, axis=None reduces over all axes.
 
-    df = DataFrame(np.random.default_rng(2).standard_normal((4, 4)), dtype=dtype)
+    df = DataFrame(np.random.default_rng(
+        2).standard_normal((4, 4)), dtype=dtype)
 
     result = getattr(df, method)(axis=None, numeric_only=numeric_only)
     np_arr = df.to_numpy(dtype=np.float64)

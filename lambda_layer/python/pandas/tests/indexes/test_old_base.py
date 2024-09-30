@@ -62,7 +62,8 @@ class TestBase:
                 freq="D",
             ),
             DatetimeIndex(
-                ["2013-01-01", "2013-01-02", "2013-01-03", "2013-01-04", "2013-01-05"],
+                ["2013-01-01", "2013-01-02", "2013-01-03",
+                    "2013-01-04", "2013-01-05"],
                 dtype="datetime64[ns]",
                 freq="D",
             ),
@@ -277,8 +278,10 @@ class TestBase:
             # .values an object array of Period, thus copied
             depr_msg = "The 'ordinal' keyword in PeriodIndex is deprecated"
             with tm.assert_produces_warning(FutureWarning, match=depr_msg):
-                result = index_type(ordinal=index.asi8, copy=False, **init_kwargs)
-            tm.assert_numpy_array_equal(index.asi8, result.asi8, check_same="same")
+                result = index_type(ordinal=index.asi8,
+                                    copy=False, **init_kwargs)
+            tm.assert_numpy_array_equal(
+                index.asi8, result.asi8, check_same="same")
         elif isinstance(index, IntervalIndex):
             # checked in test_interval.py
             pass
@@ -287,16 +290,19 @@ class TestBase:
             tm.assert_index_equal(result, index)
 
             if isinstance(index._values, BaseMaskedArray):
-                assert np.shares_memory(index._values._data, result._values._data)
+                assert np.shares_memory(
+                    index._values._data, result._values._data)
                 tm.assert_numpy_array_equal(
                     index._values._data, result._values._data, check_same="same"
                 )
-                assert np.shares_memory(index._values._mask, result._values._mask)
+                assert np.shares_memory(
+                    index._values._mask, result._values._mask)
                 tm.assert_numpy_array_equal(
                     index._values._mask, result._values._mask, check_same="same"
                 )
             elif index.dtype == "string[python]":
-                assert np.shares_memory(index._values._ndarray, result._values._ndarray)
+                assert np.shares_memory(
+                    index._values._ndarray, result._values._ndarray)
                 tm.assert_numpy_array_equal(
                     index._values._ndarray, result._values._ndarray, check_same="same"
                 )
@@ -306,7 +312,8 @@ class TestBase:
                 raise NotImplementedError(index.dtype)
         else:
             result = index_type(index.values, copy=False, **init_kwargs)
-            tm.assert_numpy_array_equal(index.values, result.values, check_same="same")
+            tm.assert_numpy_array_equal(
+                index.values, result.values, check_same="same")
 
     def test_memory_usage(self, index):
         index._engine.clear_mapping()
@@ -484,7 +491,8 @@ class TestBase:
         if isinstance(index, IntervalIndex):
             pytest.skip(f"{type(index).__name__} tested elsewhere")
 
-        is_ea_idx = type(index) is Index and not isinstance(index.dtype, np.dtype)
+        is_ea_idx = type(index) is Index and not isinstance(
+            index.dtype, np.dtype)
 
         assert index.equals(index)
         assert index.equals(index.copy())
@@ -643,8 +651,10 @@ class TestBase:
             with pytest.raises(NotImplementedError, match=msg):
                 idx.isna()
         elif not index.hasnans:
-            tm.assert_numpy_array_equal(index.isna(), np.zeros(len(index), dtype=bool))
-            tm.assert_numpy_array_equal(index.notna(), np.ones(len(index), dtype=bool))
+            tm.assert_numpy_array_equal(
+                index.isna(), np.zeros(len(index), dtype=bool))
+            tm.assert_numpy_array_equal(
+                index.notna(), np.ones(len(index), dtype=bool))
         else:
             result = isna(index)
             tm.assert_numpy_array_equal(index.isna(), result)
@@ -1009,7 +1019,8 @@ class TestNumericBase:
         na_val = nulls_fixture
 
         if na_val is pd.NaT:
-            expected = Index([index[0], pd.NaT] + list(index[1:]), dtype=object)
+            expected = Index([index[0], pd.NaT] +
+                             list(index[1:]), dtype=object)
         else:
             expected = Index([index[0], np.nan] + list(index[1:]))
             # GH#43921 we preserve float dtype

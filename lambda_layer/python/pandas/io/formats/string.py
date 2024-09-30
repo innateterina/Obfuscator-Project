@@ -69,10 +69,12 @@ class StringFormatter:
         index_length = len(str_index)
 
         if self.fmt.is_truncated_horizontally:
-            strcols = self._insert_dot_separator_horizontal(strcols, index_length)
+            strcols = self._insert_dot_separator_horizontal(
+                strcols, index_length)
 
         if self.fmt.is_truncated_vertically:
-            strcols = self._insert_dot_separator_vertical(strcols, index_length)
+            strcols = self._insert_dot_separator_vertical(
+                strcols, index_length)
 
         return strcols
 
@@ -123,10 +125,12 @@ class StringFormatter:
 
         if self.fmt.index:
             idx = strcols.pop(0)
-            lwidth -= np.array([self.adj.len(x) for x in idx]).max() + adjoin_width
+            lwidth -= np.array([self.adj.len(x)
+                               for x in idx]).max() + adjoin_width
 
         col_widths = [
-            np.array([self.adj.len(x) for x in col]).max() if len(col) > 0 else 0
+            np.array([self.adj.len(x)
+                     for x in col]).max() if len(col) > 0 else 0
             for col in strcols
         ]
 

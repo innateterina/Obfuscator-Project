@@ -65,7 +65,8 @@ def test_detect_console_encoding_fallback_to_default(monkeypatch, std, locale):
     # GH 21552
     with monkeypatch.context() as context:
         context.setattr(
-            "locale.getpreferredencoding", lambda: MockEncoding.raise_or_return(locale)
+            "locale.getpreferredencoding", lambda: MockEncoding.raise_or_return(
+                locale)
         )
         context.setattr("sys.stdout", MockEncoding(std))
         context.setattr("sys.getdefaultencoding", lambda: "sysDefaultEncoding")

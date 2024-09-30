@@ -178,7 +178,8 @@ class StringDtype(StorageExtensionDtype):
         elif string == "string[pyarrow_numpy]":
             return cls(storage="pyarrow_numpy")
         else:
-            raise TypeError(f"Cannot construct a '{cls.__name__}' from '{string}'")
+            raise TypeError(
+                f"Cannot construct a '{cls.__name__}' from '{string}'")
 
     # https://github.com/pandas-dev/pandas/issues/36126
     # error: Signature of "construct_array_type" incompatible with supertype
@@ -362,12 +363,14 @@ class StringArray(BaseStringArray, NumpyExtensionArray):  # type: ignore[misc]
         super().__init__(values, copy=copy)
         if not isinstance(values, type(self)):
             self._validate()
-        NDArrayBacked.__init__(self, self._ndarray, StringDtype(storage="python"))
+        NDArrayBacked.__init__(self, self._ndarray,
+                               StringDtype(storage="python"))
 
     def _validate(self):
         """Validate that we only store NA or strings."""
         if len(self._ndarray) and not lib.is_string_array(self._ndarray, skipna=True):
-            raise ValueError("StringArray requires a sequence of strings or pandas.NA")
+            raise ValueError(
+                "StringArray requires a sequence of strings or pandas.NA")
         if self._ndarray.dtype != "object":
             raise ValueError(
                 "StringArray requires a sequence of strings or pandas.NA. Got "
@@ -392,7 +395,8 @@ class StringArray(BaseStringArray, NumpyExtensionArray):  # type: ignore[misc]
             # avoid costly conversion to object dtype
             na_values = scalars._mask
             result = scalars._data
-            result = lib.ensure_string_array(result, copy=copy, convert_na_value=False)
+            result = lib.ensure_string_array(
+                result, copy=copy, convert_na_value=False)
             result[na_values] = libmissing.NA
 
         else:
@@ -402,12 +406,14 @@ class StringArray(BaseStringArray, NumpyExtensionArray):  # type: ignore[misc]
                 #  zero_copy_only to True which caused problems see GH#52076
                 scalars = np.array(scalars)
             # convert non-na-likes to str, and nan-likes to StringDtype().na_value
-            result = lib.ensure_string_array(scalars, na_value=libmissing.NA, copy=copy)
+            result = lib.ensure_string_array(
+                scalars, na_value=libmissing.NA, copy=copy)
 
         # Manually creating new array avoids the validation step in the __init__, so is
         # faster. Refactor need for validation?
         new_string_array = cls.__new__(cls)
-        NDArrayBacked.__init__(new_string_array, result, StringDtype(storage="python"))
+        NDArrayBacked.__init__(new_string_array, result,
+                               StringDtype(storage="python"))
 
         return new_string_array
 

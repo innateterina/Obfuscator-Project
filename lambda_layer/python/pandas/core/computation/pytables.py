@@ -273,7 +273,8 @@ class BinOp(ops.BinOp):
             # string quoting
             return TermValue(v, stringify(v), "string")
         else:
-            raise TypeError(f"Cannot compare {v} of type {type(v)} to {kind} column")
+            raise TypeError(
+                f"Cannot compare {v} of type {type(v)} to {kind} column")
 
     def convert_values(self) -> None:
         pass
@@ -660,7 +661,8 @@ def maybe_expression(s) -> bool:
     """loose checking if s is a pytables-acceptable expression"""
     if not isinstance(s, str):
         return False
-    operations = PyTablesExprVisitor.binary_ops + PyTablesExprVisitor.unary_ops + ("=",)
+    operations = PyTablesExprVisitor.binary_ops + \
+        PyTablesExprVisitor.unary_ops + ("=",)
 
     # make sure we have an op at least
     return any(op in s for op in operations)

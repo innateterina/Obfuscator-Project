@@ -14,6 +14,7 @@ intel_64bit_version_strings = [
      "running on Intel(R) 64, Version 11.1", '11.1')
 ]
 
+
 class TestIntelFCompilerVersions:
     def test_32bit_version(self):
         fc = numpy.distutils.fcompiler.new_fcompiler(compiler='intel')

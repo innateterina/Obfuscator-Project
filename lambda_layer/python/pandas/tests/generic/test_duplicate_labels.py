@@ -42,16 +42,19 @@ class TestPreserves:
         ],
     )
     def test_preserved_series(self, func):
-        s = pd.Series([0, 1], index=["a", "b"]).set_flags(allows_duplicate_labels=False)
+        s = pd.Series([0, 1], index=["a", "b"]).set_flags(
+            allows_duplicate_labels=False)
         assert func(s).flags.allows_duplicate_labels is False
 
     @pytest.mark.parametrize(
-        "other", [pd.Series(0, index=["a", "b", "c"]), pd.Series(0, index=["a", "b"])]
+        "other", [pd.Series(0, index=["a", "b", "c"]),
+                  pd.Series(0, index=["a", "b"])]
     )
     # TODO: frame
     @not_implemented
     def test_align(self, other):
-        s = pd.Series([0, 1], index=["a", "b"]).set_flags(allows_duplicate_labels=False)
+        s = pd.Series([0, 1], index=["a", "b"]).set_flags(
+            allows_duplicate_labels=False)
         a, b = s.align(other)
         assert a.flags.allows_duplicate_labels is False
         assert b.flags.allows_duplicate_labels is False
@@ -83,7 +86,8 @@ class TestPreserves:
         assert func(df).flags.allows_duplicate_labels is False
 
     def test_preserve_getitem(self):
-        df = pd.DataFrame({"A": [1, 2]}).set_flags(allows_duplicate_labels=False)
+        df = pd.DataFrame({"A": [1, 2]}).set_flags(
+            allows_duplicate_labels=False)
         assert df[["A"]].flags.allows_duplicate_labels is False
         assert df["A"].flags.allows_duplicate_labels is False
         assert df.loc[0].flags.allows_duplicate_labels is False
@@ -206,7 +210,8 @@ class TestPreserves:
         #  - apply
         #  - transform
         #  - Should passing a grouper that disallows duplicates propagate?
-        df = pd.DataFrame({"A": [1, 2, 3]}).set_flags(allows_duplicate_labels=False)
+        df = pd.DataFrame({"A": [1, 2, 3]}).set_flags(
+            allows_duplicate_labels=False)
         result = df.groupby([0, 0, 1]).agg("count")
         assert result.flags.allows_duplicate_labels is False
 
@@ -265,7 +270,8 @@ class TestRaises:
 
     def test_series_raises(self):
         a = pd.Series(0, index=["a", "b"])
-        b = pd.Series([0, 1], index=["a", "b"]).set_flags(allows_duplicate_labels=False)
+        b = pd.Series([0, 1], index=["a", "b"]).set_flags(
+            allows_duplicate_labels=False)
         msg = "Index has duplicates."
         with pytest.raises(pd.errors.DuplicateLabelError, match=msg):
             pd.concat([a, b])
@@ -348,10 +354,12 @@ def test_raises_basic(idx):
         pd.Series(1, index=idx).set_flags(allows_duplicate_labels=False)
 
     with pytest.raises(pd.errors.DuplicateLabelError, match=msg):
-        pd.DataFrame({"A": [1, 1]}, index=idx).set_flags(allows_duplicate_labels=False)
+        pd.DataFrame({"A": [1, 1]}, index=idx).set_flags(
+            allows_duplicate_labels=False)
 
     with pytest.raises(pd.errors.DuplicateLabelError, match=msg):
-        pd.DataFrame([[1, 2]], columns=idx).set_flags(allows_duplicate_labels=False)
+        pd.DataFrame([[1, 2]], columns=idx).set_flags(
+            allows_duplicate_labels=False)
 
 
 def test_format_duplicate_labels_message():

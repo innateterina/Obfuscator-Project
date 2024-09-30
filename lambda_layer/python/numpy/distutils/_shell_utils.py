@@ -56,7 +56,8 @@ class WindowsParser:
 
         CommandLineToArgvW = ctypes.windll.shell32.CommandLineToArgvW
         CommandLineToArgvW.restype = ctypes.POINTER(ctypes.c_wchar_p)
-        CommandLineToArgvW.argtypes = (ctypes.c_wchar_p, ctypes.POINTER(ctypes.c_int))
+        CommandLineToArgvW.argtypes = (
+            ctypes.c_wchar_p, ctypes.POINTER(ctypes.c_int))
 
         nargs = ctypes.c_int()
         lpargs = CommandLineToArgvW(cmd, ctypes.byref(nargs))

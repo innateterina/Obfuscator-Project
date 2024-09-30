@@ -32,37 +32,6 @@ run under the older AND the newer version.
 
 """
 
-from datetime import timedelta
-import os
-import pickle
-import platform as pl
-import sys
-
-# Remove script directory from path, otherwise Python will try to
-# import the JSON test directory as the json module
-sys.path.pop(0)
-
-import numpy as np
-
-import pandas
-from pandas import (
-    Categorical,
-    DataFrame,
-    Index,
-    MultiIndex,
-    NaT,
-    Period,
-    RangeIndex,
-    Series,
-    Timestamp,
-    bdate_range,
-    date_range,
-    interval_range,
-    period_range,
-    timedelta_range,
-)
-from pandas.arrays import SparseArray
-
 from pandas.tseries.offsets import (
     FY5253,
     BusinessDay,
@@ -85,6 +54,34 @@ from pandas.tseries.offsets import (
     YearBegin,
     YearEnd,
 )
+from pandas.arrays import SparseArray
+from pandas import (
+    Categorical,
+    DataFrame,
+    Index,
+    MultiIndex,
+    NaT,
+    Period,
+    RangeIndex,
+    Series,
+    Timestamp,
+    bdate_range,
+    date_range,
+    interval_range,
+    period_range,
+    timedelta_range,
+)
+import pandas
+import numpy as np
+from datetime import timedelta
+import os
+import pickle
+import platform as pl
+import sys
+
+# Remove script directory from path, otherwise Python will try to
+# import the JSON test directory as the json module
+sys.path.pop(0)
 
 
 def _create_sp_series():
@@ -138,7 +135,8 @@ def create_pickle_data():
         "E": [0.0, 1, Timestamp("20100101"), "foo", 2.0],
     }
 
-    scalars = {"timestamp": Timestamp("20130101"), "period": Period("2012", "M")}
+    scalars = {"timestamp": Timestamp(
+        "20130101"), "period": Period("2012", "M")}
 
     index = {
         "int": Index(np.arange(10)),
@@ -194,7 +192,8 @@ def create_pickle_data():
         "int": DataFrame({"A": series["int"], "B": series["int"] + 1}),
         "mixed": DataFrame({k: data[k] for k in ["A", "B", "C", "D"]}),
         "mi": DataFrame(
-            {"A": np.arange(5).astype(np.float64), "B": np.arange(5).astype(np.int64)},
+            {"A": np.arange(5).astype(np.float64),
+             "B": np.arange(5).astype(np.int64)},
             index=MultiIndex.from_tuples(
                 tuple(
                     zip(

@@ -213,7 +213,8 @@ class _XMLFrameParser:
         dicts: list[dict[str, str | None]]
 
         if self.elems_only and self.attrs_only:
-            raise ValueError("Either element or attributes can be parsed not both.")
+            raise ValueError(
+                "Either element or attributes can be parsed not both.")
         if self.elems_only:
             if self.names:
                 dicts = [
@@ -232,7 +233,8 @@ class _XMLFrameParser:
                 ]
             else:
                 dicts = [
-                    {ch.tag: ch.text if ch.text else None for ch in el.findall("*")}
+                    {ch.tag: ch.text if ch.text else None for ch in el.findall(
+                        "*")}
                     for el in elems
                 ]
 
@@ -269,7 +271,8 @@ class _XMLFrameParser:
         ]
 
         keys = list(dict.fromkeys([k for d in dicts for k in d.keys()]))
-        dicts = [{k: d[k] if k in d.keys() else None for k in keys} for d in dicts]
+        dicts = [{k: d[k] if k in d.keys() else None for k in keys}
+                 for d in dicts]
 
         if self.names:
             dicts = [dict(zip(self.names, d.values())) for d in dicts]
@@ -374,7 +377,8 @@ class _XMLFrameParser:
             raise ParserError("No result from selected items in iterparse.")
 
         keys = list(dict.fromkeys([k for d in dicts for k in d.keys()]))
-        dicts = [{k: d[k] if k in d.keys() else None for k in keys} for d in dicts]
+        dicts = [{k: d[k] if k in d.keys() else None for k in keys}
+                 for d in dicts]
 
         if self.names:
             dicts = [dict(zip(self.names, d.values())) for d in dicts]
@@ -469,7 +473,8 @@ class _EtreeFrameParser(_XMLFrameParser):
             "use them in xpath."
         )
         try:
-            elems = self.xml_doc.findall(self.xpath, namespaces=self.namespaces)
+            elems = self.xml_doc.findall(
+                self.xpath, namespaces=self.namespaces)
             children = [ch for el in elems for ch in el.findall("*")]
             attrs = {k: v for el in elems for k, v in el.attrib.items()}
 
@@ -500,7 +505,8 @@ class _EtreeFrameParser(_XMLFrameParser):
             if self.iterparse:
                 children = self.iterparse[next(iter(self.iterparse))]
             else:
-                parent = self.xml_doc.find(self.xpath, namespaces=self.namespaces)
+                parent = self.xml_doc.find(
+                    self.xpath, namespaces=self.namespaces)
                 children = parent.findall("*") if parent is not None else []
 
             if is_list_like(self.names):
@@ -827,7 +833,8 @@ def _parse(
                 storage_options,
             )
         else:
-            raise ImportError("lxml not found, please install or use the etree parser.")
+            raise ImportError(
+                "lxml not found, please install or use the etree parser.")
 
     elif parser == "etree":
         p = _EtreeFrameParser(

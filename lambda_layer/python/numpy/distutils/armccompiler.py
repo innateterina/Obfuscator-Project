@@ -1,4 +1,5 @@
-from distutils.unixccompiler import UnixCCompiler                              
+from distutils.unixccompiler import UnixCCompiler
+
 
 class ArmCCompiler(UnixCCompiler):
 
@@ -15,12 +16,12 @@ class ArmCCompiler(UnixCCompiler):
         cc_compiler = self.cc_exe
         cxx_compiler = self.cxx_exe
         self.set_executables(compiler=cc_compiler +
-                                      ' -O3 -fPIC',
+                             ' -O3 -fPIC',
                              compiler_so=cc_compiler +
-                                         ' -O3 -fPIC',
+                             ' -O3 -fPIC',
                              compiler_cxx=cxx_compiler +
-                                          ' -O3 -fPIC',
+                             ' -O3 -fPIC',
                              linker_exe=cc_compiler +
-                                        ' -lamath',
+                             ' -lamath',
                              linker_so=cc_compiler +
-                                       ' -lamath -shared')
+                             ' -lamath -shared')

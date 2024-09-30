@@ -36,7 +36,8 @@ def test_backend_is_correct(monkeypatch, restore_backend, dummy_backend):
     pandas.set_option("plotting.backend", "pandas_dummy_backend")
     assert pandas.get_option("plotting.backend") == "pandas_dummy_backend"
     assert (
-        pandas.plotting._core._get_plot_backend("pandas_dummy_backend") is dummy_backend
+        pandas.plotting._core._get_plot_backend(
+            "pandas_dummy_backend") is dummy_backend
     )
 
 
@@ -60,7 +61,8 @@ def test_register_entrypoint(restore_backend, tmp_path, monkeypatch, dummy_backe
         b"[pandas_plotting_backends]\nmy_ep_backend = pandas_dummy_backend\n"
     )
 
-    assert pandas.plotting._core._get_plot_backend("my_ep_backend") is dummy_backend
+    assert pandas.plotting._core._get_plot_backend(
+        "my_ep_backend") is dummy_backend
 
     with pandas.option_context("plotting.backend", "my_ep_backend"):
         assert pandas.plotting._core._get_plot_backend() is dummy_backend

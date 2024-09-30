@@ -97,8 +97,10 @@ def test_indexer_accepts_rolling_args():
 @pytest.mark.parametrize(
     "func,np_func,expected,np_kwargs",
     [
-        ("count", len, [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 2.0, np.nan], {}),
-        ("min", np.min, [0.0, 1.0, 2.0, 3.0, 4.0, 6.0, 6.0, 7.0, 8.0, np.nan], {}),
+        ("count", len, [3.0, 3.0, 3.0, 3.0,
+         3.0, 3.0, 3.0, 3.0, 2.0, np.nan], {}),
+        ("min", np.min, [0.0, 1.0, 2.0, 3.0,
+         4.0, 6.0, 6.0, 7.0, 8.0, np.nan], {}),
         (
             "max",
             np.max,
@@ -163,10 +165,12 @@ def test_rolling_forward_window(
 
     match = "Forward-looking windows don't support setting the closed argument"
     with pytest.raises(ValueError, match=match):
-        rolling = frame_or_series(values).rolling(window=indexer, closed="right")
+        rolling = frame_or_series(values).rolling(
+            window=indexer, closed="right")
         getattr(rolling, func)()
 
-    rolling = frame_or_series(values).rolling(window=indexer, min_periods=2, step=step)
+    rolling = frame_or_series(values).rolling(
+        window=indexer, min_periods=2, step=step)
     result = getattr(rolling, func)()
 
     # Check that the function output matches the explicitly provided array
@@ -175,7 +179,8 @@ def test_rolling_forward_window(
 
     # Check that the rolling function output matches applying an alternative
     # function to the rolling window object
-    expected2 = frame_or_series(rolling.apply(lambda x: np_func(x, **np_kwargs)))
+    expected2 = frame_or_series(rolling.apply(
+        lambda x: np_func(x, **np_kwargs)))
     tm.assert_equal(result, expected2)
 
     # Check that the function output matches applying an alternative function
@@ -183,9 +188,11 @@ def test_rolling_forward_window(
     # GH 39604: After count-min_periods deprecation, apply(lambda x: len(x))
     # is equivalent to count after setting min_periods=0
     min_periods = 0 if func == "count" else None
-    rolling3 = frame_or_series(values).rolling(window=indexer, min_periods=min_periods)
+    rolling3 = frame_or_series(values).rolling(
+        window=indexer, min_periods=min_periods)
     result3 = getattr(rolling3, func)()
-    expected3 = frame_or_series(rolling3.apply(lambda x: np_func(x, **np_kwargs)))
+    expected3 = frame_or_series(rolling3.apply(
+        lambda x: np_func(x, **np_kwargs)))
     tm.assert_equal(result3, expected3)
 
 
@@ -194,7 +201,8 @@ def test_rolling_forward_skewness(frame_or_series, step):
     values[5] = 100.0
 
     indexer = FixedForwardWindowIndexer(window_size=5)
-    rolling = frame_or_series(values).rolling(window=indexer, min_periods=3, step=step)
+    rolling = frame_or_series(values).rolling(
+        window=indexer, min_periods=3, step=step)
     result = rolling.skew()
 
     expected = frame_or_series(
@@ -319,7 +327,8 @@ def test_indexer_quantile_sum(end_value, values, func, args):
 
 
 @pytest.mark.parametrize(
-    "indexer_class", [FixedWindowIndexer, FixedForwardWindowIndexer, ExpandingIndexer]
+    "indexer_class", [FixedWindowIndexer,
+                      FixedForwardWindowIndexer, ExpandingIndexer]
 )
 @pytest.mark.parametrize("window_size", [1, 2, 12])
 @pytest.mark.parametrize(
@@ -367,7 +376,8 @@ def test_fixed_forward_indexer_bounds(
     tm.assert_numpy_array_equal(
         start, np.array(expected_start[::step]), check_dtype=False
     )
-    tm.assert_numpy_array_equal(end, np.array(expected_end[::step]), check_dtype=False)
+    tm.assert_numpy_array_equal(end, np.array(
+        expected_end[::step]), check_dtype=False)
     assert len(start) == len(end)
 
 
@@ -379,7 +389,8 @@ def test_fixed_forward_indexer_bounds(
             2,
             Series(
                 [0, 1.5, 2.0],
-                index=MultiIndex.from_arrays([[1, 2, 2], range(3)], names=["a", None]),
+                index=MultiIndex.from_arrays(
+                    [[1, 2, 2], range(3)], names=["a", None]),
                 name="b",
                 dtype=np.float64,
             ),
@@ -464,7 +475,7 @@ def test_rolling_groupby_with_fixed_forward_many(group_keys, window_size):
         [
             g.assign(
                 b=[
-                    g["b"].iloc[i : i + window_size].sum(min_count=1)
+                    g["b"].iloc[i: i + window_size].sum(min_count=1)
                     for i in range(len(g))
                 ]
             )

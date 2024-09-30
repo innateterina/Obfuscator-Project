@@ -213,6 +213,7 @@ class TestSubclassing:
         assert_(isinstance(divide(mx, x), MMatrix))
         assert_equal(divide(mx, mx), divide(xmx, xmx))
 
+
 class TestConcatenator:
     # Tests for mr_, the equivalent of r_ for masked arrays.
 

@@ -65,7 +65,8 @@ def test_unique_datetimelike():
         ["2015-01-01", "2015-01-01", "2015-01-01", "2015-01-01", "NaT", "NaT"]
     )
     idx2 = DatetimeIndex(
-        ["2015-01-01", "2015-01-01", "2015-01-02", "2015-01-02", "NaT", "2015-01-01"],
+        ["2015-01-01", "2015-01-01", "2015-01-02",
+            "2015-01-02", "NaT", "2015-01-01"],
         tz="Asia/Tokyo",
     )
     result = MultiIndex.from_arrays([idx1, idx2]).unique()
@@ -86,7 +87,8 @@ def test_unique_level(idx, level):
     tm.assert_index_equal(result, expected)
 
     # With already unique level
-    mi = MultiIndex.from_arrays([[1, 3, 2, 4], [1, 3, 2, 5]], names=["first", "second"])
+    mi = MultiIndex.from_arrays(
+        [[1, 3, 2, 4], [1, 3, 2, 5]], names=["first", "second"])
     result = mi.unique(level=level)
     expected = mi.get_level_values(level)
     tm.assert_index_equal(result, expected)
@@ -290,7 +292,8 @@ def test_duplicated_with_nan_multi_shape(n, m):
     assert len(mi) == (n + 1) * (m + 1)
     assert not mi.has_duplicates
 
-    tm.assert_numpy_array_equal(mi.duplicated(), np.zeros(len(mi), dtype="bool"))
+    tm.assert_numpy_array_equal(
+        mi.duplicated(), np.zeros(len(mi), dtype="bool"))
 
 
 def test_duplicated_drop_duplicates():
@@ -359,5 +362,6 @@ def test_midx_unique_ea_dtype():
 
     exp_vals_a = Series([1, 2, NA], dtype="Int64")
     exp_vals_b = np.array([1, 2, 3])
-    expected = MultiIndex.from_arrays([exp_vals_a, exp_vals_b], names=["a", "b"])
+    expected = MultiIndex.from_arrays(
+        [exp_vals_a, exp_vals_b], names=["a", "b"])
     tm.assert_index_equal(result, expected)

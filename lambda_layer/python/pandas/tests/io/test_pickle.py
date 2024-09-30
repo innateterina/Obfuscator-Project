@@ -189,7 +189,8 @@ def flatten(data: dict) -> list[tuple[str, Any]]:
             functools.partial(pd.to_pickle, protocol=pickle.HIGHEST_PROTOCOL),
             id="pandas_proto_highest",
         ),
-        pytest.param(functools.partial(pd.to_pickle, protocol=4), id="pandas_proto_4"),
+        pytest.param(functools.partial(
+            pd.to_pickle, protocol=4), id="pandas_proto_4"),
         pytest.param(
             functools.partial(pd.to_pickle, protocol=5),
             id="pandas_proto_5",
@@ -268,7 +269,8 @@ class TestCompression:
         elif compression == "tar":
             with open(src_path, "rb") as fh:
                 with tarfile.open(dest_path, mode="w") as tar:
-                    tarinfo = tar.gettarinfo(src_path, os.path.basename(src_path))
+                    tarinfo = tar.gettarinfo(
+                        src_path, os.path.basename(src_path))
                     tar.addfile(tarinfo, fh)
         elif compression == "xz":
             f = get_lzma_file()(dest_path, "w")
@@ -323,7 +325,8 @@ class TestCompression:
         base = get_random_path
         path1 = base + compression_ext
         path2 = base + ".raw"
-        compression = self._extension_to_compression.get(compression_ext.lower())
+        compression = self._extension_to_compression.get(
+            compression_ext.lower())
 
         with tm.ensure_clean(path1) as p1, tm.ensure_clean(path2) as p2:
             df = DataFrame(
@@ -371,7 +374,8 @@ class TestCompression:
         base = get_random_path
         path1 = base + ".raw"
         path2 = base + compression_ext
-        compression = self._extension_to_compression.get(compression_ext.lower())
+        compression = self._extension_to_compression.get(
+            compression_ext.lower())
 
         with tm.ensure_clean(path1) as p1, tm.ensure_clean(path2) as p2:
             df = DataFrame(
@@ -586,7 +590,8 @@ def test_pickle_timeseries_periodindex():
     "name", [777, 777.0, "name", datetime.datetime(2001, 11, 11), (1, 2)]
 )
 def test_pickle_preserve_name(name):
-    unpickled = tm.round_trip_pickle(Series(np.arange(10, dtype=np.float64), name=name))
+    unpickled = tm.round_trip_pickle(
+        Series(np.arange(10, dtype=np.float64), name=name))
     assert unpickled.name == name
 
 

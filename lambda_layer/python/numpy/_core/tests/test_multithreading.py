@@ -18,6 +18,7 @@ def test_parallel_randomstate_creation():
 
     run_threaded(func, 500, pass_count=True)
 
+
 def test_parallel_ufunc_execution():
     # if the loop data cache or dispatch cache are not thread-safe
     # computing ufuncs simultaneously in multiple threads leads
@@ -43,6 +44,7 @@ def test_parallel_ufunc_execution():
 
     [t.start() for t in threads]
     [t.join() for t in threads]
+
 
 def test_temp_elision_thread_safety():
     amid = np.ones(50000)

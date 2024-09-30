@@ -113,7 +113,8 @@ class TestAppend:
 
         # for None / True
         expected = DataFrame(
-            {"b": [1, 2, None, None], "a": [1, 2, 1, 2], "c": [None, None, 3, 4]},
+            {"b": [1, 2, None, None], "a": [
+                1, 2, 1, 2], "c": [None, None, 3, 4]},
             columns=["a", "b", "c"],
         )
         if sort is False:
@@ -159,7 +160,8 @@ class TestAppend:
         # #980
         df1 = DataFrame(columns=["A", "B", "C"])
         df1 = df1.set_index(["A"])
-        df2 = DataFrame(data=[[1, 4, 7], [2, 5, 8], [3, 6, 9]], columns=["A", "B", "C"])
+        df2 = DataFrame(data=[[1, 4, 7], [2, 5, 8], [
+                        3, 6, 9]], columns=["A", "B", "C"])
         df2 = df2.set_index(["A"])
 
         msg = "The behavior of array concatenation with empty entries is deprecated"
@@ -251,14 +253,17 @@ class TestAppend:
 
         df1 = DataFrame(
             index=[1, 2],
-            data=[dt.datetime(2013, 1, 1, 0, 0), dt.datetime(2013, 1, 2, 0, 0)],
+            data=[dt.datetime(2013, 1, 1, 0, 0),
+                  dt.datetime(2013, 1, 2, 0, 0)],
             columns=["start_time"],
         )
         df2 = DataFrame(
             index=[4, 5],
             data=[
-                [dt.datetime(2013, 1, 3, 0, 0), dt.datetime(2013, 1, 3, 6, 10)],
-                [dt.datetime(2013, 1, 4, 0, 0), dt.datetime(2013, 1, 4, 7, 10)],
+                [dt.datetime(2013, 1, 3, 0, 0),
+                 dt.datetime(2013, 1, 3, 6, 10)],
+                [dt.datetime(2013, 1, 4, 0, 0),
+                 dt.datetime(2013, 1, 4, 7, 10)],
             ],
             columns=["start_time", "end_time"],
         )
@@ -297,7 +302,8 @@ class TestAppend:
 
     def test_append_missing_column_proper_upcast(self, sort):
         df1 = DataFrame({"A": np.array([1, 2, 3, 4], dtype="i8")})
-        df2 = DataFrame({"B": np.array([True, False, True, False], dtype=bool)})
+        df2 = DataFrame(
+            {"B": np.array([True, False, True, False], dtype=bool)})
 
         appended = df1._append(df2, ignore_index=True, sort=sort)
         assert appended["A"].dtype == "f8"
@@ -353,7 +359,8 @@ class TestAppend:
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "dtype_str", ["datetime64[ns, UTC]", "datetime64[ns]", "Int64", "int64"]
+        "dtype_str", ["datetime64[ns, UTC]",
+                      "datetime64[ns]", "Int64", "int64"]
     )
     @pytest.mark.parametrize("val", [1, "NaT"])
     def test_append_empty_frame_with_timedelta64ns_nat(
@@ -375,7 +382,8 @@ class TestAppend:
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "dtype_str", ["datetime64[ns, UTC]", "datetime64[ns]", "Int64", "int64"]
+        "dtype_str", ["datetime64[ns, UTC]",
+                      "datetime64[ns]", "Int64", "int64"]
     )
     @pytest.mark.parametrize("val", [1, "NaT"])
     def test_append_frame_with_timedelta64ns_nat(self, dtype_str, val):
@@ -385,5 +393,6 @@ class TestAppend:
         other = DataFrame({"a": [np.timedelta64(val, "ns")]})
         result = df._append(other, ignore_index=True)
 
-        expected = DataFrame({"a": [df.iloc[0, 0], other.iloc[0, 0]]}, dtype=object)
+        expected = DataFrame(
+            {"a": [df.iloc[0, 0], other.iloc[0, 0]]}, dtype=object)
         tm.assert_frame_equal(result, expected)

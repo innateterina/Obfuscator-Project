@@ -27,7 +27,8 @@ def test_registered():
 
 
 def test_asi8():
-    result = PeriodArray._from_sequence(["2000", "2001", None], dtype="period[D]").asi8
+    result = PeriodArray._from_sequence(
+        ["2000", "2001", None], dtype="period[D]").asi8
     expected = np.array([10957, 11323, iNaT])
     tm.assert_numpy_array_equal(result, expected)
 
@@ -35,7 +36,8 @@ def test_asi8():
 def test_take_raises():
     arr = PeriodArray._from_sequence(["2000", "2001"], dtype="period[D]")
     with pytest.raises(IncompatibleFrequency, match="freq"):
-        arr.take([0, -1], allow_fill=True, fill_value=pd.Period("2000", freq="W"))
+        arr.take([0, -1], allow_fill=True,
+                 fill_value=pd.Period("2000", freq="W"))
 
     msg = "value should be a 'Period' or 'NaT'. Got 'str' instead"
     with pytest.raises(TypeError, match=msg):
@@ -43,13 +45,15 @@ def test_take_raises():
 
 
 def test_fillna_raises():
-    arr = PeriodArray._from_sequence(["2000", "2001", "2002"], dtype="period[D]")
+    arr = PeriodArray._from_sequence(
+        ["2000", "2001", "2002"], dtype="period[D]")
     with pytest.raises(ValueError, match="Length"):
         arr.fillna(arr[:2])
 
 
 def test_fillna_copies():
-    arr = PeriodArray._from_sequence(["2000", "2001", "2002"], dtype="period[D]")
+    arr = PeriodArray._from_sequence(
+        ["2000", "2001", "2002"], dtype="period[D]")
     result = arr.fillna(pd.Period("2000", "D"))
     assert result is not arr
 
@@ -67,7 +71,8 @@ def test_fillna_copies():
         ([0, 1, 2], pd.Period("2000", "D"), [10957] * 3),
         (
             [0, 1, 2],
-            [pd.Period("2000", "D"), pd.Period("2001", "D"), pd.Period("2002", "D")],
+            [pd.Period("2000", "D"), pd.Period(
+                "2001", "D"), pd.Period("2002", "D")],
             [10957, 11323, 11688],
         ),
     ],
@@ -134,7 +139,8 @@ def test_sub_period_overflow():
     "other",
     [
         pd.Period("2000", freq="h"),
-        PeriodArray._from_sequence(["2000", "2001", "2000"], dtype="period[h]"),
+        PeriodArray._from_sequence(
+            ["2000", "2001", "2000"], dtype="period[h]"),
     ],
 )
 def test_where_different_freq_raises(other):

@@ -74,7 +74,8 @@ def test_ewma_times_not_same_length():
 def test_ewma_halflife_not_correct_type():
     msg = "halflife must be a timedelta convertible object"
     with pytest.raises(ValueError, match=msg):
-        Series(range(5)).ewm(halflife=1, times=np.arange(5).astype("datetime64[ns]"))
+        Series(range(5)).ewm(halflife=1, times=np.arange(
+            5).astype("datetime64[ns]"))
 
 
 def test_ewma_halflife_without_times(halflife_with_times):
@@ -97,7 +98,8 @@ def test_ewma_with_times_equal_spacing(halflife_with_times, times, min_periods):
     data = np.arange(10.0)
     data[::2] = np.nan
     df = DataFrame({"A": data})
-    result = df.ewm(halflife=halflife, min_periods=min_periods, times=times).mean()
+    result = df.ewm(halflife=halflife, min_periods=min_periods,
+                    times=times).mean()
     expected = df.ewm(halflife=1.0, min_periods=min_periods).mean()
     tm.assert_frame_equal(result, expected)
 
@@ -106,7 +108,8 @@ def test_ewma_with_times_variable_spacing(tz_aware_fixture, unit):
     tz = tz_aware_fixture
     halflife = "23 days"
     times = (
-        DatetimeIndex(["2020-01-01", "2020-01-10T00:04:05", "2020-02-23T05:00:23"])
+        DatetimeIndex(
+            ["2020-01-01", "2020-01-10T00:04:05", "2020-02-23T05:00:23"])
         .tz_localize(tz)
         .as_unit(unit)
     )
@@ -211,7 +214,8 @@ def test_float_dtype_ewma(func, expected, float_numpy_dtype):
 def test_times_string_col_raises():
     # GH 43265
     df = DataFrame(
-        {"A": np.arange(10.0), "time_col": date_range("2000", freq="D", periods=10)}
+        {"A": np.arange(10.0), "time_col": date_range(
+            "2000", freq="D", periods=10)}
     )
     with pytest.raises(ValueError, match="times must be datetime64"):
         df.ewm(halflife="1 day", min_periods=0, times="time_col")
@@ -322,7 +326,8 @@ def test_ewma_nan_handling():
             Series([np.nan, 1.0, np.nan, np.nan, 101.0, np.nan]),
             True,
             False,
-            [np.nan, (1.0 - (1.0 / (1.0 + 2.0))) ** 3, np.nan, np.nan, 1.0, np.nan],
+            [np.nan, (1.0 - (1.0 / (1.0 + 2.0))) **
+             3, np.nan, np.nan, 1.0, np.nan],
         ),
         (
             Series([np.nan, 1.0, np.nan, np.nan, 101.0, np.nan]),
@@ -507,7 +512,8 @@ def test_ew_min_periods(min_periods, name):
         assert not result[11:].isna().any()
 
     # check series of length 0
-    result = getattr(Series(dtype=object).ewm(com=50, min_periods=min_periods), name)()
+    result = getattr(Series(dtype=object).ewm(
+        com=50, min_periods=min_periods), name)()
     tm.assert_series_equal(result, Series(dtype="float64"))
 
     # check series of length 1
@@ -655,7 +661,8 @@ def test_numeric_only_frame(arithmetic_win_operators, numeric_only):
         result = op(numeric_only=numeric_only)
 
         columns = ["a", "b"] if numeric_only else ["a", "b", "c"]
-        expected = df[columns].agg([kernel]).reset_index(drop=True).astype(float)
+        expected = df[columns].agg([kernel]).reset_index(
+            drop=True).astype(float)
         assert list(expected.columns) == columns
 
         tm.assert_frame_equal(result, expected)

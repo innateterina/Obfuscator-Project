@@ -188,7 +188,8 @@ class TestDataFrameSubclassing:
 
     def test_subclass_align_combinations(self):
         # GH 12983
-        df = tm.SubclassedDataFrame({"a": [1, 3, 5], "b": [1, 3, 5]}, index=list("ACE"))
+        df = tm.SubclassedDataFrame(
+            {"a": [1, 3, 5], "b": [1, 3, 5]}, index=list("ACE"))
         s = tm.SubclassedSeries([1, 2, 4], index=list("ABD"), name="x")
 
         # frame + series
@@ -239,7 +240,8 @@ class TestDataFrameSubclassing:
     def test_subclass_stack_multi(self):
         # GH 15564
         df = tm.SubclassedDataFrame(
-            [[10, 11, 12, 13], [20, 21, 22, 23], [30, 31, 32, 33], [40, 41, 42, 43]],
+            [[10, 11, 12, 13], [20, 21, 22, 23], [
+                30, 31, 32, 33], [40, 41, 42, 43]],
             index=MultiIndex.from_tuples(
                 list(zip(list("AABB"), list("cdcd"))), names=["aaa", "ccc"]
             ),
@@ -373,7 +375,8 @@ class TestDataFrameSubclassing:
     def test_subclass_unstack_multi(self):
         # GH 15564
         df = tm.SubclassedDataFrame(
-            [[10, 11, 12, 13], [20, 21, 22, 23], [30, 31, 32, 33], [40, 41, 42, 43]],
+            [[10, 11, 12, 13], [20, 21, 22, 23], [
+                30, 31, 32, 33], [40, 41, 42, 43]],
             index=MultiIndex.from_tuples(
                 list(zip(list("AABB"), list("cdcd"))), names=["aaa", "ccc"]
             ),
@@ -573,7 +576,8 @@ class TestDataFrameSubclassing:
         assert isinstance(result, tm.SubclassedDataFrame)
         tm.assert_frame_equal(result, expected)
 
-        expected = tm.SubclassedDataFrame([[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]])
+        expected = tm.SubclassedDataFrame(
+            [[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
         result = df.apply(lambda x: tm.SubclassedSeries([1, 2, 3]), axis=1)
         assert isinstance(result, tm.SubclassedDataFrame)
@@ -583,7 +587,8 @@ class TestDataFrameSubclassing:
         assert isinstance(result, tm.SubclassedDataFrame)
         tm.assert_frame_equal(result, expected)
 
-        expected = tm.SubclassedSeries([[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]])
+        expected = tm.SubclassedSeries(
+            [[1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
         result = df.apply(lambda x: [1, 2, 3], axis=1)
         assert not isinstance(result, tm.SubclassedDataFrame)
@@ -592,7 +597,8 @@ class TestDataFrameSubclassing:
     def test_subclassed_reductions(self, all_reductions):
         # GH 25596
 
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = getattr(df, all_reductions)()
         assert isinstance(result, tm.SubclassedSeries)
 
@@ -607,12 +613,14 @@ class TestDataFrameSubclassing:
         result = df.count()
         assert isinstance(result, tm.SubclassedSeries)
 
-        df = tm.SubclassedDataFrame({"A": [1, 0, 3], "B": [0, 5, 6], "C": [7, 8, 0]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 0, 3], "B": [0, 5, 6], "C": [7, 8, 0]})
         result = df.count()
         assert isinstance(result, tm.SubclassedSeries)
 
         df = tm.SubclassedDataFrame(
-            [[10, 11, 12, 13], [20, 21, 22, 23], [30, 31, 32, 33], [40, 41, 42, 43]],
+            [[10, 11, 12, 13], [20, 21, 22, 23], [
+                30, 31, 32, 33], [40, 41, 42, 43]],
             index=MultiIndex.from_tuples(
                 list(zip(list("AABB"), list("cdcd"))), names=["aaa", "ccc"]
             ),
@@ -635,7 +643,8 @@ class TestDataFrameSubclassing:
         assert isinstance(result, tm.SubclassedDataFrame)
 
     def test_duplicated(self):
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = df.duplicated()
         assert isinstance(result, tm.SubclassedSeries)
 
@@ -645,7 +654,8 @@ class TestDataFrameSubclassing:
 
     @pytest.mark.parametrize("idx_method", ["idxmax", "idxmin"])
     def test_idx(self, idx_method):
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = getattr(df, idx_method)()
         assert isinstance(result, tm.SubclassedSeries)
 
@@ -661,7 +671,8 @@ class TestDataFrameSubclassing:
         assert isinstance(result, tm.SubclassedDataFrame)
 
     def test_memory_usage(self):
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = df.memory_usage()
         assert isinstance(result, tm.SubclassedSeries)
 
@@ -710,20 +721,23 @@ class TestDataFrameSubclassing:
     def test_idxmin_preserves_subclass(self):
         # GH 28330
 
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = df.idxmin()
         assert isinstance(result, tm.SubclassedSeries)
 
     def test_idxmax_preserves_subclass(self):
         # GH 28330
 
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = df.idxmax()
         assert isinstance(result, tm.SubclassedSeries)
 
     def test_convert_dtypes_preserves_subclass(self, gpd_style_subclass_df):
         # GH 43668
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
         result = df.convert_dtypes()
         assert isinstance(result, tm.SubclassedDataFrame)
 
@@ -732,7 +746,8 @@ class TestDataFrameSubclassing:
 
     def test_astype_preserves_subclass(self):
         # GH#40810
-        df = tm.SubclassedDataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+        df = tm.SubclassedDataFrame(
+            {"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
 
         result = df.astype({"A": np.int64, "B": np.int32, "C": np.float64})
         assert isinstance(result, tm.SubclassedDataFrame)

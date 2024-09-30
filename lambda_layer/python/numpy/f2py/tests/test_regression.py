@@ -26,7 +26,8 @@ class TestIntentInOut(util.F2PyTest):
 
 class TestNegativeBounds(util.F2PyTest):
     # Check that negative bounds work correctly
-    sources = [util.getpath("tests", "src", "negative_bounds", "issue_20853.f90")]
+    sources = [util.getpath(
+        "tests", "src", "negative_bounds", "issue_20853.f90")]
 
     @pytest.mark.slow
     def test_negbound(self):
@@ -35,11 +36,12 @@ class TestNegativeBounds(util.F2PyTest):
         xhigh = 4
         # Calculate the upper bound,
         # Keeping the 1 index in mind
+
         def ubound(xl, xh):
             return xh - xl + 1
         rval = self.module.foo(is_=xlow, ie_=xhigh,
-                        arr=xvec[:ubound(xlow, xhigh)])
-        expval = np.arange(11, dtype = np.float32)
+                               arr=xvec[:ubound(xlow, xhigh)])
+        expval = np.arange(11, dtype=np.float32)
         assert np.allclose(rval, expval)
 
 
@@ -77,7 +79,8 @@ class TestIncludeFiles(util.F2PyTest):
     def test_gh25344(self):
         exp = 7.0
         res = self.module.add(3.0, 4.0)
-        assert  exp == res
+        assert exp == res
+
 
 class TestF77Comments(util.F2PyTest):
     # Check that comments are stripped from F77 continuation lines
@@ -87,35 +90,39 @@ class TestF77Comments(util.F2PyTest):
     def test_gh26148(self):
         x1 = np.array(3, dtype=np.int32)
         x2 = np.array(5, dtype=np.int32)
-        res=self.module.testsub(x1, x2)
-        assert(res[0] == 8)
-        assert(res[1] == 15)
+        res = self.module.testsub(x1, x2)
+        assert (res[0] == 8)
+        assert (res[1] == 15)
 
     @pytest.mark.slow
     def test_gh26466(self):
         # Check that comments after PARAMETER directions are stripped
         expected = np.arange(1, 11, dtype=np.float32)*2
-        res=self.module.testsub2()
+        res = self.module.testsub2()
         npt.assert_allclose(expected, res)
+
 
 class TestF90Contiuation(util.F2PyTest):
     # Check that comments are stripped from F90 continuation lines
-    sources = [util.getpath("tests", "src", "regression", "f90continuation.f90")]
+    sources = [util.getpath(
+        "tests", "src", "regression", "f90continuation.f90")]
 
     @pytest.mark.slow
     def test_gh26148b(self):
         x1 = np.array(3, dtype=np.int32)
         x2 = np.array(5, dtype=np.int32)
-        res=self.module.testsub(x1, x2)
-        assert(res[0] == 8)
-        assert(res[1] == 15)
+        res = self.module.testsub(x1, x2)
+        assert (res[0] == 8)
+        assert (res[1] == 15)
+
 
 @pytest.mark.slow
 def test_gh26623():
     # Including libraries with . should not generate an incorrect meson.build
     try:
         aa = util.build_module(
-            [util.getpath("tests", "src", "regression", "f90continuation.f90")],
+            [util.getpath("tests", "src", "regression",
+                          "f90continuation.f90")],
             ["-lfoo.bar"],
             module_name="Blah",
         )

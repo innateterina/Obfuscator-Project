@@ -1280,7 +1280,8 @@ def test_record_batch_reader_cast():
     # (https://github.com/apache/arrow/issues/41884)
     schema_src = pa.schema([pa.field('a', pa.date32())])
     arr = pa.array([datetime.date(2024, 6, 11)], type=pa.date32())
-    data = [pa.record_batch([arr], names=['a']), pa.record_batch([arr], names=['a'])]
+    data = [pa.record_batch([arr], names=['a']),
+            pa.record_batch([arr], names=['a'])]
     table_src = pa.Table.from_batches(data)
     reader = pa.RecordBatchReader.from_batches(schema_src, data)
     assert reader.cast(schema_src).read_all() == table_src
@@ -1289,7 +1290,8 @@ def test_record_batch_reader_cast():
 def test_record_batch_reader_cast_nulls():
     schema_src = pa.schema([pa.field('a', pa.int64())])
     data_with_nulls = [
-        pa.record_batch([pa.array([1, 2, None], type=pa.int64())], names=['a']),
+        pa.record_batch(
+            [pa.array([1, 2, None], type=pa.int64())], names=['a']),
     ]
     data_without_nulls = [
         pa.record_batch([pa.array([1, 2, 3], type=pa.int64())], names=['a']),
@@ -1300,12 +1302,14 @@ def test_record_batch_reader_cast_nulls():
     # Cast to nullable destination should work
     reader = pa.RecordBatchReader.from_batches(schema_src, data_with_nulls)
     schema_dst = pa.schema([pa.field('a', pa.int32())])
-    assert reader.cast(schema_dst).read_all() == table_with_nulls.cast(schema_dst)
+    assert reader.cast(schema_dst).read_all(
+    ) == table_with_nulls.cast(schema_dst)
 
     # Cast to non-nullable destination should work if there are no nulls
     reader = pa.RecordBatchReader.from_batches(schema_src, data_without_nulls)
     schema_dst = pa.schema([pa.field('a', pa.int32(), nullable=False)])
-    assert reader.cast(schema_dst).read_all() == table_without_nulls.cast(schema_dst)
+    assert reader.cast(schema_dst).read_all(
+    ) == table_without_nulls.cast(schema_dst)
 
     # Cast to non-nullable destination should error if there are nulls
     # when the batch is pulled

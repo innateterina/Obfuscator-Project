@@ -7,7 +7,7 @@ from numpy._core import _umath_tests
 from numpy.lib.stride_tricks import as_strided
 from numpy.testing import (
     assert_, assert_raises, assert_equal, assert_array_equal
-    )
+)
 
 
 ndims = 2
@@ -40,7 +40,8 @@ def _indices_for_axis():
     res = []
     for nelems in (0, 2, 3):
         ind = _indices_for_nelems(nelems)
-        res.extend(itertools.product(ind, ind))  # all assignments of size "nelems"
+        # all assignments of size "nelems"
+        res.extend(itertools.product(ind, ind))
 
     return res
 
@@ -126,7 +127,8 @@ def test_diophantine_fuzz():
                 for r in ranges:
                     size *= len(r)
                 if size < 100000:
-                    assert_(not any(sum(w) == b for w in itertools.product(*ranges)))
+                    assert_(
+                        not any(sum(w) == b for w in itertools.product(*ranges)))
                     infeasible_count += 1
             else:
                 # Check the simplified decision problem agrees
@@ -168,7 +170,8 @@ def check_may_share_memory_exact(a, b):
     err_msg = ""
     if got != exact:
         err_msg = "    " + "\n    ".join([
-            "base_a - base_b = %r" % (a.__array_interface__['data'][0] - b.__array_interface__['data'][0],),
+            "base_a - base_b = %r" % (a.__array_interface__[
+                                      'data'][0] - b.__array_interface__['data'][0],),
             "shape_a = %r" % (a.shape,),
             "shape_b = %r" % (b.shape,),
             "strides_a = %r" % (a.strides,),
@@ -186,7 +189,7 @@ def test_may_share_memory_manual():
     # Base arrays
     xs0 = [
         np.zeros([13, 21, 23, 22], dtype=np.int8),
-        np.zeros([13, 21, 23*2, 22], dtype=np.int8)[:,:,::2,:]
+        np.zeros([13, 21, 23*2, 22], dtype=np.int8)[:, :, ::2, :]
     ]
 
     # Generate all negative stride combinations
@@ -198,12 +201,12 @@ def test_may_share_memory_manual():
 
     for x in xs:
         # The default is a simple extent check
-        assert_(np.may_share_memory(x[:,0,:], x[:,1,:]))
-        assert_(np.may_share_memory(x[:,0,:], x[:,1,:], max_work=None))
+        assert_(np.may_share_memory(x[:, 0, :], x[:, 1, :]))
+        assert_(np.may_share_memory(x[:, 0, :], x[:, 1, :], max_work=None))
 
         # Exact checks
-        check_may_share_memory_exact(x[:,0,:], x[:,1,:])
-        check_may_share_memory_exact(x[:,::7], x[:,3::3])
+        check_may_share_memory_exact(x[:, 0, :], x[:, 1, :])
+        check_may_share_memory_exact(x[:, ::7], x[:, 3::3])
 
         try:
             xp = x.ravel()
@@ -215,15 +218,15 @@ def test_may_share_memory_manual():
 
         # 0-size arrays cannot overlap
         check_may_share_memory_exact(x.ravel()[6:6],
-                                     xp.reshape(13, 21, 23, 11)[:,::7])
+                                     xp.reshape(13, 21, 23, 11)[:, ::7])
 
         # Test itemsize is dealt with
-        check_may_share_memory_exact(x[:,::7],
+        check_may_share_memory_exact(x[:, ::7],
                                      xp.reshape(13, 21, 23, 11))
-        check_may_share_memory_exact(x[:,::7],
-                                     xp.reshape(13, 21, 23, 11)[:,3::3])
+        check_may_share_memory_exact(x[:, ::7],
+                                     xp.reshape(13, 21, 23, 11)[:, 3::3])
         check_may_share_memory_exact(x.ravel()[6:7],
-                                     xp.reshape(13, 21, 23, 11)[:,::7])
+                                     xp.reshape(13, 21, 23, 11)[:, ::7])
 
     # Check unit size
     x = np.zeros([1], dtype=np.int8)
@@ -259,7 +262,7 @@ def iter_random_view_pairs(x, same_steps=True, equal_size=False):
     yield x, x
     for j in range(1, 7, 3):
         yield x[j:], x[:-j]
-        yield x[...,j:], x[...,:-j]
+        yield x[..., j:], x[..., :-j]
 
     # An array with zero stride internal overlap
     strides = list(x.strides)
@@ -322,7 +325,7 @@ def iter_random_view_pairs(x, same_steps=True, equal_size=False):
 def check_may_share_memory_easy_fuzz(get_max_work, same_steps, min_count):
     # Check that overlap problems with common strides are solved with
     # little work.
-    x = np.zeros([17,34,71,97], dtype=np.int16)
+    x = np.zeros([17, 34, 71, 97], dtype=np.int16)
 
     feasible = 0
     infeasible = 0
@@ -381,8 +384,8 @@ def test_shares_memory_api():
     assert_equal(np.shares_memory(x, x), True)
     assert_equal(np.shares_memory(x, x.copy()), False)
 
-    a = x[:,::2,::3]
-    b = x[:,::3,::2]
+    a = x[:, ::2, ::3]
+    b = x[:, ::3, ::2]
     assert_equal(np.shares_memory(a, b), True)
     assert_equal(np.shares_memory(a, b, max_work=None), True)
     assert_raises(
@@ -404,7 +407,8 @@ def test_internal_overlap_diophantine():
             exists = (X is not None)
 
         if X is not None:
-            assert_(sum(a*x for a, x in zip(A, X)) == sum(a*u//2 for a, u in zip(A, U)))
+            assert_(sum(a*x for a, x in zip(A, X)) ==
+                    sum(a*u//2 for a, u in zip(A, U)))
             assert_(all(0 <= x <= u for x, u in zip(X, U)))
             assert_(any(x != u//2 for x, u in zip(X, U)))
 
@@ -421,7 +425,7 @@ def test_internal_overlap_diophantine():
 def test_internal_overlap_slices():
     # Slicing an array never generates internal overlap
 
-    x = np.zeros([17,34,71,97], dtype=np.int16)
+    x = np.zeros([17, 34, 71, 97], dtype=np.int16)
 
     rng = np.random.RandomState(1234)
 
@@ -482,8 +486,8 @@ def test_internal_overlap_manual():
 
     # Check low-dimensional special cases
 
-    check_internal_overlap(x, False) # 1-dim
-    check_internal_overlap(x.reshape([]), False) # 0-dim
+    check_internal_overlap(x, False)  # 1-dim
+    check_internal_overlap(x.reshape([]), False)  # 0-dim
 
     a = as_strided(x, strides=(3, 4), shape=(4, 4))
     check_internal_overlap(a, False)
@@ -602,7 +606,7 @@ class TestUFunc:
     """
 
     def check_unary_fuzz(self, operation, get_out_axis_size, dtype=np.int16,
-                             count=5000):
+                         count=5000):
         shapes = [7, 13, 8, 21, 29, 32]
 
         rng = np.random.RandomState(1234)
@@ -662,7 +666,8 @@ class TestUFunc:
                             overlapping += 1
 
                         # Check result
-                        assert_copy_equivalent(operation, [a], out=b_out, axis=axis)
+                        assert_copy_equivalent(
+                            operation, [a], out=b_out, axis=axis)
 
     @pytest.mark.slow
     def test_unary_ufunc_call_fuzz(self):
@@ -753,19 +758,19 @@ class TestUFunc:
 
                 # Ensure the shapes are so that euclidean_pdist is happy
                 if b.shape[-1] > b.shape[-2]:
-                    b = b[...,0,:]
+                    b = b[..., 0, :]
                 else:
-                    b = b[...,:,0]
+                    b = b[..., :, 0]
 
                 n = a.shape[-2]
                 p = n * (n - 1) // 2
                 if p <= b.shape[-1] and p > 0:
-                    b = b[...,:p]
+                    b = b[..., :p]
                 else:
                     n = max(2, int(np.sqrt(b.shape[-1]))//2)
                     p = n * (n - 1) // 2
-                    a = a[...,:n,:]
-                    b = b[...,:p]
+                    a = a[..., :n, :]
+                    b = b[..., :p]
 
                 # Call
                 if np.shares_memory(a, b):

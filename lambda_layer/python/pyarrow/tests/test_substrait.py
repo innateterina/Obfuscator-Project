@@ -953,7 +953,8 @@ def test_arrow_specific_types():
         "large_string": (pa.large_string(), "test_string"),
         "large_binary": (pa.large_binary(), b"test_string"),
     }
-    schema = pa.schema([pa.field(name, typ) for name, (typ, _) in fields.items()])
+    schema = pa.schema([pa.field(name, typ)
+                       for name, (typ, _) in fields.items()])
 
     def check_round_trip(expr):
         buf = pa.substrait.serialize_expressions([expr], ["test_expr"], schema)
@@ -1017,8 +1018,10 @@ def test_serializing_multiple_expressions():
         pa.field("x", pa.int32()),
         pa.field("y", pa.int32())
     ])
-    exprs = [pc.equal(pc.field("x"), 7), pc.equal(pc.field("x"), pc.field("y"))]
-    buf = pa.substrait.serialize_expressions(exprs, ["first", "second"], schema)
+    exprs = [pc.equal(pc.field("x"), 7), pc.equal(
+        pc.field("x"), pc.field("y"))]
+    buf = pa.substrait.serialize_expressions(
+        exprs, ["first", "second"], schema)
     returned = pa.substrait.deserialize_expressions(buf)
     assert schema == returned.schema
     assert len(returned.expressions) == 2
@@ -1044,7 +1047,8 @@ def test_serializing_with_compute():
     assert str(returned.expressions["expression"]) == str(expr_norm)
 
     # Compute can't deserialize messages with multiple expressions
-    buf = pa.substrait.serialize_expressions([expr, expr], ["first", "second"], schema)
+    buf = pa.substrait.serialize_expressions(
+        [expr, expr], ["first", "second"], schema)
     with pytest.raises(ValueError) as excinfo:
         pc.Expression.from_substrait(buf)
     assert 'contained multiple expressions' in str(excinfo.value)

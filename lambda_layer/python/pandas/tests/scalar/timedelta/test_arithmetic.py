@@ -247,8 +247,10 @@ class TestTimedeltaAdditionSubtraction:
 
     def test_td_sub_timedeltalike_object_dtype_array(self):
         # GH#21980
-        arr = np.array([Timestamp("20130101 9:01"), Timestamp("20121230 9:02")])
-        exp = np.array([Timestamp("20121231 9:01"), Timestamp("20121229 9:02")])
+        arr = np.array([Timestamp("20130101 9:01"),
+                       Timestamp("20121230 9:02")])
+        exp = np.array([Timestamp("20121231 9:01"),
+                       Timestamp("20121229 9:02")])
         res = arr - Timedelta("1D")
         tm.assert_numpy_array_equal(res, exp)
 
@@ -277,8 +279,10 @@ class TestTimedeltaAdditionSubtraction:
     @pytest.mark.parametrize("op", [operator.add, ops.radd])
     def test_td_add_timedeltalike_object_dtype_array(self, op):
         # GH#21980
-        arr = np.array([Timestamp("20130101 9:01"), Timestamp("20121230 9:02")])
-        exp = np.array([Timestamp("20130102 9:01"), Timestamp("20121231 9:02")])
+        arr = np.array([Timestamp("20130101 9:01"),
+                       Timestamp("20121230 9:02")])
+        exp = np.array([Timestamp("20130102 9:01"),
+                       Timestamp("20121231 9:02")])
         res = op(arr, Timedelta("1D"))
         tm.assert_numpy_array_equal(res, exp)
 
@@ -652,7 +656,8 @@ class TestTimedeltaMultiplicationDivision:
         expected = np.array([3], dtype=np.int64)
         tm.assert_numpy_array_equal(res, expected)
 
-        res = (10 * td) // np.array([scalar.to_timedelta64(), np.timedelta64("NaT")])
+        res = (
+            10 * td) // np.array([scalar.to_timedelta64(), np.timedelta64("NaT")])
         expected = np.array([10, np.nan])
         tm.assert_numpy_array_equal(res, expected)
 
@@ -745,7 +750,8 @@ class TestTimedeltaMultiplicationDivision:
 
     def test_td_rfloordiv_intarray(self):
         # deprecated GH#19761, enforced GH#29797
-        ints = np.array([1349654400, 1349740800, 1349827200, 1349913600]) * 10**9
+        ints = np.array(
+            [1349654400, 1349740800, 1349827200, 1349913600]) * 10**9
 
         msg = "Invalid dtype"
         with pytest.raises(TypeError, match=msg):
@@ -1012,7 +1018,8 @@ class TestTimedeltaComparison:
         # a pytimedelta outside the microsecond bounds
         pytd = timedelta(days=999999999, seconds=86399)
         # NB: np.timedelta64(td, "s"") incorrectly overflows
-        td64 = np.timedelta64(pytd.days, "D") + np.timedelta64(pytd.seconds, "s")
+        td64 = np.timedelta64(pytd.days, "D") + \
+            np.timedelta64(pytd.seconds, "s")
         td = Timedelta(td64)
         assert td.days == pytd.days
         assert td.seconds == pytd.seconds

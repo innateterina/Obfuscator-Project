@@ -70,7 +70,8 @@ def flex_binary_moment(arg1, arg2, f, pairwise: bool = False):
                     result = concat(
                         [
                             concat(
-                                [results[i][j] for j in range(len(arg2.columns))],
+                                [results[i][j]
+                                    for j in range(len(arg2.columns))],
                                 ignore_index=True,
                             )
                             for i in range(len(arg1.columns))
@@ -100,17 +101,20 @@ def flex_binary_moment(arg1, arg2, f, pairwise: bool = False):
                             )
                             for i in range(arg2.columns.nlevels)
                         )
-                        result_names = list(arg2.columns.names) + [result_index.name]
+                        result_names = list(
+                            arg2.columns.names) + [result_index.name]
                         result.index = MultiIndex.from_arrays(
                             [*arg2_levels, result_level], names=result_names
                         )
                         # GH 34440
                         num_levels = len(result.index.levels)
-                        new_order = [num_levels - 1] + list(range(num_levels - 1))
+                        new_order = [num_levels - 1] + \
+                            list(range(num_levels - 1))
                         result = result.reorder_levels(new_order).sort_index()
                     else:
                         result.index = MultiIndex.from_product(
-                            [range(len(arg2.columns)), range(len(result_index))]
+                            [range(len(arg2.columns)),
+                             range(len(result_index))]
                         )
                         result = result.swaplevel(1, 0).sort_index()
                         result.index = MultiIndex.from_product(

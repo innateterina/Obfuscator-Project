@@ -39,7 +39,8 @@ def test_iter_raises():
 
 
 def test_count(any_string_dtype):
-    ser = Series(["foo", "foofoo", np.nan, "foooofooofommmfoo"], dtype=any_string_dtype)
+    ser = Series(["foo", "foofoo", np.nan, "foooofooofommmfoo"],
+                 dtype=any_string_dtype)
     result = ser.str.count("f[o]+")
     expected_dtype = np.float64 if any_string_dtype in object_pyarrow_numpy else "Int64"
     expected = Series([1, 2, np.nan, 4], dtype=expected_dtype)
@@ -52,7 +53,8 @@ def test_count_mixed_object():
         dtype=object,
     )
     result = ser.str.count("a")
-    expected = Series([1, np.nan, 0, np.nan, np.nan, 0, np.nan, np.nan, np.nan])
+    expected = Series([1, np.nan, 0, np.nan, np.nan,
+                      0, np.nan, np.nan, np.nan])
     tm.assert_series_equal(result, expected)
 
 
@@ -73,7 +75,8 @@ def test_repeat(any_string_dtype):
 
 
 def test_repeat_mixed_object():
-    ser = Series(["a", np.nan, "b", True, datetime.today(), "foo", None, 1, 2.0])
+    ser = Series(
+        ["a", np.nan, "b", True, datetime.today(), "foo", None, 1, 2.0])
     result = ser.str.repeat(3)
     expected = Series(
         ["aaa", np.nan, "bbb", np.nan, np.nan, "foofoofoo", None, np.nan, np.nan],
@@ -131,7 +134,8 @@ def test_empty_str_methods(any_string_dtype):
         DataFrame(columns=[0, 1], dtype=any_string_dtype),
         empty.str.extract("()()", expand=False),
     )
-    tm.assert_frame_equal(empty_df.set_axis([], axis=1), empty.str.get_dummies())
+    tm.assert_frame_equal(empty_df.set_axis(
+        [], axis=1), empty.str.get_dummies())
     tm.assert_series_equal(empty_str, empty_str.str.join(""))
     tm.assert_series_equal(empty_int, empty.str.len())
     tm.assert_series_equal(empty_object, empty_str.str.findall("a"))
@@ -141,9 +145,11 @@ def test_empty_str_methods(any_string_dtype):
     tm.assert_series_equal(empty_str, empty.str.center(42))
     tm.assert_series_equal(empty_object, empty.str.split("a"))
     tm.assert_series_equal(empty_object, empty.str.rsplit("a"))
-    tm.assert_series_equal(empty_object, empty.str.partition("a", expand=False))
+    tm.assert_series_equal(
+        empty_object, empty.str.partition("a", expand=False))
     tm.assert_frame_equal(empty_df, empty.str.partition("a"))
-    tm.assert_series_equal(empty_object, empty.str.rpartition("a", expand=False))
+    tm.assert_series_equal(
+        empty_object, empty.str.rpartition("a", expand=False))
     tm.assert_frame_equal(empty_df, empty.str.rpartition("a"))
     tm.assert_series_equal(empty_str, empty.str.slice(stop=1))
     tm.assert_series_equal(empty_str, empty.str.slice(step=1))
@@ -175,8 +181,10 @@ def test_empty_str_methods(any_string_dtype):
 @pytest.mark.parametrize(
     "method, expected",
     [
-        ("isalnum", [True, True, True, True, True, False, True, True, False, False]),
-        ("isalpha", [True, True, True, False, False, False, True, False, False, False]),
+        ("isalnum", [True, True, True, True,
+         True, False, True, True, False, False]),
+        ("isalpha", [True, True, True, False,
+         False, False, True, False, False, False]),
         (
             "isdigit",
             [False, False, False, True, False, False, False, True, False, False],
@@ -267,11 +275,13 @@ def test_spilt_join_roundtrip(any_string_dtype):
 
 def test_spilt_join_roundtrip_mixed_object():
     ser = Series(
-        ["a_b", np.nan, "asdf_cas_asdf", True, datetime.today(), "foo", None, 1, 2.0]
+        ["a_b", np.nan, "asdf_cas_asdf", True,
+            datetime.today(), "foo", None, 1, 2.0]
     )
     result = ser.str.split("_").str.join("_")
     expected = Series(
-        ["a_b", np.nan, "asdf_cas_asdf", np.nan, np.nan, "foo", None, np.nan, np.nan],
+        ["a_b", np.nan, "asdf_cas_asdf", np.nan,
+            np.nan, "foo", None, np.nan, np.nan],
         dtype=object,
     )
     tm.assert_series_equal(result, expected)
@@ -290,10 +300,12 @@ def test_len(any_string_dtype):
 
 def test_len_mixed():
     ser = Series(
-        ["a_b", np.nan, "asdf_cas_asdf", True, datetime.today(), "foo", None, 1, 2.0]
+        ["a_b", np.nan, "asdf_cas_asdf", True,
+            datetime.today(), "foo", None, 1, 2.0]
     )
     result = ser.str.len()
-    expected = Series([3, np.nan, 13, np.nan, np.nan, 3, np.nan, np.nan, np.nan])
+    expected = Series([3, np.nan, 13, np.nan, np.nan,
+                      3, np.nan, np.nan, np.nan])
     tm.assert_series_equal(result, expected)
 
 
@@ -384,7 +396,8 @@ def test_pipe_failures(any_string_dtype):
     ],
 )
 def test_slice(start, stop, step, expected, any_string_dtype):
-    ser = Series(["aafootwo", "aabartwo", np.nan, "aabazqux"], dtype=any_string_dtype)
+    ser = Series(["aafootwo", "aabartwo", np.nan, "aabazqux"],
+                 dtype=any_string_dtype)
     result = ser.str.slice(start, stop, step)
     expected = Series(expected, dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
@@ -393,12 +406,15 @@ def test_slice(start, stop, step, expected, any_string_dtype):
 @pytest.mark.parametrize(
     "start, stop, step, expected",
     [
-        (2, 5, None, ["foo", np.nan, "bar", np.nan, np.nan, None, np.nan, np.nan]),
-        (4, 1, -1, ["oof", np.nan, "rab", np.nan, np.nan, None, np.nan, np.nan]),
+        (2, 5, None, ["foo", np.nan, "bar",
+         np.nan, np.nan, None, np.nan, np.nan]),
+        (4, 1, -1, ["oof", np.nan, "rab",
+         np.nan, np.nan, None, np.nan, np.nan]),
     ],
 )
 def test_slice_mixed_object(start, stop, step, expected):
-    ser = Series(["aafootwo", np.nan, "aabartwo", True, datetime.today(), None, 1, 2.0])
+    ser = Series(["aafootwo", np.nan, "aabartwo",
+                 True, datetime.today(), None, 1, 2.0])
     result = ser.str.slice(start, stop, step)
     expected = Series(expected, dtype=object)
     tm.assert_series_equal(result, expected)
@@ -408,13 +424,19 @@ def test_slice_mixed_object(start, stop, step, expected):
     "start,stop,repl,expected",
     [
         (2, 3, None, ["shrt", "a it longer", "evnlongerthanthat", "", np.nan]),
-        (2, 3, "z", ["shzrt", "a zit longer", "evznlongerthanthat", "z", np.nan]),
-        (2, 2, "z", ["shzort", "a zbit longer", "evzenlongerthanthat", "z", np.nan]),
-        (2, 1, "z", ["shzort", "a zbit longer", "evzenlongerthanthat", "z", np.nan]),
-        (-1, None, "z", ["shorz", "a bit longez", "evenlongerthanthaz", "z", np.nan]),
+        (2, 3, "z", ["shzrt", "a zit longer",
+         "evznlongerthanthat", "z", np.nan]),
+        (2, 2, "z", ["shzort", "a zbit longer",
+         "evzenlongerthanthat", "z", np.nan]),
+        (2, 1, "z", ["shzort", "a zbit longer",
+         "evzenlongerthanthat", "z", np.nan]),
+        (-1, None, "z", ["shorz", "a bit longez",
+         "evenlongerthanthaz", "z", np.nan]),
         (None, -2, "z", ["zrt", "zer", "zat", "z", np.nan]),
-        (6, 8, "z", ["shortz", "a bit znger", "evenlozerthanthat", "z", np.nan]),
-        (-10, 3, "z", ["zrt", "a zit longer", "evenlongzerthanthat", "z", np.nan]),
+        (6, 8, "z", ["shortz", "a bit znger",
+         "evenlozerthanthat", "z", np.nan]),
+        (-10, 3, "z", ["zrt", "a zit longer",
+         "evenlongzerthanthat", "z", np.nan]),
     ],
 )
 def test_slice_replace(start, stop, repl, expected, any_string_dtype):
@@ -452,10 +474,12 @@ def test_strip_lstrip_rstrip(any_string_dtype, method, exp):
     ],
 )
 def test_strip_lstrip_rstrip_mixed_object(method, exp):
-    ser = Series(["  aa  ", np.nan, " bb \t\n", True, datetime.today(), None, 1, 2.0])
+    ser = Series(["  aa  ", np.nan, " bb \t\n", True,
+                 datetime.today(), None, 1, 2.0])
 
     result = getattr(ser.str, method)()
-    expected = Series(exp + [np.nan, np.nan, None, np.nan, np.nan], dtype=object)
+    expected = Series(exp + [np.nan, np.nan, None,
+                      np.nan, np.nan], dtype=object)
     tm.assert_series_equal(result, expected)
 
 
@@ -476,7 +500,8 @@ def test_strip_lstrip_rstrip_args(any_string_dtype, method, exp):
 
 
 @pytest.mark.parametrize(
-    "prefix, expected", [("a", ["b", " b c", "bc"]), ("ab", ["", "a b c", "bc"])]
+    "prefix, expected", [("a", ["b", " b c", "bc"]),
+                         ("ab", ["", "a b c", "bc"])]
 )
 def test_removeprefix(any_string_dtype, prefix, expected):
     ser = Series(["ab", "a b c", "bc"], dtype=any_string_dtype)
@@ -486,7 +511,8 @@ def test_removeprefix(any_string_dtype, prefix, expected):
 
 
 @pytest.mark.parametrize(
-    "suffix, expected", [("c", ["ab", "a b ", "b"]), ("bc", ["ab", "a b c", ""])]
+    "suffix, expected", [("c", ["ab", "a b ", "b"]),
+                         ("bc", ["ab", "a b c", ""])]
 )
 def test_removesuffix(any_string_dtype, suffix, expected):
     ser = Series(["ab", "a b c", "bc"], dtype=any_string_dtype)
@@ -497,7 +523,8 @@ def test_removesuffix(any_string_dtype, suffix, expected):
 
 def test_string_slice_get_syntax(any_string_dtype):
     ser = Series(
-        ["YYY", "B", "C", "YYYYYYbYYY", "BYYYcYYY", np.nan, "CYYYBYYY", "dog", "cYYYt"],
+        ["YYY", "B", "C", "YYYYYYbYYY", "BYYYcYYY",
+            np.nan, "CYYYBYYY", "dog", "cYYYt"],
         dtype=any_string_dtype,
     )
 
@@ -529,7 +556,8 @@ def test_string_slice_out_of_bounds(any_string_dtype):
 
 
 def test_encode_decode(any_string_dtype):
-    ser = Series(["a", "b", "a\xe4"], dtype=any_string_dtype).str.encode("utf-8")
+    ser = Series(["a", "b", "a\xe4"],
+                 dtype=any_string_dtype).str.encode("utf-8")
     result = ser.str.decode("utf-8")
     expected = ser.map(lambda x: x.decode("utf-8")).astype(object)
     tm.assert_series_equal(result, expected)
@@ -578,7 +606,8 @@ def test_normalize(form, expected, any_string_dtype):
         index=["a", "b", "c", "d", "e"],
         dtype=any_string_dtype,
     )
-    expected = Series(expected, index=["a", "b", "c", "d", "e"], dtype=any_string_dtype)
+    expected = Series(
+        expected, index=["a", "b", "c", "d", "e"], dtype=any_string_dtype)
     result = ser.str.normalize(form)
     tm.assert_series_equal(result, expected)
 

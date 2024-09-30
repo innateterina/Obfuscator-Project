@@ -92,7 +92,8 @@ def make_looper(func, result_dtype, is_grouped_kernel, nopython, nogil, parallel
             min_periods: int,
             *args,
         ):
-            result = np.empty((values.shape[0], len(start)), dtype=result_dtype)
+            result = np.empty(
+                (values.shape[0], len(start)), dtype=result_dtype)
             na_positions = {}
             for i in numba.prange(values.shape[0]):
                 output, na_pos = func(

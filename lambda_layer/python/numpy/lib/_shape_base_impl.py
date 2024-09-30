@@ -12,7 +12,8 @@ from numpy._core.numeric import normalize_axis_tuple
 from numpy._core.overrides import set_module
 from numpy._core.shape_base import _arrays_for_stack_dispatcher
 from numpy.lib._index_tricks_impl import ndindex
-from numpy.matrixlib.defmatrix import matrix  # this raises all the right alarm bells
+# this raises all the right alarm bells
+from numpy.matrixlib.defmatrix import matrix
 
 
 __all__ = [
@@ -20,7 +21,7 @@ __all__ = [
     'hsplit', 'vsplit', 'dsplit', 'apply_over_axes', 'expand_dims',
     'apply_along_axis', 'kron', 'tile', 'take_along_axis',
     'put_along_axis'
-    ]
+]
 
 
 array_function_dispatch = functools.partial(
@@ -405,9 +406,9 @@ def apply_along_axis(func1d, axis, arr, *args, **kwargs):
     # permutation of axes such that out = buff.transpose(buff_permute)
     buff_dims = list(range(buff.ndim))
     buff_permute = (
-        buff_dims[0 : axis] +
-        buff_dims[buff.ndim-res.ndim : buff.ndim] +
-        buff_dims[axis : buff.ndim-res.ndim]
+        buff_dims[0: axis] +
+        buff_dims[buff.ndim-res.ndim: buff.ndim] +
+        buff_dims[axis: buff.ndim-res.ndim]
     )
 
     # save the first result, then compute and save all remaining results
@@ -791,7 +792,8 @@ def array_split(ary, indices_or_sections, axis=0):
         # indices_or_sections is a scalar, not an array.
         Nsections = int(indices_or_sections)
         if Nsections <= 0:
-            raise ValueError('number sections must be larger than 0.') from None
+            raise ValueError(
+                'number sections must be larger than 0.') from None
         Neach_section, extras = divmod(Ntotal, Nsections)
         section_sizes = ([0] +
                          extras * [Neach_section+1] +
@@ -1083,8 +1085,8 @@ def get_array_wrap(*args):
     )
 
     wrappers = sorted((getattr(x, '__array_priority__', 0), -i,
-                 x.__array_wrap__) for i, x in enumerate(args)
-                                   if hasattr(x, '__array_wrap__'))
+                       x.__array_wrap__) for i, x in enumerate(args)
+                      if hasattr(x, '__array_wrap__'))
     if wrappers:
         return wrappers[-1][-1]
     return None

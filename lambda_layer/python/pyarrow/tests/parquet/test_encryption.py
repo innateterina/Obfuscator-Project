@@ -70,7 +70,8 @@ def setup_encryption_environment(custom_kms_conf):
     Sets up and returns the KMS connection configuration and crypto factory
     based on provided KMS configuration parameters.
     """
-    kms_connection_config = pe.KmsConnectionConfig(custom_kms_conf=custom_kms_conf)
+    kms_connection_config = pe.KmsConnectionConfig(
+        custom_kms_conf=custom_kms_conf)
 
     def kms_factory(kms_connection_configuration):
         return InMemoryKmsClient(kms_connection_configuration)
@@ -561,7 +562,8 @@ def test_encrypted_parquet_read_table(tempdir, data_table, basic_encryption_conf
         kms_connection_config, decryption_config)
 
     # Read the encrypted parquet file using read_table
-    result_table = pq.read_table(path, decryption_properties=file_decryption_properties)
+    result_table = pq.read_table(
+        path, decryption_properties=file_decryption_properties)
 
     # Assert that the read table matches the original data
     assert data_table.equals(result_table)

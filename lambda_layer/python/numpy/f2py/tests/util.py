@@ -30,9 +30,11 @@ from numpy.f2py._backends._meson import MesonBackend
 # Check if compilers are available at all...
 #
 
+
 def check_language(lang, code_snippet=None):
     if sys.platform == "win32":
-        pytest.skip("No Fortran tests on Windows (Issue #25134)", allow_module_level=True)
+        pytest.skip("No Fortran tests on Windows (Issue #25134)",
+                    allow_module_level=True)
     tmpdir = tempfile.mkdtemp()
     try:
         meson_file = os.path.join(tmpdir, "meson.build")
@@ -55,7 +57,8 @@ def check_language(lang, code_snippet=None):
                 capture_output=True,
             )
         except subprocess.CalledProcessError:
-            pytest.skip("meson not present, skipping compiler dependent test", allow_module_level=True)
+            pytest.skip(
+                "meson not present, skipping compiler dependent test", allow_module_level=True)
         return runmeson.returncode == 0
     finally:
         shutil.rmtree(tmpdir)
@@ -83,6 +86,8 @@ end program hello90
 '''
 
 # Dummy class for caching relevant checks
+
+
 class CompilerChecker:
     def __init__(self):
         self.compilers_checked = False
@@ -105,18 +110,23 @@ class CompilerChecker:
 
             self.compilers_checked = True
 
+
 if not IS_WASM:
     checker = CompilerChecker()
     checker.check_compilers()
 
+
 def has_c_compiler():
     return checker.has_c
+
 
 def has_f77_compiler():
     return checker.has_f77
 
+
 def has_f90_compiler():
     return checker.has_f90
+
 
 def has_fortran_compiler():
     return (checker.has_f90 and checker.has_f77)
@@ -232,7 +242,8 @@ def build_module(source_files, options=[], skip=[], only=[], module_name=None):
     if '--freethreading-compatible' not in options and '--no-freethreading-compatible' not in options:
         # default to disabling the GIL if unset in options
         gil_options = ['--freethreading-compatible']
-    f2py_opts = ["-c", "-m", module_name] + options + gil_options + f2py_sources
+    f2py_opts = ["-c", "-m", module_name] + \
+        options + gil_options + f2py_sources
     f2py_opts += ["--backend", "meson"]
     if skip:
         f2py_opts += ["skip:"] + skip

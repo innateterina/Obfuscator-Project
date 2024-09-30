@@ -30,7 +30,7 @@ class TestLogicalOps(BaseOpsUtil):
         except AttributeError:
             # Assume it is the reverse operator
             rop = getattr(operator, short_opname[1:])
-            op = lambda x, y: rop(y, x)
+            def op(x, y): return rop(y, x)
 
         return op
 
@@ -226,7 +226,8 @@ class TestLogicalOps(BaseOpsUtil):
     def test_no_masked_assumptions(self, other, all_logical_operators):
         # The logical operations should not assume that masked values are False!
         a = pd.arrays.BooleanArray(
-            np.array([True, True, True, False, False, False, True, False, True]),
+            np.array([True, True, True, False, False,
+                     False, True, False, True]),
             np.array([False] * 6 + [True, True, True]),
         )
         b = pd.array([True] * 3 + [False] * 3 + [None] * 3, dtype="boolean")

@@ -66,7 +66,8 @@ class TestSeriesQuantile:
         dts.name = "xxx"
         result = dts.quantile((0.2, 0.2))
         expected = Series(
-            [Timestamp("2000-01-10 19:12:00"), Timestamp("2000-01-10 19:12:00")],
+            [Timestamp("2000-01-10 19:12:00"),
+             Timestamp("2000-01-10 19:12:00")],
             index=[0.2, 0.2],
             name="xxx",
             dtype=f"M8[{unit}]",
@@ -122,7 +123,8 @@ class TestSeriesQuantile:
             tm.assert_series_equal(res, Series([np.nan], index=[0.5]))
 
             res = ser.quantile([0.2, 0.3])
-            tm.assert_series_equal(res, Series([np.nan, np.nan], index=[0.2, 0.3]))
+            tm.assert_series_equal(res, Series(
+                [np.nan, np.nan], index=[0.2, 0.3]))
 
     @pytest.mark.parametrize(
         "case",
@@ -137,7 +139,8 @@ class TestSeriesQuantile:
                 Timestamp("2011-01-02", tz="US/Eastern"),
                 Timestamp("2011-01-03", tz="US/Eastern"),
             ],
-            [pd.Timedelta("1 days"), pd.Timedelta("2 days"), pd.Timedelta("3 days")],
+            [pd.Timedelta("1 days"), pd.Timedelta(
+                "2 days"), pd.Timedelta("3 days")],
             # NaT
             [
                 Timestamp("2011-01-01"),
@@ -182,12 +185,14 @@ class TestSeriesQuantile:
 
     @pytest.mark.parametrize(
         "values, dtype",
-        [([0, 0, 0, 1, 2, 3], "Sparse[int]"), ([0.0, None, 1.0, 2.0], "Sparse[float]")],
+        [([0, 0, 0, 1, 2, 3], "Sparse[int]"),
+         ([0.0, None, 1.0, 2.0], "Sparse[float]")],
     )
     def test_quantile_sparse(self, values, dtype):
         ser = Series(values, dtype=dtype)
         result = ser.quantile([0.5])
-        expected = Series(np.asarray(ser)).quantile([0.5]).astype("Sparse[float]")
+        expected = Series(np.asarray(ser)).quantile(
+            [0.5]).astype("Sparse[float]")
         tm.assert_series_equal(result, expected)
 
     def test_quantile_empty_float64(self):
@@ -236,7 +241,8 @@ class TestSeriesQuantile:
         ser = Series([pd.NA, pd.NA], dtype=any_int_ea_dtype)
         with tm.assert_produces_warning(None):
             result = ser.quantile([0.1, 0.5])
-        expected = Series([pd.NA, pd.NA], dtype=any_int_ea_dtype, index=[0.1, 0.5])
+        expected = Series(
+            [pd.NA, pd.NA], dtype=any_int_ea_dtype, index=[0.1, 0.5])
         tm.assert_series_equal(result, expected)
 
     def test_quantile_dtype_size(self, any_int_ea_dtype):

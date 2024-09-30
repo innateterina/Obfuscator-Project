@@ -57,7 +57,8 @@ class TestDataFrameInsert:
         df.insert(0, "c", [1.3, 2.3])
         result = df.rename(columns={})
 
-        expected = DataFrame([[1.3, 1, 1.1], [2.3, 2, 2.2]], columns=["c", "a", "b"])
+        expected = DataFrame(
+            [[1.3, 1, 1.1], [2.3, 2, 2.2]], columns=["c", "a", "b"])
         tm.assert_frame_equal(result, expected)
 
     def test_insert_with_columns_dups(self):

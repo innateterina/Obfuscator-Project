@@ -28,7 +28,8 @@ import pandas._testing as tm
 
 class TestGetItem:
     def test_getitem(self, closed):
-        idx = IntervalIndex.from_arrays((0, 1, np.nan), (1, 2, np.nan), closed=closed)
+        idx = IntervalIndex.from_arrays(
+            (0, 1, np.nan), (1, 2, np.nan), closed=closed)
         assert idx[0] == Interval(0.0, 1.0, closed=closed)
         assert idx[1] == Interval(1.0, 2.0, closed=closed)
         assert isna(idx[2])
@@ -38,7 +39,8 @@ class TestGetItem:
         tm.assert_index_equal(result, expected)
 
         result = idx[0:2]
-        expected = IntervalIndex.from_arrays((0.0, 1), (1.0, 2.0), closed=closed)
+        expected = IntervalIndex.from_arrays(
+            (0.0, 1), (1.0, 2.0), closed=closed)
         tm.assert_index_equal(result, expected)
 
         result = idx[1:3]
@@ -84,7 +86,8 @@ class TestTake:
         tm.assert_index_equal(result, index)
 
         result = index.take([0, 0, 1])
-        expected = IntervalIndex.from_arrays([0, 0, 1], [1, 1, 2], closed=closed)
+        expected = IntervalIndex.from_arrays(
+            [0, 0, 1], [1, 1, 2], closed=closed)
         tm.assert_index_equal(result, expected)
 
 
@@ -96,7 +99,8 @@ class TestGetLoc:
         for bound in [[0, 1], [1, 2], [2, 3], [3, 4], [0, 2], [2.5, 3], [-1, 4]]:
             # if get_loc is supplied an interval, it should only search
             # for exact matches, not overlaps or covers, else KeyError.
-            msg = re.escape(f"Interval({bound[0]}, {bound[1]}, closed='{side}')")
+            msg = re.escape(
+                f"Interval({bound[0]}, {bound[1]}, closed='{side}')")
             if closed == side:
                 if bound == [0, 1]:
                     assert idx.get_loc(Interval(0, 1, closed=side)) == 0
@@ -153,7 +157,8 @@ class TestGetLoc:
         else:
             with pytest.raises(
                 KeyError,
-                match=re.escape(f"Interval({left}, {right}, closed='{other_closed}')"),
+                match=re.escape(
+                    f"Interval({left}, {right}, closed='{other_closed}')"),
             ):
                 index.get_loc(interval)
 
@@ -232,7 +237,8 @@ class TestGetLoc:
     @pytest.mark.parametrize("key", [[5], (2, 3)])
     def test_get_loc_non_scalar_errors(self, key):
         # GH 31117
-        idx = IntervalIndex.from_tuples([(1, 3), (2, 4), (3, 5), (7, 10), (3, 10)])
+        idx = IntervalIndex.from_tuples(
+            [(1, 3), (2, 4), (3, 5), (7, 10), (3, 10)])
 
         msg = str(key)
         with pytest.raises(InvalidIndexError, match=msg):
@@ -507,29 +513,35 @@ class TestSliceLocs:
         # increasing monotonically
         index = IntervalIndex.from_tuples([(0, 2), (1, 3), (2, 4)])
 
-        assert index.slice_locs(start=Interval(0, 2), end=Interval(2, 4)) == (0, 3)
+        assert index.slice_locs(start=Interval(
+            0, 2), end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(start=Interval(0, 2)) == (0, 3)
         assert index.slice_locs(end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(end=Interval(0, 2)) == (0, 1)
-        assert index.slice_locs(start=Interval(2, 4), end=Interval(0, 2)) == (2, 1)
+        assert index.slice_locs(start=Interval(
+            2, 4), end=Interval(0, 2)) == (2, 1)
 
         # decreasing monotonically
         index = IntervalIndex.from_tuples([(2, 4), (1, 3), (0, 2)])
 
-        assert index.slice_locs(start=Interval(0, 2), end=Interval(2, 4)) == (2, 1)
+        assert index.slice_locs(start=Interval(
+            0, 2), end=Interval(2, 4)) == (2, 1)
         assert index.slice_locs(start=Interval(0, 2)) == (2, 3)
         assert index.slice_locs(end=Interval(2, 4)) == (0, 1)
         assert index.slice_locs(end=Interval(0, 2)) == (0, 3)
-        assert index.slice_locs(start=Interval(2, 4), end=Interval(0, 2)) == (0, 3)
+        assert index.slice_locs(start=Interval(
+            2, 4), end=Interval(0, 2)) == (0, 3)
 
         # sorted duplicates
         index = IntervalIndex.from_tuples([(0, 2), (0, 2), (2, 4)])
 
-        assert index.slice_locs(start=Interval(0, 2), end=Interval(2, 4)) == (0, 3)
+        assert index.slice_locs(start=Interval(
+            0, 2), end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(start=Interval(0, 2)) == (0, 3)
         assert index.slice_locs(end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(end=Interval(0, 2)) == (0, 2)
-        assert index.slice_locs(start=Interval(2, 4), end=Interval(0, 2)) == (2, 2)
+        assert index.slice_locs(start=Interval(
+            2, 4), end=Interval(0, 2)) == (2, 2)
 
         # unsorted duplicates
         index = IntervalIndex.from_tuples([(0, 2), (2, 4), (0, 2)])
@@ -575,11 +587,13 @@ class TestSliceLocs:
         # another unsorted duplicates
         index = IntervalIndex.from_tuples([(0, 2), (0, 2), (2, 4), (1, 3)])
 
-        assert index.slice_locs(start=Interval(0, 2), end=Interval(2, 4)) == (0, 3)
+        assert index.slice_locs(start=Interval(
+            0, 2), end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(start=Interval(0, 2)) == (0, 4)
         assert index.slice_locs(end=Interval(2, 4)) == (0, 3)
         assert index.slice_locs(end=Interval(0, 2)) == (0, 2)
-        assert index.slice_locs(start=Interval(2, 4), end=Interval(0, 2)) == (2, 2)
+        assert index.slice_locs(start=Interval(
+            2, 4), end=Interval(0, 2)) == (2, 2)
 
     def test_slice_locs_with_ints_and_floats_succeeds(self):
         # increasing non-overlapping

@@ -37,14 +37,14 @@ class IntelFCompiler(BaseIntelFCompiler):
     possible_executables = ['ifort', 'ifc']
 
     executables = {
-        'version_cmd'  : None,          # set by update_executables
-        'compiler_f77' : [None, "-72", "-w90", "-w95"],
-        'compiler_f90' : [None],
-        'compiler_fix' : [None, "-FI"],
-        'linker_so'    : ["<F90>", "-shared"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"]
-        }
+        'version_cmd': None,          # set by update_executables
+        'compiler_f77': [None, "-72", "-w90", "-w95"],
+        'compiler_f90': [None],
+        'compiler_fix': [None, "-FI"],
+        'linker_so': ["<F90>", "-shared"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"]
+    }
 
     pic_flags = ['-fPIC']
     module_dir_switch = '-module '  # Don't remove ending space!
@@ -91,14 +91,14 @@ class IntelItaniumFCompiler(IntelFCompiler):
     possible_executables = ['ifort', 'efort', 'efc']
 
     executables = {
-        'version_cmd'  : None,
-        'compiler_f77' : [None, "-FI", "-w90", "-w95"],
-        'compiler_fix' : [None, "-FI"],
-        'compiler_f90' : [None],
-        'linker_so'    : ['<F90>', "-shared"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"]
-        }
+        'version_cmd': None,
+        'compiler_f77': [None, "-FI", "-w90", "-w95"],
+        'compiler_fix': [None, "-FI"],
+        'compiler_f90': [None],
+        'linker_so': ['<F90>', "-shared"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"]
+    }
 
 
 class IntelEM64TFCompiler(IntelFCompiler):
@@ -106,19 +106,20 @@ class IntelEM64TFCompiler(IntelFCompiler):
     compiler_aliases = ()
     description = 'Intel Fortran Compiler for 64-bit apps'
 
-    version_match = intel_version_match('EM64T-based|Intel\\(R\\) 64|64|IA-64|64-bit')
+    version_match = intel_version_match(
+        'EM64T-based|Intel\\(R\\) 64|64|IA-64|64-bit')
 
     possible_executables = ['ifort', 'efort', 'efc']
 
     executables = {
-        'version_cmd'  : None,
-        'compiler_f77' : [None, "-FI"],
-        'compiler_fix' : [None, "-FI"],
-        'compiler_f90' : [None],
-        'linker_so'    : ['<F90>', "-shared"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"]
-        }
+        'version_cmd': None,
+        'compiler_f77': [None, "-FI"],
+        'compiler_fix': [None, "-FI"],
+        'compiler_f90': [None],
+        'linker_so': ['<F90>', "-shared"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"]
+    }
 
 # Is there no difference in the version string between the above compilers
 # and the Visual compilers?
@@ -138,14 +139,14 @@ class IntelVisualFCompiler(BaseIntelFCompiler):
     possible_executables = ['ifort', 'ifl']
 
     executables = {
-        'version_cmd'  : None,
-        'compiler_f77' : [None],
-        'compiler_fix' : [None],
-        'compiler_f90' : [None],
-        'linker_so'    : [None],
-        'archiver'     : [ar_exe, "/verbose", "/OUT:"],
-        'ranlib'       : None
-        }
+        'version_cmd': None,
+        'compiler_f77': [None],
+        'compiler_fix': [None],
+        'compiler_f90': [None],
+        'linker_so': [None],
+        'archiver': [ar_exe, "/verbose", "/OUT:"],
+        'ranlib': None
+    }
 
     compile_switch = '/c '
     object_switch = '/Fo'     # No space after /Fo!
@@ -154,7 +155,7 @@ class IntelVisualFCompiler(BaseIntelFCompiler):
     module_include_switch = '/I'
 
     def get_flags(self):
-        opt = ['/nologo', '/MD', '/nbs', '/names:lowercase', 
+        opt = ['/nologo', '/MD', '/nbs', '/names:lowercase',
                '/assume:underscore', '/fpp']
         return opt
 
@@ -184,14 +185,14 @@ class IntelItaniumVisualFCompiler(IntelVisualFCompiler):
     ar_exe = IntelVisualFCompiler.ar_exe
 
     executables = {
-        'version_cmd'  : None,
-        'compiler_f77' : [None, "-FI", "-w90", "-w95"],
-        'compiler_fix' : [None, "-FI", "-4L72", "-w"],
-        'compiler_f90' : [None],
-        'linker_so'    : ['<F90>', "-shared"],
-        'archiver'     : [ar_exe, "/verbose", "/OUT:"],
-        'ranlib'       : None
-        }
+        'version_cmd': None,
+        'compiler_f77': [None, "-FI", "-w90", "-w95"],
+        'compiler_fix': [None, "-FI", "-4L72", "-w"],
+        'compiler_f90': [None],
+        'linker_so': ['<F90>', "-shared"],
+        'archiver': [ar_exe, "/verbose", "/OUT:"],
+        'ranlib': None
+    }
 
 
 class IntelEM64VisualFCompiler(IntelVisualFCompiler):

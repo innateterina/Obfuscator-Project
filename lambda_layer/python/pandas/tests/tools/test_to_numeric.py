@@ -117,7 +117,8 @@ def test_error(data, msg):
 
 
 @pytest.mark.parametrize(
-    "errors,exp_data", [("ignore", [1, -3.14, "apple"]), ("coerce", [1, -3.14, np.nan])]
+    "errors,exp_data", [("ignore", [1, -3.14, "apple"]),
+                        ("coerce", [1, -3.14, np.nan])]
 )
 @pytest.mark.filterwarnings("ignore:errors='ignore' is deprecated:FutureWarning")
 def test_ignore_error(errors, exp_data):
@@ -203,7 +204,8 @@ def test_numeric_df_columns(columns):
         }
     )
 
-    expected = DataFrame({"a": [1.2, 3.14, np.inf, 0.1], "b": [1.0, 2.0, 3.0, 4.0]})
+    expected = DataFrame(
+        {"a": [1.2, 3.14, np.inf, 0.1], "b": [1.0, 2.0, 3.0, 4.0]})
 
     df_copy = df.copy()
     df_copy[columns] = df_copy[columns].apply(to_numeric)
@@ -267,7 +269,8 @@ def test_really_large_scalar(large_val, signed, transform, errors):
         with pytest.raises(ValueError, match=msg):
             to_numeric(val, **kwargs)
     else:
-        expected = float(val) if (errors == "coerce" and val_is_string) else val
+        expected = float(val) if (
+            errors == "coerce" and val_is_string) else val
         tm.assert_almost_equal(to_numeric(val, **kwargs), expected)
 
 
@@ -411,7 +414,8 @@ def test_period(request, transform_assert_equal):
 
     if not isinstance(inp, Index):
         request.applymarker(
-            pytest.mark.xfail(reason="Missing PeriodDtype support in to_numeric")
+            pytest.mark.xfail(
+                reason="Missing PeriodDtype support in to_numeric")
         )
     result = to_numeric(inp)
     expected = transform(idx.asi8)
@@ -464,7 +468,8 @@ def test_errors_invalid_value():
     [
         ["1", 2, 3],
         [1, 2, 3],
-        np.array(["1970-01-02", "1970-01-03", "1970-01-04"], dtype="datetime64[D]"),
+        np.array(["1970-01-02", "1970-01-03", "1970-01-04"],
+                 dtype="datetime64[D]"),
     ],
 )
 @pytest.mark.parametrize(
@@ -476,7 +481,8 @@ def test_errors_invalid_value():
         # Support below np.float32 is rare and far between.
         ({"downcast": "float"}, np.dtype(np.float32).char),
         # Basic dtype support.
-        ({"downcast": "unsigned"}, np.dtype(np.typecodes["UnsignedInteger"][0])),
+        ({"downcast": "unsigned"}, np.dtype(
+            np.typecodes["UnsignedInteger"][0])),
     ],
 )
 def test_downcast_basic(data, kwargs, exp_dtype):
@@ -492,7 +498,8 @@ def test_downcast_basic(data, kwargs, exp_dtype):
     [
         ["1", 2, 3],
         [1, 2, 3],
-        np.array(["1970-01-02", "1970-01-03", "1970-01-04"], dtype="datetime64[D]"),
+        np.array(["1970-01-02", "1970-01-03", "1970-01-04"],
+                 dtype="datetime64[D]"),
     ],
 )
 def test_signed_downcast(data, signed_downcast):
@@ -580,8 +587,10 @@ def test_downcast_not8bit(downcast, expected_dtype):
         ("int32", "integer", [iinfo(np.int16).min - 1, iinfo(np.int32).max]),
         ("int64", "integer", [iinfo(np.int32).min - 1, iinfo(np.int64).max]),
         ("uint16", "unsigned", [iinfo(np.uint8).min, iinfo(np.uint8).max + 1]),
-        ("uint32", "unsigned", [iinfo(np.uint16).min, iinfo(np.uint16).max + 1]),
-        ("uint64", "unsigned", [iinfo(np.uint32).min, iinfo(np.uint32).max + 1]),
+        ("uint32", "unsigned", [
+         iinfo(np.uint16).min, iinfo(np.uint16).max + 1]),
+        ("uint64", "unsigned", [
+         iinfo(np.uint32).min, iinfo(np.uint32).max + 1]),
     ],
 )
 def test_downcast_limits(dtype, downcast, min_max):
@@ -592,7 +601,8 @@ def test_downcast_limits(dtype, downcast, min_max):
 
 def test_downcast_float64_to_float32():
     # GH-43693: Check float64 preservation when >= 16,777,217
-    series = Series([16777217.0, np.finfo(np.float64).max, np.nan], dtype=np.float64)
+    series = Series([16777217.0, np.finfo(
+        np.float64).max, np.nan], dtype=np.float64)
     result = to_numeric(series, downcast="float")
 
     assert series.dtype == result.dtype

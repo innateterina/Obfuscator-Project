@@ -24,7 +24,8 @@ class TestPeriodIndexAsType:
 
     def test_astype_conversion(self):
         # GH#13149, GH#13209
-        idx = PeriodIndex(["2016-05-16", "NaT", NaT, np.nan], freq="D", name="idx")
+        idx = PeriodIndex(["2016-05-16", "NaT", NaT, np.nan],
+                          freq="D", name="idx")
 
         result = idx.astype(object)
         expected = Index(

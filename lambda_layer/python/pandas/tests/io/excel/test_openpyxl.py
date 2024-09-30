@@ -229,7 +229,8 @@ def test_if_sheet_exists_append_modes(ext, if_sheet_exists, num_sheets, expected
     ],
 )
 def test_append_overlay_startrow_startcol(ext, startrow, startcol, greeting, goodbye):
-    df1 = DataFrame({"greeting": ["hello", "world"], "goodbye": ["goodbye", "people"]})
+    df1 = DataFrame({"greeting": ["hello", "world"],
+                    "goodbye": ["goodbye", "people"]})
     df2 = DataFrame(["poop"])
 
     with tm.ensure_clean(ext) as f:
@@ -425,8 +426,10 @@ def test_read_multiindex_header_no_index_names(datapath, ext):
     expected = DataFrame(
         [[np.nan, "x", "x", "x"], ["x", np.nan, np.nan, np.nan]],
         columns=pd.MultiIndex.from_tuples(
-            [("X", "Y", "A1"), ("X", "Y", "A2"), ("XX", "YY", "B1"), ("XX", "YY", "B2")]
+            [("X", "Y", "A1"), ("X", "Y", "A2"),
+             ("XX", "YY", "B1"), ("XX", "YY", "B2")]
         ),
-        index=pd.MultiIndex.from_tuples([("A", "AA", "AAA"), ("A", "BB", "BBB")]),
+        index=pd.MultiIndex.from_tuples(
+            [("A", "AA", "AAA"), ("A", "BB", "BBB")]),
     )
     tm.assert_frame_equal(result, expected)

@@ -18,7 +18,7 @@ from ._multiarray_umath import (
     _vec_string, _ARRAY_API, _monotonicity, _get_ndarray_c_version,
     _get_madvise_hugepage, _set_madvise_hugepage,
     _get_promotion_state, _set_promotion_state
-    )
+)
 
 __all__ = [
     '_ARRAY_API', 'ALLOW_THREADS', 'BUFSIZE', 'CLIP', 'DATETIMEUNITS',
@@ -43,7 +43,7 @@ __all__ = [
     'unpackbits', 'unravel_index', 'vdot', 'where', 'zeros',
     '_get_promotion_state', '_set_promotion_state']
 
-# For backward compatibility, make sure pickle imports 
+# For backward compatibility, make sure pickle imports
 # these functions from here
 _reconstruct.__module__ = 'numpy._core.multiarray'
 scalar.__module__ = 'numpy._core.multiarray'
@@ -192,7 +192,7 @@ def concatenate(arrays, axis=None, out=None, *, dtype=None, casting=None):
     casting : {'no', 'equiv', 'safe', 'same_kind', 'unsafe'}, optional
         Controls what kind of data casting may occur. Defaults to 'same_kind'.
         For a description of the options, please see :term:`casting`.
-        
+
         .. versionadded:: 1.20.0
 
     Returns

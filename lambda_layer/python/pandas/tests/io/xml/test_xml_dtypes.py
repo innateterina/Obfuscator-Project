@@ -84,7 +84,8 @@ xml_dates = """<?xml version='1.0' encoding='utf-8'?>
 
 
 def test_dtype_single_str(parser):
-    df_result = read_xml(StringIO(xml_types), dtype={"degrees": "str"}, parser=parser)
+    df_result = read_xml(StringIO(xml_types), dtype={
+                         "degrees": "str"}, parser=parser)
     df_iter = read_xml_iterparse(
         xml_types,
         parser=parser,
@@ -158,7 +159,8 @@ def test_dtypes_with_names(parser):
 
 
 def test_dtype_nullable_int(parser):
-    df_result = read_xml(StringIO(xml_types), dtype={"sides": "Int64"}, parser=parser)
+    df_result = read_xml(StringIO(xml_types), dtype={
+                         "sides": "Int64"}, parser=parser)
     df_iter = read_xml_iterparse(
         xml_types,
         parser=parser,
@@ -179,7 +181,8 @@ def test_dtype_nullable_int(parser):
 
 
 def test_dtype_float(parser):
-    df_result = read_xml(StringIO(xml_types), dtype={"degrees": "float"}, parser=parser)
+    df_result = read_xml(StringIO(xml_types), dtype={
+                         "degrees": "float"}, parser=parser)
     df_iter = read_xml_iterparse(
         xml_types,
         parser=parser,
@@ -201,7 +204,8 @@ def test_dtype_float(parser):
 
 def test_wrong_dtype(xml_books, parser, iterparse):
     with pytest.raises(
-        ValueError, match=('Unable to parse string "Everyday Italian" at position 0')
+        ValueError, match=(
+            'Unable to parse string "Everyday Italian" at position 0')
     ):
         read_xml(
             xml_books, dtype={"title": "Int64"}, parser=parser, iterparse=iterparse
@@ -263,7 +267,7 @@ def test_converters_str(parser):
 
 
 def test_converters_date(parser):
-    convert_to_datetime = lambda x: to_datetime(x)
+    def convert_to_datetime(x): return to_datetime(x)
     df_result = read_xml(
         StringIO(xml_dates), converters={"date": convert_to_datetime}, parser=parser
     )
@@ -312,7 +316,8 @@ def test_callable_str_converters(xml_books, parser, iterparse):
 
 
 def test_parse_dates_column_name(parser):
-    df_result = read_xml(StringIO(xml_dates), parse_dates=["date"], parser=parser)
+    df_result = read_xml(StringIO(xml_dates), parse_dates=[
+                         "date"], parser=parser)
     df_iter = read_xml_iterparse(
         xml_dates,
         parser=parser,
@@ -414,7 +419,8 @@ def test_parse_dates_dictionary(parser):
         xml,
         parser=parser,
         parse_dates={"date_end": ["year", "month", "day"]},
-        iterparse={"row": ["shape", "degrees", "sides", "year", "month", "day"]},
+        iterparse={"row": ["shape", "degrees",
+                           "sides", "year", "month", "day"]},
     )
 
     df_expected = DataFrame(
@@ -466,7 +472,8 @@ def test_day_first_parse_dates(parser):
     with tm.assert_produces_warning(
         UserWarning, match="Parsing dates in %d/%m/%Y format"
     ):
-        df_result = read_xml(StringIO(xml), parse_dates=["date"], parser=parser)
+        df_result = read_xml(StringIO(xml), parse_dates=[
+                             "date"], parser=parser)
         df_iter = read_xml_iterparse(
             xml,
             parse_dates=["date"],
@@ -480,6 +487,8 @@ def test_day_first_parse_dates(parser):
 
 def test_wrong_parse_dates_type(xml_books, parser, iterparse):
     with pytest.raises(
-        TypeError, match=("Only booleans, lists, and dictionaries are accepted")
+        TypeError, match=(
+            "Only booleans, lists, and dictionaries are accepted")
     ):
-        read_xml(xml_books, parse_dates={"date"}, parser=parser, iterparse=iterparse)
+        read_xml(xml_books, parse_dates={"date"},
+                 parser=parser, iterparse=iterparse)

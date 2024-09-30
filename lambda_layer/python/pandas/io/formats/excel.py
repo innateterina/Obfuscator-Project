@@ -568,7 +568,8 @@ class ExcelFormatter:
 
             if len(Index(cols).intersection(df.columns)) != len(set(cols)):
                 # Deprecated in GH#17295, enforced in 1.0.0
-                raise KeyError("Not all names specified in 'columns' are found")
+                raise KeyError(
+                    "Not all names specified in 'columns' are found")
 
             self.df = df.reindex(columns=cols)
 
@@ -727,7 +728,8 @@ class ExcelFormatter:
             ] * len(self.columns)
             if functools.reduce(lambda x, y: x and y, (x != "" for x in row)):
                 gen2 = (
-                    ExcelCell(self.rowcounter, colindex, val, self.header_style)
+                    ExcelCell(self.rowcounter, colindex,
+                              val, self.header_style)
                     for colindex, val in enumerate(row)
                 )
                 self.rowcounter += 1

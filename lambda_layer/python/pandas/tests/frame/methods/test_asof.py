@@ -122,7 +122,8 @@ class TestFrameAsof:
 
         # testing multiple columns
         dates = date_range("1/1/1990", periods=N, freq="25s")
-        result = DataFrame(np.nan, index=rng, columns=["A", "B", "C"]).asof(dates)
+        result = DataFrame(np.nan, index=rng, columns=[
+                           "A", "B", "C"]).asof(dates)
         expected = DataFrame(np.nan, index=dates, columns=["A", "B", "C"])
         tm.assert_frame_equal(result, expected)
 

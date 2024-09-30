@@ -88,7 +88,8 @@ def get_indexer_indexer(
     # error: Incompatible types in assignment (expression has type
     # "Union[ExtensionArray, ndarray[Any, Any], Index, Series]", variable has
     # type "Index")
-    target = ensure_key_mapped(target, key, levels=level)  # type: ignore[assignment]
+    # type: ignore[assignment]
+    target = ensure_key_mapped(target, key, levels=level)
     target = target._sort_levels_monotonic()
 
     if level is not None:
@@ -672,7 +673,8 @@ def get_group_index_sorter(
     count = len(group_index)
     alpha = 0.0  # taking complexities literally; there may be
     beta = 1.0  # some room for fine-tuning these parameters
-    do_groupsort = count > 0 and ((alpha + beta * ngroups) < (count * np.log(count)))
+    do_groupsort = count > 0 and (
+        (alpha + beta * ngroups) < (count * np.log(count)))
     if do_groupsort:
         sorter, _ = algos.groupsort_indexer(
             ensure_platform_int(group_index),
@@ -710,7 +712,8 @@ def compress_group_index(
         comp_ids, obs_group_ids = table.get_labels_groupby(group_index)
 
         if sort and len(obs_group_ids) > 0:
-            obs_group_ids, comp_ids = _reorder_by_uniques(obs_group_ids, comp_ids)
+            obs_group_ids, comp_ids = _reorder_by_uniques(
+                obs_group_ids, comp_ids)
 
     return ensure_int64(comp_ids), ensure_int64(obs_group_ids)
 

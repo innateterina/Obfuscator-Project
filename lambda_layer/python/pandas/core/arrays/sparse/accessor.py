@@ -364,7 +364,8 @@ class SparseFrameAccessor(BaseAccessor, PandasDelegate):
         for col, (_, ser) in enumerate(self._parent.items()):
             sp_arr = ser.array
             if sp_arr.fill_value != 0:
-                raise ValueError("fill value must be 0 when converting to COO matrix")
+                raise ValueError(
+                    "fill value must be 0 when converting to COO matrix")
 
             row = sp_arr.sp_index.indices
             cols.append(np.repeat(col, len(row)))
@@ -387,7 +388,8 @@ class SparseFrameAccessor(BaseAccessor, PandasDelegate):
         >>> df.sparse.density
         0.5
         """
-        tmp = np.mean([column.array.density for _, column in self._parent.items()])
+        tmp = np.mean([column.array.density for _,
+                      column in self._parent.items()])
         return tmp
 
     @staticmethod

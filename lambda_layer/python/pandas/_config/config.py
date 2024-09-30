@@ -154,14 +154,16 @@ def _set_option(*args, **kwargs) -> None:
     # must at least 1 arg deal with constraints later
     nargs = len(args)
     if not nargs or nargs % 2 != 0:
-        raise ValueError("Must provide an even number of non-keyword arguments")
+        raise ValueError(
+            "Must provide an even number of non-keyword arguments")
 
     # default to false
     silent = kwargs.pop("silent", False)
 
     if kwargs:
         kwarg = next(iter(kwargs.keys()))
-        raise TypeError(f'_set_option() got an unexpected keyword argument "{kwarg}"')
+        raise TypeError(
+            f'_set_option() got an unexpected keyword argument "{kwarg}"')
 
     for k, v in zip(args[::2], args[1::2]):
         key = _get_single_key(k, silent)
@@ -605,7 +607,8 @@ def deprecate_option(
     key = key.lower()
 
     if key in _deprecated_options:
-        raise OptionError(f"Option '{key}' has already been defined as deprecated.")
+        raise OptionError(
+            f"Option '{key}' has already been defined as deprecated.")
 
     _deprecated_options[key] = DeprecatedOption(key, msg, rkey, removal_ver)
 
@@ -764,7 +767,7 @@ def pp_options_list(keys: Iterable[str], width: int = 80, _print: bool = False):
     keys = [x for x in keys if x.find(".") >= 0]
 
     for k, g in groupby(sorted(keys), lambda x: x[: x.rfind(".")]):
-        ks = [x[len(k) + 1 :] for x in list(g)]
+        ks = [x[len(k) + 1:] for x in list(g)]
         ls += pp(k, ks)
     s = "\n".join(ls)
     if _print:

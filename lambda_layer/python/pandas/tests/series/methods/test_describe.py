@@ -67,7 +67,8 @@ class TestSeriesDescribe:
 
     def test_describe_period(self):
         ser = Series(
-            [Period("2020-01", "M"), Period("2020-01", "M"), Period("2019-12", "M")],
+            [Period("2020-01", "M"), Period("2020-01", "M"),
+             Period("2019-12", "M")],
             name="period_data",
         )
         result = ser.describe()
@@ -164,7 +165,8 @@ class TestSeriesDescribe:
         if is_extension_array_dtype(any_numeric_dtype):
             dtype = "Float64"
         else:
-            dtype = "complex128" if is_complex_dtype(any_numeric_dtype) else None
+            dtype = "complex128" if is_complex_dtype(
+                any_numeric_dtype) else None
 
         ser = Series([0, 1], dtype=any_numeric_dtype)
         if dtype == "complex128" and np_version_gte1p25:

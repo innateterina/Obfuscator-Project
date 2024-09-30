@@ -50,7 +50,8 @@ class TestTableSchemaRepr:
         opt = cf.option_context("display.html.table_schema", True)
 
         with opt:
-            formatted = ip.instance(config=ip.config).display_formatter.format(df)
+            formatted = ip.instance(
+                config=ip.config).display_formatter.format(df)
 
         expected = {"text/plain", "text/html"}
         assert set(formatted[0].keys()) == expected

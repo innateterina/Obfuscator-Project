@@ -27,7 +27,8 @@ from pandas.core import ops
 
 class TestObjectComparisons:
     def test_comparison_object_numeric_nas(self, comparison_op):
-        ser = Series(np.random.default_rng(2).standard_normal(10), dtype=object)
+        ser = Series(np.random.default_rng(
+            2).standard_normal(10), dtype=object)
         shifted = ser.shift(2)
 
         func = comparison_op
@@ -37,7 +38,8 @@ class TestObjectComparisons:
         tm.assert_series_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "infer_string", [False, pytest.param(True, marks=td.skip_if_no("pyarrow"))]
+        "infer_string", [False, pytest.param(
+            True, marks=td.skip_if_no("pyarrow"))]
     )
     def test_object_comparisons(self, infer_string):
         with option_context("future.infer_string", infer_string):
@@ -209,11 +211,13 @@ class TestArithmetic:
         # note this test is _not_ aimed at timedelta64-dtyped Series
         # as of 2.0 we retain object dtype when ser.dtype == object
         ser = Series(
-            [pd.Timedelta("1 days"), pd.Timedelta("2 days"), pd.Timedelta("3 days")],
+            [pd.Timedelta("1 days"), pd.Timedelta(
+                "2 days"), pd.Timedelta("3 days")],
             dtype=dtype,
         )
         expected = Series(
-            [pd.Timedelta("4 days"), pd.Timedelta("5 days"), pd.Timedelta("6 days")],
+            [pd.Timedelta("4 days"), pd.Timedelta(
+                "5 days"), pd.Timedelta("6 days")],
             dtype=dtype,
         )
 

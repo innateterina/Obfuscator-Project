@@ -75,7 +75,8 @@ class TestSelectDtypes:
         ei = df[["b", "c", "d"]]
         tm.assert_frame_equal(ri, ei)
 
-        ri = df.select_dtypes(include=[np.number, "category"], exclude=["timedelta"])
+        ri = df.select_dtypes(
+            include=[np.number, "category"], exclude=["timedelta"])
         ei = df[["b", "c", "d", "f"]]
         tm.assert_frame_equal(ri, ei)
 
@@ -253,11 +254,13 @@ class TestSelectDtypes:
             }
         )
 
-        ri = df.select_dtypes(include=np.number, exclude=["floating", "timedelta"])
+        ri = df.select_dtypes(include=np.number, exclude=[
+                              "floating", "timedelta"])
         ei = df[["b", "c"]]
         tm.assert_frame_equal(ri, ei)
 
-        ri = df.select_dtypes(include=[np.number, "category"], exclude="floating")
+        ri = df.select_dtypes(
+            include=[np.number, "category"], exclude="floating")
         ei = df[["b", "c", "f", "k"]]
         tm.assert_frame_equal(ri, ei)
 

@@ -257,7 +257,8 @@ class PeriodIndex(DatetimeIndexOpsMixin):
 
         if not set(fields).issubset(valid_field_set):
             argument = next(iter(set(fields) - valid_field_set))
-            raise TypeError(f"__new__() got an unexpected keyword argument {argument}")
+            raise TypeError(
+                f"__new__() got an unexpected keyword argument {argument}")
         elif len(fields):
             # GH#55960
             warnings.warn(
@@ -340,7 +341,8 @@ class PeriodIndex(DatetimeIndexOpsMixin):
             "minute": minute,
             "second": second,
         }
-        fields = {key: value for key, value in fields.items() if value is not None}
+        fields = {key: value for key,
+                  value in fields.items() if value is not None}
         arr = PeriodArray._from_fields(fields=fields, freq=freq)
         return cls._simple_new(arr)
 
@@ -410,7 +412,8 @@ class PeriodIndex(DatetimeIndexOpsMixin):
         if isinstance(where, DatetimeIndex):
             where = PeriodIndex(where._values, freq=self.freq)
         elif not isinstance(where, PeriodIndex):
-            raise TypeError("asof_locs `where` must be DatetimeIndex or PeriodIndex")
+            raise TypeError(
+                "asof_locs `where` must be DatetimeIndex or PeriodIndex")
 
         return super().asof_locs(where, mask)
 

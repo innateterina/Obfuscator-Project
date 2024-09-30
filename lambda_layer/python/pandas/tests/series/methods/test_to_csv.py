@@ -116,7 +116,8 @@ class TestSeriesToCSV:
         "s,encoding",
         [
             (
-                Series([0.123456, 0.234567, 0.567567], index=["A", "B", "C"], name="X"),
+                Series([0.123456, 0.234567, 0.567567],
+                       index=["A", "B", "C"], name="X"),
                 None,
             ),
             # GH 21241, 21118
@@ -130,7 +131,8 @@ class TestSeriesToCSV:
     )
     def test_to_csv_compression(self, s, encoding, compression):
         with tm.ensure_clean() as filename:
-            s.to_csv(filename, compression=compression, encoding=encoding, header=True)
+            s.to_csv(filename, compression=compression,
+                     encoding=encoding, header=True)
             # test the round trip - to_csv -> read_csv
             result = pd.read_csv(
                 filename,
@@ -162,7 +164,8 @@ class TestSeriesToCSV:
             with tm.decompress_file(filename, compression) as fh:
                 tm.assert_series_equal(
                     s,
-                    pd.read_csv(fh, index_col=0, encoding=encoding).squeeze("columns"),
+                    pd.read_csv(fh, index_col=0, encoding=encoding).squeeze(
+                        "columns"),
                 )
 
     def test_to_csv_interval_index(self, using_infer_string):

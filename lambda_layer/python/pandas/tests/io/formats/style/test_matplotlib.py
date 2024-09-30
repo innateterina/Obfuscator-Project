@@ -1,3 +1,5 @@
+from pandas.io.formats.style import Styler
+import matplotlib as mpl
 import gc
 
 import numpy as np
@@ -11,10 +13,6 @@ from pandas import (
 
 pytest.importorskip("matplotlib")
 pytest.importorskip("jinja2")
-
-import matplotlib as mpl
-
-from pandas.io.formats.style import Styler
 
 
 @pytest.fixture(autouse=True)
@@ -70,7 +68,8 @@ def test_function_gradient(styler, f):
 def test_background_gradient_color(styler, f):
     result = getattr(styler, f)(subset=IndexSlice[1, "A"])._compute().ctx
     if f == "background_gradient":
-        assert result[(1, 0)] == [("background-color", "#fff7fb"), ("color", "#000000")]
+        assert result[(1, 0)] == [("background-color",
+                                   "#fff7fb"), ("color", "#000000")]
     elif f == "text_gradient":
         assert result[(1, 0)] == [("color", "#fff7fb")]
 
@@ -192,12 +191,14 @@ def test_background_gradient_int64():
 )
 def test_background_gradient_gmap_array(styler_blank, axis, gmap, expected):
     # tests when gmap is given as a sequence and converted to ndarray
-    result = styler_blank.background_gradient(axis=axis, gmap=gmap)._compute().ctx
+    result = styler_blank.background_gradient(
+        axis=axis, gmap=gmap)._compute().ctx
     assert result == expected
 
 
 @pytest.mark.parametrize(
-    "gmap, axis", [([1, 2, 3], 0), ([1, 2], 1), (np.array([[1, 2], [1, 2]]), None)]
+    "gmap, axis", [([1, 2, 3], 0), ([1, 2], 1),
+                   (np.array([[1, 2], [1, 2]]), None)]
 )
 def test_background_gradient_gmap_array_raises(gmap, axis):
     # test when gmap as converted ndarray is bad shape
@@ -233,29 +234,38 @@ def test_background_gradient_gmap_array_raises(gmap, axis):
         (None, [[1, 2], [2, 1]]),
         (["A"], [[1], [2]]),  # slice only column "A" in data and gmap
         (["B", "A"], [[2, 1], [1, 2]]),  # reverse the columns in data
-        (IndexSlice["X", :], [[1, 2]]),  # slice only index "X" in data and gmap
-        (IndexSlice[["Y", "X"], :], [[2, 1], [1, 2]]),  # reverse the index in data
+        # slice only index "X" in data and gmap
+        (IndexSlice["X", :], [[1, 2]]),
+        # reverse the index in data
+        (IndexSlice[["Y", "X"], :], [[2, 1], [1, 2]]),
     ],
 )
 def test_background_gradient_gmap_dataframe_align(styler_blank, gmap, subset, exp_gmap):
     # test gmap given as DataFrame that it aligns to the data including subset
-    expected = styler_blank.background_gradient(axis=None, gmap=exp_gmap, subset=subset)
-    result = styler_blank.background_gradient(axis=None, gmap=gmap, subset=subset)
+    expected = styler_blank.background_gradient(
+        axis=None, gmap=exp_gmap, subset=subset)
+    result = styler_blank.background_gradient(
+        axis=None, gmap=gmap, subset=subset)
     assert expected._compute().ctx == result._compute().ctx
 
 
 @pytest.mark.parametrize(
     "gmap, axis, exp_gmap",
     [
-        (Series([2, 1], index=["Y", "X"]), 0, [[1, 1], [2, 2]]),  # revrse the index
-        (Series([2, 1], index=["B", "A"]), 1, [[1, 2], [1, 2]]),  # revrse the cols
-        (Series([1, 2, 3], index=["X", "Y", "Z"]), 0, [[1, 1], [2, 2]]),  # add idx
-        (Series([1, 2, 3], index=["A", "B", "C"]), 1, [[1, 2], [1, 2]]),  # add col
+        (Series([2, 1], index=["Y", "X"]), 0, [
+         [1, 1], [2, 2]]),  # revrse the index
+        (Series([2, 1], index=["B", "A"]), 1,
+         [[1, 2], [1, 2]]),  # revrse the cols
+        (Series([1, 2, 3], index=["X", "Y", "Z"]),
+         0, [[1, 1], [2, 2]]),  # add idx
+        (Series([1, 2, 3], index=["A", "B", "C"]),
+         1, [[1, 2], [1, 2]]),  # add col
     ],
 )
 def test_background_gradient_gmap_series_align(styler_blank, gmap, axis, exp_gmap):
     # test gmap given as Series that it aligns to the data including subset
-    expected = styler_blank.background_gradient(axis=None, gmap=exp_gmap)._compute()
+    expected = styler_blank.background_gradient(
+        axis=None, gmap=exp_gmap)._compute()
     result = styler_blank.background_gradient(axis=axis, gmap=gmap)._compute()
     assert expected.ctx == result.ctx
 

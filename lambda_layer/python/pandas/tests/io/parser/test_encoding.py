@@ -105,7 +105,8 @@ def test_unicode_encoding(all_parsers, csv_dir_path):
         # Test in a data row instead of header
         ("b\n1", {"names": ["a"]}, DataFrame({"a": ["b", "1"]})),
         # Test in empty data row with skipping
-        ("\n1", {"names": ["a"], "skip_blank_lines": True}, DataFrame({"a": [1]})),
+        ("\n1", {"names": ["a"], "skip_blank_lines": True},
+         DataFrame({"a": [1]})),
         # Test in empty data row without skipping
         (
             "\n1",
@@ -132,7 +133,8 @@ def test_utf8_bom(all_parsers, data, kwargs, expected, request):
         # CSV parse error: Empty CSV file or block: cannot infer number of columns
         pytest.skip(reason="https://github.com/apache/arrow/issues/38676")
 
-    result = parser.read_csv(_encode_data_with_bom(data), encoding=utf8, **kwargs)
+    result = parser.read_csv(
+        _encode_data_with_bom(data), encoding=utf8, **kwargs)
     tm.assert_frame_equal(result, expected)
 
 
@@ -196,7 +198,8 @@ def test_encoding_temp_file(all_parsers, utf_value, encoding_fmt, pass_encoding)
         f.write("foo\nbar")
         f.seek(0)
 
-        result = parser.read_csv(f, encoding=encoding if pass_encoding else None)
+        result = parser.read_csv(
+            f, encoding=encoding if pass_encoding else None)
         tm.assert_frame_equal(result, expected)
 
 
@@ -314,10 +317,12 @@ def test_readcsv_memmap_utf8(all_parsers):
         if parser.engine == "pyarrow":
             msg = "The 'memory_map' option is not supported with the 'pyarrow' engine"
             with pytest.raises(ValueError, match=msg):
-                parser.read_csv(fname, header=None, memory_map=True, encoding="utf-8")
+                parser.read_csv(fname, header=None,
+                                memory_map=True, encoding="utf-8")
             return
 
-        dfr = parser.read_csv(fname, header=None, memory_map=True, encoding="utf-8")
+        dfr = parser.read_csv(fname, header=None,
+                              memory_map=True, encoding="utf-8")
     tm.assert_frame_equal(df, dfr)
 
 

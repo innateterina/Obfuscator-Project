@@ -76,7 +76,8 @@ def get_center_of_mass(
 ) -> float:
     valid_count = common.count_not_none(comass, span, halflife, alpha)
     if valid_count > 1:
-        raise ValueError("comass, span, halflife, and alpha are mutually exclusive")
+        raise ValueError(
+            "comass, span, halflife, and alpha are mutually exclusive")
 
     # Convert to center of mass; domain checks ensure 0 < alpha <= 1
     if comass is not None:
@@ -368,7 +369,8 @@ class ExponentialMovingWindow(BaseWindow):
         self.times = times
         if self.times is not None:
             if not self.adjust:
-                raise NotImplementedError("times is not supported with adjust=False.")
+                raise NotImplementedError(
+                    "times is not supported with adjust=False.")
             times_dtype = getattr(self.times, "dtype", None)
             if not (
                 is_datetime64_dtype(times_dtype)
@@ -376,16 +378,19 @@ class ExponentialMovingWindow(BaseWindow):
             ):
                 raise ValueError("times must be datetime64 dtype.")
             if len(self.times) != len(obj):
-                raise ValueError("times must be the same length as the object.")
+                raise ValueError(
+                    "times must be the same length as the object.")
             if not isinstance(self.halflife, (str, datetime.timedelta, np.timedelta64)):
-                raise ValueError("halflife must be a timedelta convertible object")
+                raise ValueError(
+                    "halflife must be a timedelta convertible object")
             if isna(self.times).any():
                 raise ValueError("Cannot convert NaT values to integer")
             self._deltas = _calculate_deltas(self.times, self.halflife)
             # Halflife is no longer applicable when calculating COM
             # But allow COM to still be calculated if the user passes other decay args
             if common.count_not_none(self.com, self.span, self.alpha) > 0:
-                self._com = get_center_of_mass(self.com, self.span, None, self.alpha)
+                self._com = get_center_of_mass(
+                    self.com, self.span, None, self.alpha)
             else:
                 self._com = 1.0
         else:
@@ -600,7 +605,8 @@ class ExponentialMovingWindow(BaseWindow):
         engine_kwargs=None,
     ):
         if not self.adjust:
-            raise NotImplementedError("sum is not implemented with adjust=False")
+            raise NotImplementedError(
+                "sum is not implemented with adjust=False")
         if maybe_use_numba(engine):
             if self.method == "single":
                 func = generate_numba_ewm_func
@@ -909,7 +915,8 @@ class ExponentialMovingWindowGroupby(BaseWindowGroupby, ExponentialMovingWindow)
 
         if not obj.empty and self.times is not None:
             # sort the times and recalculate the deltas according to the groups
-            groupby_order = np.concatenate(list(self._grouper.indices.values()))
+            groupby_order = np.concatenate(
+                list(self._grouper.indices.values()))
             self._deltas = _calculate_deltas(
                 self.times.take(groupby_order),
                 self.halflife,
@@ -1078,7 +1085,8 @@ class OnlineExponentialMovingWindow(ExponentialMovingWindow):
                 result_kwargs["columns"] = self._selected_obj.columns
             else:
                 result_kwargs["name"] = self._selected_obj.name
-            np_array = self._selected_obj.astype(np.float64, copy=False).to_numpy()
+            np_array = self._selected_obj.astype(
+                np.float64, copy=False).to_numpy()
         ewma_func = generate_online_numba_ewma_func(
             **get_jit_arguments(self.engine_kwargs)
         )

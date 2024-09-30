@@ -321,7 +321,8 @@ class SeriesGroupBy(GroupBy[Series]):
         if orig_func != func:
             alias = com._builtin_table_alias[func]
             warn_alias_replacement(self, orig_func, alias)
-        f = lambda x: func(x, *args, **kwargs)
+
+        def f(x): return func(x, *args, **kwargs)
 
         obj = self._obj_with_exclusions
         result = self._grouper.agg_series(obj, f)
@@ -347,7 +348,8 @@ class SeriesGroupBy(GroupBy[Series]):
                 )
                 arg = list(arg.items())
         elif any(isinstance(x, (tuple, list)) for x in arg):
-            arg = [(x, x) if not isinstance(x, (tuple, list)) else x for x in arg]
+            arg = [(x, x) if not isinstance(
+                x, (tuple, list)) else x for x in arg]
         else:
             # list of functions / function names
             columns = (com.get_callable_name(f) or f for f in arg)
@@ -531,7 +533,8 @@ class SeriesGroupBy(GroupBy[Series]):
             )
         except NotImplementedError as err:
             # e.g. test_groupby_raises_string
-            raise TypeError(f"{how} is not supported for {obj.dtype} dtype") from err
+            raise TypeError(
+                f"{how} is not supported for {obj.dtype} dtype") from err
 
         return obj._constructor(result, index=self.obj.index, name=obj.name)
 
@@ -609,9 +612,9 @@ class SeriesGroupBy(GroupBy[Series]):
         Name: B, dtype: int64
         """
         if isinstance(func, str):
-            wrapper = lambda x: getattr(x, func)(*args, **kwargs)
+            def wrapper(x): return getattr(x, func)(*args, **kwargs)
         else:
-            wrapper = lambda x: func(x, *args, **kwargs)
+            def wrapper(x): return func(x, *args, **kwargs)
 
         # Interpret np.nan as False.
         def true_and_notna(x) -> bool:
@@ -675,7 +678,8 @@ class SeriesGroupBy(GroupBy[Series]):
         """
         ids, _, ngroups = self._grouper.group_info
         val = self.obj._values
-        codes, uniques = algorithms.factorize(val, use_na_sentinel=dropna, sort=False)
+        codes, uniques = algorithms.factorize(
+            val, use_na_sentinel=dropna, sort=False)
 
         if self._grouper.has_dropped_na:
             mask = ids >= 0
@@ -763,7 +767,7 @@ class SeriesGroupBy(GroupBy[Series]):
         lab: Index | np.ndarray
         if bins is None:
             lab, lev = algorithms.factorize(val, sort=True)
-            llab = lambda lab, inc: lab[inc]
+            def llab(lab, inc): return lab[inc]
         else:
             # lab is a Categorical with categories an IntervalIndex
             cat_ser = cut(Series(val, copy=False), bins, include_lowest=True)
@@ -774,7 +778,7 @@ class SeriesGroupBy(GroupBy[Series]):
                 allow_fill=True,
                 fill_value=lev._na_value,
             )
-            llab = lambda lab, inc: lab[inc]._multiindex.codes[-1]
+            def llab(lab, inc): return lab[inc]._multiindex.codes[-1]
 
         if isinstance(lab.dtype, IntervalDtype):
             # TODO: should we do this inside II?
@@ -813,7 +817,8 @@ class SeriesGroupBy(GroupBy[Series]):
             if mask.all():
                 dropna = False
             else:
-                out, codes = out[mask], [level_codes[mask] for level_codes in codes]
+                out, codes = out[mask], [level_codes[mask]
+                                         for level_codes in codes]
 
         if normalize:
             out = out.astype("float")
@@ -840,7 +845,8 @@ class SeriesGroupBy(GroupBy[Series]):
 
             ncat, nbin = diff.sum(), len(levels[-1])
 
-            left = [np.repeat(np.arange(ncat), nbin), np.tile(np.arange(nbin), ncat)]
+            left = [np.repeat(np.arange(ncat), nbin),
+                    np.tile(np.arange(nbin), ncat)]
 
             right = [diff.cumsum() - 1, codes[-1]]
 
@@ -1057,7 +1063,8 @@ class SeriesGroupBy(GroupBy[Series]):
            1    monkey
         Name: name, dtype: object
         """
-        result = self._op_via_apply("take", indices=indices, axis=axis, **kwargs)
+        result = self._op_via_apply(
+            "take", indices=indices, axis=axis, **kwargs)
         return result
 
     def skew(
@@ -1512,7 +1519,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
         if orig_func != func:
             alias = com._builtin_table_alias[func]
             warn_alias_replacement(self, orig_func, alias)
-        f = lambda x: func(x, *args, **kwargs)
+
+        def f(x): return func(x, *args, **kwargs)
 
         if self.ngroups == 0:
             # e.g. test_evaluate_with_empty_groups different path gets different
@@ -1549,7 +1557,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
 
         result_index = self._grouper.result_index
         other_ax = obj.axes[1 - self.axis]
-        out = self.obj._constructor(result, index=other_ax, columns=result_index)
+        out = self.obj._constructor(
+            result, index=other_ax, columns=result_index)
         if self.axis == 0:
             out = out.T
 
@@ -1569,7 +1578,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
             else:
                 res_index = self._grouper.result_index
 
-            result = self.obj._constructor(index=res_index, columns=data.columns)
+            result = self.obj._constructor(
+                index=res_index, columns=data.columns)
             result = result.astype(data.dtypes, copy=False)
             return result
 
@@ -1597,7 +1607,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
             # GH 18930
             if not is_hashable(self._selection):
                 # error: Need type annotation for "name"
-                name = tuple(self._selection)  # type: ignore[var-annotated, arg-type]
+                # type: ignore[var-annotated, arg-type]
+                name = tuple(self._selection)
             else:
                 # error: Incompatible types in assignment
                 # (expression has type "Hashable", variable
@@ -1612,7 +1623,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
             if self.as_index:
                 return self.obj._constructor_sliced(values, index=key_index)
             else:
-                result = self.obj._constructor(values, columns=[self._selection])
+                result = self.obj._constructor(
+                    values, columns=[self._selection])
                 result = self._insert_inaxis_grouper(result)
                 return result
         else:
@@ -1667,7 +1679,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
         if stacked_values.dtype == object:
             # We'll have the DataFrame constructor do inference
             stacked_values = stacked_values.tolist()
-        result = self.obj._constructor(stacked_values, index=index, columns=columns)
+        result = self.obj._constructor(
+            stacked_values, index=index, columns=columns)
 
         if not self.as_index:
             result = self._insert_inaxis_grouper(result)
@@ -1752,7 +1765,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
         concat_index = obj.columns if self.axis == 0 else obj.index
         other_axis = 1 if self.axis == 0 else 0  # switches between 0 & 1
         concatenated = concat(applied, axis=self.axis, verify_integrity=False)
-        concatenated = concatenated.reindex(concat_index, axis=other_axis, copy=False)
+        concatenated = concatenated.reindex(
+            concat_index, axis=other_axis, copy=False)
         return self._set_result_index_ordered(concatenated)
 
     __examples_dataframe_doc = dedent(
@@ -1818,13 +1832,15 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
 
     def _define_paths(self, func, *args, **kwargs):
         if isinstance(func, str):
-            fast_path = lambda group: getattr(group, func)(*args, **kwargs)
-            slow_path = lambda group: group.apply(
+            def fast_path(group): return getattr(group, func)(*args, **kwargs)
+
+            def slow_path(group): return group.apply(
                 lambda x: getattr(x, func)(*args, **kwargs), axis=self.axis
             )
         else:
-            fast_path = lambda group: func(group, *args, **kwargs)
-            slow_path = lambda group: group.apply(
+            def fast_path(group): return func(group, *args, **kwargs)
+
+            def slow_path(group): return group.apply(
                 lambda x: func(x, *args, **kwargs), axis=self.axis
             )
         return fast_path, slow_path
@@ -2034,7 +2050,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
 
         if not len(results):
             # concat would raise
-            res_df = DataFrame([], columns=columns, index=self._grouper.result_index)
+            res_df = DataFrame([], columns=columns,
+                               index=self._grouper.result_index)
         else:
             res_df = concat(results, keys=columns, axis=1)
 
@@ -2619,7 +2636,8 @@ class DataFrameGroupBy(GroupBy[DataFrame]):
         2 0  rabbit  mammal       15.0
           1  monkey  mammal        NaN
         """
-        result = self._op_via_apply("take", indices=indices, axis=axis, **kwargs)
+        result = self._op_via_apply(
+            "take", indices=indices, axis=axis, **kwargs)
         return result
 
     def skew(

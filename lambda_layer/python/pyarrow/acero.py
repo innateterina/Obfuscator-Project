@@ -57,7 +57,8 @@ except ImportError:
 
 
 def _dataset_to_decl(dataset, use_threads=True):
-    decl = Declaration("scan", ScanNodeOptions(dataset, use_threads=use_threads))
+    decl = Declaration("scan", ScanNodeOptions(
+        dataset, use_threads=use_threads))
 
     # Get rid of special dataset columns
     # "__fragment_index", "__batch_index", "__last_in_fragment", "__filename"
@@ -120,7 +121,8 @@ def _perform_join(join_type, left_operand, left_keys,
     if not isinstance(left_operand, (Table, ds.Dataset)):
         raise TypeError(f"Expected Table or Dataset, got {type(left_operand)}")
     if not isinstance(right_operand, (Table, ds.Dataset)):
-        raise TypeError(f"Expected Table or Dataset, got {type(right_operand)}")
+        raise TypeError(
+            f"Expected Table or Dataset, got {type(right_operand)}")
 
     # Prepare left and right tables Keys to send them to the C++ function
     left_keys_order = {}
@@ -168,7 +170,8 @@ def _perform_join(join_type, left_operand, left_keys,
     if isinstance(left_operand, ds.Dataset):
         left_source = _dataset_to_decl(left_operand, use_threads=use_threads)
     else:
-        left_source = Declaration("table_source", TableSourceNodeOptions(left_operand))
+        left_source = Declaration(
+            "table_source", TableSourceNodeOptions(left_operand))
     if isinstance(right_operand, ds.Dataset):
         right_source = _dataset_to_decl(right_operand, use_threads=use_threads)
     else:
@@ -290,7 +293,8 @@ def _perform_join_asof(left_operand, left_on, left_by,
     if not isinstance(left_operand, (Table, ds.Dataset)):
         raise TypeError(f"Expected Table or Dataset, got {type(left_operand)}")
     if not isinstance(right_operand, (Table, ds.Dataset)):
-        raise TypeError(f"Expected Table or Dataset, got {type(right_operand)}")
+        raise TypeError(
+            f"Expected Table or Dataset, got {type(right_operand)}")
 
     if not isinstance(left_by, (tuple, list)):
         left_by = [left_by]

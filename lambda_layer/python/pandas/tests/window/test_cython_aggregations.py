@@ -21,7 +21,8 @@ def _get_rolling_aggregations():
             ("roll_mean", window_aggregations.roll_mean),
         ]
         + [
-            (f"roll_var({ddof})", partial(window_aggregations.roll_var, ddof=ddof))
+            (f"roll_var({ddof})", partial(
+                window_aggregations.roll_var, ddof=ddof))
             for ddof in [0, 1]
         ]
         + [
@@ -81,7 +82,8 @@ def test_rolling_aggregation_boundary_consistency(rolling_aggregation):
     end = np.arange(width, size, step, dtype=np.int64)
     start = end - width
     selarr = np.array(selection, dtype=np.int32)
-    result = Series(rolling_aggregation(values, start[selarr], end[selarr], minp))
+    result = Series(rolling_aggregation(
+        values, start[selarr], end[selarr], minp))
     expected = Series(rolling_aggregation(values, start, end, minp)[selarr])
     tm.assert_equal(expected, result)
 
@@ -91,9 +93,9 @@ def test_rolling_aggregation_with_unused_elements(rolling_aggregation):
     minp, width = 0, 5  # width at least 4 for kurt
     size = 2 * width + 5
     values = np.arange(1, size + 1, dtype=np.float64)
-    values[width : width + 2] = sys.float_info.min
+    values[width: width + 2] = sys.float_info.min
     values[width + 2] = np.nan
-    values[width + 3 : width + 5] = sys.float_info.max
+    values[width + 3: width + 5] = sys.float_info.max
     start = np.array([0, size - width], dtype=np.int64)
     end = np.array([width, size], dtype=np.int64)
     loc = np.array(
@@ -107,5 +109,6 @@ def test_rolling_aggregation_with_unused_elements(rolling_aggregation):
     expected = Series(
         rolling_aggregation(compact_values, compact_start, compact_end, minp)
     )
-    assert np.isfinite(expected.values).all(), "Not all expected values are finite"
+    assert np.isfinite(expected.values).all(
+    ), "Not all expected values are finite"
     tm.assert_equal(expected, result)

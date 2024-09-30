@@ -46,7 +46,7 @@ __all__ = [
     'rstrip', 'split', 'splitlines', 'startswith', 'strip', 'swapcase',
     'title', 'translate', 'upper', 'zfill', 'isnumeric', 'isdecimal',
     'array', 'asarray', 'compare_chararrays', 'chararray'
-    ]
+]
 
 
 array_function_dispatch = functools.partial(
@@ -216,7 +216,7 @@ def greater(x1, x2):
     See Also
     --------
     equal, not_equal, greater_equal, less_equal, less
-    
+
     Examples
     --------
     >>> import numpy as np

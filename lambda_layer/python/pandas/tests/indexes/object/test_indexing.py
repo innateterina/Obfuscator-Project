@@ -39,7 +39,8 @@ class TestGetIndexer:
                 index.get_indexer(["a", "b", "c", "d"], method="nearest")
 
             with pytest.raises(pa.lib.ArrowNotImplementedError, match=msg):
-                index.get_indexer(["a", "b", "c", "d"], method="pad", tolerance=2)
+                index.get_indexer(["a", "b", "c", "d"],
+                                  method="pad", tolerance=2)
 
             with pytest.raises(pa.lib.ArrowNotImplementedError, match=msg):
                 index.get_indexer(
@@ -52,7 +53,8 @@ class TestGetIndexer:
                 index.get_indexer(["a", "b", "c", "d"], method="nearest")
 
             with pytest.raises(TypeError, match=msg):
-                index.get_indexer(["a", "b", "c", "d"], method="pad", tolerance=2)
+                index.get_indexer(["a", "b", "c", "d"],
+                                  method="pad", tolerance=2)
 
             with pytest.raises(TypeError, match=msg):
                 index.get_indexer(
@@ -67,7 +69,8 @@ class TestGetIndexer:
         # is mangled
         if unique_nulls_fixture is unique_nulls_fixture2:
             return  # skip it, values are not unique
-        arr = np.array([unique_nulls_fixture, unique_nulls_fixture2], dtype=object)
+        arr = np.array(
+            [unique_nulls_fixture, unique_nulls_fixture2], dtype=object)
         index = Index(arr, dtype=object)
         result = index.get_indexer(
             Index(
@@ -84,7 +87,8 @@ class TestGetIndexerNonUnique:
     ):
         # even though this isn't non-unique, this should still work
         if using_infer_string and (nulls_fixture is None or nulls_fixture is NA):
-            request.applymarker(pytest.mark.xfail(reason="NAs are cast to NaN"))
+            request.applymarker(pytest.mark.xfail(
+                reason="NAs are cast to NaN"))
         index = Index(["a", "b", nulls_fixture])
         indexer, missing = index.get_indexer_non_unique([nulls_fixture])
 
@@ -174,7 +178,8 @@ class TestSliceLocs:
         "dtype",
         [
             "object",
-            pytest.param("string[pyarrow_numpy]", marks=td.skip_if_no("pyarrow")),
+            pytest.param("string[pyarrow_numpy]",
+                         marks=td.skip_if_no("pyarrow")),
         ],
     )
     @pytest.mark.parametrize(
@@ -203,8 +208,9 @@ class TestSliceLocs:
     def test_slice_locs_negative_step(self, in_slice, expected, dtype):
         index = Index(list("bcdxy"), dtype=dtype)
 
-        s_start, s_stop = index.slice_locs(in_slice.start, in_slice.stop, in_slice.step)
-        result = index[s_start : s_stop : in_slice.step]
+        s_start, s_stop = index.slice_locs(
+            in_slice.start, in_slice.stop, in_slice.step)
+        result = index[s_start: s_stop: in_slice.step]
         expected = Index(list(expected), dtype=dtype)
         tm.assert_index_equal(result, expected)
 

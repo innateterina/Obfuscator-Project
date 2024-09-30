@@ -162,7 +162,8 @@ class TestTableOrient:
         expected = OrderedDict(
             [
                 ("schema", schema),
-                ("data", [OrderedDict([("id", 0), ("a", "2021-10-10T00:00:00.000")])]),
+                ("data", [OrderedDict(
+                    [("id", 0), ("a", "2021-10-10T00:00:00.000")])]),
             ]
         )
 
@@ -255,7 +256,8 @@ class TestTableOrient:
         fields = [
             OrderedDict({"name": "idx", "type": "integer"}),
             OrderedDict({"name": "A", "type": "any", "extDtype": "DateDtype"}),
-            OrderedDict({"name": "B", "type": "number", "extDtype": "decimal"}),
+            OrderedDict({"name": "B", "type": "number",
+                        "extDtype": "decimal"}),
             OrderedDict({"name": "C", "type": "any", "extDtype": "string"}),
             OrderedDict({"name": "D", "type": "integer", "extDtype": "Int64"}),
         ]

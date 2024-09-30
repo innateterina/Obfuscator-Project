@@ -50,10 +50,12 @@ def test_select_columns_in_where(setup_path):
 
         tm.assert_frame_equal(store.select("df", columns=["A"]), expected)
 
-        tm.assert_frame_equal(store.select("df", where="columns=['A']"), expected)
+        tm.assert_frame_equal(store.select(
+            "df", where="columns=['A']"), expected)
 
     # With a Series
-    s = Series(np.random.default_rng(2).standard_normal(10), index=index, name="A")
+    s = Series(np.random.default_rng(
+        2).standard_normal(10), index=index, name="A")
     with ensure_clean_store(setup_path) as store:
         store.put("s", s, format="table")
         tm.assert_series_equal(store.select("s", where="columns=['A']"), s)
@@ -89,7 +91,8 @@ def test_select_with_dups(setup_path):
                 columns=["A", "A", "B", "B"],
             ),
             DataFrame(
-                np.random.default_rng(2).integers(0, 10, size=20).reshape(10, 2),
+                np.random.default_rng(2).integers(
+                    0, 10, size=20).reshape(10, 2),
                 columns=["A", "C"],
             ),
         ],
@@ -196,12 +199,14 @@ def test_select_dtypes(setup_path):
 
         expected = df[df.boolv == True].reindex(columns=["A", "boolv"])  # noqa: E712
         for v in [True, "true", 1]:
-            result = store.select("df", f"boolv == {v}", columns=["A", "boolv"])
+            result = store.select(
+                "df", f"boolv == {v}", columns=["A", "boolv"])
             tm.assert_frame_equal(expected, result)
 
         expected = df[df.boolv == False].reindex(columns=["A", "boolv"])  # noqa: E712
         for v in [False, "false", 0]:
-            result = store.select("df", f"boolv == {v}", columns=["A", "boolv"])
+            result = store.select(
+                "df", f"boolv == {v}", columns=["A", "boolv"])
             tm.assert_frame_equal(expected, result)
 
         # integer index
@@ -233,7 +238,8 @@ def test_select_dtypes(setup_path):
 
     with ensure_clean_store(setup_path) as store:
         # floats w/o NaN
-        df = DataFrame({"cols": range(11), "values": range(11)}, dtype="float64")
+        df = DataFrame(
+            {"cols": range(11), "values": range(11)}, dtype="float64")
         df["cols"] = (df["cols"] + 10).apply(str)
 
         store.append("df1", df, data_columns=True)
@@ -257,7 +263,8 @@ def test_select_dtypes(setup_path):
         # tm.assert_frame_equal(expected, result)
 
         # not in first position float with NaN ok too
-        df = DataFrame({"cols": range(11), "values": range(11)}, dtype="float64")
+        df = DataFrame(
+            {"cols": range(11), "values": range(11)}, dtype="float64")
         df["cols"] = (df["cols"] + 10).apply(str)
 
         df.iloc[1] = np.nan
@@ -306,7 +313,8 @@ def test_select_with_many_inputs(setup_path):
         tm.assert_frame_equal(expected, result)
 
         # small selector
-        result = store.select("df", "ts>=Timestamp('2012-02-01') & users=['a','b','c']")
+        result = store.select(
+            "df", "ts>=Timestamp('2012-02-01') & users=['a','b','c']")
         expected = df[
             (df.ts >= Timestamp("2012-02-01")) & df.users.isin(["a", "b", "c"])
         ]
@@ -314,8 +322,10 @@ def test_select_with_many_inputs(setup_path):
 
         # big selector along the columns
         selector = ["a", "b", "c"] + [f"a{i:03d}" for i in range(60)]
-        result = store.select("df", "ts>=Timestamp('2012-02-01') and users=selector")
-        expected = df[(df.ts >= Timestamp("2012-02-01")) & df.users.isin(selector)]
+        result = store.select(
+            "df", "ts>=Timestamp('2012-02-01') and users=selector")
+        expected = df[(df.ts >= Timestamp("2012-02-01"))
+                      & df.users.isin(selector)]
         tm.assert_frame_equal(expected, result)
 
         selector = range(100, 200)
@@ -408,7 +418,8 @@ def test_select_iterator(tmp_path, setup_path):
         # full selection
         expected = store.select_as_multiple(["df1", "df2"], selector="df1")
         results = list(
-            store.select_as_multiple(["df1", "df2"], selector="df1", chunksize=2)
+            store.select_as_multiple(
+                ["df1", "df2"], selector="df1", chunksize=2)
         )
         result = concat(results)
         tm.assert_frame_equal(expected, result)
@@ -527,7 +538,8 @@ def test_select_iterator_non_complete_8014(setup_path):
         where = f"index >= '{beg_dt}' & index <= '{end_dt}'"
         results = list(store.select("df", where=where, chunksize=chunksize))
         result = concat(results)
-        rexpected = expected[(expected.index >= beg_dt) & (expected.index <= end_dt)]
+        rexpected = expected[(expected.index >= beg_dt) &
+                             (expected.index <= end_dt)]
         tm.assert_frame_equal(rexpected, result)
 
     # with iterator, empty where
@@ -590,7 +602,8 @@ def test_select_iterator_many_empty_frames(setup_path):
         # should be 1, is 10
         assert len(results) == 1
         result = concat(results)
-        rexpected = expected[(expected.index >= beg_dt) & (expected.index <= end_dt)]
+        rexpected = expected[(expected.index >= beg_dt) &
+                             (expected.index <= end_dt)]
         tm.assert_frame_equal(rexpected, result)
 
         # select w/iterator and where clause which selects
@@ -847,17 +860,20 @@ def test_select_as_multiple(setup_path):
         msg = "keys must be a list/tuple"
         # no tables stored
         with pytest.raises(TypeError, match=msg):
-            store.select_as_multiple(None, where=["A>0", "B>0"], selector="df1")
+            store.select_as_multiple(
+                None, where=["A>0", "B>0"], selector="df1")
 
         store.append("df1", df1, data_columns=["A", "B"])
         store.append("df2", df2)
 
         # exceptions
         with pytest.raises(TypeError, match=msg):
-            store.select_as_multiple(None, where=["A>0", "B>0"], selector="df1")
+            store.select_as_multiple(
+                None, where=["A>0", "B>0"], selector="df1")
 
         with pytest.raises(TypeError, match=msg):
-            store.select_as_multiple([None], where=["A>0", "B>0"], selector="df1")
+            store.select_as_multiple(
+                [None], where=["A>0", "B>0"], selector="df1")
 
         msg = "'No object named df3 in the file'"
         with pytest.raises(KeyError, match=msg):
@@ -866,7 +882,8 @@ def test_select_as_multiple(setup_path):
             )
 
         with pytest.raises(KeyError, match=msg):
-            store.select_as_multiple(["df3"], where=["A>0", "B>0"], selector="df1")
+            store.select_as_multiple(
+                ["df3"], where=["A>0", "B>0"], selector="df1")
 
         with pytest.raises(KeyError, match="'No object named df4 in the file'"):
             store.select_as_multiple(
@@ -879,7 +896,8 @@ def test_select_as_multiple(setup_path):
             ["df1"], where=["A>0", "B>0"], selector="df1"
         )
         tm.assert_frame_equal(result, expected)
-        expected = store.select_as_multiple("df1", where=["A>0", "B>0"], selector="df1")
+        expected = store.select_as_multiple(
+            "df1", where=["A>0", "B>0"], selector="df1")
         tm.assert_frame_equal(result, expected)
 
         # multiple
@@ -1041,7 +1059,8 @@ def test_select_large_integer(tmp_path):
     result = None
     with HDFStore(path) as s:
         s.append("data", df, data_columns=True, index=False)
-        result = s.select("data", where="y==-9223372036854775801").get("y").get(0)
+        result = s.select(
+            "data", where="y==-9223372036854775801").get("y").get(0)
     expected = df["y"][0]
 
     assert expected == result

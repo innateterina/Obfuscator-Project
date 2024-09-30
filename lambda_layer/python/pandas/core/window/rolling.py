@@ -187,7 +187,8 @@ class BaseWindow(SelectionMixin):
             "left",
             "neither",
         ]:
-            raise ValueError("closed must be 'right', 'left', 'both' or 'neither'")
+            raise ValueError(
+                "closed must be 'right', 'left', 'both' or 'neither'")
         if not isinstance(self.obj, (ABCSeries, ABCDataFrame)):
             raise TypeError(f"invalid type: {type(self)}")
         if isinstance(self.window, BaseIndexer):
@@ -277,7 +278,8 @@ class BaseWindow(SelectionMixin):
         """
         # filter out the on from the object
         if self.on is not None and not isinstance(self.on, Index) and obj.ndim == 2:
-            obj = obj.reindex(columns=obj.columns.difference([self.on]), copy=False)
+            obj = obj.reindex(
+                columns=obj.columns.difference([self.on]), copy=False)
         if obj.ndim > 1 and (numeric_only or self.axis == 1):
             # GH: 20649 in case of mixed dtype and axis=1 we have to convert everything
             # to float to calculate the complete row at once. We exclude all non-numeric
@@ -370,7 +372,8 @@ class BaseWindow(SelectionMixin):
             else:
                 values = ensure_float64(values)
         except (ValueError, TypeError) as err:
-            raise TypeError(f"cannot handle this type -> {values.dtype}") from err
+            raise TypeError(
+                f"cannot handle this type -> {values.dtype}") from err
 
         # Convert inf to nan for C funcs
         inf = np.isinf(values)
@@ -386,7 +389,8 @@ class BaseWindow(SelectionMixin):
 
         if self.on is not None and not self._on.equals(obj.index):
             name = self._on.name
-            extra_col = Series(self._on, index=self.obj.index, name=name, copy=False)
+            extra_col = Series(self._on, index=self.obj.index,
+                               name=name, copy=False)
             if name in result.columns:
                 # TODO: sure we want to overwrite results?
                 result[name] = extra_col
@@ -520,7 +524,8 @@ class BaseWindow(SelectionMixin):
         Apply the given function to the DataFrame across the entire object
         """
         if self._selected_obj.ndim == 1:
-            raise ValueError("method='table' not applicable for Series objects.")
+            raise ValueError(
+                "method='table' not applicable for Series objects.")
         obj = self._create_data(self._selected_obj, numeric_only)
         values = self._prep_values(obj.to_numpy())
         values = values.T if self.axis == 1 else values
@@ -672,7 +677,8 @@ class BaseWindow(SelectionMixin):
             return self._resolve_output(out, obj)
 
     def aggregate(self, func, *args, **kwargs):
-        result = ResamplerWindowApply(self, func, args=args, kwargs=kwargs).agg()
+        result = ResamplerWindowApply(
+            self, func, args=args, kwargs=kwargs).agg()
         if result is None:
             return self.apply(func, raw=False, args=args, kwargs=kwargs)
         return result
@@ -1165,7 +1171,8 @@ class Window(BaseWindow):
             raise ValueError("window must be an integer 0 or greater")
 
         if self.method != "single":
-            raise NotImplementedError("'single' is the only supported method type.")
+            raise NotImplementedError(
+                "'single' is the only supported method type.")
 
     def _center_window(self, result: np.ndarray, offset: int) -> np.ndarray:
         """
@@ -1222,7 +1229,8 @@ class Window(BaseWindow):
                 return func(
                     x,
                     window,
-                    self.min_periods if self.min_periods is not None else len(window),
+                    self.min_periods if self.min_periods is not None else len(
+                        window),
                 )
 
             with np.errstate(all="ignore"):
@@ -1270,7 +1278,8 @@ class Window(BaseWindow):
         axis="",
     )
     def aggregate(self, func, *args, **kwargs):
-        result = ResamplerWindowApply(self, func, args=args, kwargs=kwargs).agg()
+        result = ResamplerWindowApply(
+            self, func, args=args, kwargs=kwargs).agg()
         if result is None:
             # these must apply directly
             result = func(self)
@@ -1459,7 +1468,8 @@ class Window(BaseWindow):
     )
     def std(self, ddof: int = 1, numeric_only: bool = False, **kwargs):
         return zsqrt(
-            self.var(ddof=ddof, name="std", numeric_only=numeric_only, **kwargs)
+            self.var(ddof=ddof, name="std",
+                     numeric_only=numeric_only, **kwargs)
         )
 
 
@@ -1488,7 +1498,8 @@ class RollingAndExpandingMixin(BaseWindow):
         numba_args: tuple[Any, ...] = ()
         if maybe_use_numba(engine):
             if raw is False:
-                raise ValueError("raw must be `True` when using the numba engine")
+                raise ValueError(
+                    "raw must be `True` when using the numba engine")
             numba_args = args
             if self.method == "single":
                 apply_func = generate_numba_apply_func(
@@ -1501,7 +1512,8 @@ class RollingAndExpandingMixin(BaseWindow):
         elif engine in ("cython", None):
             if engine_kwargs is not None:
                 raise ValueError("cython engine does not accept engine_kwargs")
-            apply_func = self._generate_cython_apply_func(args, kwargs, raw, func)
+            apply_func = self._generate_cython_apply_func(
+                args, kwargs, raw, func)
         else:
             raise ValueError("engine must be either 'numba' or 'cython'")
 
@@ -1654,7 +1666,8 @@ class RollingAndExpandingMixin(BaseWindow):
     ):
         if maybe_use_numba(engine):
             if self.method == "table":
-                raise NotImplementedError("std not supported with method='table'")
+                raise NotImplementedError(
+                    "std not supported with method='table'")
             from pandas.core._numba.kernels import sliding_var
 
             return zsqrt(self._numba_apply(sliding_var, engine_kwargs, ddof=ddof))
@@ -1678,7 +1691,8 @@ class RollingAndExpandingMixin(BaseWindow):
     ):
         if maybe_use_numba(engine):
             if self.method == "table":
-                raise NotImplementedError("var not supported with method='table'")
+                raise NotImplementedError(
+                    "var not supported with method='table'")
             from pandas.core._numba.kernels import sliding_var
 
             return self._numba_apply(sliding_var, engine_kwargs, ddof=ddof)
@@ -1782,12 +1796,15 @@ class RollingAndExpandingMixin(BaseWindow):
                 mean_x_y = window_aggregations.roll_mean(
                     x_array * y_array, start, end, min_periods
                 )
-                mean_x = window_aggregations.roll_mean(x_array, start, end, min_periods)
-                mean_y = window_aggregations.roll_mean(y_array, start, end, min_periods)
+                mean_x = window_aggregations.roll_mean(
+                    x_array, start, end, min_periods)
+                mean_y = window_aggregations.roll_mean(
+                    y_array, start, end, min_periods)
                 count_x_y = window_aggregations.roll_sum(
                     notna(x_array + y_array).astype(np.float64), start, end, 0
                 )
-                result = (mean_x_y - mean_x * mean_y) * (count_x_y / (count_x_y - ddof))
+                result = (mean_x_y - mean_x * mean_y) * \
+                    (count_x_y / (count_x_y - ddof))
             return Series(result, index=x.index, name=x.name, copy=False)
 
         return self._apply_pairwise(
@@ -1829,8 +1846,10 @@ class RollingAndExpandingMixin(BaseWindow):
                 mean_x_y = window_aggregations.roll_mean(
                     x_array * y_array, start, end, min_periods
                 )
-                mean_x = window_aggregations.roll_mean(x_array, start, end, min_periods)
-                mean_y = window_aggregations.roll_mean(y_array, start, end, min_periods)
+                mean_x = window_aggregations.roll_mean(
+                    x_array, start, end, min_periods)
+                mean_y = window_aggregations.roll_mean(
+                    y_array, start, end, min_periods)
                 count_x_y = window_aggregations.roll_sum(
                     notna(x_array + y_array).astype(np.float64), start, end, 0
                 )
@@ -1892,7 +1911,8 @@ class Rolling(RollingAndExpandingMixin):
                 )
             else:
                 try:
-                    unit = dtype_to_unit(self._on.dtype)  # type: ignore[arg-type]
+                    # type: ignore[arg-type]
+                    unit = dtype_to_unit(self._on.dtype)
                 except TypeError:
                     # if not a datetime dtype, eg for empty dataframes
                     unit = "ns"

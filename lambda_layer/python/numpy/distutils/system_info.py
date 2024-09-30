@@ -194,7 +194,7 @@ from distutils.util import get_platform
 
 from numpy.distutils.exec_command import (
     find_executable, filepath_from_subprocess_output,
-    )
+)
 from numpy.distutils.misc_util import (is_sequence, is_string,
                                        get_shared_lib_extension)
 from numpy.distutils.command.config import config as cmd_config
@@ -213,6 +213,7 @@ platform_bits = _bits[platform.architecture()[0]]
 
 
 global_compiler = None
+
 
 def customized_ccompiler():
     global global_compiler
@@ -290,6 +291,7 @@ if sys.platform == 'win32':
 
     _include_dirs = [d.replace('/', os.sep) for d in _include_dirs]
     _lib_dirs = [d.replace('/', os.sep) for d in _lib_dirs]
+
     def add_system_root(library_root):
         """Add a package manager root to the include directories"""
         global default_lib_dirs
@@ -353,7 +355,7 @@ else:
     with open(os.devnull, 'w') as tmp:
         try:
             p = subprocess.Popen(["gcc", "-print-multiarch"], stdout=subprocess.PIPE,
-                         stderr=tmp)
+                                 stderr=tmp)
         except (OSError, DistutilsError):
             # OSError if gcc is not installed, or SandboxViolation (DistutilsError
             # subclass) if an old setuptools bug is triggered (see gh-3160).
@@ -454,11 +456,13 @@ def _parse_env_order(base_order, env):
     sum_neg = order_str_l.count('^') + order_str_l.count('!')
     if neg:
         if sum_neg > 1:
-            raise ValueError(f"Environment variable '{env}' may only contain a single (prefixed) negation: {order_str}")
+            raise ValueError(
+                f"Environment variable '{env}' may only contain a single (prefixed) negation: {order_str}")
         # remove prefix
         order_str = order_str[1:]
     elif sum_neg > 0:
-        raise ValueError(f"Environment variable '{env}' may not mix negated an non-negated items: {order_str}")
+        raise ValueError(
+            f"Environment variable '{env}' may not mix negated an non-negated items: {order_str}")
 
     # Split and lower case
     orders = order_str.lower().split(',')
@@ -527,13 +531,13 @@ def get_info(name, notfound_action=0):
           # openblas which may or may not have embedded lapack
           'openblas': openblas_info,          # use blas_opt instead
           # openblas with embedded lapack
-          'openblas_lapack': openblas_lapack_info, # use blas_opt instead
-          'openblas_clapack': openblas_clapack_info, # use blas_opt instead
+          'openblas_lapack': openblas_lapack_info,  # use blas_opt instead
+          'openblas_clapack': openblas_clapack_info,  # use blas_opt instead
           'blis': blis_info,                  # use blas_opt instead
           'lapack_mkl': lapack_mkl_info,      # use lapack_opt instead
           'blas_mkl': blas_mkl_info,          # use blas_opt instead
-          'lapack_ssl2': lapack_ssl2_info,      
-          'blas_ssl2': blas_ssl2_info,          
+          'lapack_ssl2': lapack_ssl2_info,
+          'blas_ssl2': blas_ssl2_info,
           'accelerate': accelerate_info,      # use blas_opt instead
           'accelerate_lapack': accelerate_lapack_info,
           'openblas64_': openblas64__info,
@@ -641,12 +645,14 @@ class LapackILP64NotFoundError(NotFoundError):
     openblas64_, openblas_ilp64
     """
 
+
 class BlasOptNotFoundError(NotFoundError):
     """
     Optimized (vendor) Blas libraries are not found.
     Falls back to netlib Blas library which has worse performance.
     A better performance should be easily gained by switching
     Blas library."""
+
 
 class BlasNotFoundError(NotFoundError):
     """
@@ -655,12 +661,14 @@ class BlasNotFoundError(NotFoundError):
     numpy/distutils/site.cfg file (section [blas]) or by setting
     the BLAS environment variable."""
 
+
 class BlasILP64NotFoundError(NotFoundError):
     """
     64-bit Blas libraries not found.
     Known libraries in numpy/distutils/site.cfg file are:
     openblas64_, openblas_ilp64
     """
+
 
 class BlasSrcNotFoundError(BlasNotFoundError):
     """
@@ -721,9 +729,9 @@ class system_info:
     notfounderror = NotFoundError
 
     def __init__(self,
-                  default_lib_dirs=default_lib_dirs,
-                  default_include_dirs=default_include_dirs,
-                  ):
+                 default_lib_dirs=default_lib_dirs,
+                 default_include_dirs=default_include_dirs,
+                 ):
         self.__class__.info = {}
         self.local_prefixes = []
         defaults = {'library_dirs': os.pathsep.join(default_lib_dirs),
@@ -821,7 +829,6 @@ class system_info:
         raise AliasedOptionError(AliasedOptionError.__doc__.format(
             section=self.section, options='[{}]'.format(', '.join(options))))
 
-
     def has_info(self):
         return self.__class__.__name__ in self.saved_results
 
@@ -904,8 +911,8 @@ class system_info:
                     b = os.path.basename(d)
                     b = os.path.splitext(b)[0]
                     if b[:3] == 'lib':
-                        log.info('Replacing _lib_names[0]==%r with %r' \
-                              % (self._lib_names[0], b[3:]))
+                        log.info('Replacing _lib_names[0]==%r with %r'
+                                 % (self._lib_names[0], b[3:]))
                         self._lib_names[0] = b[3:]
             else:
                 ds = d.split(os.pathsep)
@@ -923,7 +930,8 @@ class system_info:
         ret = []
         for d in dirs:
             if len(d) > 0 and not os.path.isdir(d):
-                warnings.warn('Specified path %s is invalid.' % d, stacklevel=2)
+                warnings.warn('Specified path %s is invalid.' %
+                              d, stacklevel=2)
                 continue
 
             if d not in ret:
@@ -1063,7 +1071,8 @@ class system_info:
         found_dirs, found_libs = self._find_libs(lib_dirs, libs, exts)
         if len(found_libs) > 0 and len(found_libs) == len(libs):
             # Now, check for optional libraries
-            opt_found_dirs, opt_found_libs = self._find_libs(lib_dirs, opt_libs, exts)
+            opt_found_dirs, opt_found_libs = self._find_libs(
+                lib_dirs, opt_libs, exts)
             found_libs.extend(opt_found_libs)
             for lib_dir in opt_found_dirs:
                 if lib_dir not in found_dirs:
@@ -1095,18 +1104,18 @@ class fft_opt_info(system_info):
 
 
 class fftw_info(system_info):
-    #variables to override
+    # variables to override
     section = 'fftw'
     dir_env_var = 'FFTW'
     notfounderror = FFTWNotFoundError
-    ver_info = [{'name':'fftw3',
-                    'libs':['fftw3'],
-                    'includes':['fftw3.h'],
-                    'macros':[('SCIPY_FFTW3_H', None)]},
-                  {'name':'fftw2',
-                    'libs':['rfftw', 'fftw'],
-                    'includes':['fftw.h', 'rfftw.h'],
-                    'macros':[('SCIPY_FFTW_H', None)]}]
+    ver_info = [{'name': 'fftw3',
+                 'libs': ['fftw3'],
+                 'includes': ['fftw3.h'],
+                 'macros': [('SCIPY_FFTW3_H', None)]},
+                {'name': 'fftw2',
+                 'libs': ['rfftw', 'fftw'],
+                    'includes': ['fftw.h', 'rfftw.h'],
+                    'macros': [('SCIPY_FFTW_H', None)]}]
 
     def calc_ver_info(self, ver_param):
         """Returns True on successful version detection, else False"""
@@ -1142,82 +1151,82 @@ class fftw_info(system_info):
 
 
 class fftw2_info(fftw_info):
-    #variables to override
+    # variables to override
     section = 'fftw'
     dir_env_var = 'FFTW'
     notfounderror = FFTWNotFoundError
-    ver_info = [{'name':'fftw2',
-                    'libs':['rfftw', 'fftw'],
-                    'includes':['fftw.h', 'rfftw.h'],
-                    'macros':[('SCIPY_FFTW_H', None)]}
-                  ]
+    ver_info = [{'name': 'fftw2',
+                 'libs': ['rfftw', 'fftw'],
+                 'includes': ['fftw.h', 'rfftw.h'],
+                 'macros': [('SCIPY_FFTW_H', None)]}
+                ]
 
 
 class fftw3_info(fftw_info):
-    #variables to override
+    # variables to override
     section = 'fftw3'
     dir_env_var = 'FFTW3'
     notfounderror = FFTWNotFoundError
-    ver_info = [{'name':'fftw3',
-                    'libs':['fftw3'],
-                    'includes':['fftw3.h'],
-                    'macros':[('SCIPY_FFTW3_H', None)]},
-                  ]
+    ver_info = [{'name': 'fftw3',
+                 'libs': ['fftw3'],
+                 'includes': ['fftw3.h'],
+                 'macros': [('SCIPY_FFTW3_H', None)]},
+                ]
 
-    
+
 class fftw3_armpl_info(fftw_info):
     section = 'fftw3'
     dir_env_var = 'ARMPL_DIR'
     notfounderror = FFTWNotFoundError
     ver_info = [{'name': 'fftw3',
-                    'libs': ['armpl_lp64_mp'],
-                    'includes': ['fftw3.h'],
-                    'macros': [('SCIPY_FFTW3_H', None)]}]
+                 'libs': ['armpl_lp64_mp'],
+                 'includes': ['fftw3.h'],
+                 'macros': [('SCIPY_FFTW3_H', None)]}]
 
 
 class dfftw_info(fftw_info):
     section = 'fftw'
     dir_env_var = 'FFTW'
-    ver_info = [{'name':'dfftw',
-                    'libs':['drfftw', 'dfftw'],
-                    'includes':['dfftw.h', 'drfftw.h'],
-                    'macros':[('SCIPY_DFFTW_H', None)]}]
+    ver_info = [{'name': 'dfftw',
+                 'libs': ['drfftw', 'dfftw'],
+                 'includes': ['dfftw.h', 'drfftw.h'],
+                 'macros': [('SCIPY_DFFTW_H', None)]}]
 
 
 class sfftw_info(fftw_info):
     section = 'fftw'
     dir_env_var = 'FFTW'
-    ver_info = [{'name':'sfftw',
-                    'libs':['srfftw', 'sfftw'],
-                    'includes':['sfftw.h', 'srfftw.h'],
-                    'macros':[('SCIPY_SFFTW_H', None)]}]
+    ver_info = [{'name': 'sfftw',
+                 'libs': ['srfftw', 'sfftw'],
+                 'includes': ['sfftw.h', 'srfftw.h'],
+                 'macros': [('SCIPY_SFFTW_H', None)]}]
 
 
 class fftw_threads_info(fftw_info):
     section = 'fftw'
     dir_env_var = 'FFTW'
-    ver_info = [{'name':'fftw threads',
-                    'libs':['rfftw_threads', 'fftw_threads'],
-                    'includes':['fftw_threads.h', 'rfftw_threads.h'],
-                    'macros':[('SCIPY_FFTW_THREADS_H', None)]}]
+    ver_info = [{'name': 'fftw threads',
+                 'libs': ['rfftw_threads', 'fftw_threads'],
+                 'includes': ['fftw_threads.h', 'rfftw_threads.h'],
+                 'macros': [('SCIPY_FFTW_THREADS_H', None)]}]
 
 
 class dfftw_threads_info(fftw_info):
     section = 'fftw'
     dir_env_var = 'FFTW'
-    ver_info = [{'name':'dfftw threads',
-                    'libs':['drfftw_threads', 'dfftw_threads'],
-                    'includes':['dfftw_threads.h', 'drfftw_threads.h'],
-                    'macros':[('SCIPY_DFFTW_THREADS_H', None)]}]
+    ver_info = [{'name': 'dfftw threads',
+                 'libs': ['drfftw_threads', 'dfftw_threads'],
+                 'includes': ['dfftw_threads.h', 'drfftw_threads.h'],
+                 'macros': [('SCIPY_DFFTW_THREADS_H', None)]}]
 
 
 class sfftw_threads_info(fftw_info):
     section = 'fftw'
     dir_env_var = 'FFTW'
-    ver_info = [{'name':'sfftw threads',
-                    'libs':['srfftw_threads', 'sfftw_threads'],
-                    'includes':['sfftw_threads.h', 'srfftw_threads.h'],
-                    'macros':[('SCIPY_SFFTW_THREADS_H', None)]}]
+    ver_info = [{'name': 'sfftw threads',
+                 'libs': ['srfftw_threads', 'sfftw_threads'],
+                 'includes': ['sfftw_threads.h', 'srfftw_threads.h'],
+                 'macros': [('SCIPY_SFFTW_THREADS_H', None)]}]
 
 
 class djbfft_info(system_info):
@@ -1339,7 +1348,7 @@ class ssl2_info(system_info):
     # Multi-threaded version. Python itself must be built by Fujitsu compiler.
     _lib_ssl2 = ['fjlapackexsve']
     # Single-threaded version
-    #_lib_ssl2 = ['fjlapacksve']
+    # _lib_ssl2 = ['fjlapacksve']
 
     def get_tcsds_rootdir(self):
         tcsdsroot = os.environ.get('TCSDS_PATH', None)
@@ -1356,7 +1365,7 @@ class ssl2_info(system_info):
                 self,
                 default_lib_dirs=[os.path.join(tcsdsroot, 'lib64')],
                 default_include_dirs=[os.path.join(tcsdsroot,
-                    'clang-comp/include')])
+                                                   'clang-comp/include')])
 
     def calc_info(self):
         tcsdsroot = self.get_tcsds_rootdir()
@@ -1389,7 +1398,6 @@ class blas_ssl2_info(ssl2_info):
     pass
 
 
-
 class armpl_info(system_info):
     section = 'armpl'
     dir_env_var = 'ARMPL_DIR'
@@ -1408,8 +1416,10 @@ class armpl_info(system_info):
                     include_dirs=incl_dirs)
         self.set_info(**info)
 
+
 class lapack_armpl_info(armpl_info):
     pass
+
 
 class blas_armpl_info(armpl_info):
     pass
@@ -1433,7 +1443,7 @@ class atlas_info(system_info):
         dirs = []
         for d in pre_dirs:
             dirs.extend(self.combine_paths(d, ['atlas*', 'ATLAS*',
-                                         'sse', '3dnow', 'sse2']) + [d])
+                                               'sse', '3dnow', 'sse2']) + [d])
         return [d for d in dirs if os.path.isdir(d)]
 
     def calc_info(self):
@@ -1667,7 +1677,7 @@ class lapack_src_info(system_info):
                 src_dir = d
                 break
         if not src_dir:
-            #XXX: Get sources from netlib. May be ask first.
+            # XXX: Get sources from netlib. May be ask first.
             return
         # The following is extracted from LAPACK-3.0/SRC/Makefile.
         # Added missing names from lapack-lite-3.1.1/SRC/Makefile
@@ -1744,10 +1754,10 @@ class lapack_src_info(system_info):
         oclasrc = ' icmax1 scsum1 '                # *.f
         ozlasrc = ' izmax1 dzsum1 '                # *.f
         sources = ['s%s.f' % f for f in (sclaux + slasrc).split()] \
-                  + ['d%s.f' % f for f in (dzlaux + dlasrc).split()] \
-                  + ['c%s.f' % f for f in (clasrc).split()] \
-                  + ['z%s.f' % f for f in (zlasrc).split()] \
-                  + ['%s.f' % f for f in (allaux + oclasrc + ozlasrc).split()]
+            + ['d%s.f' % f for f in (dzlaux + dlasrc).split()] \
+            + ['c%s.f' % f for f in (clasrc).split()] \
+            + ['z%s.f' % f for f in (zlasrc).split()] \
+            + ['%s.f' % f for f in (allaux + oclasrc + ozlasrc).split()]
         sources = [os.path.join(src_dir, f) for f in sources]
         # Lapack 3.1:
         src_dir2 = os.path.join(src_dir, '..', 'INSTALL')
@@ -1762,6 +1772,7 @@ class lapack_src_info(system_info):
         sources = [f for f in sources if os.path.isfile(f)]
         info = {'sources': sources, 'language': 'f77'}
         self.set_info(**info)
+
 
 atlas_version_c_text = r'''
 /* This file is generated from numpy/distutils/system_info.py */
@@ -1787,12 +1798,12 @@ def get_atlas_version(**config):
     try:
         s, o = c.get_output(atlas_version_c_text,
                             libraries=libraries, library_dirs=library_dirs,
-                           )
+                            )
         if s and re.search(r'undefined reference to `_gfortran', o, re.M):
             s, o = c.get_output(atlas_version_c_text,
                                 libraries=libraries + ['gfortran'],
                                 library_dirs=library_dirs,
-                               )
+                                )
             if not s:
                 warnings.warn(textwrap.dedent("""
                     *****************************************************
@@ -1855,7 +1866,7 @@ class lapack_opt_info(system_info):
     lapack_order = ['armpl', 'mkl', 'ssl2', 'openblas', 'flame',
                     'accelerate', 'atlas', 'lapack']
     order_env_var_name = 'NPY_LAPACK_ORDER'
-    
+
     def _calc_info_armpl(self):
         info = get_info('lapack_armpl')
         if info:
@@ -1945,7 +1956,8 @@ class lapack_opt_info(system_info):
             warnings.warn(LapackNotFoundError.__doc__ or '', stacklevel=3)
             info_src = get_info('lapack_src')
             if not info_src:
-                warnings.warn(LapackSrcNotFoundError.__doc__ or '', stacklevel=3)
+                warnings.warn(
+                    LapackSrcNotFoundError.__doc__ or '', stacklevel=3)
                 return {}
             dict_append(info, libraries=[('flapack_src', info_src)])
         return info
@@ -1974,7 +1986,8 @@ class lapack_opt_info(system_info):
         return getattr(self, '_calc_info_{}'.format(name))()
 
     def calc_info(self):
-        lapack_order, unknown_order = _parse_env_order(self.lapack_order, self.order_env_var_name)
+        lapack_order, unknown_order = _parse_env_order(
+            self.lapack_order, self.order_env_var_name)
         if len(unknown_order) > 0:
             raise ValueError("lapack_opt_info user defined "
                              "LAPACK order has unacceptable "
@@ -2049,7 +2062,7 @@ class blas_opt_info(system_info):
     blas_order = ['armpl', 'mkl', 'ssl2', 'blis', 'openblas',
                   'accelerate', 'atlas', 'blas']
     order_env_var_name = 'NPY_BLAS_ORDER'
-    
+
     def _calc_info_armpl(self):
         info = get_info('blas_armpl')
         if info:
@@ -2137,7 +2150,7 @@ class blas_opt_info(system_info):
         if 'NPY_CBLAS_LIBS' in os.environ:
             info['define_macros'].append(('HAVE_CBLAS', None))
             info['extra_link_args'].extend(
-                                        os.environ['NPY_CBLAS_LIBS'].split())
+                os.environ['NPY_CBLAS_LIBS'].split())
         self.set_info(**info)
         return True
 
@@ -2145,9 +2158,11 @@ class blas_opt_info(system_info):
         return getattr(self, '_calc_info_{}'.format(name))()
 
     def calc_info(self):
-        blas_order, unknown_order = _parse_env_order(self.blas_order, self.order_env_var_name)
+        blas_order, unknown_order = _parse_env_order(
+            self.blas_order, self.order_env_var_name)
         if len(unknown_order) > 0:
-            raise ValueError("blas_opt_info user defined BLAS order has unacceptable values: {}".format(unknown_order))
+            raise ValueError(
+                "blas_opt_info user defined BLAS order has unacceptable values: {}".format(unknown_order))
 
         if 'NPY_BLAS_LIBS' in os.environ:
             # Bypass autodetection, set language to F77 and use env var linker
@@ -2220,7 +2235,8 @@ class blas_info(system_info):
             info['language'] = 'f77'  # XXX: is it generally true?
             # If cblas is given as an option, use those
             cblas_info_obj = cblas_info()
-            cblas_opt = cblas_info_obj.get_option_single('cblas_libs', 'libraries')
+            cblas_opt = cblas_info_obj.get_option_single(
+                'cblas_libs', 'libraries')
             cblas_libs = cblas_info_obj.get_libs(cblas_opt, None)
             if cblas_libs:
                 info['libraries'] = cblas_libs + blas_libs
@@ -2355,9 +2371,11 @@ class openblas_info(blas_info):
 
         info['define_macros'] = [('HAVE_CBLAS', None)]
         if self.symbol_prefix:
-            info['define_macros'] += [('BLAS_SYMBOL_PREFIX', self.symbol_prefix)]
+            info['define_macros'] += [('BLAS_SYMBOL_PREFIX',
+                                       self.symbol_prefix)]
         if self.symbol_suffix:
-            info['define_macros'] += [('BLAS_SYMBOL_SUFFIX', self.symbol_suffix)]
+            info['define_macros'] += [('BLAS_SYMBOL_SUFFIX',
+                                       self.symbol_suffix)]
 
         return info
 
@@ -2441,6 +2459,7 @@ class openblas_info(blas_info):
             shutil.rmtree(tmpdir)
         return res
 
+
 class openblas_lapack_info(openblas_info):
     section = 'openblas'
     dir_env_var = 'OPENBLAS'
@@ -2448,8 +2467,10 @@ class openblas_lapack_info(openblas_info):
     _require_symbols = ['zungqr_']
     notfounderror = BlasNotFoundError
 
+
 class openblas_clapack_info(openblas_lapack_info):
     _lib_names = ['openblas', 'lapack']
+
 
 class openblas_ilp64_info(openblas_info):
     section = 'openblas_ilp64'
@@ -2464,6 +2485,7 @@ class openblas_ilp64_info(openblas_info):
             info['define_macros'] += [('HAVE_BLAS_ILP64', None)]
         return info
 
+
 class openblas_ilp64_lapack_info(openblas_ilp64_info):
     _require_symbols = ['dgemm_', 'cblas_dgemm', 'zungqr_', 'LAPACKE_zungqr']
 
@@ -2473,6 +2495,7 @@ class openblas_ilp64_lapack_info(openblas_ilp64_info):
             info['define_macros'] += [('HAVE_LAPACKE', None)]
         return info
 
+
 class openblas64__info(openblas_ilp64_info):
     # ILP64 Openblas, with default symbol suffix
     section = 'openblas64_'
@@ -2481,8 +2504,10 @@ class openblas64__info(openblas_ilp64_info):
     symbol_suffix = '64_'
     symbol_prefix = ''
 
+
 class openblas64__lapack_info(openblas_ilp64_lapack_info, openblas64__info):
     pass
+
 
 class blis_info(blas_info):
     section = 'blis'
@@ -2613,7 +2638,7 @@ class accelerate_info(system_info):
             else:
                 intel = 0
             if (os.path.exists('/System/Library/Frameworks'
-                              '/Accelerate.framework/') and
+                               '/Accelerate.framework/') and
                     'accelerate' in libraries):
                 if intel:
                     args.extend(['-msse3'])
@@ -2622,7 +2647,7 @@ class accelerate_info(system_info):
                 link_args.extend(['-Wl,-framework', '-Wl,Accelerate'])
             elif (os.path.exists('/System/Library/Frameworks'
                                  '/vecLib.framework/') and
-                      'veclib' in libraries):
+                  'veclib' in libraries):
                 if intel:
                     args.extend(['-msse3'])
                 args.extend([
@@ -2635,7 +2660,7 @@ class accelerate_info(system_info):
                     ('HAVE_CBLAS', None),
                     ('ACCELERATE_NEW_LAPACK', None),
                 ]
-                if(os.getenv('NPY_USE_BLAS_ILP64', None)):
+                if (os.getenv('NPY_USE_BLAS_ILP64', None)):
                     print('Setting HAVE_BLAS_ILP64')
                     macros += [
                         ('HAVE_BLAS_ILP64', None),
@@ -2647,9 +2672,11 @@ class accelerate_info(system_info):
 
         return
 
+
 class accelerate_lapack_info(accelerate_info):
     def _calc_info(self):
         return super()._calc_info()
+
 
 class blas_src_info(system_info):
     # BLAS_SRC is deprecated, please do not use this!
@@ -2674,7 +2701,7 @@ class blas_src_info(system_info):
                 src_dir = d
                 break
         if not src_dir:
-            #XXX: Get sources from netlib. May be ask first.
+            # XXX: Get sources from netlib. May be ask first.
             return
         blas1 = '''
         caxpy csscal dnrm2 dzasum saxpy srotg zdotc ccopy cswap drot
@@ -2698,9 +2725,9 @@ class blas_src_info(system_info):
         dgemm dtrmm ssymm strsm zher2k zsyrk cher2k csyrk dsymm dtrsm
         ssyr2k zherk ztrmm cherk ctrmm dsyr2k ssyrk zgemm zsymm ztrsm
         '''
-        sources = [os.path.join(src_dir, f + '.f') \
+        sources = [os.path.join(src_dir, f + '.f')
                    for f in (blas1 + blas2 + blas3).split()]
-        #XXX: should we check here actual existence of source files?
+        # XXX: should we check here actual existence of source files?
         sources = [f for f in sources if os.path.isfile(f)]
         info = {'sources': sources, 'language': 'f77'}
         self.set_info(**info)
@@ -2717,7 +2744,7 @@ class x11_info(system_info):
                              default_include_dirs=default_x11_include_dirs)
 
     def calc_info(self):
-        if sys.platform  in ['win32']:
+        if sys.platform in ['win32']:
             return
         lib_dirs = self.get_lib_dirs()
         include_dirs = self.get_include_dirs()
@@ -2899,8 +2926,8 @@ class boost_python_info(system_info):
         bpl_srcs += glob(os.path.join(srcs_dir, '*', '*.cpp'))
         info = {'libraries': [('boost_python_src',
                                {'include_dirs': [src_dir] + py_incl_dirs,
-                                'sources':bpl_srcs}
-                              )],
+                                'sources': bpl_srcs}
+                               )],
                 'include_dirs': [src_dir],
                 }
         if info:
@@ -2941,8 +2968,8 @@ class agg2_info(system_info):
                 [('agg2_src',
                   {'sources': agg2_srcs,
                    'include_dirs': [os.path.join(src_dir, 'include')],
-                  }
-                 )],
+                   }
+                  )],
                 'include_dirs': [os.path.join(src_dir, 'include')],
                 }
         if info:
@@ -2978,8 +3005,8 @@ class _pkg_config_info(system_info):
     def calc_info(self):
         config_exe = find_executable(self.get_config_exe())
         if not config_exe:
-            log.warn('File not found: %s. Cannot determine %s info.' \
-                  % (config_exe, self.section))
+            log.warn('File not found: %s. Cannot determine %s info.'
+                     % (config_exe, self.section))
             return
         info = {}
         macros = []
@@ -3195,6 +3222,7 @@ def combine_paths(*args, **kws):
     log.debug('(paths: %s)', ','.join(result))
     return result
 
+
 language_map = {'c': 0, 'c++': 1, 'f77': 2, 'f90': 3}
 inv_language_map = {0: 'c', 1: 'c++', 2: 'f77', 3: 'f90'}
 
@@ -3263,6 +3291,7 @@ def show_all(argv=None):
         conf.get_info()
     if show_only:
         log.info('Info classes not defined: %s', ','.join(show_only))
+
 
 if __name__ == "__main__":
     show_all()

@@ -174,7 +174,7 @@ def test_nep50_integer_conversion_errors():
 
     # Error message depends on platform (maybe unsigned int or unsigned long)
     with pytest.raises(OverflowError,
-            match="Python integer -1 out of bounds for uint8"):
+                       match="Python integer -1 out of bounds for uint8"):
         np.uint8(1) + -1
 
 
@@ -209,7 +209,7 @@ def test_nep50_huge_integers(ufunc, state):
 
     if state == "weak_and_warn":
         with pytest.warns(UserWarning,
-                match="result dtype changed.*float64.*uint64"):
+                          match="result dtype changed.*float64.*uint64"):
             with pytest.raises(OverflowError):
                 ufunc(np.uint64(0), 2**64)
     else:
@@ -219,7 +219,7 @@ def test_nep50_huge_integers(ufunc, state):
     # However, 2**63 can be represented by the uint64 (and that is used):
     if state == "weak_and_warn":
         with pytest.warns(UserWarning,
-                match="result dtype changed.*float64.*uint64"):
+                          match="result dtype changed.*float64.*uint64"):
             res = ufunc(np.uint64(1), 2**63)
     else:
         res = ufunc(np.uint64(1), 2**63)
@@ -252,22 +252,22 @@ def test_nep50_in_concat_and_choose():
 
 
 @pytest.mark.parametrize("expected,dtypes,optional_dtypes", [
-        (np.float32, [np.float32],
-            [np.float16, 0.0, np.uint16, np.int16, np.int8, 0]),
-        (np.complex64, [np.float32, 0j],
-            [np.float16, 0.0, np.uint16, np.int16, np.int8, 0]),
-        (np.float32, [np.int16, np.uint16, np.float16],
-            [np.int8, np.uint8, np.float32, 0., 0]),
-        (np.int32, [np.int16, np.uint16],
-            [np.int8, np.uint8, 0, np.bool]),
-        ])
+    (np.float32, [np.float32],
+     [np.float16, 0.0, np.uint16, np.int16, np.int8, 0]),
+    (np.complex64, [np.float32, 0j],
+     [np.float16, 0.0, np.uint16, np.int16, np.int8, 0]),
+    (np.float32, [np.int16, np.uint16, np.float16],
+     [np.int8, np.uint8, np.float32, 0., 0]),
+    (np.int32, [np.int16, np.uint16],
+     [np.int8, np.uint8, 0, np.bool]),
+])
 @hypothesis.given(data=strategies.data())
 def test_expected_promotion(expected, dtypes, optional_dtypes, data):
     np._set_promotion_state("weak")
 
     # Sample randomly while ensuring "dtypes" is always present:
     optional = data.draw(strategies.lists(
-            strategies.sampled_from(dtypes + optional_dtypes)))
+        strategies.sampled_from(dtypes + optional_dtypes)))
     all_dtypes = dtypes + optional
     dtypes_sample = data.draw(strategies.permutations(all_dtypes))
 
@@ -276,13 +276,13 @@ def test_expected_promotion(expected, dtypes, optional_dtypes, data):
 
 
 @pytest.mark.parametrize("sctype",
-        [np.int8, np.int16, np.int32, np.int64,
-         np.uint8, np.uint16, np.uint32, np.uint64])
+                         [np.int8, np.int16, np.int32, np.int64,
+                          np.uint8, np.uint16, np.uint32, np.uint64])
 @pytest.mark.parametrize("other_val",
-        [-2*100, -1, 0, 9, 10, 11, 2**63, 2*100])
+                         [-2*100, -1, 0, 9, 10, 11, 2**63, 2*100])
 @pytest.mark.parametrize("comp",
-        [operator.eq, operator.ne, operator.le, operator.lt,
-         operator.ge, operator.gt])
+                         [operator.eq, operator.ne, operator.le, operator.lt,
+                          operator.ge, operator.gt])
 def test_integer_comparison(sctype, other_val, comp):
     np._set_promotion_state("weak")
 
@@ -304,8 +304,8 @@ def test_integer_comparison(sctype, other_val, comp):
 
 
 @pytest.mark.parametrize("comp",
-        [np.equal, np.not_equal, np.less_equal, np.less,
-         np.greater_equal, np.greater])
+                         [np.equal, np.not_equal, np.less_equal, np.less,
+                          np.greater_equal, np.greater])
 def test_integer_integer_comparison(comp):
     np._set_promotion_state("weak")
 
@@ -322,8 +322,8 @@ def create_with_array(sctype, value):
 
 
 @pytest.mark.parametrize("sctype",
-        [np.int8, np.int16, np.int32, np.int64,
-         np.uint8, np.uint16, np.uint32, np.uint64])
+                         [np.int8, np.int16, np.int32, np.int64,
+                          np.uint8, np.uint16, np.uint32, np.uint64])
 @pytest.mark.parametrize("create", [create_with_scalar, create_with_array])
 def test_oob_creation(sctype, create):
     iinfo = np.iinfo(sctype)

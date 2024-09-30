@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 from numpy.random import random
 from numpy.testing import (
-        assert_array_equal, assert_raises, assert_allclose, IS_WASM
-        )
+    assert_array_equal, assert_raises, assert_allclose, IS_WASM
+)
 import threading
 import queue
 
@@ -346,7 +346,8 @@ class TestFFT1D:
                                     np.fft.rfftn, np.fft.irfftn])
     def test_axes(self, op):
         x = random((30, 20, 10))
-        axes = [(0, 1, 2), (0, 2, 1), (1, 0, 2), (1, 2, 0), (2, 0, 1), (2, 1, 0)]
+        axes = [(0, 1, 2), (0, 2, 1), (1, 0, 2),
+                (1, 2, 0), (2, 0, 1), (2, 1, 0)]
         for a in axes:
             op_tr = op(np.transpose(x, a))
             tr_op = np.transpose(op(x, axes=a), a)
@@ -459,13 +460,13 @@ class TestFFT1D:
 
 
 @pytest.mark.parametrize(
-        "dtype",
-        [np.float32, np.float64, np.complex64, np.complex128])
+    "dtype",
+    [np.float32, np.float64, np.complex64, np.complex128])
 @pytest.mark.parametrize("order", ["F", 'non-contiguous'])
 @pytest.mark.parametrize(
-        "fft",
-        [np.fft.fft, np.fft.fft2, np.fft.fftn,
-         np.fft.ifft, np.fft.ifft2, np.fft.ifftn])
+    "fft",
+    [np.fft.fft, np.fft.fft2, np.fft.fftn,
+     np.fft.ifft, np.fft.ifft2, np.fft.ifftn])
 def test_fft_with_order(dtype, order, fft):
     # Check that FFT/IFFT produces identical results for C, Fortran and
     # non contiguous arrays
@@ -507,6 +508,7 @@ def test_fft_output_order(order, n):
     assert res.flags.c_contiguous == x.flags.c_contiguous
     assert res.flags.f_contiguous == x.flags.f_contiguous
 
+
 @pytest.mark.skipif(IS_WASM, reason="Cannot start thread")
 class TestFFTThreadSafe:
     threads = 16
@@ -528,7 +530,7 @@ class TestFFTThreadSafe:
         # Make sure all threads returned the correct value
         for i in range(self.threads):
             assert_array_equal(q.get(timeout=5), expected,
-                'Function returned wrong value in multithreaded context')
+                               'Function returned wrong value in multithreaded context')
 
     def test_fft(self):
         a = np.ones(self.input_shape) * 1+0j

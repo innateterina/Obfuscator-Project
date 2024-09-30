@@ -92,7 +92,8 @@ bar|4|5|6
 baz|7|8|9
 """
     parser = python_parser_only
-    result = parser.read_csv(StringIO(data), index_col=0, sep=None, comment="#")
+    result = parser.read_csv(
+        StringIO(data), index_col=0, sep=None, comment="#")
     expected = DataFrame(
         [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
         columns=["A", "B", "C"],
@@ -119,7 +120,8 @@ baz|7|8|9
     else:
         data = StringIO(data)
 
-    result = parser.read_csv(data, index_col=0, sep=None, skiprows=2, encoding=encoding)
+    result = parser.read_csv(data, index_col=0, sep=None,
+                             skiprows=2, encoding=encoding)
     expected = DataFrame(
         [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
         columns=["A", "B", "C"],
@@ -131,7 +133,8 @@ baz|7|8|9
 def test_single_line(python_parser_only):
     # see gh-6607: sniff separator
     parser = python_parser_only
-    result = parser.read_csv(StringIO("1,2"), names=["a", "b"], header=None, sep=None)
+    result = parser.read_csv(StringIO("1,2"), names=[
+                             "a", "b"], header=None, sep=None)
 
     expected = DataFrame({"a": [1], "b": [2]})
     tm.assert_frame_equal(result, expected)
@@ -150,7 +153,8 @@ also also skip this
     parser = python_parser_only
     result = parser.read_csv(StringIO(data), **kwargs)
 
-    expected = DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]], columns=["A", "B", "C"])
+    expected = DataFrame([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                         columns=["A", "B", "C"])
     tm.assert_frame_equal(result, expected)
 
 
@@ -232,7 +236,8 @@ def test_skipfooter_with_decimal(python_parser_only, add_footer):
     else:
         kwargs = {}
 
-    result = parser.read_csv(StringIO(data), names=["a"], decimal="#", **kwargs)
+    result = parser.read_csv(StringIO(data), names=[
+                             "a"], decimal="#", **kwargs)
     tm.assert_frame_equal(result, expected)
 
 

@@ -81,8 +81,8 @@ def test_basic_getitem_with_labels(datetime_series):
     expected = datetime_series.reindex(indices)
     tm.assert_series_equal(result, expected)
 
-    result = datetime_series[indices[0] : indices[2]]
-    expected = datetime_series.loc[indices[0] : indices[2]]
+    result = datetime_series[indices[0]: indices[2]]
+    expected = datetime_series.loc[indices[0]: indices[2]]
     tm.assert_series_equal(result, expected)
 
 
@@ -254,7 +254,8 @@ def test_slice(string_series, object_series, using_copy_on_write, warn_copy_on_w
     assert string_series[numSlice.index[0]] == numSlice[numSlice.index[0]]
 
     assert numSlice.index[1] == string_series.index[11]
-    tm.assert_numpy_array_equal(np.array(numSliceEnd), np.array(string_series)[-10:])
+    tm.assert_numpy_array_equal(
+        np.array(numSliceEnd), np.array(string_series)[-10:])
 
     # Test return view.
     sl = string_series[10:20]
@@ -275,7 +276,8 @@ def test_timedelta_assignment():
     tm.assert_series_equal(s, Series(Timedelta("1 days"), index=["B"]))
 
     s = s.reindex(s.index.insert(0, "A"))
-    tm.assert_series_equal(s, Series([np.nan, Timedelta("1 days")], index=["A", "B"]))
+    tm.assert_series_equal(
+        s, Series([np.nan, Timedelta("1 days")], index=["A", "B"]))
 
     s.loc["A"] = timedelta(1)
     expected = Series(Timedelta("1 days"), index=["A", "B"])
@@ -346,8 +348,10 @@ def test_slice_with_negative_step(index):
         tm.assert_indexing_slices_equivalent(ser, SLC[:key:-1], SLC[:8:-1])
 
         for key2 in [keystr2, index[13]]:
-            tm.assert_indexing_slices_equivalent(ser, SLC[key2:key:-1], SLC[13:8:-1])
-            tm.assert_indexing_slices_equivalent(ser, SLC[key:key2:-1], SLC[0:0:-1])
+            tm.assert_indexing_slices_equivalent(
+                ser, SLC[key2:key:-1], SLC[13:8:-1])
+            tm.assert_indexing_slices_equivalent(
+                ser, SLC[key:key2:-1], SLC[0:0:-1])
 
 
 def test_tuple_index():
@@ -491,7 +495,8 @@ class TestSetitemValidation:
         np.datetime64("NaT"),
         np.timedelta64("NaT"),
     ]
-    _indexers = [0, [0], slice(0, 1), [True, False, False], slice(None, None, None)]
+    _indexers = [0, [0], slice(
+        0, 1), [True, False, False], slice(None, None, None)]
 
     @pytest.mark.parametrize(
         "invalid", _invalid_scalars + [1, 1.0, np.int64(1), np.float64(1)]

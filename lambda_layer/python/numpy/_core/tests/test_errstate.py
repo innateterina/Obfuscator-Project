@@ -11,6 +11,7 @@ from numpy.testing import assert_, assert_raises, IS_WASM
 hosttype = sysconfig.get_config_var('HOST_GNU_TYPE')
 arm_softfloat = False if hosttype is None else hosttype.endswith('gnueabi')
 
+
 class TestErrstate:
     @pytest.mark.skipif(IS_WASM, reason="fp errors don't work in wasm")
     @pytest.mark.skipif(arm_softfloat,
@@ -46,6 +47,7 @@ class TestErrstate:
                         reason='platform/cpu issue with FPU (gh-15562)')
     def test_errcall(self):
         count = 0
+
         def foo(*args):
             nonlocal count
             count += 1
@@ -68,7 +70,7 @@ class TestErrstate:
         def foo():
             a = -np.arange(3)
             a // 0
-            
+
         foo()
 
     def test_errstate_enter_once(self):
@@ -79,7 +81,7 @@ class TestErrstate:
         # The errstate context cannot be entered twice as that would not be
         # thread-safe
         with pytest.raises(TypeError,
-                match="Cannot enter `np.errstate` twice"):
+                           match="Cannot enter `np.errstate` twice"):
             with errstate:
                 pass
 
@@ -117,8 +119,8 @@ class TestErrstate:
         async def main():
             # simply run all three function multiple times:
             await asyncio.gather(
-                    func1(), func2(), func3(), func1(), func2(), func3(),
-                    func1(), func2(), func3(), func1(), func2(), func3())
+                func1(), func2(), func3(), func1(), func2(), func3(),
+                func1(), func2(), func3(), func1(), func2(), func3())
 
         loop = asyncio.new_event_loop()
         with np.errstate(invalid="warn"):

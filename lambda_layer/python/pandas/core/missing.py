@@ -88,7 +88,8 @@ def mask_missing(arr: ArrayLike, values_to_mask) -> npt.NDArray[np.bool_]:
         cls = dtype.construct_array_type()
         if not lib.is_list_like(values_to_mask):
             values_to_mask = [values_to_mask]
-        values_to_mask = cls._from_sequence(values_to_mask, dtype=dtype, copy=False)
+        values_to_mask = cls._from_sequence(
+            values_to_mask, dtype=dtype, copy=False)
 
     potential_na = False
     if is_object_dtype(arr.dtype):
@@ -127,7 +128,8 @@ def mask_missing(arr: ArrayLike, values_to_mask) -> npt.NDArray[np.bool_]:
 
                     if not isinstance(new_mask, np.ndarray):
                         # usually BooleanArray
-                        new_mask = new_mask.to_numpy(dtype=bool, na_value=False)
+                        new_mask = new_mask.to_numpy(
+                            dtype=bool, na_value=False)
                 mask |= new_mask
 
     if na_mask.any():
@@ -174,7 +176,8 @@ def clean_fill_method(
         valid_methods.append("nearest")
         expecting = "pad (ffill), backfill (bfill) or nearest"
     if method not in valid_methods:
-        raise ValueError(f"Invalid fill method. Expecting {expecting}. Got {method}")
+        raise ValueError(
+            f"Invalid fill method. Expecting {expecting}. Got {method}")
     return method
 
 
@@ -206,11 +209,13 @@ def clean_interp_method(method: str, index: Index, **kwargs) -> str:
     order = kwargs.get("order")
 
     if method in ("spline", "polynomial") and order is None:
-        raise ValueError("You must specify the order of the spline or polynomial.")
+        raise ValueError(
+            "You must specify the order of the spline or polynomial.")
 
     valid = NP_METHODS + SP_METHODS
     if method not in valid:
-        raise ValueError(f"method must be one of {valid}. Got '{method}' instead.")
+        raise ValueError(
+            f"method must be one of {valid}. Got '{method}' instead.")
 
     if method in ("krogh", "piecewise_polynomial", "pchip"):
         if not index.is_monotonic_increasing:
@@ -846,9 +851,9 @@ def _interpolate_with_limit_area(
         )
 
         if limit_area == "inside":
-            invalid[first : last + 1] = False
+            invalid[first: last + 1] = False
         elif limit_area == "outside":
-            invalid[:first] = invalid[last + 1 :] = False
+            invalid[:first] = invalid[last + 1:] = False
         else:
             raise ValueError("limit_area should be 'inside' or 'outside'")
 
@@ -888,7 +893,8 @@ def pad_or_backfill_inplace(
     # reshape a 1 dim if needed
     if values.ndim == 1:
         if axis != 0:  # pragma: no cover
-            raise AssertionError("cannot interpolate on a ndim == 1 with axis != 0")
+            raise AssertionError(
+                "cannot interpolate on a ndim == 1 with axis != 0")
         values = values.reshape(tuple((1,) + values.shape))
 
     method = clean_fill_method(method)
@@ -1024,9 +1030,9 @@ def _fill_limit_area_1d(
     last = len(neg_mask) - neg_mask[::-1].argmax() - 1
     if limit_area == "inside":
         mask[:first] = False
-        mask[last + 1 :] = False
+        mask[last + 1:] = False
     elif limit_area == "outside":
-        mask[first + 1 : last] = False
+        mask[first + 1: last] = False
 
 
 def _fill_limit_area_2d(

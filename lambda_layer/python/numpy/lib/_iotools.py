@@ -184,7 +184,7 @@ class LineSplitter:
         # Delimiter is a single integer
         elif int(delimiter):
             (_handyman, delimiter) = (
-                    self._fixedwidth_splitter, int(delimiter))
+                self._fixedwidth_splitter, int(delimiter))
         else:
             (_handyman, delimiter) = (self._delimited_splitter, None)
         self.delimiter = delimiter
@@ -629,7 +629,8 @@ class StringConverter:
 
             # find the best match in our mapper
             try:
-                self._status, (_, func, default_def) = self._find_map_entry(dtype)
+                self._status, (_, func, default_def) = self._find_map_entry(
+                    dtype)
             except LookupError:
                 # no match
                 self.default = default

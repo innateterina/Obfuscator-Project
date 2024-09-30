@@ -23,7 +23,8 @@ def _check_colors_box(bp, box_c, whiskers_c, medians_c, caps_c="k", fliers_c=Non
     if fliers_c is None:
         fliers_c = "k"
     _check_colors(bp["boxes"], linecolors=[box_c] * len(bp["boxes"]))
-    _check_colors(bp["whiskers"], linecolors=[whiskers_c] * len(bp["whiskers"]))
+    _check_colors(bp["whiskers"], linecolors=[
+                  whiskers_c] * len(bp["whiskers"]))
     _check_colors(bp["medians"], linecolors=[medians_c] * len(bp["medians"]))
     _check_colors(bp["fliers"], linecolors=[fliers_c] * len(bp["fliers"]))
     _check_colors(bp["caps"], linecolors=[caps_c] * len(bp["caps"]))
@@ -81,7 +82,8 @@ class TestDataFrameColor:
         "color, expected",
         [
             ("green", ["green"] * 4),
-            (["yellow", "red", "green", "blue"], ["yellow", "red", "green", "blue"]),
+            (["yellow", "red", "green", "blue"],
+             ["yellow", "red", "green", "blue"]),
         ],
     )
     def test_color_and_marker(self, color, expected):
@@ -128,7 +130,8 @@ class TestDataFrameColor:
 
     def test_bar_user_colors(self):
         df = DataFrame(
-            {"A": range(4), "B": range(1, 5), "color": ["red", "blue", "blue", "red"]}
+            {"A": range(4), "B": range(1, 5), "color": [
+                "red", "blue", "blue", "red"]}
         )
         # This should *only* work when `y` is specified, else
         # we use one color per column
@@ -501,7 +504,8 @@ class TestDataFrameColor:
         df = DataFrame(np.random.default_rng(2).standard_normal((5, 5)))
         # make color a list if plotting one column frame
         # handles cases like df.plot(color='DodgerBlue')
-        axes = df.loc[:, [0]].plot(kind="kde", color="DodgerBlue", subplots=True)
+        axes = df.loc[:, [0]].plot(
+            kind="kde", color="DodgerBlue", subplots=True)
         _check_colors(axes[0].lines, linecolors=["DodgerBlue"])
 
     def test_kde_colors_and_styles_subplots_single_char(self):
@@ -574,13 +578,15 @@ class TestDataFrameColor:
         df = DataFrame(np.random.default_rng(2).standard_normal((5, 5)))
         # string color is applied to all artists except fliers
         bp = df.plot.box(color="DodgerBlue", return_type="dict")
-        _check_colors_box(bp, "DodgerBlue", "DodgerBlue", "DodgerBlue", "DodgerBlue")
+        _check_colors_box(bp, "DodgerBlue", "DodgerBlue",
+                          "DodgerBlue", "DodgerBlue")
 
     def test_boxplot_colors_tuple(self):
         df = DataFrame(np.random.default_rng(2).standard_normal((5, 5)))
         # tuple is also applied to all artists except fliers
         bp = df.plot.box(color=(0, 1, 0), sym="#123456", return_type="dict")
-        _check_colors_box(bp, (0, 1, 0), (0, 1, 0), (0, 1, 0), (0, 1, 0), "#123456")
+        _check_colors_box(bp, (0, 1, 0), (0, 1, 0),
+                          (0, 1, 0), (0, 1, 0), "#123456")
 
     def test_boxplot_colors_invalid(self):
         df = DataFrame(np.random.default_rng(2).standard_normal((5, 5)))

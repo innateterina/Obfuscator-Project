@@ -89,7 +89,8 @@ class TestToLatex:
 
     @pytest.mark.parametrize(
         "bad_column_format",
-        [5, 1.2, ["l", "r"], ("r", "c"), {"r", "c", "l"}, {"a": "r", "b": "l"}],
+        [5, 1.2, ["l", "r"], ("r", "c"), {"r", "c", "l"}, {
+            "a": "r", "b": "l"}],
     )
     def test_to_latex_bad_column_format(self, bad_column_format):
         df = DataFrame({"a": [1, 2], "b": ["b1", "b2"]})
@@ -814,7 +815,8 @@ class TestToLatexEscape:
         assert result == expected
 
     def test_to_latex_escape_special_chars(self):
-        special_characters = ["&", "%", "$", "#", "_", "{", "}", "~", "^", "\\"]
+        special_characters = ["&", "%", "$",
+                              "#", "_", "{", "}", "~", "^", "\\"]
         df = DataFrame(data=special_characters)
         result = df.to_latex(escape=True)
         expected = _dedent(
@@ -1148,7 +1150,8 @@ class TestToLatexMultiindex:
 
     def test_to_latex_index_has_name_tabular(self):
         # GH 10660
-        df = DataFrame({"a": [0, 0, 1, 1], "b": list("abab"), "c": [1, 2, 3, 4]})
+        df = DataFrame(
+            {"a": [0, 0, 1, 1], "b": list("abab"), "c": [1, 2, 3, 4]})
         result = df.set_index(["a", "b"]).to_latex(multirow=False)
         expected = _dedent(
             r"""
@@ -1169,7 +1172,8 @@ class TestToLatexMultiindex:
 
     def test_to_latex_groupby_tabular(self):
         # GH 10660
-        df = DataFrame({"a": [0, 0, 1, 1], "b": list("abab"), "c": [1, 2, 3, 4]})
+        df = DataFrame(
+            {"a": [0, 0, 1, 1], "b": list("abab"), "c": [1, 2, 3, 4]})
         result = (
             df.groupby("a")
             .describe()
@@ -1238,7 +1242,8 @@ class TestToLatexMultiindex:
         assert result == expected
 
     def test_to_latex_multicolumn_false(self, multicolumn_frame):
-        result = multicolumn_frame.to_latex(multicolumn=False, multicolumn_format="l")
+        result = multicolumn_frame.to_latex(
+            multicolumn=False, multicolumn_format="l")
         expected = _dedent(
             r"""
             \begin{tabular}{lrrrrr}

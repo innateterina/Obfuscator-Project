@@ -529,7 +529,8 @@ class MPLPlot(ABC):
             # otherwise, create twin axes
             orig_ax, new_ax = ax, ax.twinx()
             # TODO: use Matplotlib public API when available
-            new_ax._get_lines = orig_ax._get_lines  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            new_ax._get_lines = orig_ax._get_lines
             # TODO #54485
             new_ax._get_patches_for_fill = (  # type: ignore[attr-defined]
                 orig_ax._get_patches_for_fill  # type: ignore[attr-defined]
@@ -565,7 +566,8 @@ class MPLPlot(ABC):
     def _axes_and_fig(self) -> tuple[Sequence[Axes], Figure]:
         if self.subplots:
             naxes = (
-                self.nseries if isinstance(self.subplots, bool) else len(self.subplots)
+                self.nseries if isinstance(
+                    self.subplots, bool) else len(self.subplots)
             )
             fig, axes = create_subplots(
                 naxes=naxes,
@@ -608,7 +610,8 @@ class MPLPlot(ABC):
         if self.subplots:
             if self.layout is not None and not is_list_like(self.ax):
                 # error: "Sequence[Any]" has no attribute "reshape"
-                return self.axes.reshape(*self.layout)  # type: ignore[attr-defined]
+                # type: ignore[attr-defined]
+                return self.axes.reshape(*self.layout)
             else:
                 return self.axes
         else:
@@ -617,7 +620,8 @@ class MPLPlot(ABC):
             # Tuple[Any, ...], List[Any], ndarray[Any, Any]]"; expected "Sized"
             all_sec = (
                 is_list_like(self.secondary_y)
-                and len(self.secondary_y) == self.nseries  # type: ignore[arg-type]
+                # type: ignore[arg-type]
+                and len(self.secondary_y) == self.nseries
             )
             if sec_true or all_sec:
                 # if all data is plotted on secondary, return right axes
@@ -668,7 +672,8 @@ class MPLPlot(ABC):
         # GH15079 reconstruct data if by is defined
         if self.by is not None:
             self.subplots = True
-            data = reconstruct_data_with_by(self.data, by=self.by, cols=self.columns)
+            data = reconstruct_data_with_by(
+                self.data, by=self.by, cols=self.columns)
 
         # GH16953, infer_objects is needed as fallback, for ``Series``
         # with ``dtype == object``
@@ -690,7 +695,8 @@ class MPLPlot(ABC):
         if self._kind == "scatter":
             include_type.extend(["object", "category", "string"])
 
-        numeric_data = data.select_dtypes(include=include_type, exclude=exclude_type)
+        numeric_data = data.select_dtypes(
+            include=include_type, exclude=exclude_type)
 
         is_empty = numeric_data.shape[-1] == 0
         # no non-numeric frames or series allowed
@@ -909,7 +915,8 @@ class MPLPlot(ABC):
         """
         leg = ax.get_legend()
 
-        other_ax = getattr(ax, "left_ax", None) or getattr(ax, "right_ax", None)
+        other_ax = getattr(ax, "left_ax", None) or getattr(
+            ax, "right_ax", None)
         other_leg = None
         if other_ax is not None:
             other_leg = other_ax.get_legend()
@@ -930,7 +937,8 @@ class MPLPlot(ABC):
     @final
     def _get_xticks(self):
         index = self.data.index
-        is_datetype = index.inferred_type in ("datetime", "date", "datetime64", "time")
+        is_datetype = index.inferred_type in (
+            "datetime", "date", "datetime64", "time")
 
         # TODO: be stricter about x?
         x: list[int] | np.ndarray
@@ -1379,7 +1387,8 @@ class ScatterPlot(PlanePlot):
         if len(errors_x) > 0 or len(errors_y) > 0:
             err_kwds = dict(errors_x, **errors_y)
             err_kwds["ecolor"] = scatter.get_facecolor()[0]
-            ax.errorbar(data[x].values, data[y].values, linestyle="none", **err_kwds)
+            ax.errorbar(data[x].values, data[y].values,
+                        linestyle="none", **err_kwds)
 
     def _get_c_values(self, color, color_by_categorical: bool, c_is_column: bool):
         c = self.c
@@ -1466,7 +1475,8 @@ class HexBinPlot(PlanePlot):
         else:
             c_values = data[C].values
 
-        ax.hexbin(data[x].values, data[y].values, C=c_values, cmap=cmap, **self.kwds)
+        ax.hexbin(data[x].values, data[y].values,
+                  C=c_values, cmap=cmap, **self.kwds)
         if cb:
             self._plot_colorbar(ax, fig=fig)
 
@@ -1602,12 +1612,15 @@ class LinePlot(MPLPlot):
         if hasattr(ax, "right_ax"):
             decorate_axes(ax.right_ax, freq)
         # TODO #54485
-        ax._plot_data.append((data, self._kind, kwds))  # type: ignore[attr-defined]
+        # type: ignore[attr-defined]
+        ax._plot_data.append((data, self._kind, kwds))
 
-        lines = self._plot(ax, data.index, np.asarray(data.values), style=style, **kwds)
+        lines = self._plot(ax, data.index, np.asarray(
+            data.values), style=style, **kwds)
         # set date formatter, locators and rescale limits
         # TODO #54485
-        format_dateaxis(ax, ax.freq, data.index)  # type: ignore[arg-type, attr-defined]
+        # type: ignore[arg-type, attr-defined]
+        format_dateaxis(ax, ax.freq, data.index)
         return lines
 
     @final
@@ -1629,9 +1642,11 @@ class LinePlot(MPLPlot):
             # TODO #54485
             ax._stacker_neg_prior = {}  # type: ignore[attr-defined]
         # TODO #54485
-        ax._stacker_pos_prior[stacking_id] = np.zeros(n)  # type: ignore[attr-defined]
+        ax._stacker_pos_prior[stacking_id] = np.zeros(
+            n)  # type: ignore[attr-defined]
         # TODO #54485
-        ax._stacker_neg_prior[stacking_id] = np.zeros(n)  # type: ignore[attr-defined]
+        ax._stacker_neg_prior[stacking_id] = np.zeros(
+            n)  # type: ignore[attr-defined]
 
     @final
     @classmethod
@@ -1647,13 +1662,15 @@ class LinePlot(MPLPlot):
         if (values >= 0).all():
             # TODO #54485
             return (
-                ax._stacker_pos_prior[stacking_id]  # type: ignore[attr-defined]
+                # type: ignore[attr-defined]
+                ax._stacker_pos_prior[stacking_id]
                 + values
             )
         elif (values <= 0).all():
             # TODO #54485
             return (
-                ax._stacker_neg_prior[stacking_id]  # type: ignore[attr-defined]
+                # type: ignore[attr-defined]
+                ax._stacker_neg_prior[stacking_id]
                 + values
             )
 
@@ -1670,10 +1687,12 @@ class LinePlot(MPLPlot):
             return
         if (values >= 0).all():
             # TODO #54485
-            ax._stacker_pos_prior[stacking_id] += values  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            ax._stacker_pos_prior[stacking_id] += values
         elif (values <= 0).all():
             # TODO #54485
-            ax._stacker_neg_prior[stacking_id] += values  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            ax._stacker_neg_prior[stacking_id] += values
 
     def _post_plot_logic(self, ax: Axes, data) -> None:
         from matplotlib.ticker import FixedLocator
@@ -1691,7 +1710,8 @@ class LinePlot(MPLPlot):
             xticklabels = [get_label(x) for x in xticks]
             # error: Argument 1 to "FixedLocator" has incompatible type "ndarray[Any,
             # Any]"; expected "Sequence[float]"
-            ax.xaxis.set_major_locator(FixedLocator(xticks))  # type: ignore[arg-type]
+            ax.xaxis.set_major_locator(FixedLocator(
+                xticks))  # type: ignore[arg-type]
             ax.set_xticklabels(xticklabels)
 
         # If the index is an irregular time series, then by default
@@ -1771,10 +1791,12 @@ class AreaPlot(LinePlot):
             start = np.zeros(len(y))
         elif (y >= 0).all():
             # TODO #54485
-            start = ax._stacker_pos_prior[stacking_id]  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            start = ax._stacker_pos_prior[stacking_id]
         elif (y <= 0).all():
             # TODO #54485
-            start = ax._stacker_neg_prior[stacking_id]  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            start = ax._stacker_neg_prior[stacking_id]
         else:
             start = np.zeros(len(y))
 
@@ -1972,7 +1994,8 @@ class BarPlot(MPLPlot):
         s_edge = self.ax_pos[0] - 0.25 + self.lim_offset
         e_edge = self.ax_pos[-1] + 0.25 + self.bar_width + self.lim_offset
 
-        self._decorate_ticks(ax, self._get_index_name(), str_index, s_edge, e_edge)
+        self._decorate_ticks(ax, self._get_index_name(),
+                             str_index, s_edge, e_edge)
 
     def _decorate_ticks(
         self,
@@ -2055,7 +2078,8 @@ class PiePlot(MPLPlot):
     def __init__(self, data, kind=None, **kwargs) -> None:
         data = data.fillna(value=0)
         if (data < 0).any().any():
-            raise ValueError(f"{self._kind} plot doesn't allow negative values")
+            raise ValueError(
+                f"{self._kind} plot doesn't allow negative values")
         MPLPlot.__init__(self, data, kind=kind, **kwargs)
 
     @classmethod
@@ -2078,7 +2102,8 @@ class PiePlot(MPLPlot):
         return None
 
     def _make_plot(self, fig: Figure) -> None:
-        colors = self._get_colors(num_colors=len(self.data), color_kwds="colors")
+        colors = self._get_colors(
+            num_colors=len(self.data), color_kwds="colors")
         self.kwds.setdefault("colors", colors)
 
         for i, (label, y) in enumerate(self._iter_data(data=self.data)):
@@ -2101,7 +2126,8 @@ class PiePlot(MPLPlot):
             # Blank out labels for values of 0 so they don't overlap
             # with nonzero wedges
             if labels is not None:
-                blabels = [blank_labeler(left, value) for left, value in zip(labels, y)]
+                blabels = [blank_labeler(left, value)
+                           for left, value in zip(labels, y)]
             else:
                 blabels = None
             results = ax.pie(y, labels=blabels, **kwds)

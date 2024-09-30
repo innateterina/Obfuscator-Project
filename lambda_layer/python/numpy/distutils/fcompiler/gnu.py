@@ -81,14 +81,14 @@ class GnuFCompiler(FCompiler):
 
     possible_executables = ['g77', 'f77']
     executables = {
-        'version_cmd'  : [None, "-dumpversion"],
-        'compiler_f77' : [None, "-g", "-Wall", "-fno-second-underscore"],
-        'compiler_f90' : None,  # Use --fcompiler=gnu95 for f90 codes
-        'compiler_fix' : None,
-        'linker_so'    : [None, "-g", "-Wall"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"],
-        'linker_exe'   : [None, "-g", "-Wall"]
+        'version_cmd': [None, "-dumpversion"],
+        'compiler_f77': [None, "-g", "-Wall", "-fno-second-underscore"],
+        'compiler_f90': None,  # Use --fcompiler=gnu95 for f90 codes
+        'compiler_fix': None,
+        'linker_so': [None, "-g", "-Wall"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"],
+        'linker_exe': [None, "-g", "-Wall"]
     }
     module_dir_switch = None
     module_include_switch = None
@@ -144,7 +144,7 @@ class GnuFCompiler(FCompiler):
     def get_libgcc_dir(self):
         try:
             output = subprocess.check_output(self.compiler_f77 +
-                                            ['-print-libgcc-file-name'])
+                                             ['-print-libgcc-file-name'])
         except (OSError, subprocess.CalledProcessError):
             pass
         else:
@@ -165,7 +165,7 @@ class GnuFCompiler(FCompiler):
             find_lib_arg = ['-print-file-name={0}'.format(libgfortran_name)]
             try:
                 output = subprocess.check_output(
-                                       self.compiler_f77 + find_lib_arg)
+                    self.compiler_f77 + find_lib_arg)
             except (OSError, subprocess.CalledProcessError):
                 pass
             else:
@@ -289,17 +289,17 @@ class Gnu95FCompiler(GnuFCompiler):
 
     possible_executables = ['gfortran', 'f95']
     executables = {
-        'version_cmd'  : ["<F90>", "-dumpversion"],
-        'compiler_f77' : [None, "-Wall", "-g", "-ffixed-form",
-                          "-fno-second-underscore"],
-        'compiler_f90' : [None, "-Wall", "-g",
-                          "-fno-second-underscore"],
-        'compiler_fix' : [None, "-Wall",  "-g","-ffixed-form",
-                          "-fno-second-underscore"],
-        'linker_so'    : ["<F90>", "-Wall", "-g"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"],
-        'linker_exe'   : [None, "-Wall"]
+        'version_cmd': ["<F90>", "-dumpversion"],
+        'compiler_f77': [None, "-Wall", "-g", "-ffixed-form",
+                         "-fno-second-underscore"],
+        'compiler_f90': [None, "-Wall", "-g",
+                         "-fno-second-underscore"],
+        'compiler_fix': [None, "-Wall",  "-g", "-ffixed-form",
+                         "-fno-second-underscore"],
+        'linker_so': ["<F90>", "-Wall", "-g"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"],
+        'linker_exe': [None, "-Wall"]
     }
 
     module_dir_switch = '-J'
@@ -308,7 +308,7 @@ class Gnu95FCompiler(GnuFCompiler):
     if sys.platform.startswith(('aix', 'os400')):
         executables['linker_so'].append('-lpthread')
         if platform.architecture()[0][:2] == '64':
-            for key in ['compiler_f77', 'compiler_f90','compiler_fix','linker_so', 'linker_exe']:
+            for key in ['compiler_f77', 'compiler_f90', 'compiler_fix', 'linker_so', 'linker_exe']:
                 executables[key].append('-maix64')
 
     g2c = 'gfortran'

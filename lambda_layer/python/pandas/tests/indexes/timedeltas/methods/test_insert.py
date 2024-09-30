@@ -26,7 +26,8 @@ class TestTimedeltaIndexInsert:
         # insertion of non-datetime should coerce to object index
         result = idx.insert(1, "inserted")
         expected = Index(
-            [Timedelta("4day"), "inserted", Timedelta("1day"), Timedelta("2day")],
+            [Timedelta("4day"), "inserted", Timedelta(
+                "1day"), Timedelta("2day")],
             name="idx",
         )
         assert not isinstance(result, TimedeltaIndex)
@@ -98,7 +99,8 @@ class TestTimedeltaIndexInsert:
         tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "item", [0, np.int64(0), np.float64(0), np.array(0), np.datetime64(456, "us")]
+        "item", [0, np.int64(0), np.float64(
+            0), np.array(0), np.datetime64(456, "us")]
     )
     def test_insert_mismatched_types_raises(self, item):
         # GH#33703 dont cast these to td64

@@ -4,7 +4,7 @@ import pytest
 
 from numpy.testing import (
     assert_, assert_array_equal, assert_raises,
-    )
+)
 import numpy as np
 
 from numpy import random

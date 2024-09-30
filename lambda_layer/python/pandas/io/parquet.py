@@ -125,7 +125,8 @@ def _get_path_or_handle(
     elif storage_options and (not is_url(path_or_handle) or mode != "rb"):
         # can't write to a remote url
         # without making use of fsspec at the moment
-        raise ValueError("storage_options passed with buffer, or non-supported URL")
+        raise ValueError(
+            "storage_options passed with buffer, or non-supported URL")
 
     handles = None
     if (
@@ -183,7 +184,8 @@ class PyArrowImpl(BaseImpl):
     ) -> None:
         self.validate_dataframe(df)
 
-        from_pandas_kwargs: dict[str, Any] = {"schema": kwargs.pop("schema", None)}
+        from_pandas_kwargs: dict[str, Any] = {
+            "schema": kwargs.pop("schema", None)}
         if index is not None:
             from_pandas_kwargs["preserve_index"] = index
 
@@ -256,7 +258,8 @@ class PyArrowImpl(BaseImpl):
             mapping = _arrow_dtype_mapping()
             to_pandas_kwargs["types_mapper"] = mapping.get
         elif dtype_backend == "pyarrow":
-            to_pandas_kwargs["types_mapper"] = pd.ArrowDtype  # type: ignore[assignment]
+            # type: ignore[assignment]
+            to_pandas_kwargs["types_mapper"] = pd.ArrowDtype
         elif using_pyarrow_string_dtype():
             to_pandas_kwargs["types_mapper"] = arrow_string_types_mapper()
 
@@ -388,7 +391,8 @@ class FastParquetImpl(BaseImpl):
         if is_fsspec_url(path):
             fsspec = import_optional_dependency("fsspec")
 
-            parquet_kwargs["fs"] = fsspec.open(path, "rb", **(storage_options or {})).fs
+            parquet_kwargs["fs"] = fsspec.open(
+                path, "rb", **(storage_options or {})).fs
         elif isinstance(path, str) and not os.path.isdir(path):
             # use get_handle only when we are very certain that it is not a directory
             # fsspec resources can also point to directories
@@ -475,7 +479,8 @@ def to_parquet(
         partition_cols = [partition_cols]
     impl = get_engine(engine)
 
-    path_or_buf: FilePath | WriteBuffer[bytes] = io.BytesIO() if path is None else path
+    path_or_buf: FilePath | WriteBuffer[bytes] = io.BytesIO(
+    ) if path is None else path
 
     impl.write(
         df,

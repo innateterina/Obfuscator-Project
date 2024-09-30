@@ -7,7 +7,8 @@ import pandas as pd
 import pandas._testing as tm
 from pandas.core.arrays import BaseMaskedArray
 
-arrays = [pd.array([1, 2, 3, None], dtype=dtype) for dtype in tm.ALL_INT_EA_DTYPES]
+arrays = [pd.array([1, 2, 3, None], dtype=dtype)
+          for dtype in tm.ALL_INT_EA_DTYPES]
 arrays += [
     pd.array([0.141, -0.268, 5.895, None], dtype=dtype) for dtype in tm.FLOAT_EA_DTYPES
 ]

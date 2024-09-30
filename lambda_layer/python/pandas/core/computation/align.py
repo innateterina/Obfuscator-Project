@@ -85,7 +85,8 @@ def _filter_special_cases(f) -> Callable[[F], F]:
 
 @_filter_special_cases
 def _align_core(terms):
-    term_index = [i for i, term in enumerate(terms) if hasattr(term.value, "axes")]
+    term_index = [i for i, term in enumerate(
+        terms) if hasattr(term.value, "axes")]
     term_dims = [terms[i].value.ndim for i in term_index]
 
     from pandas import Series

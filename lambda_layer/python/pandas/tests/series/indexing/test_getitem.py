@@ -46,13 +46,15 @@ class TestSeriesGetitemScalars:
         # see GH#13509
 
         # unique Index
-        ser = Series([(1, 1), (2, 2), (3, 3)], index=[0.0, 0.1, 0.2], name="foo")
+        ser = Series([(1, 1), (2, 2), (3, 3)], index=[
+                     0.0, 0.1, 0.2], name="foo")
         result = ser[0.0]
         assert result == (1, 1)
 
         # non-unique Index
         expected = Series([(1, 1), (2, 2)], index=[0.0, 0.0], name="foo")
-        ser = Series([(1, 1), (2, 2), (3, 3)], index=[0.0, 0.0, 0.2], name="foo")
+        ser = Series([(1, 1), (2, 2), (3, 3)], index=[
+                     0.0, 0.0, 0.2], name="foo")
 
         result = ser[0.0]
         tm.assert_series_equal(result, expected)
@@ -149,14 +151,16 @@ class TestSeriesGetitemScalars:
     @pytest.mark.parametrize("tz", ["US/Eastern", "dateutil/US/Eastern"])
     def test_string_index_alias_tz_aware(self, tz):
         rng = date_range("1/1/2000", periods=10, tz=tz)
-        ser = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ser = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
 
         result = ser["1/3/2000"]
         tm.assert_almost_equal(result, ser.iloc[2])
 
     def test_getitem_time_object(self):
         rng = date_range("1/1/2000", "1/5/2000", freq="5min")
-        ts = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
 
         mask = (rng.hour == 9) & (rng.minute == 30)
         result = ts[time(9, 30)]
@@ -240,7 +244,8 @@ class TestSeriesGetitemSlices:
             ["1/1/2000", "1/2/2000", "1/2/2000", "1/3/2000", "1/4/2000"]
         )
 
-        ts = Series(np.random.default_rng(2).standard_normal(len(idx)), index=idx)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(idx)), index=idx)
 
         result = ts["1/2/2000":]
         expected = ts[1:]
@@ -374,7 +379,8 @@ class TestSeriesGetitemListLike:
 
         result = ser[[2, 4]]
         exp = Series(
-            [pd.Period("2000-01-03", freq="D"), pd.Period("2000-01-05", freq="D")],
+            [pd.Period("2000-01-03", freq="D"),
+             pd.Period("2000-01-05", freq="D")],
             index=[2, 4],
             dtype="Period[D]",
         )

@@ -10,24 +10,25 @@ from distutils import log
 
 compilers = ['IBMFCompiler']
 
+
 class IBMFCompiler(FCompiler):
     compiler_type = 'ibm'
     description = 'IBM XL Fortran Compiler'
-    version_pattern =  r'(xlf\(1\)\s*|)IBM XL Fortran ((Advanced Edition |)Version |Enterprise Edition V|for AIX, V)(?P<version>[^\s*]*)'
-    #IBM XL Fortran Enterprise Edition V10.1 for AIX \nVersion: 10.01.0000.0004
+    version_pattern = r'(xlf\(1\)\s*|)IBM XL Fortran ((Advanced Edition |)Version |Enterprise Edition V|for AIX, V)(?P<version>[^\s*]*)'
+    # IBM XL Fortran Enterprise Edition V10.1 for AIX \nVersion: 10.01.0000.0004
 
     executables = {
-        'version_cmd'  : ["<F77>", "-qversion"],
-        'compiler_f77' : ["xlf"],
-        'compiler_fix' : ["xlf90", "-qfixed"],
-        'compiler_f90' : ["xlf90"],
-        'linker_so'    : ["xlf95"],
-        'archiver'     : ["ar", "-cr"],
-        'ranlib'       : ["ranlib"]
-        }
+        'version_cmd': ["<F77>", "-qversion"],
+        'compiler_f77': ["xlf"],
+        'compiler_fix': ["xlf90", "-qfixed"],
+        'compiler_f90': ["xlf90"],
+        'linker_so': ["xlf95"],
+        'archiver': ["ar", "-cr"],
+        'ranlib': ["ranlib"]
+    }
 
-    def get_version(self,*args,**kwds):
-        version = FCompiler.get_version(self,*args,**kwds)
+    def get_version(self, *args, **kwds):
+        version = FCompiler.get_version(self, *args, **kwds)
 
         if version is None and sys.platform.startswith('aix'):
             # use lslpp to find out xlf version
@@ -40,7 +41,8 @@ class IBMFCompiler(FCompiler):
                     pass
                 else:
                     m = re.search(r'xlfcmp:(?P<version>\d+([.]\d+)+)', o)
-                    if m: version = m.group('version')
+                    if m:
+                        version = m.group('version')
 
         xlf_dir = '/etc/opt/ibmcmp/xlf'
         if version is None and os.path.isdir(xlf_dir):
@@ -50,7 +52,8 @@ class IBMFCompiler(FCompiler):
             # let's try another method:
             l = sorted(os.listdir(xlf_dir))
             l.reverse()
-            l = [d for d in l if os.path.isfile(os.path.join(xlf_dir, d, 'xlf.cfg'))]
+            l = [d for d in l if os.path.isfile(
+                os.path.join(xlf_dir, d, 'xlf.cfg'))]
             if l:
                 from distutils.version import LooseVersion
                 self.version = version = LooseVersion(l[0])
@@ -64,7 +67,7 @@ class IBMFCompiler(FCompiler):
 
     def get_flags_linker_so(self):
         opt = []
-        if sys.platform=='darwin':
+        if sys.platform == 'darwin':
             opt.append('-Wl,-bundle,-flat_namespace,-undefined,suppress')
         else:
             opt.append('-bshared')
@@ -77,7 +80,8 @@ class IBMFCompiler(FCompiler):
             fo, new_cfg = make_temp_file(suffix='_xlf.cfg')
             log.info('Creating '+new_cfg)
             with open(xlf_cfg) as fi:
-                crt1_match = re.compile(r'\s*crt\s*=\s*(?P<path>.*)/crt1.o').match
+                crt1_match = re.compile(
+                    r'\s*crt\s*=\s*(?P<path>.*)/crt1.o').match
                 for line in fi:
                     m = crt1_match(line)
                     if m:
@@ -90,6 +94,7 @@ class IBMFCompiler(FCompiler):
 
     def get_flags_opt(self):
         return ['-O3']
+
 
 if __name__ == '__main__':
     from numpy.distutils import customized_fcompiler

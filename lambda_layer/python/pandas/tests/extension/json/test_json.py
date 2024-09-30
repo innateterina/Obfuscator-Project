@@ -292,7 +292,8 @@ class TestJSONArray(base.ExtensionTests):
 
     def test_compare_array(self, data, comparison_op, request):
         if comparison_op.__name__ in ["eq", "ne"]:
-            mark = pytest.mark.xfail(reason="Comparison methods not implemented")
+            mark = pytest.mark.xfail(
+                reason="Comparison methods not implemented")
             request.applymarker(mark)
         super().test_compare_array(data, comparison_op)
 
@@ -328,7 +329,8 @@ class TestJSONArray(base.ExtensionTests):
             )
             request.applymarker(mark)
         elif not isinstance(mask, np.ndarray):
-            mark = pytest.mark.xfail(reason="Issues unwanted DeprecationWarning")
+            mark = pytest.mark.xfail(
+                reason="Issues unwanted DeprecationWarning")
             request.applymarker(mark)
         super().test_setitem_mask(data, mask, box_in_series)
 
@@ -369,7 +371,8 @@ class TestJSONArray(base.ExtensionTests):
             (pd.array([0, 1, 2, pd.NA], dtype="Int64"), False),
             (pd.array([0, 1, 2, pd.NA], dtype="Int64"), False),
         ],
-        ids=["list-False", "list-True", "integer-array-False", "integer-array-True"],
+        ids=["list-False", "list-True",
+             "integer-array-False", "integer-array-True"],
     )
     def test_setitem_integer_with_missing_raises(self, data, idx, box_in_series):
         super().test_setitem_integer_with_missing_raises(data, idx, box_in_series)

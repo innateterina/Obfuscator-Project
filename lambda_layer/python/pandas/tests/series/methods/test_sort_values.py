@@ -70,7 +70,8 @@ class TestSeriesSortValues:
         ts = datetime_series.copy()
         return_value = ts.sort_values(ascending=False, inplace=True)
         assert return_value is None
-        tm.assert_series_equal(ts, datetime_series.sort_values(ascending=False))
+        tm.assert_series_equal(
+            ts, datetime_series.sort_values(ascending=False))
         tm.assert_index_equal(
             ts.index, datetime_series.sort_values(ascending=False).index
         )
@@ -128,7 +129,8 @@ class TestSeriesSortValues:
         )
         s = ["a", "b", "c", "d"]
         df = DataFrame(
-            {"unsort": raw_cat1, "sort": raw_cat2, "string": s, "values": [1, 2, 3, 4]}
+            {"unsort": raw_cat1, "sort": raw_cat2,
+                "string": s, "values": [1, 2, 3, 4]}
         )
 
         # Cats must be sorted in a dataframe
@@ -149,7 +151,8 @@ class TestSeriesSortValues:
         # multi-columns sort
         # GH#7848
         df = DataFrame(
-            {"id": [6, 5, 4, 3, 2, 1], "raw_grade": ["a", "b", "b", "a", "a", "e"]}
+            {"id": [6, 5, 4, 3, 2, 1], "raw_grade": [
+                "a", "b", "b", "a", "a", "e"]}
         )
         df["grade"] = Categorical(df["raw_grade"], ordered=True)
         df["grade"] = df["grade"].cat.set_categories(["b", "e", "a"])

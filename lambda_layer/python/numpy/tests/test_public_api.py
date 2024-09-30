@@ -92,7 +92,7 @@ def test_NPY_NO_EXPORT():
     # Make sure an arbitrary NPY_NO_EXPORT function is actually hidden
     f = getattr(cdll, 'test_not_exported', None)
     assert f is None, ("'test_not_exported' is mistakenly exported, "
-                      "NPY_NO_EXPORT does not work")
+                       "NPY_NO_EXPORT does not work")
 
 
 # Historically NumPy has not used leading underscores for private submodules
@@ -152,7 +152,6 @@ if sys.version_info < (3, 12):
             "distutils.system_info",
         ]
     ]
-
 
 
 PUBLIC_ALIASED_MODULES = [
@@ -536,7 +535,7 @@ def test_core_shims_coherence():
         if (
             member_name.startswith("_")
             or member_name in ["tests", "strings"]
-            or f"numpy.{member_name}" in PUBLIC_ALIASED_MODULES 
+            or f"numpy.{member_name}" in PUBLIC_ALIASED_MODULES
         ):
             continue
 

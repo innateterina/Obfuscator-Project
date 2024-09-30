@@ -115,7 +115,8 @@ def test_dataset_encryption_decryption():
 
     # create write_options with dataset encryption config
     pformat = pa.dataset.ParquetFileFormat()
-    write_options = pformat.make_write_options(encryption_config=parquet_encryption_cfg)
+    write_options = pformat.make_write_options(
+        encryption_config=parquet_encryption_cfg)
 
     mockfs = fs._MockFileSystem()
     mockfs.create_dir("/")
@@ -137,7 +138,8 @@ def test_dataset_encryption_decryption():
     pq_scan_opts = ds.ParquetFragmentScanOptions(
         decryption_config=parquet_decryption_cfg
     )
-    pformat = pa.dataset.ParquetFileFormat(default_fragment_scan_options=pq_scan_opts)
+    pformat = pa.dataset.ParquetFileFormat(
+        default_fragment_scan_options=pq_scan_opts)
     dataset = ds.dataset("sample_dataset", format=pformat, filesystem=mockfs)
 
     assert table.equals(dataset.to_table())
@@ -149,7 +151,8 @@ def test_dataset_encryption_decryption():
         decryption_properties=decryption_properties
     )
 
-    pformat = pa.dataset.ParquetFileFormat(default_fragment_scan_options=pq_scan_opts)
+    pformat = pa.dataset.ParquetFileFormat(
+        default_fragment_scan_options=pq_scan_opts)
     dataset = ds.dataset("sample_dataset", format=pformat, filesystem=mockfs)
 
     assert table.equals(dataset.to_table())
@@ -206,9 +209,12 @@ def test_large_row_encryption_decryption():
         crypto_factory, kms_config, pe.DecryptionConfiguration()
     )
     scan_options = ds.ParquetFragmentScanOptions(decryption_config=pqd_config)
-    file_format = ds.ParquetFileFormat(default_fragment_scan_options=scan_options)
-    write_options = file_format.make_write_options(encryption_config=pqe_config)
-    file_decryption_properties = crypto_factory.file_decryption_properties(kms_config)
+    file_format = ds.ParquetFileFormat(
+        default_fragment_scan_options=scan_options)
+    write_options = file_format.make_write_options(
+        encryption_config=pqe_config)
+    file_decryption_properties = crypto_factory.file_decryption_properties(
+        kms_config)
 
     mockfs = fs._MockFileSystem()
     mockfs.create_dir("/")

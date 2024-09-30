@@ -399,10 +399,10 @@ def handle_shared_axes(
     sharey: bool,
 ) -> None:
     if nplots > 1:
-        row_num = lambda x: x.get_subplotspec().rowspan.start
-        col_num = lambda x: x.get_subplotspec().colspan.start
+        def row_num(x): return x.get_subplotspec().rowspan.start
+        def col_num(x): return x.get_subplotspec().colspan.start
 
-        is_first_col = lambda x: x.get_subplotspec().is_first_col()
+        def is_first_col(x): return x.get_subplotspec().is_first_col()
 
         if nrows > 1:
             try:
@@ -424,7 +424,7 @@ def handle_shared_axes(
             except IndexError:
                 # if gridspec is used, ax.rowNum and ax.colNum may different
                 # from layout shape. in this case, use last_row logic
-                is_last_row = lambda x: x.get_subplotspec().is_last_row()
+                def is_last_row(x): return x.get_subplotspec().is_last_row()
                 for ax in axarr:
                     if is_last_row(ax):
                         continue

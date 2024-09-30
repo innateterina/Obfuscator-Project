@@ -186,10 +186,10 @@ class TestSeriesStatReductions:
             name="ts",
         )
 
-        alt = lambda x: np.std(x, ddof=1)
+        def alt(x): return np.std(x, ddof=1)
         self._check_stat_op("std", alt, string_series)
 
-        alt = lambda x: np.var(x, ddof=1)
+        def alt(x): return np.var(x, ddof=1)
         self._check_stat_op("var", alt, string_series)
 
         result = datetime_series.std(ddof=4)
@@ -216,7 +216,7 @@ class TestSeriesStatReductions:
             name="ts",
         )
 
-        alt = lambda x: np.std(x, ddof=1) / np.sqrt(len(x))
+        def alt(x): return np.std(x, ddof=1) / np.sqrt(len(x))
         self._check_stat_op("sem", alt, string_series)
 
         result = datetime_series.sem(ddof=4)
@@ -235,7 +235,7 @@ class TestSeriesStatReductions:
 
         string_series = Series(range(20), dtype=np.float64, name="series")
 
-        alt = lambda x: sp_stats.skew(x, bias=False)
+        def alt(x): return sp_stats.skew(x, bias=False)
         self._check_stat_op("skew", alt, string_series)
 
         # test corner cases, skew() returns NaN unless there's at least 3
@@ -257,7 +257,7 @@ class TestSeriesStatReductions:
 
         string_series = Series(range(20), dtype=np.float64, name="series")
 
-        alt = lambda x: sp_stats.kurtosis(x, bias=False)
+        def alt(x): return sp_stats.kurtosis(x, bias=False)
         self._check_stat_op("kurt", alt, string_series)
 
     def test_kurt_corner(self):

@@ -106,7 +106,8 @@ def test_empty_with_dup_column_pass_dtype_by_indexes(all_parsers):
     # see gh-9424
     parser = all_parsers
     expected = concat(
-        [Series([], name="one", dtype="u1"), Series([], name="one.1", dtype="f")],
+        [Series([], name="one", dtype="u1"),
+         Series([], name="one.1", dtype="f")],
         axis=1,
     )
 
@@ -119,14 +120,16 @@ def test_empty_with_dup_column_pass_dtype_by_indexes_raises(all_parsers):
     # see gh-9424
     parser = all_parsers
     expected = concat(
-        [Series([], name="one", dtype="u1"), Series([], name="one.1", dtype="f")],
+        [Series([], name="one", dtype="u1"),
+         Series([], name="one.1", dtype="f")],
         axis=1,
     )
     expected.index = expected.index.astype(object)
 
     with pytest.raises(ValueError, match="Duplicate names"):
         data = ""
-        parser.read_csv(StringIO(data), names=["one", "one"], dtype={0: "u1", 1: "f"})
+        parser.read_csv(StringIO(data), names=[
+                        "one", "one"], dtype={0: "u1", 1: "f"})
 
 
 @pytest.mark.parametrize(
@@ -141,7 +144,8 @@ def test_empty_with_dup_column_pass_dtype_by_indexes_raises(all_parsers):
             {"a": "category", "b": "category"},
             DataFrame({"a": Categorical([]), "b": Categorical([])}),
         ),
-        ("datetime64[ns]", DataFrame(columns=["a", "b"], dtype="datetime64[ns]")),
+        ("datetime64[ns]", DataFrame(
+            columns=["a", "b"], dtype="datetime64[ns]")),
         (
             "timedelta64[ns]",
             DataFrame(
@@ -154,19 +158,22 @@ def test_empty_with_dup_column_pass_dtype_by_indexes_raises(all_parsers):
         (
             {"a": np.int64, "b": np.int32},
             DataFrame(
-                {"a": Series([], dtype=np.int64), "b": Series([], dtype=np.int32)},
+                {"a": Series([], dtype=np.int64),
+                 "b": Series([], dtype=np.int32)},
             ),
         ),
         (
             {0: np.int64, 1: np.int32},
             DataFrame(
-                {"a": Series([], dtype=np.int64), "b": Series([], dtype=np.int32)},
+                {"a": Series([], dtype=np.int64),
+                 "b": Series([], dtype=np.int32)},
             ),
         ),
         (
             {"a": np.int64, 1: np.int32},
             DataFrame(
-                {"a": Series([], dtype=np.int64), "b": Series([], dtype=np.int32)},
+                {"a": Series([], dtype=np.int64),
+                 "b": Series([], dtype=np.int32)},
             ),
         ),
     ],

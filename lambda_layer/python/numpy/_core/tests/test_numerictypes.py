@@ -28,7 +28,7 @@ PbufferT = [
     # x     y                  z
     ([3, 2], [[6., 4.], [6., 4.]], 8),
     ([4, 3], [[7., 5.], [7., 5.]], 9),
-    ]
+]
 
 
 # This is the structure of the table used for nested objects (DON'T PANIC!):
@@ -70,10 +70,11 @@ NbufferT = [
      b'cc', ('NN', 6j), [[6., 4.], [6., 4.]], 8),
     ([4, 3], (7j, 7., (b'oo', [7j, 5j], [7., 5.], [2, 1]), b'OO', False),
      b'dd', ('OO', 7j), [[7., 5.], [7., 5.]], 9),
-    ]
+]
 
 
-byteorder = {'little':'<', 'big':'>'}[sys.byteorder]
+byteorder = {'little': '<', 'big': '>'}[sys.byteorder]
+
 
 def normalize_descr(descr):
     "Normalize a description adding the platform byteorder."
@@ -144,6 +145,7 @@ class TestCreateZerosPlain(CreateZeros):
     """Check the creation of heterogeneous arrays zero-valued (plain)"""
     _descr = Pdescr
 
+
 class TestCreateZerosNested(CreateZeros):
     """Check the creation of heterogeneous arrays zero-valued (nested)"""
     _descr = Ndescr
@@ -186,17 +188,20 @@ class TestCreateValuesPlainSingle(CreateValues):
     multiple_rows = 0
     _buffer = PbufferT[0]
 
+
 class TestCreateValuesPlainMultiple(CreateValues):
     """Check the creation of heterogeneous arrays (plain, multiple rows)"""
     _descr = Pdescr
     multiple_rows = 1
     _buffer = PbufferT
 
+
 class TestCreateValuesNestedSingle(CreateValues):
     """Check the creation of heterogeneous arrays (nested, single row)"""
     _descr = Ndescr
     multiple_rows = 0
     _buffer = NbufferT[0]
+
 
 class TestCreateValuesNestedMultiple(CreateValues):
     """Check the creation of heterogeneous arrays (nested, multiple rows)"""
@@ -222,11 +227,11 @@ class ReadValuesPlain:
         else:
             assert_(len(h) == 2)
             assert_equal(h['x'], np.array([self._buffer[0][0],
-                                             self._buffer[1][0]], dtype='i4'))
+                                           self._buffer[1][0]], dtype='i4'))
             assert_equal(h['y'], np.array([self._buffer[0][1],
-                                             self._buffer[1][1]], dtype='f8'))
+                                           self._buffer[1][1]], dtype='f8'))
             assert_equal(h['z'], np.array([self._buffer[0][2],
-                                             self._buffer[1][2]], dtype='u1'))
+                                           self._buffer[1][2]], dtype='u1'))
 
 
 class TestReadValuesPlainSingle(ReadValuesPlain):
@@ -235,11 +240,13 @@ class TestReadValuesPlainSingle(ReadValuesPlain):
     multiple_rows = 0
     _buffer = PbufferT[0]
 
+
 class TestReadValuesPlainMultiple(ReadValuesPlain):
     """Check the values of heterogeneous arrays (plain, multiple rows)"""
     _descr = Pdescr
     multiple_rows = 1
     _buffer = PbufferT
+
 
 class ReadValuesNested:
     """Check the reading of values in heterogeneous arrays (nested)"""
@@ -276,20 +283,20 @@ class ReadValuesNested:
         else:
             assert_equal(h['Info']['value'],
                          np.array([self._buffer[0][1][0],
-                                self._buffer[1][1][0]],
-                                dtype='c16'))
+                                   self._buffer[1][1][0]],
+                                  dtype='c16'))
             assert_equal(h['Info']['y2'],
                          np.array([self._buffer[0][1][1],
-                                self._buffer[1][1][1]],
-                                dtype='f8'))
+                                   self._buffer[1][1][1]],
+                                  dtype='f8'))
             assert_equal(h['info']['Name'],
                          np.array([self._buffer[0][3][0],
-                                self._buffer[1][3][0]],
-                               dtype='U2'))
+                                   self._buffer[1][3][0]],
+                                  dtype='U2'))
             assert_equal(h['info']['Value'],
                          np.array([self._buffer[0][3][1],
-                                self._buffer[1][3][1]],
-                               dtype='c16'))
+                                   self._buffer[1][3][1]],
+                                  dtype='c16'))
 
     def test_nested2_acessors(self):
         """Check reading the nested fields of a nested array (2nd level)"""
@@ -302,12 +309,12 @@ class ReadValuesNested:
         else:
             assert_equal(h['Info']['Info2']['value'],
                          np.array([self._buffer[0][1][2][1],
-                                self._buffer[1][1][2][1]],
-                               dtype='c16'))
+                                   self._buffer[1][1][2][1]],
+                                  dtype='c16'))
             assert_equal(h['Info']['Info2']['z3'],
                          np.array([self._buffer[0][1][2][3],
-                                self._buffer[1][1][2][3]],
-                               dtype='u4'))
+                                   self._buffer[1][1][2][3]],
+                                  dtype='u4'))
 
     def test_nested1_descriptor(self):
         """Check access nested descriptors of a nested array (1st level)"""
@@ -330,11 +337,13 @@ class TestReadValuesNestedSingle(ReadValuesNested):
     multiple_rows = False
     _buffer = NbufferT[0]
 
+
 class TestReadValuesNestedMultiple(ReadValuesNested):
     """Check the values of heterogeneous arrays (nested, multiple rows)"""
     _descr = Ndescr
     multiple_rows = True
     _buffer = NbufferT
+
 
 class TestEmptyField:
     def test_assign(self):
@@ -484,6 +493,7 @@ class TestIsDType:
         assert np.uintc in sctypes['uint']
         assert np.uint64 in sctypes['uint']
 
+
 class TestSctypeDict:
     def test_longdouble(self):
         assert_(np._core.sctypeDict['float64'] is not np.longdouble)
@@ -557,6 +567,7 @@ class Test_sctype2char:
     def test_non_type(self):
         assert_raises(ValueError, sctype2char, 1)
 
+
 @pytest.mark.parametrize("rep, expected", [
     (np.int32, True),
     (list, False),
@@ -565,7 +576,7 @@ class Test_sctype2char:
     (np.dtype(np.float64), True),
     (np.dtype((np.int16, (3, 4))), True),
     (np.dtype([('a', np.int8)]), True),
-    ])
+])
 def test_issctype(rep, expected):
     # ensure proper identification of scalar
     # data-types by issctype()

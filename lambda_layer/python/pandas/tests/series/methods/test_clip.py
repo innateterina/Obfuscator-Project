@@ -54,8 +54,10 @@ class TestSeriesClip:
         s_clipped_upper = ser.clip(upper=2.0)
         s_clipped_lower = ser.clip(lower=2.0)
 
-        expected_upper = Series([nulls_fixture, 1.0, 2.0], dtype=any_numeric_ea_dtype)
-        expected_lower = Series([nulls_fixture, 2.0, 3.0], dtype=any_numeric_ea_dtype)
+        expected_upper = Series(
+            [nulls_fixture, 1.0, 2.0], dtype=any_numeric_ea_dtype)
+        expected_lower = Series(
+            [nulls_fixture, 2.0, 3.0], dtype=any_numeric_ea_dtype)
 
         tm.assert_series_equal(s_clipped_upper, expected_upper)
         tm.assert_series_equal(s_clipped_lower, expected_lower)
@@ -66,7 +68,8 @@ class TestSeriesClip:
         s = Series([1, 2, 3])
 
         tm.assert_series_equal(s.clip(np.nan), Series([1, 2, 3]))
-        tm.assert_series_equal(s.clip(upper=np.nan, lower=np.nan), Series([1, 2, 3]))
+        tm.assert_series_equal(
+            s.clip(upper=np.nan, lower=np.nan), Series([1, 2, 3]))
 
         # GH#19992
         msg = "Downcasting behavior in Series and DataFrame methods 'where'"
@@ -112,10 +115,12 @@ class TestSeriesClip:
         # naive and tz-aware datetimes
 
         t = Timestamp("2015-12-01 09:30:30")
-        s = Series([Timestamp("2015-12-01 09:30:00"), Timestamp("2015-12-01 09:31:00")])
+        s = Series([Timestamp("2015-12-01 09:30:00"),
+                   Timestamp("2015-12-01 09:31:00")])
         result = s.clip(upper=t)
         expected = Series(
-            [Timestamp("2015-12-01 09:30:00"), Timestamp("2015-12-01 09:30:30")]
+            [Timestamp("2015-12-01 09:30:00"),
+             Timestamp("2015-12-01 09:30:30")]
         )
         tm.assert_series_equal(result, expected)
 

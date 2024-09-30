@@ -370,7 +370,8 @@ class EtreeXMLFormatter(_BaseXMLFormatter):
         )
 
         for d in self.frame_dicts.values():
-            elem_row = SubElement(self.root, f"{self.prefix_uri}{self.row_name}")
+            elem_row = SubElement(
+                self.root, f"{self.prefix_uri}{self.row_name}")
 
             if not self.attr_cols and not self.elem_cols:
                 self.elem_cols = list(d.keys())
@@ -409,7 +410,8 @@ class EtreeXMLFormatter(_BaseXMLFormatter):
                 try:
                     uri = f"{{{self.namespaces[self.prefix]}}}"
                 except KeyError:
-                    raise KeyError(f"{self.prefix} is not included in namespaces")
+                    raise KeyError(
+                        f"{self.prefix} is not included in namespaces")
             elif "" in self.namespaces:
                 uri = f'{{{self.namespaces[""]}}}'
             else:
@@ -461,10 +463,12 @@ class LxmlXMLFormatter(_BaseXMLFormatter):
             tostring,
         )
 
-        self.root = Element(f"{self.prefix_uri}{self.root_name}", nsmap=self.namespaces)
+        self.root = Element(
+            f"{self.prefix_uri}{self.root_name}", nsmap=self.namespaces)
 
         for d in self.frame_dicts.values():
-            elem_row = SubElement(self.root, f"{self.prefix_uri}{self.row_name}")
+            elem_row = SubElement(
+                self.root, f"{self.prefix_uri}{self.row_name}")
 
             if not self.attr_cols and not self.elem_cols:
                 self.elem_cols = list(d.keys())
@@ -505,7 +509,8 @@ class LxmlXMLFormatter(_BaseXMLFormatter):
                 try:
                     uri = f"{{{self.namespaces[self.prefix]}}}"
                 except KeyError:
-                    raise KeyError(f"{self.prefix} is not included in namespaces")
+                    raise KeyError(
+                        f"{self.prefix} is not included in namespaces")
             elif "" in self.namespaces:
                 uri = f'{{{self.namespaces[""]}}}'
             else:

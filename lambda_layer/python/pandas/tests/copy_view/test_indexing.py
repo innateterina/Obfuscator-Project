@@ -126,7 +126,8 @@ def test_subset_row_slice(backend, using_copy_on_write, warn_copy_on_write):
 
     subset._mgr._verify_integrity()
 
-    expected = DataFrame({"a": [0, 3], "b": [5, 6], "c": [0.2, 0.3]}, index=range(1, 3))
+    expected = DataFrame({"a": [0, 3], "b": [5, 6], "c": [
+                         0.2, 0.3]}, index=range(1, 3))
     tm.assert_frame_equal(subset, expected)
     if using_copy_on_write:
         # original parent dataframe is not modified (CoW)
@@ -172,7 +173,8 @@ def test_subset_column_slice(
             with tm.assert_produces_warning(warn):
                 subset.iloc[0, 0] = 0
 
-    expected = DataFrame({"b": [0, 5, 6], "c": np.array([7, 8, 9], dtype=dtype)})
+    expected = DataFrame(
+        {"b": [0, 5, 6], "c": np.array([7, 8, 9], dtype=dtype)})
     tm.assert_frame_equal(subset, expected)
     # original parent dataframe is not modified (also not for BlockManager case,
     # except for single block)
@@ -322,7 +324,8 @@ def test_subset_set_with_row_indexer(
     # Case: setting values with a row indexer on a viewing subset
     # subset[indexer] = value and subset.iloc[indexer] = value
     _, DataFrame, _ = backend
-    df = DataFrame({"a": [1, 2, 3, 4], "b": [4, 5, 6, 7], "c": [0.1, 0.2, 0.3, 0.4]})
+    df = DataFrame({"a": [1, 2, 3, 4], "b": [4, 5, 6, 7],
+                   "c": [0.1, 0.2, 0.3, 0.4]})
     df_orig = df.copy()
     subset = df[1:4]
 
@@ -361,7 +364,8 @@ def test_subset_set_with_row_indexer(
 def test_subset_set_with_mask(backend, using_copy_on_write, warn_copy_on_write):
     # Case: setting values with a mask on a viewing subset: subset[mask] = value
     _, DataFrame, _ = backend
-    df = DataFrame({"a": [1, 2, 3, 4], "b": [4, 5, 6, 7], "c": [0.1, 0.2, 0.3, 0.4]})
+    df = DataFrame({"a": [1, 2, 3, 4], "b": [4, 5, 6, 7],
+                   "c": [0.1, 0.2, 0.3, 0.4]})
     df_orig = df.copy()
     subset = df[1:4]
 
@@ -522,7 +526,8 @@ def test_subset_set_columns(backend, using_copy_on_write, warn_copy_on_write, dt
     if using_copy_on_write:
         # first and third column should certainly have no references anymore
         assert all(subset._mgr._has_no_reference(i) for i in [0, 2])
-    expected = DataFrame({"a": [0, 0], "b": [5, 6], "c": [0, 0]}, index=range(1, 3))
+    expected = DataFrame(
+        {"a": [0, 0], "b": [5, 6], "c": [0, 0]}, index=range(1, 3))
     if dtype_backend == "nullable":
         # there is not yet a global option, so overriding a column by setting a scalar
         # defaults to numpy dtype even if original column was nullable
@@ -560,7 +565,8 @@ def test_subset_set_with_column_indexer(
             subset.loc[:, indexer] = 0
 
     subset._mgr._verify_integrity()
-    expected = DataFrame({"a": [0, 0], "b": [0.0, 0.0], "c": [5, 6]}, index=range(1, 3))
+    expected = DataFrame(
+        {"a": [0, 0], "b": [0.0, 0.0], "c": [5, 6]}, index=range(1, 3))
     tm.assert_frame_equal(subset, expected)
     if using_copy_on_write:
         tm.assert_frame_equal(df, df_orig)
@@ -1116,7 +1122,8 @@ def test_dataframe_add_column_from_series(backend, using_copy_on_write):
 
     # editing series -> doesn't modify column in frame
     s[0] = 0
-    expected = DataFrame({"a": [1, 2, 3], "b": [0.1, 0.2, 0.3], "new": [10, 11, 12]})
+    expected = DataFrame(
+        {"a": [1, 2, 3], "b": [0.1, 0.2, 0.3], "new": [10, 11, 12]})
     tm.assert_frame_equal(df, expected)
 
 
@@ -1165,13 +1172,15 @@ def test_set_value_copy_only_necessary_column(
     else:
         assert np.shares_memory(get_array(df, "c"), get_array(view, "c"))
         if val == "a":
-            assert not np.shares_memory(get_array(df, "a"), get_array(view, "a"))
+            assert not np.shares_memory(
+                get_array(df, "a"), get_array(view, "a"))
         else:
             assert np.shares_memory(get_array(df, "a"), get_array(view, "a"))
 
 
 def test_series_midx_slice(using_copy_on_write, warn_copy_on_write):
-    ser = Series([1, 2, 3], index=pd.MultiIndex.from_arrays([[1, 1, 2], [3, 4, 5]]))
+    ser = Series([1, 2, 3], index=pd.MultiIndex.from_arrays(
+        [[1, 1, 2], [3, 4, 5]]))
     ser_orig = ser.copy()
     result = ser[1]
     assert np.shares_memory(get_array(ser), get_array(result))
@@ -1197,7 +1206,8 @@ def test_getitem_midx_slice(
         assert not new_df._mgr._has_no_reference(0)
 
     if not using_array_manager:
-        assert np.shares_memory(get_array(df, ("a", "x")), get_array(new_df, "x"))
+        assert np.shares_memory(
+            get_array(df, ("a", "x")), get_array(new_df, "x"))
     if using_copy_on_write:
         new_df.iloc[0, 0] = 100
         tm.assert_frame_equal(df_orig, df)
@@ -1215,7 +1225,8 @@ def test_getitem_midx_slice(
 def test_series_midx_tuples_slice(using_copy_on_write, warn_copy_on_write):
     ser = Series(
         [1, 2, 3],
-        index=pd.MultiIndex.from_tuples([((1, 2), 3), ((1, 2), 4), ((2, 3), 4)]),
+        index=pd.MultiIndex.from_tuples(
+            [((1, 2), 3), ((1, 2), 4), ((2, 3), 4)]),
     )
     result = ser[(1, 2)]
     assert np.shares_memory(get_array(ser), get_array(result))
@@ -1224,7 +1235,8 @@ def test_series_midx_tuples_slice(using_copy_on_write, warn_copy_on_write):
     if using_copy_on_write:
         expected = Series(
             [1, 2, 3],
-            index=pd.MultiIndex.from_tuples([((1, 2), 3), ((1, 2), 4), ((2, 3), 4)]),
+            index=pd.MultiIndex.from_tuples(
+                [((1, 2), 3), ((1, 2), 4), ((2, 3), 4)]),
         )
         tm.assert_series_equal(ser, expected)
 

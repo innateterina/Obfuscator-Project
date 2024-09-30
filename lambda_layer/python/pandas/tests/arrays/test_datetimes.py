@@ -334,7 +334,8 @@ class TestDatetimeArray:
         dta = dti._data
         res = dta.astype("M8[s]")
         assert res.dtype == "M8[s]"
-        assert isinstance(res, pd.core.arrays.DatetimeArray)  # used to be ndarray
+        # used to be ndarray
+        assert isinstance(res, pd.core.arrays.DatetimeArray)
 
     def test_astype_non_nano_tzaware(self):
         dti = pd.date_range("2016-01-01", periods=3, tz="UTC")
@@ -364,7 +365,8 @@ class TestDatetimeArray:
 
     @pytest.mark.parametrize("dtype", ["datetime64[ns]", "datetime64[ns, UTC]"])
     @pytest.mark.parametrize(
-        "other", ["datetime64[ns]", "datetime64[ns, UTC]", "datetime64[ns, CET]"]
+        "other", ["datetime64[ns]",
+                  "datetime64[ns, UTC]", "datetime64[ns, CET]"]
     )
     def test_astype_copies(self, dtype, other):
         # https://github.com/pandas-dev/pandas/pull/32490
@@ -498,7 +500,8 @@ class TestDatetimeArray:
 
         arr[-2] = pd.NaT
         result = arr.value_counts(dropna=False)
-        expected = pd.Series([4, 2, 1], index=[dti[0], dti[1], pd.NaT], name="count")
+        expected = pd.Series(
+            [4, 2, 1], index=[dti[0], dti[1], pd.NaT], name="count")
         tm.assert_series_equal(result, expected)
 
     @pytest.mark.parametrize("method", ["pad", "backfill"])
@@ -596,7 +599,8 @@ class TestDatetimeArray:
 
         result = np.asarray(data, dtype=object)
         expected = np.array(
-            [pd.Timestamp("2017-01-01T00:00:00"), pd.Timestamp("2017-01-02T00:00:00")],
+            [pd.Timestamp("2017-01-01T00:00:00"),
+             pd.Timestamp("2017-01-02T00:00:00")],
             dtype=object,
         )
         tm.assert_numpy_array_equal(result, expected)
@@ -743,7 +747,8 @@ class TestDatetimeArray:
         )
         utc_vals *= 1_000_000_000
 
-        dta = DatetimeArray._from_sequence(utc_vals).tz_localize("UTC").tz_convert(tz)
+        dta = DatetimeArray._from_sequence(
+            utc_vals).tz_localize("UTC").tz_convert(tz)
 
         left = dta[2]
         right = list(dta)[2]

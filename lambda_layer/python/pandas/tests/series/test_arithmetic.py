@@ -105,14 +105,15 @@ class TestSeriesFlexArithmetic:
         res = ser.add(2, fill_value=0)
         tm.assert_series_equal(res, exp)
 
-    pairings = [(Series.div, operator.truediv, 1), (Series.rdiv, ops.rtruediv, 1)]
+    pairings = [(Series.div, operator.truediv, 1),
+                (Series.rdiv, ops.rtruediv, 1)]
     for op in ["add", "sub", "mul", "pow", "truediv", "floordiv"]:
         fv = 0
         lop = getattr(Series, op)
         lequiv = getattr(operator, op)
         rop = getattr(Series, "r" + op)
         # bind op at definition time...
-        requiv = lambda x, y, op=op: getattr(operator, op)(y, x)
+        def requiv(x, y, op=op): return getattr(operator, op)(y, x)
         pairings.append((lop, lequiv, fv))
         pairings.append((rop, requiv, fv))
 
@@ -162,7 +163,8 @@ class TestSeriesArithmetic:
 
     def test_add_series_with_period_index(self):
         rng = pd.period_range("1/1/2000", "1/1/2010", freq="Y")
-        ts = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
 
         result = ts + ts[::2]
         expected = ts + ts
@@ -460,19 +462,22 @@ class TestSeriesComparison:
         assert result == expected
 
     @pytest.mark.parametrize(
-        "names", [(None, None, None), ("foo", "bar", None), ("baz", "baz", "baz")]
+        "names", [(None, None, None), ("foo", "bar", None),
+                  ("baz", "baz", "baz")]
     )
     def test_ser_cmp_result_names(self, names, comparison_op):
         # datetime64 dtype
         op = comparison_op
-        dti = date_range("1949-06-07 03:00:00", freq="h", periods=5, name=names[0])
+        dti = date_range("1949-06-07 03:00:00", freq="h",
+                         periods=5, name=names[0])
         ser = Series(dti).rename(names[1])
         result = op(ser, dti)
         assert result.name == names[2]
 
         # datetime64tz dtype
         dti = dti.tz_localize("US/Central")
-        dti = pd.DatetimeIndex(dti, freq="infer")  # freq not preserved by tz_localize
+        # freq not preserved by tz_localize
+        dti = pd.DatetimeIndex(dti, freq="infer")
         ser = Series(dti).rename(names[1])
         result = op(ser, dti)
         assert result.name == names[2]
@@ -762,7 +767,8 @@ class TestTimeSeriesArithmetic:
 
     def test_series_add_aware_naive_raises(self):
         rng = date_range("1/1/2011", periods=10, freq="h")
-        ser = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ser = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
 
         ser_utc = ser.tz_localize("utc")
 
@@ -963,7 +969,8 @@ def test_series_varied_multiindex_alignment():
     )
     s2 = Series(
         [1000 * i for i in range(1, 5)],
-        index=pd.MultiIndex.from_product([list("xy"), [1, 2]], names=["xy", "num"]),
+        index=pd.MultiIndex.from_product(
+            [list("xy"), [1, 2]], names=["xy", "num"]),
     )
     result = s1.loc[pd.IndexSlice[["a"], :, :]] + s2
     expected = Series(

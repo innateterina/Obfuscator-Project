@@ -332,17 +332,17 @@ def test_tril_triu_ndim3():
             [[1, 1], [1, 1]],
             [[1, 1], [1, 0]],
             [[1, 1], [0, 0]],
-            ], dtype=dtype)
+        ], dtype=dtype)
         a_tril_desired = np.array([
             [[1, 0], [1, 1]],
             [[1, 0], [1, 0]],
             [[1, 0], [0, 0]],
-            ], dtype=dtype)
+        ], dtype=dtype)
         a_triu_desired = np.array([
             [[1, 1], [0, 1]],
             [[1, 1], [0, 0]],
             [[1, 1], [0, 0]],
-            ], dtype=dtype)
+        ], dtype=dtype)
         a_triu_observed = np.triu(a)
         a_tril_observed = np.tril(a)
         assert_array_equal(a_triu_observed, a_triu_desired)

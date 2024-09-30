@@ -48,7 +48,8 @@ class AstypeTests:
         categories = index.dropna().unique().values[:-1]
         dtype = CategoricalDtype(categories=categories, ordered=True)
         result = index.astype(dtype)
-        expected = CategoricalIndex(index.values, categories=categories, ordered=True)
+        expected = CategoricalIndex(
+            index.values, categories=categories, ordered=True)
         tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize(
@@ -82,7 +83,8 @@ class TestIntSubtype(AstypeTests):
 
     indexes = [
         IntervalIndex.from_breaks(np.arange(-10, 11, dtype="int64")),
-        IntervalIndex.from_breaks(np.arange(100, dtype="uint64"), closed="left"),
+        IntervalIndex.from_breaks(
+            np.arange(100, dtype="uint64"), closed="left"),
     ]
 
     @pytest.fixture(params=indexes)
@@ -101,7 +103,8 @@ class TestIntSubtype(AstypeTests):
         tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "subtype_start, subtype_end", [("int64", "uint64"), ("uint64", "int64")]
+        "subtype_start, subtype_end", [
+            ("int64", "uint64"), ("uint64", "int64")]
     )
     def test_subtype_integer(self, subtype_start, subtype_end):
         index = IntervalIndex.from_breaks(np.arange(100, dtype=subtype_start))
@@ -219,7 +222,8 @@ class TestDatetimelikeSubtype(AstypeTests):
         new_left = index.left.astype(subtype)
         new_right = index.right.astype(subtype)
 
-        expected = IntervalIndex.from_arrays(new_left, new_right, closed=index.closed)
+        expected = IntervalIndex.from_arrays(
+            new_left, new_right, closed=index.closed)
         tm.assert_index_equal(result, expected)
 
     def test_subtype_float(self, index):

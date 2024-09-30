@@ -2,11 +2,12 @@ from numpy.distutils.fcompiler import FCompiler
 
 compilers = ['NVHPCFCompiler']
 
+
 class NVHPCFCompiler(FCompiler):
     """ NVIDIA High Performance Computing (HPC) SDK Fortran Compiler
-   
+
     https://developer.nvidia.com/hpc-sdk
-   
+
     Since august 2020 the NVIDIA HPC SDK includes the compilers formerly known as The Portland Group compilers,
     https://www.pgroup.com/index.htm.
     See also `numpy.distutils.fcompiler.pg`.
@@ -45,6 +46,7 @@ class NVHPCFCompiler(FCompiler):
 
     def runtime_library_dir_option(self, dir):
         return '-R%s' % dir
+
 
 if __name__ == '__main__':
     from distutils import log

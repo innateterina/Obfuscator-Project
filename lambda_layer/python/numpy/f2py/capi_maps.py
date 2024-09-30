@@ -6,20 +6,20 @@ terms of the NumPy License.
 
 NO WARRANTY IS EXPRESSED OR IMPLIED.  USE AT YOUR OWN RISK.
 """
+from .auxfuncs import *
+from ._isocbind import iso_c_binding_map, isoc_c2pycode_map, iso_c2py_map
+from . import cb_rules
+from .crackfortran import markoutercomma
+import os
+import re
+import copy
 from . import __version__
 f2py_version = __version__.version
 
-import copy
-import re
-import os
-from .crackfortran import markoutercomma
-from . import cb_rules
-from ._isocbind import iso_c_binding_map, isoc_c2pycode_map, iso_c2py_map
 
 # The environment provided by auxfuncs.py is needed for some calls to eval.
 # As the needed functions cannot be determined by static inspection of the
 # code, it is safest to use import * pending a major refactoring of f2py.
-from .auxfuncs import *
 
 __all__ = [
     'getctype', 'getstrlength', 'getarrdims', 'getpydocsign',
@@ -53,24 +53,24 @@ c2py_map = {'double': 'float',
             }
 
 c2capi_map = {'double': 'NPY_DOUBLE',
-                'float': 'NPY_FLOAT',
-                'long_double': 'NPY_LONGDOUBLE',
-                'char': 'NPY_BYTE',
-                'unsigned_char': 'NPY_UBYTE',
-                'signed_char': 'NPY_BYTE',
-                'short': 'NPY_SHORT',
-                'unsigned_short': 'NPY_USHORT',
-                'int': 'NPY_INT',
-                'unsigned': 'NPY_UINT',
-                'long': 'NPY_LONG',
-                'unsigned_long': 'NPY_ULONG',
-                'long_long': 'NPY_LONGLONG',
-                'unsigned_long_long': 'NPY_ULONGLONG',
-                'complex_float': 'NPY_CFLOAT',
-                'complex_double': 'NPY_CDOUBLE',
-                'complex_long_double': 'NPY_CDOUBLE',
-                'string': 'NPY_STRING',
-                'character': 'NPY_STRING'}
+              'float': 'NPY_FLOAT',
+              'long_double': 'NPY_LONGDOUBLE',
+              'char': 'NPY_BYTE',
+              'unsigned_char': 'NPY_UBYTE',
+              'signed_char': 'NPY_BYTE',
+              'short': 'NPY_SHORT',
+              'unsigned_short': 'NPY_USHORT',
+              'int': 'NPY_INT',
+              'unsigned': 'NPY_UINT',
+              'long': 'NPY_LONG',
+              'unsigned_long': 'NPY_ULONG',
+              'long_long': 'NPY_LONGLONG',
+              'unsigned_long_long': 'NPY_ULONGLONG',
+              'complex_float': 'NPY_CFLOAT',
+              'complex_double': 'NPY_CDOUBLE',
+              'complex_long_double': 'NPY_CDOUBLE',
+              'string': 'NPY_STRING',
+              'character': 'NPY_STRING'}
 
 c2pycode_map = {'double': 'd',
                 'float': 'f',
@@ -135,6 +135,7 @@ f2cmap_default = copy.deepcopy(f2cmap_all)
 
 f2cmap_mapped = []
 
+
 def load_f2cmap_file(f2cmap_file):
     global f2cmap_all, f2cmap_mapped
 
@@ -155,7 +156,8 @@ def load_f2cmap_file(f2cmap_file):
         outmess('Reading f2cmap from {!r} ...\n'.format(f2cmap_file))
         with open(f2cmap_file) as f:
             d = eval(f.read().lower(), {}, {})
-        f2cmap_all, f2cmap_mapped = process_f2cmap_dict(f2cmap_all, d, c2py_map, True)
+        f2cmap_all, f2cmap_mapped = process_f2cmap_dict(
+            f2cmap_all, d, c2py_map, True)
         outmess('Successfully applied user defined f2cmap changes\n')
     except Exception as msg:
         errmess('Failed to apply user defined f2cmap changes: %s. Skipping.\n' % (msg))

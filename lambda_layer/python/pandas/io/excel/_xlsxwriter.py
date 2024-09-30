@@ -268,7 +268,8 @@ class XlsxWriter(ExcelWriter):
             if stylekey in style_dict:
                 style = style_dict[stylekey]
             else:
-                style = self.book.add_format(_XlsxStyler.convert(cell.style, fmt))
+                style = self.book.add_format(
+                    _XlsxStyler.convert(cell.style, fmt))
                 style_dict[stylekey] = style
 
             if cell.mergestart is not None and cell.mergeend is not None:

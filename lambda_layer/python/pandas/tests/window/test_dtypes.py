@@ -58,16 +58,20 @@ def dtypes(request):
         ("count", [0, 1, 2, np.nan, 4], [1, 2, 2, 1, 1], False, 0),
         ("max", np.arange(5), [np.nan, 1, 2, 3, 4], True, None),
         ("max", np.arange(10, 0, -2), [np.nan, 10, 8, 6, 4], True, None),
-        ("max", [0, 1, 2, np.nan, 4], [np.nan, 1, 2, np.nan, np.nan], False, None),
+        ("max", [0, 1, 2, np.nan, 4], [
+         np.nan, 1, 2, np.nan, np.nan], False, None),
         ("min", np.arange(5), [np.nan, 0, 1, 2, 3], True, None),
         ("min", np.arange(10, 0, -2), [np.nan, 8, 6, 4, 2], True, None),
-        ("min", [0, 1, 2, np.nan, 4], [np.nan, 0, 1, np.nan, np.nan], False, None),
+        ("min", [0, 1, 2, np.nan, 4], [
+         np.nan, 0, 1, np.nan, np.nan], False, None),
         ("sum", np.arange(5), [np.nan, 1, 3, 5, 7], True, None),
         ("sum", np.arange(10, 0, -2), [np.nan, 18, 14, 10, 6], True, None),
-        ("sum", [0, 1, 2, np.nan, 4], [np.nan, 1, 3, np.nan, np.nan], False, None),
+        ("sum", [0, 1, 2, np.nan, 4], [
+         np.nan, 1, 3, np.nan, np.nan], False, None),
         ("mean", np.arange(5), [np.nan, 0.5, 1.5, 2.5, 3.5], True, None),
         ("mean", np.arange(10, 0, -2), [np.nan, 9, 7, 5, 3], True, None),
-        ("mean", [0, 1, 2, np.nan, 4], [np.nan, 0.5, 1.5, np.nan, np.nan], False, None),
+        ("mean", [0, 1, 2, np.nan, 4], [
+         np.nan, 0.5, 1.5, np.nan, np.nan], False, None),
         ("std", np.arange(5), [np.nan] + [np.sqrt(0.5)] * 4, True, None),
         ("std", np.arange(10, 0, -2), [np.nan] + [np.sqrt(2)] * 4, True, None),
         (
@@ -79,7 +83,8 @@ def dtypes(request):
         ),
         ("var", np.arange(5), [np.nan, 0.5, 0.5, 0.5, 0.5], True, None),
         ("var", np.arange(10, 0, -2), [np.nan, 2, 2, 2, 2], True, None),
-        ("var", [0, 1, 2, np.nan, 4], [np.nan, 0.5, 0.5, np.nan, np.nan], False, None),
+        ("var", [0, 1, 2, np.nan, 4], [
+         np.nan, 0.5, 0.5, np.nan, np.nan], False, None),
         ("median", np.arange(5), [np.nan, 0.5, 1.5, 2.5, 3.5], True, None),
         ("median", np.arange(10, 0, -2), [np.nan, 9, 7, 5, 3], True, None),
         (
@@ -131,7 +136,8 @@ def test_series_nullable_int(any_signed_int_ea_dtype, step):
         ),
         (
             "sum",
-            {0: Series([np.nan, 2, 6, 10, 14]), 1: Series([np.nan, 4, 8, 12, 16])},
+            {0: Series([np.nan, 2, 6, 10, 14]),
+             1: Series([np.nan, 4, 8, 12, 16])},
             None,
         ),
         (

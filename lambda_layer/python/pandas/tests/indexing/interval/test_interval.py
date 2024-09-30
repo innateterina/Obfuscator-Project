@@ -173,9 +173,11 @@ class TestIntervalIndexInsideMultiIndex:
         )
         idx = pd.MultiIndex.from_arrays(
             [
-                pd.Index(["FC", "FC", "FC", "FC", "OWNER", "OWNER", "OWNER", "OWNER"]),
+                pd.Index(["FC", "FC", "FC", "FC", "OWNER",
+                         "OWNER", "OWNER", "OWNER"]),
                 pd.Index(
-                    ["RID1", "RID1", "RID2", "RID2", "RID1", "RID1", "RID2", "RID2"]
+                    ["RID1", "RID1", "RID2", "RID2",
+                        "RID1", "RID1", "RID2", "RID2"]
                 ),
                 ii,
             ]
@@ -195,7 +197,8 @@ class TestIntervalIndexInsideMultiIndex:
 
         query_df = query_df.sort_index()
 
-        idx = pd.MultiIndex.from_arrays([query_df.Item, query_df.RID, query_df.MP])
+        idx = pd.MultiIndex.from_arrays(
+            [query_df.Item, query_df.RID, query_df.MP])
         query_df.index = idx
         result = df.value.loc[query_df.index]
 

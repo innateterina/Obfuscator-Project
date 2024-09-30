@@ -366,7 +366,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
     _internal_names_set = {"index", "name"} | NDFrame._internal_names_set
     _accessors = {"dt", "cat", "str", "sparse"}
     _hidden_attrs = (
-        base.IndexOpsMixin._hidden_attrs | NDFrame._hidden_attrs | frozenset([])
+        base.IndexOpsMixin._hidden_attrs | NDFrame._hidden_attrs | frozenset([
+        ])
     )
 
     # similar to __array_priority__, positions Series after DataFrame
@@ -635,7 +636,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
             # Below is the new way of extracting the keys and values
 
             keys = tuple(data.keys())
-            values = list(data.values())  # Generating list of values- faster way
+            # Generating list of values- faster way
+            values = list(data.values())
         elif index is not None:
             # fastpath for Series(data=None). Just use broadcasting a scalar
             # instead of reindexing.
@@ -1043,7 +1045,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         This is developed and maintained outside of pandas.
         Please report any issues to https://github.com/data-apis/dataframe-api-compat.
         """
-        dataframe_api_compat = import_optional_dependency("dataframe_api_compat")
+        dataframe_api_compat = import_optional_dependency(
+            "dataframe_api_compat")
         return (
             dataframe_api_compat.pandas_standard.convert_to_standard_compliant_column(
                 self, api_version=api_version
@@ -1208,7 +1211,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
 
         # If key is contained, would have returned by now
         indexer, new_index = self.index.get_loc_level(key)
-        new_ser = self._constructor(self._values[indexer], index=new_index, copy=False)
+        new_ser = self._constructor(
+            self._values[indexer], index=new_index, copy=False)
         if isinstance(indexer, slice):
             new_ser._mgr.add_references(self._mgr)  # type: ignore[arg-type]
         return new_ser.__finalize__(self)
@@ -1252,7 +1256,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
                 new_values, index=new_index, name=self.name, copy=False
             )
             if isinstance(loc, slice):
-                new_ser._mgr.add_references(self._mgr)  # type: ignore[arg-type]
+                new_ser._mgr.add_references(
+                    self._mgr)  # type: ignore[arg-type]
             return new_ser.__finalize__(self)
 
         else:
@@ -1275,7 +1280,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
                 warn_copy_on_write()
                 or (
                     not warn_copy_on_write()
-                    and self._mgr.blocks[0].refs.has_reference()  # type: ignore[union-attr]
+                    # type: ignore[union-attr]
+                    and self._mgr.blocks[0].refs.has_reference()
                 )
             ):
                 warn = False
@@ -1739,7 +1745,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
                     level_list = [level]
                 else:
                     level_list = level
-                level_list = [self.index._get_level_number(lev) for lev in level_list]
+                level_list = [self.index._get_level_number(
+                    lev) for lev in level_list]
                 if len(level_list) < self.index.nlevels:
                     new_index = self.index.droplevel(level_list)
 
@@ -2135,7 +2142,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
             Whether to do a deep copy, a shallow copy, or Copy on Write(None)
         """
         inplace = validate_bool_kwarg(inplace, "inplace")
-        ser = self if inplace else self.copy(deep and not using_copy_on_write())
+        ser = self if inplace else self.copy(
+            deep and not using_copy_on_write())
         ser.name = name
         return ser
 
@@ -2805,7 +2813,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         dtype: float64
         """
         nv.validate_round(args, kwargs)
-        new_mgr = self._mgr.round(decimals=decimals, using_cow=using_copy_on_write())
+        new_mgr = self._mgr.round(
+            decimals=decimals, using_cow=using_copy_on_write())
         return self._constructor_from_mgr(new_mgr, axes=new_mgr.axes).__finalize__(
             self, method="round"
         )
@@ -2884,7 +2893,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         #  about 2D cases.
         df = self.to_frame()
 
-        result = df.quantile(q=q, interpolation=interpolation, numeric_only=False)
+        result = df.quantile(
+            q=q, interpolation=interpolation, numeric_only=False)
         if result.ndim == 2:
             result = result.iloc[:, 0]
 
@@ -3866,7 +3876,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
             values_to_sort = cast(Series, ensure_key_mapped(self, key))._values
         else:
             values_to_sort = self._values
-        sorted_index = nargsort(values_to_sort, kind, bool(ascending), na_position)
+        sorted_index = nargsort(values_to_sort, kind,
+                                bool(ascending), na_position)
 
         if is_range_indexer(sorted_index, len(sorted_index)):
             if inplace:
@@ -4783,7 +4794,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
             if using_copy_on_write() or warn_copy_on_write()
             else self
         )
-        result = SeriesApply(ser, func=func, args=args, kwargs=kwargs).transform()
+        result = SeriesApply(ser, func=func, args=args,
+                             kwargs=kwargs).transform()
         return result
 
     def apply(
@@ -5658,7 +5670,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         self,
         caselist: list[
             tuple[
-                ArrayLike | Callable[[Series], Series | np.ndarray | Sequence[bool]],
+                ArrayLike | Callable[[Series], Series |
+                                     np.ndarray | Sequence[bool]],
                 ArrayLike | Scalar | Callable[[Series], Series | np.ndarray],
             ],
         ],
@@ -5738,7 +5751,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         ]
         default = self.copy()
         conditions, replacements = zip(*caselist)
-        common_dtypes = [infer_dtype_from(arg)[0] for arg in [*replacements, default]]
+        common_dtypes = [infer_dtype_from(arg)[0]
+                         for arg in [*replacements, default]]
         if len(set(common_dtypes)) > 1:
             common_dtype = find_common_type(common_dtypes)
             updated_replacements = []
@@ -5770,12 +5784,14 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         return default
 
     # error: Cannot determine type of 'isna'
-    @doc(NDFrame.isna, klass=_shared_doc_kwargs["klass"])  # type: ignore[has-type]
+    # type: ignore[has-type]
+    @doc(NDFrame.isna, klass=_shared_doc_kwargs["klass"])
     def isna(self) -> Series:
         return NDFrame.isna(self)
 
     # error: Cannot determine type of 'isna'
-    @doc(NDFrame.isna, klass=_shared_doc_kwargs["klass"])  # type: ignore[has-type]
+    # type: ignore[has-type]
+    @doc(NDFrame.isna, klass=_shared_doc_kwargs["klass"])
     def isnull(self) -> Series:
         """
         Series.isnull is an alias for Series.isna.
@@ -5783,12 +5799,14 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         return super().isnull()
 
     # error: Cannot determine type of 'notna'
-    @doc(NDFrame.notna, klass=_shared_doc_kwargs["klass"])  # type: ignore[has-type]
+    # type: ignore[has-type]
+    @doc(NDFrame.notna, klass=_shared_doc_kwargs["klass"])
     def notna(self) -> Series:
         return super().notna()
 
     # error: Cannot determine type of 'notna'
-    @doc(NDFrame.notna, klass=_shared_doc_kwargs["klass"])  # type: ignore[has-type]
+    # type: ignore[has-type]
+    @doc(NDFrame.notna, klass=_shared_doc_kwargs["klass"])
     def notnull(self) -> Series:
         """
         Series.notnull is an alias for Series.notna.
@@ -6111,7 +6129,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         res_name = ops.get_op_result_name(self, other)
 
         if isinstance(other, Series) and not self._indexed_same(other):
-            raise ValueError("Can only compare identically-labeled Series objects")
+            raise ValueError(
+                "Can only compare identically-labeled Series objects")
 
         lvalues = self._values
         rvalues = extract_array(other, extract_numpy=True, extract_range=True)
@@ -6187,9 +6206,11 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         this = self
 
         if not self.index.equals(other.index):
-            this, other = self.align(other, level=level, join="outer", copy=False)
+            this, other = self.align(
+                other, level=level, join="outer", copy=False)
 
-        this_vals, other_vals = ops.fill_binop(this._values, other._values, fill_value)
+        this_vals, other_vals = ops.fill_binop(
+            this._values, other._values, fill_value)
 
         with np.errstate(all="ignore"):
             result = func(this_vals, other_vals)
@@ -6228,7 +6249,8 @@ class Series(base.IndexOpsMixin, NDFrame):  # type: ignore[misc]
         # TODO: result should always be ArrayLike, but this fails for some
         #  JSONArray tests
         dtype = getattr(result, "dtype", None)
-        out = self._constructor(result, index=self.index, dtype=dtype, copy=False)
+        out = self._constructor(result, index=self.index,
+                                dtype=dtype, copy=False)
         out = out.__finalize__(self)
 
         # Set the result's name after __finalize__ is called because __finalize__

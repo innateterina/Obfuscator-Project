@@ -471,7 +471,8 @@ def _filesystem_dataset(source, schema=None, filesystem=None,
                 fs = _ensure_filesystem(filesystem)
             paths_or_selector = source
         else:
-            fs, paths_or_selector = _ensure_multiple_sources(source, filesystem)
+            fs, paths_or_selector = _ensure_multiple_sources(
+                source, filesystem)
     else:
         fs, paths_or_selector = _ensure_single_source(source, filesystem)
 

@@ -385,7 +385,8 @@ class isoparser(object):
             return tz.UTC
 
         if len(tzstr) not in {3, 5, 6}:
-            raise ValueError('Time zone offset must be 1, 3, 5 or 6 characters')
+            raise ValueError(
+                'Time zone offset must be 1, 3, 5 or 6 characters')
 
         if tzstr[0:1] == b'-':
             mult = -1

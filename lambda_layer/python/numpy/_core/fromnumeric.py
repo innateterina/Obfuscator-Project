@@ -706,6 +706,7 @@ def transpose(a, axes=None):
 def _matrix_transpose_dispatcher(x):
     return (x,)
 
+
 @array_function_dispatch(_matrix_transpose_dispatcher)
 def matrix_transpose(x, /):
     """
@@ -1260,6 +1261,7 @@ def argsort(a, axis=-1, kind=None, order=None, *, stable=None):
     return _wrapfunc(
         a, 'argsort', axis=axis, kind=kind, order=order, stable=stable
     )
+
 
 def _argmax_dispatcher(a, axis=None, out=None, *, keepdims=np._NoValue):
     return (a, out)
@@ -2707,7 +2709,7 @@ def _cumulative_func(x, func, axis, dtype, out, include_initial):
     if axis is None:
         if x_ndim >= 2:
             raise ValueError("For arrays which have more than one dimension "
-                            "``axis`` argument is required.")
+                             "``axis`` argument is required.")
         axis = 0
 
     if out is not None and include_initial:
@@ -3080,7 +3082,7 @@ def _max_dispatcher(a, axis=None, out=None, keepdims=None, initial=None,
 @array_function_dispatch(_max_dispatcher)
 @set_module('numpy')
 def max(a, axis=None, out=None, keepdims=np._NoValue, initial=np._NoValue,
-         where=np._NoValue):
+        where=np._NoValue):
     """
     Return the maximum of an array or maximum along an axis.
 
@@ -4317,4 +4319,3 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=np._NoValue, *,
 
     return _methods._var(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
                          **kwargs)
-

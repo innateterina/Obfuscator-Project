@@ -106,7 +106,8 @@ class Properties(PandasDelegate, PandasObject, NoNewAttributesMixin):
         else:
             index = self._parent.index
         # return the result as a Series
-        result = Series(result, index=index, name=self.name).__finalize__(self._parent)
+        result = Series(result, index=index,
+                        name=self.name).__finalize__(self._parent)
 
         # setting this object will show a SettingWithCopyWarning/Error
         result._is_copy = (
@@ -252,7 +253,8 @@ class ArrowTemporalProperties(PandasDelegate, PandasObject, NoNewAttributesMixin
         )
         iso_calendar_df = DataFrame(
             {
-                col: type(self._parent.array)(result.field(i))  # type: ignore[call-arg]
+                col: type(self._parent.array)(
+                    result.field(i))  # type: ignore[call-arg]
                 for i, col in enumerate(["year", "week", "day"])
             }
         )
@@ -608,7 +610,8 @@ class PeriodProperties(Properties):
 class CombinedDatetimelikeProperties(
     DatetimeProperties, TimedeltaProperties, PeriodProperties
 ):
-    def __new__(cls, data: Series):  # pyright: ignore[reportInconsistentConstructor]
+    # pyright: ignore[reportInconsistentConstructor]
+    def __new__(cls, data: Series):
         # CombinedDatetimelikeProperties isn't really instantiated. Instead
         # we need to choose which parent (datetime or timedelta) is
         # appropriate. Since we're checking the dtypes anyway, we'll just
@@ -640,4 +643,5 @@ class CombinedDatetimelikeProperties(
         elif isinstance(data.dtype, PeriodDtype):
             return PeriodProperties(data, orig)
 
-        raise AttributeError("Can only use .dt accessor with datetimelike values")
+        raise AttributeError(
+            "Can only use .dt accessor with datetimelike values")

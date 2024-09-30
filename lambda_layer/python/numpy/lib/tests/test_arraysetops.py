@@ -5,7 +5,7 @@ import numpy as np
 
 from numpy import (
     ediff1d, intersect1d, setxor1d, union1d, setdiff1d, unique, isin
-    )
+)
 from numpy.exceptions import AxisError
 from numpy.testing import (assert_array_equal, assert_equal,
                            assert_raises, assert_raises_regex)
@@ -163,7 +163,7 @@ class TestSetOps:
          np.nan,
          np.nan,
          'to_begin'),
-         ])
+    ])
     def test_ediff1d_forbidden_type_casts(self, ary, prepend, append, expected):
         # verify resolution of gh-11490
 
@@ -179,22 +179,22 @@ class TestSetOps:
     @pytest.mark.parametrize(
         "ary,prepend,append,expected",
         [
-         (np.array([1, 2, 3], dtype=np.int16),
-          2**16,  # will be cast to int16 under same kind rule.
-          2**16 + 4,
-          np.array([0, 1, 1, 4], dtype=np.int16)),
-         (np.array([1, 2, 3], dtype=np.float32),
-          np.array([5], dtype=np.float64),
-          None,
-          np.array([5, 1, 1], dtype=np.float32)),
-         (np.array([1, 2, 3], dtype=np.int32),
-          0,
-          0,
-          np.array([0, 1, 1, 0], dtype=np.int32)),
-         (np.array([1, 2, 3], dtype=np.int64),
-          3,
-          -9,
-          np.array([3, 1, 1, -9], dtype=np.int64)),
+            (np.array([1, 2, 3], dtype=np.int16),
+             2**16,  # will be cast to int16 under same kind rule.
+             2**16 + 4,
+             np.array([0, 1, 1, 4], dtype=np.int16)),
+            (np.array([1, 2, 3], dtype=np.float32),
+                np.array([5], dtype=np.float64),
+                None,
+                np.array([5, 1, 1], dtype=np.float32)),
+            (np.array([1, 2, 3], dtype=np.int32),
+                0,
+                0,
+                np.array([0, 1, 1, 0], dtype=np.int32)),
+            (np.array([1, 2, 3], dtype=np.int64),
+                3,
+                -9,
+                np.array([3, 1, 1, -9], dtype=np.int64)),
         ]
     )
     def test_ediff1d_scalar_handling(self,
@@ -355,7 +355,7 @@ class TestSetOps:
         if kind in {None, "sort"}:
             for mult in (1, 10):
                 a = np.array([5, 4, 5, 3, 4, 4, 3, 4, 3, 5, 2, 1, 5, 5],
-                            dtype=np.float32)
+                             dtype=np.float32)
                 b = [2, 3, 4] * mult
                 b = np.array(b, dtype=np.float32)
                 assert_array_equal(np.invert(isin(a, b, kind=kind)),
@@ -752,7 +752,8 @@ class TestUnique:
         assert_equal(np.unique(a, return_counts=True), (ua, ua_cnt))
 
         # test for ticket 2111 - complex
-        a = [2.0-1j, np.nan, 1.0+1j, complex(0.0, np.nan), complex(1.0, np.nan)]
+        a = [2.0-1j, np.nan, 1.0+1j,
+             complex(0.0, np.nan), complex(1.0, np.nan)]
         ua = [1.0+1j, 2.0-1j, complex(0.0, np.nan)]
         ua_idx = [2, 0, 3]
         ua_inv = [1, 2, 0, 2, 2]
@@ -764,7 +765,8 @@ class TestUnique:
 
         # test for ticket 2111 - datetime64
         nat = np.datetime64('nat')
-        a = [np.datetime64('2020-12-26'), nat, np.datetime64('2020-12-24'), nat]
+        a = [np.datetime64('2020-12-26'), nat,
+             np.datetime64('2020-12-24'), nat]
         ua = [np.datetime64('2020-12-24'), np.datetime64('2020-12-26'), nat]
         ua_idx = [2, 0, 1]
         ua_inv = [1, 2, 0, 2]

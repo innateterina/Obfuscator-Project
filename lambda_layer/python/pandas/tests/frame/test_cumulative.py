@@ -27,7 +27,8 @@ class TestDataFrameCumulativeOps:
         df.cummin()
         df.cumsum()
 
-        dm = DataFrame(np.arange(20).reshape(4, 5), index=range(4), columns=range(5))
+        dm = DataFrame(np.arange(20).reshape(4, 5),
+                       index=range(4), columns=range(5))
         # TODO(wesm): do something with this?
         dm.cumsum()
 
@@ -67,7 +68,8 @@ class TestDataFrameCumulativeOps:
 
     def test_cumsum_preserve_dtypes(self):
         # GH#19296 dont incorrectly upcast to object
-        df = DataFrame({"A": [1, 2, 3], "B": [1, 2, 3.0], "C": [True, False, False]})
+        df = DataFrame({"A": [1, 2, 3], "B": [1, 2, 3.0],
+                       "C": [True, False, False]})
 
         result = df.cumsum()
 

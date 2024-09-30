@@ -55,7 +55,8 @@ class TestEngine:
 
             f = numba.jit(f)
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
         args = (2,)
 
         s = Series(range(10))
@@ -94,7 +95,8 @@ class TestEngine:
     ):
         method, kwargs = arithmetic_numba_supported_operators
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         roll = data.rolling(3, step=step)
         result = getattr(roll, method)(
@@ -111,7 +113,8 @@ class TestEngine:
     ):
         method, kwargs = arithmetic_numba_supported_operators
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         data = DataFrame(np.eye(5))
         expand = data.expanding()
@@ -136,7 +139,8 @@ class TestEngine:
             func_1 = numba.jit(func_1)
             func_2 = numba.jit(func_2)
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         roll = Series(range(10)).rolling(2, step=step)
         result = roll.apply(
@@ -172,7 +176,8 @@ class TestEngine:
         def add(values, x):
             return np.sum(values) + x
 
-        engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+        engine_kwargs = {"nopython": nopython,
+                         "nogil": nogil, "parallel": parallel}
         df = DataFrame({"value": [0, 0, 0]})
         result = getattr(df, window)(method=method, **window_kwargs).apply(
             add, raw=True, engine="numba", engine_kwargs=engine_kwargs, args=(1,)
@@ -196,7 +201,8 @@ class TestEngine:
         def func(x):
             return nogil + parallel + nopython
 
-        engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+        engine_kwargs = {"nopython": nopython,
+                         "nogil": nogil, "parallel": parallel}
         df = DataFrame({"value": [0, 0, 0]})
         result = df.rolling(1).apply(
             func, raw=True, engine="numba", engine_kwargs=engine_kwargs
@@ -205,7 +211,8 @@ class TestEngine:
         tm.assert_frame_equal(result, expected)
 
         parallel = False
-        engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+        engine_kwargs = {"nopython": nopython,
+                         "nogil": nogil, "parallel": parallel}
         result = df.rolling(1).apply(
             func, raw=True, engine="numba", engine_kwargs=engine_kwargs
         )
@@ -242,16 +249,18 @@ class TestEWM:
     ):
         df = DataFrame({"B": range(4)})
         if grouper == "None":
-            grouper = lambda x: x
+            def grouper(x): return x
         else:
             df["A"] = ["a", "b", "a", "b"]
-            grouper = lambda x: x.groupby("A")
+            def grouper(x): return x.groupby("A")
         if method == "sum":
             adjust = True
         ewm = grouper(df).ewm(com=1.0, adjust=adjust, ignore_na=ignore_na)
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
-        result = getattr(ewm, method)(engine="numba", engine_kwargs=engine_kwargs)
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
+        result = getattr(ewm, method)(
+            engine="numba", engine_kwargs=engine_kwargs)
         expected = getattr(ewm, method)(engine="cython")
 
         tm.assert_frame_equal(result, expected)
@@ -262,9 +271,9 @@ class TestEWM:
 
         df = DataFrame({"B": [0, 0, 1, 1, 2, 2]})
         if grouper == "None":
-            grouper = lambda x: x
+            def grouper(x): return x
         else:
-            grouper = lambda x: x.groupby("A")
+            def grouper(x): return x.groupby("A")
             df["A"] = ["a", "b", "a", "b", "b", "a"]
 
         halflife = "23 days"
@@ -282,7 +291,8 @@ class TestEWM:
             halflife=halflife, adjust=True, ignore_na=ignore_na, times=times
         )
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         result = ewm.mean(engine="numba", engine_kwargs=engine_kwargs)
         expected = ewm.mean(engine="cython")
@@ -337,10 +347,12 @@ class TestTableMethod:
     ):
         method, kwargs = arithmetic_numba_supported_operators
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         df = DataFrame(np.eye(3))
-        roll_table = df.rolling(2, method="table", axis=axis, min_periods=0, step=step)
+        roll_table = df.rolling(
+            2, method="table", axis=axis, min_periods=0, step=step)
         if method in ("var", "std"):
             with pytest.raises(NotImplementedError, match=f"{method} not supported"):
                 getattr(roll_table, method)(
@@ -359,7 +371,8 @@ class TestTableMethod:
             tm.assert_frame_equal(result, expected)
 
     def test_table_method_rolling_apply(self, axis, nogil, parallel, nopython, step):
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         def f(x):
             return np.sum(x, axis=0) + 1
@@ -394,7 +407,8 @@ class TestTableMethod:
         tm.assert_frame_equal(result, expected)
 
     def test_table_method_expanding_apply(self, axis, nogil, parallel, nopython):
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         def f(x):
             return np.sum(x, axis=0) + 1
@@ -413,7 +427,8 @@ class TestTableMethod:
     ):
         method, kwargs = arithmetic_numba_supported_operators
 
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         df = DataFrame(np.eye(3))
         expand_table = df.expanding(method="table", axis=axis)
@@ -435,7 +450,8 @@ class TestTableMethod:
     @pytest.mark.parametrize("data", [np.eye(3), np.ones((2, 3)), np.ones((3, 2))])
     @pytest.mark.parametrize("method", ["mean", "sum"])
     def test_table_method_ewm(self, data, method, axis, nogil, parallel, nopython):
-        engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+        engine_kwargs = {"nogil": nogil,
+                         "parallel": parallel, "nopython": nopython}
 
         df = DataFrame(data)
 

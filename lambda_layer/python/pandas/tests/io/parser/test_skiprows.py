@@ -59,7 +59,8 @@ def test_deep_skip_rows(all_parsers):
         [",".join([str(i), str(i + 1), str(i + 2)]) for i in range(10)]
     )
     condensed_data = "a,b,c\n" + "\n".join(
-        [",".join([str(i), str(i + 1), str(i + 2)]) for i in [0, 1, 2, 3, 4, 6, 8, 9]]
+        [",".join([str(i), str(i + 1), str(i + 2)])
+         for i in [0, 1, 2, 3, 4, 6, 8, 9]]
     )
 
     result = parser.read_csv(StringIO(data), skiprows=[6, 8])
@@ -123,7 +124,8 @@ line 22",2
                 "example\n sentence\n three~,url3"
             ),
             {"quotechar": "~", "skiprows": [1, 3]},
-            DataFrame([["example\n sentence\n two", "url2"]], columns=["Text", "url"]),
+            DataFrame([["example\n sentence\n two", "url2"]],
+                      columns=["Text", "url"]),
         ),
     ],
 )
@@ -212,7 +214,8 @@ def test_skiprows_lineterminator(all_parsers, lineterminator, request):
     )
 
     if parser.engine == "python" and lineterminator == "\r":
-        mark = pytest.mark.xfail(reason="'CR' not respect with the Python parser yet")
+        mark = pytest.mark.xfail(
+            reason="'CR' not respect with the Python parser yet")
         request.applymarker(mark)
 
     data = data.replace("\n", lineterminator)
@@ -253,7 +256,8 @@ def test_skip_rows_callable(all_parsers, kwargs, expected):
     parser = all_parsers
     data = "a\n1\n2\n3\n4\n5"
 
-    result = parser.read_csv(StringIO(data), skiprows=lambda x: x % 2 == 0, **kwargs)
+    result = parser.read_csv(
+        StringIO(data), skiprows=lambda x: x % 2 == 0, **kwargs)
     tm.assert_frame_equal(result, expected)
 
 
@@ -304,7 +308,8 @@ def test_skip_rows_and_n_rows(all_parsers):
 """
     parser = all_parsers
     result = parser.read_csv(StringIO(data), nrows=5, skiprows=[2, 4, 6])
-    expected = DataFrame({"a": [1, 3, 5, 7, 8], "b": ["a", "c", "e", "g", "h"]})
+    expected = DataFrame(
+        {"a": [1, 3, 5, 7, 8], "b": ["a", "c", "e", "g", "h"]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -331,4 +336,5 @@ def test_skip_rows_with_chunks(all_parsers):
     df2 = next(reader)
 
     tm.assert_frame_equal(df1, DataFrame({"col_a": [20, 30, 60, 70]}))
-    tm.assert_frame_equal(df2, DataFrame({"col_a": [80, 90, 100]}, index=[4, 5, 6]))
+    tm.assert_frame_equal(df2, DataFrame(
+        {"col_a": [80, 90, 100]}, index=[4, 5, 6]))

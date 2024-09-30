@@ -98,7 +98,8 @@ class TestDatetimeConcat:
         tm.assert_frame_equal(result, expected)
 
         # GH 13783: Concat after resample
-        result = concat([df1.resample("h").mean(), df2.resample("h").mean()], sort=True)
+        result = concat([df1.resample("h").mean(),
+                        df2.resample("h").mean()], sort=True)
         expected = DataFrame(
             {"a": [1, 2, 3] + [np.nan] * 3, "b": [np.nan] * 3 + [1, 2, 3]},
             index=idx1.append(idx1),
@@ -116,7 +117,8 @@ class TestDatetimeConcat:
 
         # Non-monotonic index result
         result = concat([expected[50:], expected[:50]])
-        expected = DataFrame(data[50:] + data[:50], index=dr[50:].append(dr[:50]))
+        expected = DataFrame(data[50:] + data[:50],
+                             index=dr[50:].append(dr[:50]))
         expected.index._data.freq = None
         tm.assert_frame_equal(result, expected)
 
@@ -161,7 +163,8 @@ class TestDatetimeConcat:
         # GH 11693
         # test for merging NaT series with datetime series.
         x = Series(
-            date_range("20151124 08:00", "20151124 09:00", freq="1h", tz="US/Eastern")
+            date_range("20151124 08:00", "20151124 09:00",
+                       freq="1h", tz="US/Eastern")
         )
         y = Series(pd.NaT, index=[0, 1], dtype="datetime64[ns, US/Eastern]")
         expected = Series([x[0], x[1], pd.NaT, pd.NaT])
@@ -170,7 +173,8 @@ class TestDatetimeConcat:
         tm.assert_series_equal(result, expected)
 
         # all NaT with tz
-        expected = Series(pd.NaT, index=range(4), dtype="datetime64[ns, US/Eastern]")
+        expected = Series(pd.NaT, index=range(
+            4), dtype="datetime64[ns, US/Eastern]")
         result = concat([y, y], ignore_index=True)
         tm.assert_series_equal(result, expected)
 
@@ -196,7 +200,8 @@ class TestDatetimeConcat:
         dti = DatetimeIndex([pd.NaT, pd.NaT], tz=tz)
         first = DataFrame({0: dti})
         second = DataFrame(
-            [[Timestamp("2015/01/01", tz=tz)], [Timestamp("2016/01/01", tz=tz)]],
+            [[Timestamp("2015/01/01", tz=tz)],
+             [Timestamp("2016/01/01", tz=tz)]],
             index=[2, 3],
         )
         expected = DataFrame(
@@ -220,7 +225,8 @@ class TestDatetimeConcat:
         # GH 12396
 
         # tz-naive
-        first = DataFrame([[pd.NaT], [pd.NaT]]).apply(lambda x: x.dt.tz_localize(tz1))
+        first = DataFrame([[pd.NaT], [pd.NaT]]).apply(
+            lambda x: x.dt.tz_localize(tz1))
         second = DataFrame([item]).apply(lambda x: x.dt.tz_localize(tz2))
 
         result = concat([first, second], axis=0)
@@ -289,7 +295,8 @@ class TestDatetimeConcat:
 class TestTimezoneConcat:
     def test_concat_tz_series(self):
         # gh-11755: tz and no tz
-        x = Series(date_range("20151124 08:00", "20151124 09:00", freq="1h", tz="UTC"))
+        x = Series(date_range("20151124 08:00",
+                   "20151124 09:00", freq="1h", tz="UTC"))
         y = Series(date_range("2012-01-01", "2012-01-02"))
         expected = Series([x[0], x[1], y[0], y[1]], dtype="object")
         result = concat([x, y], ignore_index=True)
@@ -297,7 +304,8 @@ class TestTimezoneConcat:
 
     def test_concat_tz_series2(self):
         # gh-11887: concat tz and object
-        x = Series(date_range("20151124 08:00", "20151124 09:00", freq="1h", tz="UTC"))
+        x = Series(date_range("20151124 08:00",
+                   "20151124 09:00", freq="1h", tz="UTC"))
         y = Series(["a", "b"])
         expected = Series([x[0], x[1], y[0], y[1]], dtype="object")
         result = concat([x, y], ignore_index=True)
@@ -562,7 +570,8 @@ def test_concat_multiindex_datetime_nat():
     )
     result = concat([left, right], axis="columns")
     expected = DataFrame(
-        {"a": [1.0, np.nan], "b": 2}, MultiIndex.from_tuples([(1, pd.NaT), (2, pd.NaT)])
+        {"a": [1.0, np.nan], "b": 2}, MultiIndex.from_tuples(
+            [(1, pd.NaT), (2, pd.NaT)])
     )
     tm.assert_frame_equal(result, expected)
 

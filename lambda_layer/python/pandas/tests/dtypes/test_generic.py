@@ -18,10 +18,13 @@ class TestABCClasses:
     categorical = pd.Categorical([1, 2, 3], categories=[2, 3, 1])
     categorical_df = pd.DataFrame({"values": [1, 2, 3]}, index=categorical)
     df = pd.DataFrame({"names": ["a", "b", "c"]}, index=multi_index)
-    sparse_array = pd.arrays.SparseArray(np.random.default_rng(2).standard_normal(10))
+    sparse_array = pd.arrays.SparseArray(
+        np.random.default_rng(2).standard_normal(10))
 
-    datetime_array = pd.core.arrays.DatetimeArray._from_sequence(datetime_index)
-    timedelta_array = pd.core.arrays.TimedeltaArray._from_sequence(timedelta_index)
+    datetime_array = pd.core.arrays.DatetimeArray._from_sequence(
+        datetime_index)
+    timedelta_array = pd.core.arrays.TimedeltaArray._from_sequence(
+        timedelta_index)
 
     abc_pairs = [
         ("ABCMultiIndex", multi_index),
@@ -33,7 +36,8 @@ class TestABCClasses:
             "ABCPeriodArray",
             pd.arrays.PeriodArray([2000, 2001, 2002], dtype="period[D]"),
         ),
-        ("ABCNumpyExtensionArray", pd.arrays.NumpyExtensionArray(np.array([0, 1, 2]))),
+        ("ABCNumpyExtensionArray",
+         pd.arrays.NumpyExtensionArray(np.array([0, 1, 2]))),
         ("ABCPeriodIndex", period_index),
         ("ABCCategoricalIndex", categorical_df.index),
         ("ABCSeries", pd.Series([1, 2, 3])),
@@ -61,7 +65,8 @@ class TestABCClasses:
             assert issubclass(type(inst), getattr(gt, abctype2))
 
             with pytest.raises(
-                TypeError, match=re.escape("issubclass() arg 1 must be a class")
+                TypeError, match=re.escape(
+                    "issubclass() arg 1 must be a class")
             ):
                 issubclass(inst, getattr(gt, abctype2))
         else:
@@ -95,7 +100,8 @@ class TestABCClasses:
     def test_abc_coverage(self, abctype):
         # GH 38588
         assert (
-            abctype in (e for e, _ in self.abc_pairs) or abctype in self.abc_subclasses
+            abctype in (
+                e for e, _ in self.abc_pairs) or abctype in self.abc_subclasses
         )
 
 

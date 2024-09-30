@@ -29,7 +29,8 @@ class TestMatmul:
 
         # DataFrame @ Series -> Series
         result = operator.matmul(b.T, a)
-        expected = Series(np.dot(b.T.values, a.T.values), index=["1", "2", "3"])
+        expected = Series(np.dot(b.T.values, a.T.values),
+                          index=["1", "2", "3"])
         tm.assert_series_equal(result, expected)
 
         # Series @ Series -> scalar
@@ -64,13 +65,15 @@ class TestMatmul:
         # mixed dtype DataFrame @ Series
         a["p"] = int(a.p)
         result = operator.matmul(b.T, a)
-        expected = Series(np.dot(b.T.values, a.T.values), index=["1", "2", "3"])
+        expected = Series(np.dot(b.T.values, a.T.values),
+                          index=["1", "2", "3"])
         tm.assert_series_equal(result, expected)
 
         # different dtypes DataFrame @ Series
         a = a.astype(int)
         result = operator.matmul(b.T, a)
-        expected = Series(np.dot(b.T.values, a.T.values), index=["1", "2", "3"])
+        expected = Series(np.dot(b.T.values, a.T.values),
+                          index=["1", "2", "3"])
         tm.assert_series_equal(result, expected)
 
         msg = r"Dot product shape mismatch, \(4,\) vs \(3,\)"

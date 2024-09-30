@@ -54,7 +54,8 @@ def test_contains(any_string_dtype):
     )
     result = values.str.contains(pat)
     expected_dtype = np.bool_ if any_string_dtype in object_pyarrow_numpy else "boolean"
-    expected = Series(np.array([False, False, True, True]), dtype=expected_dtype)
+    expected = Series(
+        np.array([False, False, True, True]), dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
 
     # case insensitive using regex
@@ -64,12 +65,14 @@ def test_contains(any_string_dtype):
     )
 
     result = values.str.contains("FOO|mmm", case=False)
-    expected = Series(np.array([True, False, True, True]), dtype=expected_dtype)
+    expected = Series(
+        np.array([True, False, True, True]), dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
 
     # case insensitive without regex
     result = values.str.contains("foo", regex=False, case=False)
-    expected = Series(np.array([True, False, True, False]), dtype=expected_dtype)
+    expected = Series(
+        np.array([True, False, True, False]), dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
 
     # unicode
@@ -88,7 +91,8 @@ def test_contains(any_string_dtype):
 
     result = values.str.contains(pat, na=False)
     expected_dtype = np.bool_ if any_string_dtype in object_pyarrow_numpy else "boolean"
-    expected = Series(np.array([False, False, True, True]), dtype=expected_dtype)
+    expected = Series(
+        np.array([False, False, True, True]), dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
 
     values = Series(
@@ -96,7 +100,8 @@ def test_contains(any_string_dtype):
         dtype=any_string_dtype,
     )
     result = values.str.contains(pat)
-    expected = Series(np.array([False, False, True, True]), dtype=expected_dtype)
+    expected = Series(
+        np.array([False, False, True, True]), dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
 
 
@@ -271,7 +276,8 @@ def test_startswith(pat, dtype, null_value, na):
         dtype=np.object_,
     )
     rs = Series(mixed).str.startswith("f")
-    xp = Series([False, np.nan, False, np.nan, np.nan, True, None, np.nan, np.nan])
+    xp = Series([False, np.nan, False, np.nan,
+                np.nan, True, None, np.nan, np.nan])
     tm.assert_series_equal(rs, xp)
 
 
@@ -329,7 +335,8 @@ def test_endswith(pat, dtype, null_value, na):
         dtype=object,
     )
     rs = Series(mixed).str.endswith("f")
-    xp = Series([False, np.nan, False, np.nan, np.nan, False, None, np.nan, np.nan])
+    xp = Series([False, np.nan, False, np.nan,
+                np.nan, False, None, np.nan, np.nan])
     tm.assert_series_equal(rs, xp)
 
 
@@ -390,9 +397,11 @@ def test_replace_mixed_object():
 
 def test_replace_unicode(any_string_dtype):
     ser = Series([b"abcd,\xc3\xa0".decode("utf-8")], dtype=any_string_dtype)
-    expected = Series([b"abcd, \xc3\xa0".decode("utf-8")], dtype=any_string_dtype)
+    expected = Series([b"abcd, \xc3\xa0".decode("utf-8")],
+                      dtype=any_string_dtype)
     with tm.maybe_produces_warning(PerformanceWarning, using_pyarrow(any_string_dtype)):
-        result = ser.str.replace(r"(?<=\w),(?=\w)", ", ", flags=re.UNICODE, regex=True)
+        result = ser.str.replace(
+            r"(?<=\w),(?=\w)", ", ", flags=re.UNICODE, regex=True)
     tm.assert_series_equal(result, expected)
 
 
@@ -411,7 +420,7 @@ def test_replace_callable(any_string_dtype):
     ser = Series(["fooBAD__barBAD", np.nan], dtype=any_string_dtype)
 
     # test with callable
-    repl = lambda m: m.group(0).swapcase()
+    def repl(m): return m.group(0).swapcase()
     with tm.maybe_produces_warning(PerformanceWarning, using_pyarrow(any_string_dtype)):
         result = ser.str.replace("[a-z][A-Z]{2}", repl, n=2, regex=True)
     expected = Series(["foObaD__baRbaD", np.nan], dtype=any_string_dtype)
@@ -441,7 +450,7 @@ def test_replace_callable_named_groups(any_string_dtype):
     # test regex named groups
     ser = Series(["Foo Bar Baz", np.nan], dtype=any_string_dtype)
     pat = r"(?P<first>\w+) (?P<middle>\w+) (?P<last>\w+)"
-    repl = lambda m: m.group("middle").swapcase()
+    def repl(m): return m.group("middle").swapcase()
     with tm.maybe_produces_warning(PerformanceWarning, using_pyarrow(any_string_dtype)):
         result = ser.str.replace(pat, repl, regex=True)
     expected = Series(["bAR", np.nan], dtype=any_string_dtype)
@@ -479,7 +488,8 @@ def test_replace_compiled_regex_mixed_object():
 
 def test_replace_compiled_regex_unicode(any_string_dtype):
     ser = Series([b"abcd,\xc3\xa0".decode("utf-8")], dtype=any_string_dtype)
-    expected = Series([b"abcd, \xc3\xa0".decode("utf-8")], dtype=any_string_dtype)
+    expected = Series([b"abcd, \xc3\xa0".decode("utf-8")],
+                      dtype=any_string_dtype)
     pat = re.compile(r"(?<=\w),(?=\w)", flags=re.UNICODE)
     with tm.maybe_produces_warning(PerformanceWarning, using_pyarrow(any_string_dtype)):
         result = ser.str.replace(pat, ", ", regex=True)
@@ -507,7 +517,7 @@ def test_replace_compiled_regex_raises(any_string_dtype):
 def test_replace_compiled_regex_callable(any_string_dtype):
     # test with callable
     ser = Series(["fooBAD__barBAD", np.nan], dtype=any_string_dtype)
-    repl = lambda m: m.group(0).swapcase()
+    def repl(m): return m.group(0).swapcase()
     pat = re.compile("[a-z][A-Z]{2}")
     with tm.maybe_produces_warning(PerformanceWarning, using_pyarrow(any_string_dtype)):
         result = ser.str.replace(pat, repl, n=2, regex=True)
@@ -516,7 +526,8 @@ def test_replace_compiled_regex_callable(any_string_dtype):
 
 
 @pytest.mark.parametrize(
-    "regex,expected", [(True, ["bao", "bao", np.nan]), (False, ["bao", "foo", np.nan])]
+    "regex,expected", [(True, ["bao", "bao", np.nan]),
+                       (False, ["bao", "foo", np.nan])]
 )
 def test_replace_literal(regex, expected, any_string_dtype):
     # GH16808 literal replace (regex=False vs regex=True)
@@ -528,7 +539,7 @@ def test_replace_literal(regex, expected, any_string_dtype):
 
 def test_replace_literal_callable_raises(any_string_dtype):
     ser = Series([], dtype=any_string_dtype)
-    repl = lambda m: m.group(0).swapcase()
+    def repl(m): return m.group(0).swapcase()
 
     msg = "Cannot use a callable replacement when regex=False"
     with pytest.raises(ValueError, match=msg):
@@ -628,9 +639,11 @@ def test_replace_regex_single_character(regex, any_string_dtype):
 
     result = s.str.replace(".", "a", regex=regex)
     if regex:
-        expected = Series(["aaa", "a", "a", np.nan, ""], dtype=any_string_dtype)
+        expected = Series(["aaa", "a", "a", np.nan, ""],
+                          dtype=any_string_dtype)
     else:
-        expected = Series(["aab", "a", "b", np.nan, ""], dtype=any_string_dtype)
+        expected = Series(["aab", "a", "b", np.nan, ""],
+                          dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
 
 
@@ -686,7 +699,8 @@ def test_match_mixed_object():
         ]
     )
     result = Series(mixed).str.match(".*(BAD[_]+).*(BAD)")
-    expected = Series([True, np.nan, True, np.nan, np.nan, False, None, np.nan, np.nan])
+    expected = Series([True, np.nan, True, np.nan, np.nan,
+                      False, None, np.nan, np.nan])
     assert isinstance(result, Series)
     tm.assert_series_equal(result, expected)
 
@@ -774,7 +788,8 @@ def test_fullmatch_case_kwarg(any_string_dtype):
 
 
 def test_findall(any_string_dtype):
-    ser = Series(["fooBAD__barBAD", np.nan, "foo", "BAD"], dtype=any_string_dtype)
+    ser = Series(["fooBAD__barBAD", np.nan, "foo", "BAD"],
+                 dtype=any_string_dtype)
     result = ser.str.findall("BAD[_]*")
     expected = Series([["BAD__", "BAD"], np.nan, [], ["BAD"]])
     expected = _convert_na_value(ser, expected)
@@ -840,25 +855,29 @@ def test_find(any_string_dtype):
     result = ser.str.find("EF", 3)
     expected = Series([4, 3, 7, 4, -1], dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.find("EF", 3) for v in np.array(ser)], dtype=np.int64)
+    expected = np.array([v.find("EF", 3)
+                        for v in np.array(ser)], dtype=np.int64)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.int64), expected)
 
     result = ser.str.rfind("EF", 3)
     expected = Series([4, 5, 7, 4, -1], dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.rfind("EF", 3) for v in np.array(ser)], dtype=np.int64)
+    expected = np.array([v.rfind("EF", 3)
+                        for v in np.array(ser)], dtype=np.int64)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.int64), expected)
 
     result = ser.str.find("EF", 3, 6)
     expected = Series([4, 3, -1, 4, -1], dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.find("EF", 3, 6) for v in np.array(ser)], dtype=np.int64)
+    expected = np.array([v.find("EF", 3, 6)
+                        for v in np.array(ser)], dtype=np.int64)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.int64), expected)
 
     result = ser.str.rfind("EF", 3, 6)
     expected = Series([4, 3, -1, 4, -1], dtype=expected_dtype)
     tm.assert_series_equal(result, expected)
-    expected = np.array([v.rfind("EF", 3, 6) for v in np.array(ser)], dtype=np.int64)
+    expected = np.array([v.rfind("EF", 3, 6)
+                        for v in np.array(ser)], dtype=np.int64)
     tm.assert_numpy_array_equal(np.array(result, dtype=np.int64), expected)
 
 

@@ -11,11 +11,11 @@ import pickle
 import numpy as np
 from numpy.exceptions import AxisError, ComplexWarning
 from numpy.testing import (
-        assert_, assert_equal, IS_PYPY, assert_almost_equal,
-        assert_array_equal, assert_array_almost_equal, assert_raises,
-        assert_raises_regex, assert_warns, suppress_warnings,
-        _assert_valid_refcount, HAS_REFCOUNT, IS_PYSTON, IS_WASM
-        )
+    assert_, assert_equal, IS_PYPY, assert_almost_equal,
+    assert_array_equal, assert_array_almost_equal, assert_raises,
+    assert_raises_regex, assert_warns, suppress_warnings,
+    _assert_valid_refcount, HAS_REFCOUNT, IS_PYSTON, IS_WASM
+)
 from numpy.testing._private.utils import _no_tracing, requires_memory
 from numpy._utils import asbytes, asunicode
 
@@ -148,7 +148,7 @@ class TestRegression:
     def test_mem_dtype_align(self):
         # Ticket #93
         assert_raises(TypeError, np.dtype,
-                              {'names':['a'], 'formats':['foo']}, align=1)
+                      {'names': ['a'], 'formats': ['foo']}, align=1)
 
     def test_endian_bool_indexing(self):
         # Ticket #105
@@ -170,15 +170,15 @@ class TestRegression:
         net[2] = 0.605202
         max_net = net.max()
         test = np.where(net <= 0., max_net, net)
-        correct = np.array([ 0.60520202,  0.00458849,  0.60520202])
+        correct = np.array([0.60520202,  0.00458849,  0.60520202])
         assert_array_almost_equal(test, correct)
 
     def test_endian_recarray(self):
         # Ticket #2185
         dt = np.dtype([
-               ('head', '>u4'),
-               ('data', '>u4', 2),
-            ])
+            ('head', '>u4'),
+            ('data', '>u4', 2),
+        ])
         buf = np.recarray(1, dtype=dt)
         buf[0]['head'] = 1
         buf[0]['data'][:] = [1, 1]
@@ -327,8 +327,8 @@ class TestRegression:
 
     @pytest.mark.xfail(IS_WASM, reason="not sure why")
     @pytest.mark.parametrize("index",
-            [np.ones(10, dtype=bool), np.arange(10)],
-            ids=["boolean-arr-index", "integer-arr-index"])
+                             [np.ones(10, dtype=bool), np.arange(10)],
+                             ids=["boolean-arr-index", "integer-arr-index"])
     def test_nonarray_assignment(self, index):
         # See also Issue gh-2870, test for non-array assignment
         # and equivalent unsafe casted array assignment
@@ -390,7 +390,8 @@ class TestRegression:
         assert_equal(np.array([(1, 2), (3, 4)], dtype=object).shape, (2, 2))
         assert_equal(np.array([], dtype=object).shape, (0,))
         assert_equal(np.array([[], [], []], dtype=object).shape, (3, 0))
-        assert_equal(np.array([[3, 4], [5, 6], None], dtype=object).shape, (3,))
+        assert_equal(np.array([[3, 4], [5, 6], None],
+                     dtype=object).shape, (3,))
 
     def test_mem_around(self):
         # Ticket #243
@@ -424,10 +425,10 @@ class TestRegression:
     def test_lexsort_zerolen_custom_strides(self):
         # Ticket #14228
         xs = np.array([], dtype='i8')
-        assert np.lexsort((xs,)).shape[0] == 0 # Works
+        assert np.lexsort((xs,)).shape[0] == 0  # Works
 
         xs.strides = (16,)
-        assert np.lexsort((xs,)).shape[0] == 0 # Was: MemoryError
+        assert np.lexsort((xs,)).shape[0] == 0  # Was: MemoryError
 
     def test_lexsort_zerolen_custom_strides_2d(self):
         xs = np.array([], dtype='i8')
@@ -613,7 +614,7 @@ class TestRegression:
     def test_string_array_size(self):
         # Ticket #342
         assert_raises(ValueError,
-                              np.array, [['X'], ['X', 'X', 'X']], '|S1')
+                      np.array, [['X'], ['X', 'X', 'X']], '|S1')
 
     def test_dtype_repr(self):
         # Ticket #344
@@ -697,9 +698,9 @@ class TestRegression:
         assert_equal(np.subtract.reduce(tosubtract), -10)
         assert_equal(np.divide.reduce(todivide), 16.0)
         assert_array_equal(np.subtract.accumulate(tosubtract),
-            np.array([0, -1, -3, -6, -10]))
+                           np.array([0, -1, -3, -6, -10]))
         assert_array_equal(np.divide.accumulate(todivide),
-            np.array([2., 4., 16.]))
+                           np.array([2., 4., 16.]))
 
     def test_convolve_empty(self):
         # Convolve should raise an error for empty input array.
@@ -1028,7 +1029,7 @@ class TestRegression:
     def test_mem_fromiter_invalid_dtype_string(self):
         x = [1, 2, 3]
         assert_raises(ValueError,
-                              np.fromiter, [xi for xi in x], dtype='S')
+                      np.fromiter, [xi for xi in x], dtype='S')
 
     def test_reduce_big_object_array(self):
         # Ticket #713
@@ -1165,8 +1166,8 @@ class TestRegression:
         buf = np.zeros(40, dtype=np.int8)
         a = np.recarray(2, formats="i4,f8,f8", names="id,x,y", buf=buf)
         b = a.tolist()
-        assert_( a[0].tolist() == b[0])
-        assert_( a[1].tolist() == b[1])
+        assert_(a[0].tolist() == b[0])
+        assert_(a[1].tolist() == b[1])
 
     def test_nonscalar_item_method(self):
         # Make sure that .item() fails graciously when it should
@@ -1242,18 +1243,18 @@ class TestRegression:
         assert_(arr[0][1] == 4)
 
     def test_void_scalar_constructor(self):
-        #Issue #1550
+        # Issue #1550
 
-        #Create test string data, construct void scalar from data and assert
-        #that void scalar contains original data.
+        # Create test string data, construct void scalar from data and assert
+        # that void scalar contains original data.
         test_string = np.array("test")
         test_string_void_scalar = np._core.multiarray.scalar(
             np.dtype(("V", test_string.dtype.itemsize)), test_string.tobytes())
 
         assert_(test_string_void_scalar.view(test_string.dtype) == test_string)
 
-        #Create record scalar, construct from data and assert that
-        #reconstructed scalar is correct.
+        # Create record scalar, construct from data and assert that
+        # reconstructed scalar is correct.
         test_record = np.ones((), "i,i")
         test_record_void_scalar = np._core.multiarray.scalar(
             test_record.dtype, test_record.tobytes())
@@ -1396,7 +1397,8 @@ class TestRegression:
     def test_misaligned_objects_segfault(self):
         # Ticket #1198 and #1267
         a1 = np.zeros((10,), dtype='O,c')
-        a2 = np.array(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'], 'S10')
+        a2 = np.array(['a', 'b', 'c', 'd', 'e', 'f',
+                      'g', 'h', 'i', 'j'], 'S10')
         a1['f0'] = a2
         repr(a1)
         np.argmax(a1['f0'])
@@ -1430,7 +1432,8 @@ class TestRegression:
             y = x.byteswap()
             if x.dtype.byteorder == z.dtype.byteorder:
                 # little-endian machine
-                assert_equal(x, np.frombuffer(y.tobytes(), dtype=dtype.newbyteorder()))
+                assert_equal(x, np.frombuffer(
+                    y.tobytes(), dtype=dtype.newbyteorder()))
             else:
                 # big-endian machine
                 assert_equal(x, np.frombuffer(y.tobytes(), dtype=dtype))
@@ -1725,17 +1728,17 @@ class TestRegression:
             def squeeze(self):
                 return super().squeeze()
 
-        oldsqueeze = OldSqueeze(np.array([[1],[2],[3]]))
+        oldsqueeze = OldSqueeze(np.array([[1], [2], [3]]))
 
         # if no axis argument is specified the old API
         # expectation should give the correct result
         assert_equal(np.squeeze(oldsqueeze),
-                     np.array([1,2,3]))
+                     np.array([1, 2, 3]))
 
         # likewise, axis=None should work perfectly well
         # with the old API expectation
         assert_equal(np.squeeze(oldsqueeze, axis=None),
-                     np.array([1,2,3]))
+                     np.array([1, 2, 3]))
 
         # however, specification of any particular axis
         # should raise a TypeError in the context of the
@@ -1761,7 +1764,7 @@ class TestRegression:
         # attempting to squeeze an axis that is not
         # of length 1
         with assert_raises(ValueError):
-            np.squeeze(np.array([[1],[2],[3]]), axis=0)
+            np.squeeze(np.array([[1], [2], [3]]), axis=0)
 
     def test_reduce_contiguous(self):
         # GitHub issue #387
@@ -2047,7 +2050,7 @@ class TestRegression:
         # get consistent results
         v = np.array(([0]*5 + [1]*6 + [2]*6)*4)
         res = np.unique(v, return_index=True)
-        tgt = (np.array([0, 1, 2]), np.array([ 0,  5, 11]))
+        tgt = (np.array([0, 1, 2]), np.array([0,  5, 11]))
         assert_equal(res, tgt)
 
     def test_unicode_alloc_dealloc_match(self):
@@ -2086,9 +2089,9 @@ class TestRegression:
         # Fortran write followed by (C or F) read caused bus error
         data_str = arr2.tobytes('F')
         data_back = np.ndarray(arr2.shape,
-                              arr2.dtype,
-                              buffer=data_str,
-                              order='F')
+                               arr2.dtype,
+                               buffer=data_str,
+                               order='F')
         assert_array_equal(arr2, data_back)
 
     def test_structured_count_nonzero(self):
@@ -2278,7 +2281,7 @@ class TestRegression:
         assert_raises(ValueError, a.reshape, new_shape)
 
     @pytest.mark.skipif(IS_PYPY and sys.implementation.version <= (7, 3, 8),
-            reason="PyPy bug in error formatting")
+                        reason="PyPy bug in error formatting")
     def test_invalid_structured_dtypes(self):
         # gh-2865
         # mapping python objects to other dtypes
@@ -2386,10 +2389,10 @@ class TestRegression:
         # arrays and scalars
         np.ones((10, 10), dtype='int32'),
         np.uint64(10),
-        ])
+    ])
     @pytest.mark.parametrize('protocol',
-        range(2, pickle.HIGHEST_PROTOCOL + 1)
-        )
+                             range(2, pickle.HIGHEST_PROTOCOL + 1)
+                             )
     def test_pickle_module(self, protocol, val):
         # gh-12837
         s = pickle.dumps(val, protocol)
@@ -2414,7 +2417,7 @@ class TestRegression:
 
         # The use of safe casting means, that 1<<20 is cast unsafely, an
         # error may be better, but currently there is no mechanism for it.
-        res = np.ediff1d(x, to_begin=(1<<20), to_end=(1<<20))
+        res = np.ediff1d(x, to_begin=(1 << 20), to_end=(1 << 20))
         assert_equal(res, [0,   1,   2,   3,  -7,  0])
 
     def test_pickle_datetime64_array(self):
@@ -2435,7 +2438,7 @@ class TestRegression:
     def test_2d__array__shape(self):
         class T:
             def __array__(self, dtype=None, copy=None):
-                return np.ndarray(shape=(0,0))
+                return np.ndarray(shape=(0, 0))
 
             # Make sure __array__ is used instead of Sequence methods.
             def __iter__(self):
@@ -2447,7 +2450,6 @@ class TestRegression:
             def __len__(self):
                 return 0
 
-
         t = T()
         # gh-13659, would raise in broadcasting [x=t for x in result]
         arr = np.array([t])
@@ -2455,7 +2457,7 @@ class TestRegression:
 
     @pytest.mark.skipif(sys.maxsize < 2 ** 31 + 1, reason='overflows 32-bit python')
     def test_to_ctypes(self):
-        #gh-14214
+        # gh-14214
         arr = np.zeros((2 ** 31 + 1,), 'b')
         assert arr.size * arr.itemsize > 2 ** 31
         c_arr = np.ctypeslib.as_ctypes(arr)
@@ -2506,7 +2508,7 @@ class TestRegression:
         'logical_not', 'logical_or', 'bitwise_and', 'bitwise_or',
         'bitwise_xor', 'invert', 'left_shift', 'right_shift',
         'gcd', 'lcm'
-        ]
+    ]
     )
     @pytest.mark.parametrize("order", [
         ('b->', 'B->'),
@@ -2514,7 +2516,7 @@ class TestRegression:
         ('i->', 'I->'),
         ('l->', 'L->'),
         ('q->', 'Q->'),
-        ]
+    ]
     )
     def test_ufunc_order(self, operation, order):
         # gh-18075
@@ -2526,9 +2528,9 @@ class TestRegression:
             raise ValueError(f"{string} not in list")
         types = getattr(np, operation).types
         assert get_idx(order[0], types) < get_idx(order[1], types), (
-                f"Unexpected types order of ufunc in {operation}"
-                f"for {order}. Possible fix: Use signed before unsigned"
-                "in generate_umath.py")
+            f"Unexpected types order of ufunc in {operation}"
+            f"for {order}. Possible fix: Use signed before unsigned"
+            "in generate_umath.py")
 
     def test_nonbool_logical(self):
         # gh-22845

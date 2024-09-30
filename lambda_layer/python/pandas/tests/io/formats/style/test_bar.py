@@ -63,7 +63,8 @@ def df_mix():
         ("left", [no_bar(), bar_to(50), bar_to(100)]),
         ("right", [bar_to(100), bar_from_to(50, 100), no_bar()]),
         ("mid", [bar_to(33.33), bar_to(66.66), bar_to(100)]),
-        ("zero", [bar_from_to(50, 66.7), bar_from_to(50, 83.3), bar_from_to(50, 100)]),
+        ("zero", [bar_from_to(50, 66.7), bar_from_to(
+            50, 83.3), bar_from_to(50, 100)]),
         ("mean", [bar_to(50), no_bar(), bar_from_to(50, 100)]),
         (2.0, [bar_to(50), no_bar(), bar_from_to(50, 100)]),
         (np.median, [bar_to(50), no_bar(), bar_from_to(50, 100)]),
@@ -200,7 +201,8 @@ def test_align_axis(align, exp, axis):
         ("mixed", -2.5, 1.5),
     ],
 )
-@pytest.mark.parametrize("nullify", [None, "vmin", "vmax"])  # test min/max separately
+# test min/max separately
+@pytest.mark.parametrize("nullify", [None, "vmin", "vmax"])
 @pytest.mark.parametrize("align", ["left", "right", "zero", "mid"])
 def test_vmin_vmax_clipping(df_pos, df_neg, df_mix, values, vmin, vmax, nullify, align):
     # test that clipping occurs if any vmin > data_values or vmax < data_values
@@ -221,7 +223,8 @@ def test_vmin_vmax_clipping(df_pos, df_neg, df_mix, values, vmin, vmax, nullify,
         ._compute()
         .ctx
     )
-    expected = clip_df.style.bar(align=align, color=["red", "green"])._compute().ctx
+    expected = clip_df.style.bar(
+        align=align, color=["red", "green"])._compute().ctx
     assert result == expected
 
 
@@ -233,7 +236,8 @@ def test_vmin_vmax_clipping(df_pos, df_neg, df_mix, values, vmin, vmax, nullify,
         ("mixed", -4.5, 4.5),
     ],
 )
-@pytest.mark.parametrize("nullify", [None, "vmin", "vmax"])  # test min/max separately
+# test min/max separately
+@pytest.mark.parametrize("nullify", [None, "vmin", "vmax"])
 @pytest.mark.parametrize("align", ["left", "right", "zero", "mid"])
 def test_vmin_vmax_widening(df_pos, df_neg, df_mix, values, vmin, vmax, nullify, align):
     # test that widening occurs if any vmax > data_values or vmin < data_values
@@ -254,7 +258,8 @@ def test_vmin_vmax_widening(df_pos, df_neg, df_mix, values, vmin, vmax, nullify,
         ._compute()
         .ctx
     )
-    expected = expand_df.style.bar(align=align, color=["red", "green"])._compute().ctx
+    expected = expand_df.style.bar(
+        align=align, color=["red", "green"])._compute().ctx
     assert result.items() <= expected.items()
 
 
@@ -272,7 +277,8 @@ def test_numerics():
         ("left", [no_bar(), bar_to(100, "green")]),
         ("right", [bar_to(100, "red"), no_bar()]),
         ("mid", [bar_to(25, "red"), bar_from_to(25, 100, "green")]),
-        ("zero", [bar_from_to(33.33, 50, "red"), bar_from_to(50, 100, "green")]),
+        ("zero", [bar_from_to(33.33, 50, "red"),
+         bar_from_to(50, 100, "green")]),
     ],
 )
 def test_colors_mixed(align, exp):

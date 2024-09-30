@@ -39,7 +39,8 @@ def test_conv_read_write():
         )
         tm.assert_series_equal(o, roundtrip("series", o))
 
-        o = Series(range(10), dtype="float64", index=[f"i_{i}" for i in range(10)])
+        o = Series(range(10), dtype="float64", index=[
+                   f"i_{i}" for i in range(10)])
         tm.assert_series_equal(o, roundtrip("string_series", o))
 
         o = DataFrame(
@@ -274,7 +275,8 @@ def test_series(setup_path):
     ts2 = Series(ts.index, Index(ts.index, dtype=object))
     _check_roundtrip(ts2, tm.assert_series_equal, path=setup_path)
 
-    ts3 = Series(ts.values, Index(np.asarray(ts.index, dtype=object), dtype=object))
+    ts3 = Series(ts.values, Index(np.asarray(
+        ts.index, dtype=object), dtype=object))
     _check_roundtrip(
         ts3, tm.assert_series_equal, path=setup_path, check_index_type=False
     )
@@ -302,7 +304,8 @@ def test_tuple_index(setup_path):
 def test_index_types(setup_path):
     values = np.random.default_rng(2).standard_normal(2)
 
-    func = lambda lhs, rhs: tm.assert_series_equal(lhs, rhs, check_index_type=True)
+    def func(lhs, rhs): return tm.assert_series_equal(
+        lhs, rhs, check_index_type=True)
 
     ser = Series(values, [0, "y"])
     _check_roundtrip(ser, func, path=setup_path)
@@ -543,7 +546,8 @@ def test_unicode_longer_encoded(setup_path):
 
 
 def test_store_datetime_mixed(setup_path):
-    df = DataFrame({"a": [1, 2, 3], "b": [1.0, 2.0, 3.0], "c": ["a", "b", "c"]})
+    df = DataFrame(
+        {"a": [1, 2, 3], "b": [1.0, 2.0, 3.0], "c": ["a", "b", "c"]})
     ts = Series(
         np.arange(10, dtype=np.float64), index=date_range("2020-01-01", periods=10)
     )

@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.testing import (
-        assert_raises, assert_raises_regex,
-        )
+    assert_raises, assert_raises_regex,
+)
 
 
 class TestIndexErrors:
@@ -112,10 +112,10 @@ class TestIndexErrors:
         a = np.zeros((3, 5))
         index = (1, 2, 3, 4, 5)
         assert_raises_regex(
-                IndexError,
-                "too many indices for array: "
-                "array is 2-dimensional, but 5 were indexed",
-                lambda: a[index])
+            IndexError,
+            "too many indices for array: "
+            "array is 2-dimensional, but 5 were indexed",
+            lambda: a[index])
 
     def test_methods(self):
         "cases from methods.c"

@@ -22,7 +22,7 @@ from numpy.testing import (
     assert_, assert_equal, assert_raises, assert_array_equal,
     assert_almost_equal, assert_allclose, suppress_warnings,
     assert_raises_regex, HAS_LAPACK64, IS_WASM
-    )
+)
 try:
     import numpy.linalg.lapack_lite
 except ImportError:
@@ -70,8 +70,8 @@ def get_rtol(dtype):
 
 # used to categorize tests
 all_tags = {
-  'square', 'nonsquare', 'hermitian',  # mutually exclusive
-  'generalized', 'size-0', 'strided' # optional additions
+    'square', 'nonsquare', 'hermitian',  # mutually exclusive
+    'generalized', 'size-0', 'strided'  # optional additions
 }
 
 
@@ -611,7 +611,8 @@ class EigCases(LinalgSquareTestCase, LinalgGeneralizedSquareTestCase):
         res = linalg.eig(a)
         eigenvalues, eigenvectors = res.eigenvalues, res.eigenvectors
         assert_allclose(matmul(a, eigenvectors),
-                        np.asarray(eigenvectors) * np.asarray(eigenvalues)[..., None, :],
+                        np.asarray(eigenvectors) *
+                        np.asarray(eigenvalues)[..., None, :],
                         rtol=get_rtol(eigenvalues.dtype))
         assert_(consistent_subclass(eigenvectors, a))
 
@@ -672,7 +673,7 @@ class SVDCases(LinalgSquareTestCase, LinalgGeneralizedSquareTestCase):
     def do(self, a, b, tags):
         u, s, vt = linalg.svd(a, False)
         assert_allclose(a, matmul(np.asarray(u) * np.asarray(s)[..., None, :],
-                                           np.asarray(vt)),
+                                  np.asarray(vt)),
                         rtol=get_rtol(u.dtype))
         assert_(consistent_subclass(u, a))
         assert_(consistent_subclass(vt, a))
@@ -705,15 +706,18 @@ class SVDHermitianCases(HermitianTestCase, HermitianGeneralizedTestCase):
     def do(self, a, b, tags):
         u, s, vt = linalg.svd(a, False, hermitian=True)
         assert_allclose(a, matmul(np.asarray(u) * np.asarray(s)[..., None, :],
-                                           np.asarray(vt)),
+                                  np.asarray(vt)),
                         rtol=get_rtol(u.dtype))
+
         def hermitian(mat):
             axes = list(range(mat.ndim))
             axes[-1], axes[-2] = axes[-2], axes[-1]
             return np.conj(np.transpose(mat, axes=axes))
 
-        assert_almost_equal(np.matmul(u, hermitian(u)), np.broadcast_to(np.eye(u.shape[-1]), u.shape))
-        assert_almost_equal(np.matmul(vt, hermitian(vt)), np.broadcast_to(np.eye(vt.shape[-1]), vt.shape))
+        assert_almost_equal(np.matmul(u, hermitian(u)),
+                            np.broadcast_to(np.eye(u.shape[-1]), u.shape))
+        assert_almost_equal(np.matmul(vt, hermitian(vt)),
+                            np.broadcast_to(np.eye(vt.shape[-1]), vt.shape))
         assert_equal(np.sort(s)[..., ::-1], s)
         assert_(consistent_subclass(u, a))
         assert_(consistent_subclass(vt, a))
@@ -802,14 +806,14 @@ class TestCond(CondCases):
         p_pos = [None, 1, 2, 'fro']
 
         A = np.ones((2, 2))
-        A[0,1] = np.nan
+        A[0, 1] = np.nan
         for p in ps:
             c = linalg.cond(A, p)
             assert_(isinstance(c, np.float64))
             assert_(np.isnan(c))
 
         A = np.ones((3, 2, 2))
-        A[1,0,1] = np.nan
+        A[1, 0, 1] = np.nan
         for p in ps:
             c = linalg.cond(A, p)
             assert_(np.isnan(c[1]))
@@ -825,15 +829,15 @@ class TestCond(CondCases):
         # singular
         np.random.seed(1234)
         A = np.random.rand(2, 2, 2, 2)
-        A[0,0] = 0
-        A[1,1] = 0
+        A[0, 0] = 0
+        A[1, 1] = 0
 
         for p in (None, 1, 2, 'fro', -1, -2):
             c = linalg.cond(A, p)
-            assert_equal(c[0,0], np.inf)
-            assert_equal(c[1,1], np.inf)
-            assert_(np.isfinite(c[0,1]))
-            assert_(np.isfinite(c[1,0]))
+            assert_equal(c[0, 0], np.inf)
+            assert_equal(c[1, 1], np.inf)
+            assert_(np.isfinite(c[0, 1]))
+            assert_(np.isfinite(c[1, 0]))
 
 
 class PinvCases(LinalgSquareTestCase,
@@ -845,7 +849,8 @@ class PinvCases(LinalgSquareTestCase,
         a_ginv = linalg.pinv(a)
         # `a @ a_ginv == I` does not hold if a is singular
         dot = matmul
-        assert_almost_equal(dot(dot(a, a_ginv), a), a, single_decimal=5, double_decimal=11)
+        assert_almost_equal(dot(dot(a, a_ginv), a), a,
+                            single_decimal=5, double_decimal=11)
         assert_(consistent_subclass(a_ginv, a))
 
 
@@ -859,7 +864,8 @@ class PinvHermitianCases(HermitianTestCase, HermitianGeneralizedTestCase):
         a_ginv = linalg.pinv(a, hermitian=True)
         # `a @ a_ginv == I` does not hold if a is singular
         dot = matmul
-        assert_almost_equal(dot(dot(a, a_ginv), a), a, single_decimal=5, double_decimal=11)
+        assert_almost_equal(dot(dot(a, a_ginv), a), a,
+                            single_decimal=5, double_decimal=11)
         assert_(consistent_subclass(a_ginv, a))
 
 
@@ -1033,7 +1039,7 @@ class TestMatrixPower:
     rshft_all = [rshft_0, rshft_1, rshft_2, rshft_3]
     noninv = array([[1, 0], [0, 0]])
     stacked = np.block([[[rshft_0]]]*2)
-    #FIXME the 'e' dtype might work in future
+    # FIXME the 'e' dtype might work in future
     dtnoinv = [object, np.dtype('e'), np.dtype('g'), np.dtype('G')]
 
     def test_large_power(self, dt):
@@ -1627,7 +1633,7 @@ class TestMatrixRank:
         # accepts array-like
         assert_equal(matrix_rank([1]), 1)
         # greater than 2 dimensions treated as stacked matrices
-        ms = np.array([I, np.eye(4), np.zeros((4,4))])
+        ms = np.array([I, np.eye(4), np.zeros((4, 4))])
         assert_equal(matrix_rank(ms), np.array([3, 4, 0]))
         # works on scalar
         assert_equal(matrix_rank(1), 1)
@@ -1707,7 +1713,6 @@ class TestQR:
         assert_(isinstance(r2, a_type))
         assert_almost_equal(r2, r1)
 
-
     @pytest.mark.parametrize(["m", "n"], [
         (3, 0),
         (0, 3),
@@ -1783,7 +1788,7 @@ class TestQR:
         assert_almost_equal(matmul(q, r), a)
         I_mat = np.identity(q.shape[-1])
         stack_I_mat = np.broadcast_to(I_mat,
-                        q.shape[:-2] + (q.shape[-1],)*2)
+                                      q.shape[:-2] + (q.shape[-1],)*2)
         assert_almost_equal(matmul(swapaxes(q, -1, -2).conj(), q), stack_I_mat)
         assert_almost_equal(np.triu(r[..., :, :]), r)
 
@@ -1798,7 +1803,7 @@ class TestQR:
         assert_almost_equal(matmul(q1, r1), a)
         I_mat = np.identity(q1.shape[-1])
         stack_I_mat = np.broadcast_to(I_mat,
-                        q1.shape[:-2] + (q1.shape[-1],)*2)
+                                      q1.shape[:-2] + (q1.shape[-1],)*2)
         assert_almost_equal(matmul(swapaxes(q1, -1, -2).conj(), q1),
                             stack_I_mat)
         assert_almost_equal(np.triu(r1[..., :, :]), r1)
@@ -1943,6 +1948,7 @@ def test_generalized_raise_multiloop():
     x[0, 0] = non_invertible
 
     assert_raises(np.linalg.LinAlgError, np.linalg.inv, x)
+
 
 @pytest.mark.skipif(
     threading.active_count() > 1,
@@ -2166,7 +2172,7 @@ class TestTensorinv:
     @pytest.mark.parametrize("arr, ind", [
         (np.ones((4, 6, 8, 2)), 2),
         (np.ones((3, 3, 2)), 1),
-        ])
+    ])
     def test_non_square_handling(self, arr, ind):
         with assert_raises(LinAlgError):
             linalg.tensorinv(arr, ind=ind)
@@ -2175,7 +2181,7 @@ class TestTensorinv:
         # examples from docstring
         ((4, 6, 8, 3), 2),
         ((24, 8, 3), 1),
-        ])
+    ])
     def test_tensorinv_shape(self, shape, ind):
         a = np.eye(24)
         a.shape = shape
@@ -2186,7 +2192,7 @@ class TestTensorinv:
 
     @pytest.mark.parametrize("ind", [
         0, -2,
-        ])
+    ])
     def test_tensorinv_ind_limit(self, ind):
         a = np.eye(24)
         a.shape = (4, 6, 8, 3)
@@ -2207,15 +2213,15 @@ class TestTensorsolve:
     @pytest.mark.parametrize("a, axes", [
         (np.ones((4, 6, 8, 2)), None),
         (np.ones((3, 3, 2)), (0, 2)),
-        ])
+    ])
     def test_non_square_handling(self, a, axes):
         with assert_raises(LinAlgError):
             b = np.ones(a.shape[:2])
             linalg.tensorsolve(a, b, axes=axes)
 
     @pytest.mark.parametrize("shape",
-        [(2, 3, 6), (3, 4, 4, 3), (0, 3, 3, 0)],
-    )
+                             [(2, 3, 6), (3, 4, 4, 3), (0, 3, 3, 0)],
+                             )
     def test_tensorsolve_result(self, shape):
         a = np.random.randn(*shape)
         b = np.ones(a.shape[:2])
@@ -2230,18 +2236,18 @@ def test_unsupported_commontype():
         linalg.cholesky(arr)
 
 
-#@pytest.mark.slow
-#@pytest.mark.xfail(not HAS_LAPACK64, run=False,
+# @pytest.mark.slow
+# @pytest.mark.xfail(not HAS_LAPACK64, run=False,
 #                   reason="Numpy not compiled with 64-bit BLAS/LAPACK")
-#@requires_memory(free_bytes=16e9)
+# @requires_memory(free_bytes=16e9)
 @pytest.mark.skip(reason="Bad memory reports lead to OOM in ci testing")
 def test_blas64_dot():
     n = 2**32
     a = np.zeros([1, n], dtype=np.float32)
     b = np.ones([1, 1], dtype=np.float32)
-    a[0,-1] = 1
+    a[0, -1] = 1
     c = np.dot(b, a)
-    assert_equal(c[0,-1], 1)
+    assert_equal(c[0, -1], 1)
 
 
 @pytest.mark.xfail(not HAS_LAPACK64,

@@ -80,7 +80,8 @@ class TestMultiIndexSetItem:
     def test_setitem_multiindex3(self):
         # GH#11372
         idx = MultiIndex.from_product(
-            [["A", "B", "C"], date_range("2015-01-01", "2015-04-01", freq="MS")]
+            [["A", "B", "C"], date_range(
+                "2015-01-01", "2015-04-01", freq="MS")]
         )
         cols = MultiIndex.from_product(
             [["foo", "bar"], date_range("2016-01-01", "2016-02-01", freq="MS")]
@@ -198,7 +199,8 @@ class TestMultiIndexSetItem:
         arr = np.array([0.0, 1.0])
 
         df.loc[4, "d"] = arr
-        tm.assert_series_equal(df.loc[4, "d"], Series(arr, index=[8, 10], name="d"))
+        tm.assert_series_equal(df.loc[4, "d"], Series(
+            arr, index=[8, 10], name="d"))
 
     def test_multiindex_assignment_single_dtype(
         self, using_copy_on_write, warn_copy_on_write
@@ -260,7 +262,8 @@ class TestMultiIndexSetItem:
         # groupby example
         NUM_ROWS = 100
         NUM_COLS = 10
-        col_names = ["A" + num for num in map(str, np.arange(NUM_COLS).tolist())]
+        col_names = [
+            "A" + num for num in map(str, np.arange(NUM_COLS).tolist())]
         index_cols = col_names[:5]
 
         df = DataFrame(
@@ -461,7 +464,8 @@ class TestMultiIndexSetItem:
         # GH 4686
         # assignment with dups that has a dtype change
         cols = MultiIndex.from_tuples([("A", "1"), ("B", "1"), ("A", "2")])
-        df = DataFrame(np.arange(3).reshape((1, 3)), columns=cols, dtype=object)
+        df = DataFrame(np.arange(3).reshape((1, 3)),
+                       columns=cols, dtype=object)
         index = df.index.copy()
 
         df["A"] = df["A"].astype(np.float64)
@@ -488,7 +492,8 @@ class TestSetitemWithExpansionMultiIndex:
 
         tuples = sorted(zip(*arrays))
         index = MultiIndex.from_tuples(tuples)
-        df = DataFrame(np.random.default_rng(2).standard_normal((4, 6)), columns=index)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((4, 6)), columns=index)
 
         result = df.copy()
         expected = df.copy()
@@ -498,7 +503,8 @@ class TestSetitemWithExpansionMultiIndex:
 
     def test_setitem_new_column_all_na(self):
         # GH#1534
-        mix = MultiIndex.from_tuples([("1a", "2a"), ("1a", "2b"), ("1a", "2c")])
+        mix = MultiIndex.from_tuples(
+            [("1a", "2a"), ("1a", "2b"), ("1a", "2c")])
         df = DataFrame([[1, 2], [3, 4], [5, 6]], index=mix)
         s = Series({(1, 1): 1, (1, 2): 2})
         df["new"] = s
@@ -520,7 +526,8 @@ class TestSetitemWithExpansionMultiIndex:
         tm.assert_frame_equal(df, expected)
 
 
-@td.skip_array_manager_invalid_test  # df["foo"] select multiple columns -> .values
+# df["foo"] select multiple columns -> .values
+@td.skip_array_manager_invalid_test
 # is not a view
 def test_frame_setitem_view_direct(
     multiindex_dataframe_random_data, using_copy_on_write

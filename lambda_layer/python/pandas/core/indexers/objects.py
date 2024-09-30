@@ -107,7 +107,8 @@ class FixedWindowIndexer(BaseIndexer):
         else:
             offset = 0
 
-        end = np.arange(1 + offset, num_values + 1 + offset, step, dtype="int64")
+        end = np.arange(1 + offset, num_values + 1 +
+                        offset, step, dtype="int64")
         start = end - self.window_size
         if closed in ["left", "both"]:
             start -= 1
@@ -208,7 +209,8 @@ class VariableOffsetWindowIndexer(BaseIndexer):
         step: int | None = None,
     ) -> tuple[np.ndarray, np.ndarray]:
         if step is not None:
-            raise NotImplementedError("step not implemented for variable offset window")
+            raise NotImplementedError(
+                "step not implemented for variable offset window")
         if num_values <= 0:
             return np.empty(0, dtype="int64"), np.empty(0, dtype="int64")
 
@@ -403,7 +405,8 @@ class GroupbyIndexer(BaseIndexer):
             index_array: np.ndarray | None
 
             if self.index_array is not None:
-                index_array = self.index_array.take(ensure_platform_int(indices))
+                index_array = self.index_array.take(
+                    ensure_platform_int(indices))
             else:
                 index_array = self.index_array
             indexer = self.window_indexer(
@@ -429,7 +432,8 @@ class GroupbyIndexer(BaseIndexer):
             window_indices = np.append(window_indices, [window_indices[-1] + 1]).astype(
                 np.int64, copy=False
             )
-            start_arrays.append(window_indices.take(ensure_platform_int(start)))
+            start_arrays.append(window_indices.take(
+                ensure_platform_int(start)))
             end_arrays.append(window_indices.take(ensure_platform_int(end)))
         if len(start_arrays) == 0:
             return np.array([], dtype=np.int64), np.array([], dtype=np.int64)

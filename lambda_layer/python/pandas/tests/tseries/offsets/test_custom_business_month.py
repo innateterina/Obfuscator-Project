@@ -88,7 +88,8 @@ class TestCustomBusinessMonthBegin:
         assert offset2 + dt == datetime(2008, 3, 3)
 
     def testRollback1(self):
-        assert CDay(10).rollback(datetime(2007, 12, 31)) == datetime(2007, 12, 31)
+        assert CDay(10).rollback(
+            datetime(2007, 12, 31)) == datetime(2007, 12, 31)
 
     def testRollback2(self, dt):
         assert CBMonthBegin(10).rollback(dt) == datetime(2008, 1, 1)
@@ -190,7 +191,8 @@ class TestCustomBusinessMonthBegin:
 
     def test_holidays(self):
         # Define a TradingDay offset
-        holidays = ["2012-02-01", datetime(2012, 2, 2), np.datetime64("2012-03-01")]
+        holidays = ["2012-02-01",
+                    datetime(2012, 2, 2), np.datetime64("2012-03-01")]
         bm_offset = CBMonthBegin(holidays=holidays)
         dt = datetime(2012, 1, 1)
 
@@ -278,7 +280,8 @@ class TestCustomBusinessMonthEnd:
         assert offset2 + dt == datetime(2008, 2, 29)
 
     def testRollback1(self):
-        assert CDay(10).rollback(datetime(2007, 12, 31)) == datetime(2007, 12, 31)
+        assert CDay(10).rollback(
+            datetime(2007, 12, 31)) == datetime(2007, 12, 31)
 
     def testRollback2(self, dt):
         assert CBMonthEnd(10).rollback(dt) == datetime(2007, 12, 31)
@@ -379,7 +382,8 @@ class TestCustomBusinessMonthEnd:
 
     def test_holidays(self):
         # Define a TradingDay offset
-        holidays = ["2012-01-31", datetime(2012, 2, 28), np.datetime64("2012-02-29")]
+        holidays = ["2012-01-31",
+                    datetime(2012, 2, 28), np.datetime64("2012-02-29")]
         bm_offset = CBMonthEnd(holidays=holidays)
         dt = datetime(2012, 1, 1)
         assert dt + bm_offset == datetime(2012, 1, 30)
@@ -424,7 +428,8 @@ class TestCustomBusinessMonthEnd:
                 },
             ),
             (
-                CBMonthEnd(n=1, holidays=["2021-03-31"], offset=timedelta(days=1)),
+                CBMonthEnd(n=1, holidays=["2021-03-31"],
+                           offset=timedelta(days=1)),
                 {
                     datetime(2021, 3, 2): datetime(2021, 3, 30) + timedelta(days=1),
                 },

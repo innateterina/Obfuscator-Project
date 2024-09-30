@@ -5,9 +5,9 @@ import numpy._core.umath as ncu
 from numpy._core._rational_tests import rational
 import pytest
 from numpy.testing import (
-     assert_, assert_equal, assert_array_equal, assert_raises, assert_warns,
-     HAS_REFCOUNT
-    )
+    assert_, assert_equal, assert_array_equal, assert_raises, assert_warns,
+    HAS_REFCOUNT
+)
 
 
 def test_array_array():
@@ -82,8 +82,8 @@ def test_array_array():
                  dtype=[('f0', int), ('f1', float), ('f2', str)])
     o = type("o", (object,),
              dict(__array_struct__=a.__array_struct__))
-    ## wasn't what I expected... is np.array(o) supposed to equal a ?
-    ## instead we get a array([...], dtype=">V18")
+    # wasn't what I expected... is np.array(o) supposed to equal a ?
+    # instead we get a array([...], dtype=">V18")
     assert_equal(bytes(np.array(o).data), bytes(a.data))
 
     # test array
@@ -151,6 +151,7 @@ def test_array_array():
                  np.ones((1, 10), dtype=np.float64))
     assert_equal(np.array([(1.0,) * 10] * 10, dtype=np.float64),
                  np.ones((10, 10), dtype=np.float64))
+
 
 @pytest.mark.parametrize("array", [True, False])
 def test_array_impossible_casts(array):
@@ -275,6 +276,7 @@ def test_array_astype():
     # gh-24023
     assert_raises(TypeError, a.astype)
 
+
 @pytest.mark.parametrize("dt", ["S", "U"])
 def test_array_astype_to_string_discovery_empty(dt):
     # See also gh-19085
@@ -289,11 +291,13 @@ def test_array_astype_to_string_discovery_empty(dt):
     # as well as for the object as a descriptor:
     assert np.can_cast("O", dt, casting="unsafe")
 
+
 @pytest.mark.parametrize("dt", ["d", "f", "S13", "U32"])
 def test_array_astype_to_void(dt):
     dt = np.dtype(dt)
     arr = np.array([], dtype=dt)
     assert arr.astype("V").dtype.itemsize == dt.itemsize
+
 
 def test_object_array_astype_to_void():
     # This is different to `test_array_astype_to_void` as object arrays
@@ -301,38 +305,41 @@ def test_object_array_astype_to_void():
     arr = np.array([], dtype="O").astype("V")
     assert arr.dtype == "V8"
 
+
 @pytest.mark.parametrize("t",
-    np._core.sctypes['uint'] + 
-    np._core.sctypes['int'] + 
-    np._core.sctypes['float']
-)
+                         np._core.sctypes['uint'] +
+                         np._core.sctypes['int'] +
+                         np._core.sctypes['float']
+                         )
 def test_array_astype_warning(t):
     # test ComplexWarning when casting from complex to float or int
     a = np.array(10, dtype=np.complex128)
     assert_warns(np.exceptions.ComplexWarning, a.astype, t)
 
+
 @pytest.mark.parametrize(["dtype", "out_dtype"],
-        [(np.bytes_, np.bool),
-         (np.str_, np.bool),
-         (np.dtype("S10,S9"), np.dtype("?,?")),
-         # The following also checks unaligned unicode access:
-         (np.dtype("S7,U9"), np.dtype("?,?"))])
+                         [(np.bytes_, np.bool),
+                          (np.str_, np.bool),
+                          (np.dtype("S10,S9"), np.dtype("?,?")),
+                          # The following also checks unaligned unicode access:
+                          (np.dtype("S7,U9"), np.dtype("?,?"))])
 def test_string_to_boolean_cast(dtype, out_dtype):
     # Only the last two (empty) strings are falsy (the `\0` is stripped):
     arr = np.array(
-            ["10", "10\0\0\0", "0\0\0", "0", "False", " ", "", "\0"],
-            dtype=dtype)
+        ["10", "10\0\0\0", "0\0\0", "0", "False", " ", "", "\0"],
+        dtype=dtype)
     expected = np.array(
-            [True, True, True, True, True, True, False, False],
-            dtype=out_dtype)
+        [True, True, True, True, True, True, False, False],
+        dtype=out_dtype)
     assert_array_equal(arr.astype(out_dtype), expected)
     # As it's similar, check that nonzero behaves the same (structs are
     # nonzero if all entries are)
     assert_array_equal(np.nonzero(arr), np.nonzero(expected))
 
+
 @pytest.mark.parametrize("str_type", [str, bytes, np.str_])
 @pytest.mark.parametrize("scalar_type",
-        [np.complex64, np.complex128, np.clongdouble])
+                         [np.complex64, np.complex128, np.clongdouble])
 def test_string_to_complex_cast(str_type, scalar_type):
     value = scalar_type(b"1+3j")
     assert scalar_type(value) == 1+3j
@@ -341,6 +348,7 @@ def test_string_to_complex_cast(str_type, scalar_type):
     arr = np.zeros(1, dtype=scalar_type)
     arr[0] = value
     assert arr[0] == 1+3j
+
 
 @pytest.mark.parametrize("dtype", np.typecodes["AllFloat"])
 def test_none_to_nan_cast(dtype):
@@ -352,6 +360,7 @@ def test_none_to_nan_cast(dtype):
     assert np.isnan(np.array(None, dtype=dtype))[()]
     assert np.isnan(np.array([None], dtype=dtype))[0]
     assert np.isnan(np.array(None).astype(dtype))[()]
+
 
 def test_copyto_fromscalar():
     a = np.arange(6, dtype='f4').reshape(2, 3)
@@ -369,6 +378,7 @@ def test_copyto_fromscalar():
     mask = np.array([[0, 1], [1, 1], [1, 0]], dtype='?')
     np.copyto(a.T, 4.5, where=mask)
     assert_equal(a, [[2.5, 4.5, 4.5], [4.5, 4.5, 3.5]])
+
 
 def test_copyto():
     a = np.arange(6, dtype='i4').reshape(2, 3)
@@ -490,6 +500,7 @@ def test_copyto_permut():
     np.copyto(r, d, where=False)
     assert_equal(r.sum(), r.size)
 
+
 def test_copy_order():
     a = np.arange(24).reshape(2, 1, 3, 4)
     b = a.copy(order='F')
@@ -551,8 +562,9 @@ def test_copy_order():
     res = np.copy(c, order='K')
     check_copy_result(res, c, ccontig=False, fcontig=False, strides=True)
 
+
 def test_contiguous_flags():
-    a = np.ones((4, 4, 1))[::2,:,:]
+    a = np.ones((4, 4, 1))[::2, :, :]
     a.strides = a.strides[:2] + (-123,)
     b = np.ones((2, 2, 1, 2, 2)).swapaxes(3, 4)
 
@@ -583,20 +595,25 @@ def test_contiguous_flags():
     check_contig(a.ravel(), True, True)
     check_contig(np.ones((1, 3, 1)).squeeze(), True, True)
 
+
 def test_broadcast_arrays():
     # Test user defined dtypes
     a = np.array([(1, 2, 3)], dtype='u4,u4,u4')
     b = np.array([(1, 2, 3), (4, 5, 6), (7, 8, 9)], dtype='u4,u4,u4')
     result = np.broadcast_arrays(a, b)
-    assert_equal(result[0], np.array([(1, 2, 3), (1, 2, 3), (1, 2, 3)], dtype='u4,u4,u4'))
-    assert_equal(result[1], np.array([(1, 2, 3), (4, 5, 6), (7, 8, 9)], dtype='u4,u4,u4'))
+    assert_equal(result[0], np.array(
+        [(1, 2, 3), (1, 2, 3), (1, 2, 3)], dtype='u4,u4,u4'))
+    assert_equal(result[1], np.array(
+        [(1, 2, 3), (4, 5, 6), (7, 8, 9)], dtype='u4,u4,u4'))
+
 
 @pytest.mark.parametrize(["shape", "fill_value", "expected_output"],
-        [((2, 2), [5.0,  6.0], np.array([[5.0, 6.0], [5.0, 6.0]])),
-         ((3, 2), [1.0,  2.0], np.array([[1.0, 2.0], [1.0, 2.0], [1.0,  2.0]]))])
+                         [((2, 2), [5.0,  6.0], np.array([[5.0, 6.0], [5.0, 6.0]])),
+                          ((3, 2), [1.0,  2.0], np.array([[1.0, 2.0], [1.0, 2.0], [1.0,  2.0]]))])
 def test_full_from_list(shape, fill_value, expected_output):
     output = np.full(shape, fill_value)
     assert_equal(output, expected_output)
+
 
 def test_astype_copyflag():
     # test the various copyflag options

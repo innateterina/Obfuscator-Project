@@ -244,7 +244,8 @@ class SeriesFormatter:
                 series = series.iloc[:max_rows]
             else:
                 row_num = max_rows // 2
-                series = concat((series.iloc[:row_num], series.iloc[-row_num:]))
+                series = concat(
+                    (series.iloc[:row_num], series.iloc[-row_num:]))
             self.tr_row_num = row_num
         else:
             self.tr_row_num = None
@@ -266,7 +267,8 @@ class SeriesFormatter:
             if footer:
                 footer += ", "
 
-            series_name = printing.pprint_thing(name, escape_chars=("\t", "\r", "\n"))
+            series_name = printing.pprint_thing(
+                name, escape_chars=("\t", "\r", "\n"))
             footer += f"Name: {series_name}"
 
         if self.length is True or (
@@ -694,7 +696,8 @@ class DataFrameFormatter:
         row_num = self.max_rows_fitted // 2
         if row_num >= 1:
             _len = len(self.tr_frame)
-            _slice = np.hstack([np.arange(row_num), np.arange(_len - row_num, _len)])
+            _slice = np.hstack(
+                [np.arange(row_num), np.arange(_len - row_num, _len)])
             self.tr_frame = self.tr_frame.iloc[_slice]
         else:
             row_num = cast(int, self.max_rows)
@@ -735,14 +738,16 @@ class DataFrameFormatter:
         for i, c in enumerate(self.tr_frame):
             cheader = str_columns[i]
             header_colwidth = max(
-                int(self.col_space.get(c, 0)), *(self.adj.len(x) for x in cheader)
+                int(self.col_space.get(c, 0)), *(self.adj.len(x)
+                                                 for x in cheader)
             )
             fmt_values = self.format_col(i)
             fmt_values = _make_fixed_width(
                 fmt_values, self.justify, minimum=header_colwidth, adj=self.adj
             )
 
-            max_len = max(*(self.adj.len(x) for x in fmt_values), header_colwidth)
+            max_len = max(*(self.adj.len(x)
+                          for x in fmt_values), header_colwidth)
             cheader = self.adj.justify(cheader, max_len, mode=self.justify)
             strcols.append(cheader + fmt_values)
 
@@ -779,12 +784,14 @@ class DataFrameFormatter:
         columns = frame.columns
 
         if isinstance(columns, MultiIndex):
-            fmt_columns = columns._format_multi(sparsify=False, include_names=False)
+            fmt_columns = columns._format_multi(
+                sparsify=False, include_names=False)
             fmt_columns = list(zip(*fmt_columns))
             dtypes = self.frame.dtypes._values
 
             # if we have a Float level, they don't use leading space at all
-            restrict_formatting = any(level.is_floating for level in columns.levels)
+            restrict_formatting = any(
+                level.is_floating for level in columns.levels)
             need_leadsp = dict(zip(fmt_columns, map(is_numeric_dtype, dtypes)))
 
             def space_format(x, y):
@@ -808,7 +815,8 @@ class DataFrameFormatter:
             dtypes = self.frame.dtypes
             need_leadsp = dict(zip(fmt_columns, map(is_numeric_dtype, dtypes)))
             str_columns = [
-                [" " + x if not self._get_formatter(i) and need_leadsp[x] else x]
+                [" " +
+                    x if not self._get_formatter(i) and need_leadsp[x] else x]
                 for i, x in enumerate(fmt_columns)
             ]
         # self.str_columns = str_columns
@@ -830,7 +838,8 @@ class DataFrameFormatter:
             )
         else:
             fmt_index = [
-                index._format_flat(include_name=self.show_row_idx_names, formatter=fmt)
+                index._format_flat(
+                    include_name=self.show_row_idx_names, formatter=fmt)
             ]
 
         fmt_index = [
@@ -859,7 +868,8 @@ class DataFrameFormatter:
         names: list[Hashable] = []
         columns = self.frame.columns
         if isinstance(columns, MultiIndex):
-            names.extend("" if name is None else name for name in columns.names)
+            names.extend(
+                "" if name is None else name for name in columns.names)
         else:
             names.append("" if columns.name is None else columns.name)
         return names
@@ -1199,7 +1209,8 @@ class _GenericArrayFormatter:
             float_format = get_option("display.float_format")
             if float_format is None:
                 precision = get_option("display.precision")
-                float_format = lambda x: _trim_zeros_single_float(
+
+                def float_format(x): return _trim_zeros_single_float(
                     f"{x: .{precision:d}f}"
                 )
         else:
@@ -1434,7 +1445,7 @@ class FloatArrayFormatter(_GenericArrayFormatter):
             else:
                 float_format = self.float_format
         else:
-            float_format = lambda value: self.float_format % value
+            def float_format(value): return self.float_format % value
 
         formatted_values = format_values_with(float_format)
 
@@ -1456,7 +1467,8 @@ class FloatArrayFormatter(_GenericArrayFormatter):
         # large values: more that 8 characters including decimal symbol
         # and first digit, hence > 1e6
         has_large_values = (abs_vals > 1e6).any()
-        has_small_values = ((abs_vals < 10 ** (-self.digits)) & (abs_vals > 0)).any()
+        has_small_values = ((abs_vals < 10 ** (-self.digits))
+                            & (abs_vals > 0)).any()
 
         if has_small_values or (too_long and has_large_values):
             if self.leading_space is True:
@@ -1475,9 +1487,9 @@ class FloatArrayFormatter(_GenericArrayFormatter):
 class _IntArrayFormatter(_GenericArrayFormatter):
     def _format_strings(self) -> list[str]:
         if self.leading_space is False:
-            formatter_str = lambda x: f"{x:d}".format(x=x)
+            def formatter_str(x): return f"{x:d}".format(x=x)
         else:
-            formatter_str = lambda x: f"{x: d}".format(x=x)
+            def formatter_str(x): return f"{x: d}".format(x=x)
         formatter = self.formatter or formatter_str
         fmt_values = [formatter(x) for x in self.values]
         return fmt_values
@@ -1783,7 +1795,8 @@ def _trim_zeros_complex(str_complexes: ArrayLike, decimal: str = ".") -> list[st
     padded = [
         real_pt  # real part, possibly NaN
         + imag_pt[0]  # +/-
-        + f"{imag_pt[1:]:>{padded_length}}"  # complex part (no sign), possibly nan
+        # complex part (no sign), possibly nan
+        + f"{imag_pt[1:]:>{padded_length}}"
         + "j"
         for real_pt, imag_pt in zip(padded_parts[:n], padded_parts[n:])
     ]

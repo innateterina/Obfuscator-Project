@@ -206,7 +206,8 @@ def test_missing_public_nat_methods(klass, expected):
     nat_names = dir(NaT)
     klass_names = dir(klass)
 
-    missing = [x for x in klass_names if x not in nat_names and not x.startswith("_")]
+    missing = [
+        x for x in klass_names if x not in nat_names and not x.startswith("_")]
     missing.sort()
 
     assert missing == expected
@@ -423,7 +424,8 @@ def test_nat_arithmetic_scalar(op_name, value, val_type):
 
 
 @pytest.mark.parametrize(
-    "val,expected", [(np.nan, NaT), (NaT, np.nan), (np.timedelta64("NaT"), np.nan)]
+    "val,expected", [(np.nan, NaT), (NaT, np.nan),
+                     (np.timedelta64("NaT"), np.nan)]
 )
 def test_nat_rfloordiv_timedelta(val, expected):
     # see gh-#18846
@@ -442,7 +444,8 @@ def test_nat_rfloordiv_timedelta(val, expected):
     [
         DatetimeIndex(["2011-01-01", "2011-01-02"], name="x"),
         DatetimeIndex(["2011-01-01", "2011-01-02"], tz="US/Eastern", name="x"),
-        DatetimeArray._from_sequence(["2011-01-01", "2011-01-02"], dtype="M8[ns]"),
+        DatetimeArray._from_sequence(
+            ["2011-01-01", "2011-01-02"], dtype="M8[ns]"),
         DatetimeArray._from_sequence(
             ["2011-01-01", "2011-01-02"], dtype=DatetimeTZDtype(tz="US/Pacific")
         ),
@@ -584,7 +587,8 @@ def test_nat_comparisons_numpy(other):
 @pytest.mark.parametrize("other_and_type", [("foo", "str"), (2, "int"), (2.0, "float")])
 @pytest.mark.parametrize(
     "symbol_and_op",
-    [("<=", operator.le), ("<", operator.lt), (">=", operator.ge), (">", operator.gt)],
+    [("<=", operator.le), ("<", operator.lt),
+     (">=", operator.ge), (">", operator.gt)],
 )
 def test_nat_comparisons_invalid(other_and_type, symbol_and_op):
     # GH#35585

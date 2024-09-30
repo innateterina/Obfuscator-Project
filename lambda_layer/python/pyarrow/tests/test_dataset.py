@@ -612,7 +612,8 @@ def test_partitioning():
     expected = ds.field('group') == 3
     assert expr.equals(expected)
 
-    assert partitioning != ds.DirectoryPartitioning(schema, segment_encoding="none")
+    assert partitioning != ds.DirectoryPartitioning(
+        schema, segment_encoding="none")
 
     schema = pa.schema([
         pa.field('alpha', pa.int64()),
@@ -656,7 +657,8 @@ def test_partitioning():
     with pytest.raises(pa.ArrowInvalid):
         partitioning.parse('prefix_3_aaa_')
 
-    assert partitioning != ds.FilenamePartitioning(schema, segment_encoding="none")
+    assert partitioning != ds.FilenamePartitioning(
+        schema, segment_encoding="none")
 
     schema = pa.schema([
         pa.field('group', pa.int64()),
@@ -723,7 +725,8 @@ def test_partitioning_pickling(pickle_module):
         ds.FilenamePartitioning(schema),
         ds.DirectoryPartitioning(schema, segment_encoding="none"),
         ds.FilenamePartitioning(schema, segment_encoding="none"),
-        ds.HivePartitioning(schema, segment_encoding="none", null_fallback="xyz"),
+        ds.HivePartitioning(schema, segment_encoding="none",
+                            null_fallback="xyz"),
     ]
 
     for part in parts:
@@ -805,7 +808,8 @@ def test_parquet_scan_options():
         page_checksum_verification=True)
     cache_opts = pa.CacheOptions(
         hole_size_limit=2**10, range_size_limit=8*2**10, lazy=True)
-    opts7 = ds.ParquetFragmentScanOptions(pre_buffer=True, cache_options=cache_opts)
+    opts7 = ds.ParquetFragmentScanOptions(
+        pre_buffer=True, cache_options=cache_opts)
 
     assert opts1.use_buffered_stream is False
     assert opts1.buffer_size == 2**13
@@ -885,7 +889,8 @@ def test_file_format_pickling(pickle_module):
         ])
 
     for file_format in formats:
-        assert pickle_module.loads(pickle_module.dumps(file_format)) == file_format
+        assert pickle_module.loads(
+            pickle_module.dumps(file_format)) == file_format
 
 
 def test_fragment_scan_options_pickling(pickle_module):
@@ -1036,7 +1041,8 @@ def test_make_fragment_with_size(s3_example_simple):
     assert tbl.equals(table)
 
     # true sizes -> works
-    sizes_true = [dataset.filesystem.get_file_info(x).size for x in dataset.files]
+    sizes_true = [dataset.filesystem.get_file_info(
+        x).size for x in dataset.files]
     fragments_with_size = [file_format.make_fragment(path, fs, file_size=size)
                            for path, size in zip(paths, sizes_true)]
     dataset_with_size = ds.FileSystemDataset(
@@ -3366,7 +3372,8 @@ def test_json_format(tempdir, dataset_reader):
                       'b': pa.array([.1, .2, .3], type="float64")})
 
     path = str(tempdir / 'test.json')
-    out = table.to_pandas().to_json(orient='records')[1:-1].replace('},{', '}\n{')
+    out = table.to_pandas().to_json(orient='records')[
+        1:-1].replace('},{', '}\n{')
     with open(path, 'w') as f:
         f.write(out)
 
@@ -3387,7 +3394,8 @@ def test_json_format_options(tempdir, dataset_reader):
                       'b': pa.array([.1, .2, .3], type="float64")})
 
     path = str(tempdir / 'test.json')
-    out = table.to_pandas().to_json(orient='records')[1:-1].replace('},{', '}\n{')
+    out = table.to_pandas().to_json(orient='records')[
+        1:-1].replace('},{', '}\n{')
     with open(path, 'w') as f:
         f.write(out)
 
@@ -3408,7 +3416,8 @@ def test_json_fragment_options(tempdir, dataset_reader):
                       'b': pa.array([.1, .2, .3], type="float64")})
 
     path = str(tempdir / 'test.json')
-    out = table.to_pandas().to_json(orient='records')[1:-1].replace('},{', '}\n{')
+    out = table.to_pandas().to_json(orient='records')[
+        1:-1].replace('},{', '}\n{')
     with open(path, 'w') as f:
         f.write(out)
 
@@ -4705,7 +4714,8 @@ def test_write_dataset_parquet(tempdir):
             # uint32 is written as int64
             schema = schema.set(0, schema.field(0).with_type(pa.int64()))
         if version in ("1.0", "2.4"):
-            schema = schema.set(1, schema.field(1).with_type(pa.timestamp("us")))
+            schema = schema.set(1, schema.field(
+                1).with_type(pa.timestamp("us")))
         expected = table.cast(schema)
         assert result.equals(expected)
 
@@ -5468,11 +5478,13 @@ def test_write_dataset_preserve_field_metadata(tempdir):
     table_no_meta = pa.Table.from_arrays(arrays, schema=schema_no_meta)
 
     # If no schema is provided the schema of the first table will be used
-    ds.write_dataset([table, table_no_meta], tempdir / "test1", format="parquet")
+    ds.write_dataset([table, table_no_meta], tempdir /
+                     "test1", format="parquet")
     dataset = ds.dataset(tempdir / "test1", format="parquet")
     assert dataset.to_table().schema.equals(schema_metadata, check_metadata=True)
 
-    ds.write_dataset([table_no_meta, table], tempdir / "test2", format="parquet")
+    ds.write_dataset([table_no_meta, table], tempdir /
+                     "test2", format="parquet")
     dataset = ds.dataset(tempdir / "test2", format="parquet")
     assert dataset.to_table().schema.equals(schema_no_meta, check_metadata=True)
 

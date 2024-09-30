@@ -4,10 +4,10 @@ import pytest
 
 import numpy as np
 from numpy.testing import (
-        assert_, assert_raises, assert_equal, assert_warns,
-        assert_no_warnings, assert_array_equal, assert_array_almost_equal,
-        suppress_warnings, IS_WASM
-        )
+    assert_, assert_raises, assert_equal, assert_warns,
+    assert_no_warnings, assert_array_equal, assert_array_almost_equal,
+    suppress_warnings, IS_WASM
+)
 from numpy import random
 import sys
 
@@ -96,8 +96,10 @@ class TestMultinomial:
     def test_multidimensional_pvals(self):
         assert_raises(ValueError, np.random.multinomial, 10, [[0, 1]])
         assert_raises(ValueError, np.random.multinomial, 10, [[0], [1]])
-        assert_raises(ValueError, np.random.multinomial, 10, [[[0], [1]], [[1], [0]]])
-        assert_raises(ValueError, np.random.multinomial, 10, np.array([[0, 1], [1, 0]]))
+        assert_raises(ValueError, np.random.multinomial,
+                      10, [[[0], [1]], [[1], [0]]])
+        assert_raises(ValueError, np.random.multinomial,
+                      10, np.array([[0, 1], [1, 0]]))
 
 
 class TestSetState:
@@ -519,17 +521,17 @@ class TestRandomDist:
                 sorted(b.data[~b.mask]), sorted(b_orig.data[~b_orig.mask]))
 
     @pytest.mark.parametrize("random",
-            [np.random, np.random.RandomState(), np.random.default_rng()])
+                             [np.random, np.random.RandomState(), np.random.default_rng()])
     def test_shuffle_untyped_warning(self, random):
         # Create a dict works like a sequence but isn't one
         values = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
         with pytest.warns(UserWarning,
-                match="you are shuffling a 'dict' object") as rec:
+                          match="you are shuffling a 'dict' object") as rec:
             random.shuffle(values)
         assert "test_random" in rec[0].filename
 
     @pytest.mark.parametrize("random",
-        [np.random, np.random.RandomState(), np.random.default_rng()])
+                             [np.random, np.random.RandomState(), np.random.default_rng()])
     @pytest.mark.parametrize("use_array_like", [True, False])
     def test_shuffle_no_object_unpacking(self, random, use_array_like):
         class MyArr(np.ndarray):
@@ -549,7 +551,7 @@ class TestRandomDist:
         if use_array_like and not isinstance(random, np.random.Generator):
             # The old API gives incorrect results, but warns about it.
             with pytest.warns(UserWarning,
-                    match="Shuffling a one dimensional array.*"):
+                              match="Shuffling a one dimensional array.*"):
                 random.shuffle(arr)
         else:
             random.shuffle(arr)
@@ -580,9 +582,9 @@ class TestRandomDist:
         np.random.seed(self.seed)
         actual = np.random.beta(.1, .9, size=(3, 2))
         desired = np.array(
-                [[1.45341850513746058e-02, 5.31297615662868145e-04],
-                 [1.85366619058432324e-06, 4.19214516800110563e-03],
-                 [1.58405155108498093e-04, 1.26252891949397652e-04]])
+            [[1.45341850513746058e-02, 5.31297615662868145e-04],
+             [1.85366619058432324e-06, 4.19214516800110563e-03],
+             [1.58405155108498093e-04, 1.26252891949397652e-04]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_binomial(self):
@@ -859,9 +861,9 @@ class TestRandomDist:
         np.random.seed(self.seed)
         actual = np.random.pareto(a=.123456789, size=(3, 2))
         desired = np.array(
-                [[2.46852460439034849e+03, 1.41286880810518346e+03],
-                 [5.28287797029485181e+07, 6.57720981047328785e+07],
-                 [1.40840323350391515e+02, 1.98390255135251704e+05]])
+            [[2.46852460439034849e+03, 1.41286880810518346e+03],
+             [5.28287797029485181e+07, 6.57720981047328785e+07],
+             [1.40840323350391515e+02, 1.98390255135251704e+05]])
         # For some reason on 32-bit x86 Ubuntu 12.10 the [1, 0] entry in this
         # matrix differs by 24 nulps. Discussion:
         #   https://mail.python.org/pipermail/numpy-discussion/2012-September/063801.html

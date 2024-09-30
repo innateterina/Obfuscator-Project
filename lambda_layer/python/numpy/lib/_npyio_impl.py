@@ -24,14 +24,14 @@ from ._iotools import (
     LineSplitter, NameValidator, StringConverter, ConverterError,
     ConverterLockError, ConversionWarning, _is_string_like,
     has_nested_fields, flatten_dtype, easy_dtype, _decode_line
-    )
+)
 from numpy._utils import asunicode, asbytes
 
 
 __all__ = [
     'savetxt', 'loadtxt', 'genfromtxt', 'load', 'save', 'savez',
     'savez_compressed', 'packbits', 'unpackbits', 'fromregex'
-    ]
+]
 
 
 array_function_dispatch = functools.partial(
@@ -800,6 +800,7 @@ def _ensure_ndmin_ndarray_check_param(ndmin):
     if ndmin not in [0, 1, 2]:
         raise ValueError(f"Illegal value of ndmin keyword: {ndmin}")
 
+
 def _ensure_ndmin_ndarray(a, *, ndmin: int):
     """This is a helper function of loadtxt and genfromtxt to ensure
         proper minimum dimension as requested
@@ -1539,6 +1540,7 @@ def savetxt(fname, X, fmt='%.18e', delimiter=' ', newline='\n', header='',
         """Convert to bytes on bytestream inputs.
 
         """
+
         def __init__(self, fh, encoding):
             self.fh = fh
             self.encoding = encoding
@@ -1753,9 +1755,9 @@ def fromregex(file, regexp, dtype, encoding=None):
             file.close()
 
 
-#####--------------------------------------------------------------------------
-#---- --- ASCII functions ---
-#####--------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# ---- --- ASCII functions ---
+# --------------------------------------------------------------------------
 
 
 @set_array_function_like_doc
@@ -1980,8 +1982,8 @@ def genfromtxt(fname, dtype=float, comments='#', delimiter=None,
     if max_rows is not None:
         if skip_footer:
             raise ValueError(
-                    "The keywords 'skip_footer' and 'max_rows' can not be "
-                    "specified at the same time.")
+                "The keywords 'skip_footer' and 'max_rows' can not be "
+                "specified at the same time.")
         if max_rows < 1:
             raise ValueError("'max_rows' must be at least 1.")
 

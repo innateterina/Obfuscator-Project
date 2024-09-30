@@ -215,7 +215,8 @@ def _isna(obj, inf_as_na: bool = False):
     elif isinstance(obj, ABCSeries):
         result = _isna_array(obj._values, inf_as_na=inf_as_na)
         # box
-        result = obj._constructor(result, index=obj.index, name=obj.name, copy=False)
+        result = obj._constructor(
+            result, index=obj.index, name=obj.name, copy=False)
         return result
     elif isinstance(obj, ABCDataFrame):
         return obj.isna()
@@ -341,7 +342,8 @@ def _isna_recarray_dtype(
         does_record_contain_nan = isna_all(record_as_array)
         does_record_contain_inf = False
         if inf_as_na:
-            does_record_contain_inf = bool(_has_record_inf_value(record_as_array))
+            does_record_contain_inf = bool(
+                _has_record_inf_value(record_as_array))
         result[i] = np.any(
             np.logical_or(does_record_contain_nan, does_record_contain_inf)
         )
@@ -796,15 +798,16 @@ def isna_all(arr: ArrayLike) -> bool:
     ):
         # error: Incompatible types in assignment (expression has type
         # "Callable[[Any], Any]", variable has type "ufunc")
-        checker = lambda x: np.asarray(x.view("i8")) == iNaT  # type: ignore[assignment]
+        def checker(x): return np.asarray(
+            x.view("i8")) == iNaT  # type: ignore[assignment]
 
     else:
         # error: Incompatible types in assignment (expression has type "Callable[[Any],
         # Any]", variable has type "ufunc")
-        checker = lambda x: _isna_array(  # type: ignore[assignment]
+        def checker(x): return _isna_array(  # type: ignore[assignment]
             x, inf_as_na=INF_AS_NA
         )
 
     return all(
-        checker(arr[i : i + chunk_len]).all() for i in range(0, total_len, chunk_len)
+        checker(arr[i: i + chunk_len]).all() for i in range(0, total_len, chunk_len)
     )

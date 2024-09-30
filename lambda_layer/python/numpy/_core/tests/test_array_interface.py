@@ -112,7 +112,7 @@ def get_module(tmp_path):
 
             return cap;
         """)
-        ]
+    ]
 
     more_init = "import_array();"
 

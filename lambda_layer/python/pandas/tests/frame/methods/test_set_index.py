@@ -80,13 +80,15 @@ class TestSetIndex:
         result = df.set_index(["a", "x"])
 
         expected = df[["m", "p"]]
-        expected.index = MultiIndex.from_arrays([df["a"], df["x"]], names=["a", "x"])
+        expected.index = MultiIndex.from_arrays(
+            [df["a"], df["x"]], names=["a", "x"])
         tm.assert_frame_equal(result, expected)
 
     def test_set_index_empty_dataframe(self):
         # GH#38419
         df1 = DataFrame(
-            {"a": Series(dtype="datetime64[ns]"), "b": Series(dtype="int64"), "c": []}
+            {"a": Series(dtype="datetime64[ns]"),
+             "b": Series(dtype="int64"), "c": []}
         )
 
         df2 = df1.set_index(["a", "b"])
@@ -110,7 +112,8 @@ class TestSetIndex:
     def test_set_index_timezone(self):
         # GH#12358
         # tz-aware Series should retain the tz
-        idx = DatetimeIndex(["2014-01-01 10:10:10"], tz="UTC").tz_convert("Europe/Rome")
+        idx = DatetimeIndex(["2014-01-01 10:10:10"],
+                            tz="UTC").tz_convert("Europe/Rome")
         df = DataFrame({"A": idx})
         assert df.set_index(idx).index[0].hour == 11
         assert DatetimeIndex(Series(df.A))[0].hour == 11
@@ -128,9 +131,11 @@ class TestSetIndex:
         assert isinstance(idf.index, DatetimeIndex)
 
     def test_set_index_dst(self):
-        di = date_range("2006-10-29 00:00:00", periods=3, freq="h", tz="US/Pacific")
+        di = date_range("2006-10-29 00:00:00", periods=3,
+                        freq="h", tz="US/Pacific")
 
-        df = DataFrame(data={"a": [0, 1, 2], "b": [3, 4, 5]}, index=di).reset_index()
+        df = DataFrame(data={"a": [0, 1, 2], "b": [
+                       3, 4, 5]}, index=di).reset_index()
         # single level
         res = df.set_index("index")
         exp = DataFrame(
@@ -142,7 +147,8 @@ class TestSetIndex:
 
         # GH#12920
         res = df.set_index(["index", "a"])
-        exp_index = MultiIndex.from_arrays([di, [0, 1, 2]], names=["index", "a"])
+        exp_index = MultiIndex.from_arrays(
+            [di, [0, 1, 2]], names=["index", "a"])
         exp = DataFrame({"b": [3, 4, 5]}, index=exp_index)
         tm.assert_frame_equal(res, exp)
 
@@ -237,7 +243,8 @@ class TestSetIndex:
         df = frame_of_index_cols.set_index(["D"], drop=drop, append=True)
 
         keys = keys if isinstance(keys, list) else [keys]
-        expected = frame_of_index_cols.set_index(["D"] + keys, drop=drop, append=True)
+        expected = frame_of_index_cols.set_index(
+            ["D"] + keys, drop=drop, append=True)
 
         result = df.set_index(keys, drop=drop, append=True)
 
@@ -267,7 +274,8 @@ class TestSetIndex:
         ],
     )
     @pytest.mark.parametrize(
-        "append, index_name", [(True, None), (True, "B"), (True, "test"), (False, None)]
+        "append, index_name", [(True, None), (True, "B"),
+                               (True, "test"), (False, None)]
     )
     @pytest.mark.parametrize("drop", [True, False])
     def test_set_index_pass_single_array(
@@ -299,7 +307,8 @@ class TestSetIndex:
     # MultiIndex constructor does not work directly on Series -> lambda
     # also test index name if append=True (name is duplicate here for A & B)
     @pytest.mark.parametrize(
-        "box", [Series, Index, np.array, list, lambda x: MultiIndex.from_arrays([x])]
+        "box", [Series, Index, np.array, list,
+                lambda x: MultiIndex.from_arrays([x])]
     )
     @pytest.mark.parametrize(
         "append, index_name",
@@ -354,7 +363,8 @@ class TestSetIndex:
         ],
     )
     @pytest.mark.parametrize(
-        "append, index_name", [(True, None), (True, "A"), (True, "test"), (False, None)]
+        "append, index_name", [(True, None), (True, "A"),
+                               (True, "test"), (False, None)]
     )
     @pytest.mark.parametrize("drop", [True, False])
     def test_set_index_pass_arrays_duplicate(
@@ -413,7 +423,8 @@ class TestSetIndex:
         tm.assert_index_equal(idf.index, ci)
 
         # from a CategoricalIndex
-        df = DataFrame({"A": np.random.default_rng(2).standard_normal(10), "B": ci})
+        df = DataFrame({"A": np.random.default_rng(
+            2).standard_normal(10), "B": ci})
         idf = df.set_index("B")
         tm.assert_index_equal(idf.index, ci)
 
@@ -463,11 +474,13 @@ class TestSetIndex:
 
         df = df.set_index("label", append=True)
         tm.assert_index_equal(df.index.levels[0], expected)
-        tm.assert_index_equal(df.index.levels[1], Index(["a", "b"], name="label"))
+        tm.assert_index_equal(
+            df.index.levels[1], Index(["a", "b"], name="label"))
         assert df.index.names == ["datetime", "label"]
 
         df = df.swaplevel(0, 1)
-        tm.assert_index_equal(df.index.levels[0], Index(["a", "b"], name="label"))
+        tm.assert_index_equal(
+            df.index.levels[0], Index(["a", "b"], name="label"))
         tm.assert_index_equal(df.index.levels[1], expected)
         assert df.index.names == ["label", "datetime"]
 
@@ -573,7 +586,8 @@ class TestSetIndexInvalid:
 
         # also within a list
         with pytest.raises(KeyError, match=msg):
-            df.set_index(["A", df["A"], tuple(df["A"])], drop=drop, append=append)
+            df.set_index(["A", df["A"], tuple(df["A"])],
+                         drop=drop, append=append)
 
     @pytest.mark.parametrize("append", [True, False])
     @pytest.mark.parametrize("drop", [True, False])
@@ -588,7 +602,8 @@ class TestSetIndexInvalid:
 
         # forbidden type in list, e.g. set
         with pytest.raises(TypeError, match=msg):
-            df.set_index(["A", df["A"], box(df["A"])], drop=drop, append=append)
+            df.set_index(["A", df["A"], box(df["A"])],
+                         drop=drop, append=append)
 
     # MultiIndex constructor does not work directly on Series -> lambda
     @pytest.mark.parametrize(
@@ -636,7 +651,8 @@ class TestSetIndexCustomLabelType:
         thing1 = Thing("One", "red")
         thing2 = Thing("Two", "blue")
         df = DataFrame({thing1: [0, 1], thing2: [2, 3]})
-        expected = DataFrame({thing1: [0, 1]}, index=Index([2, 3], name=thing2))
+        expected = DataFrame(
+            {thing1: [0, 1]}, index=Index([2, 3], name=thing2))
 
         # use custom label directly
         result = df.set_index(thing2)
@@ -675,7 +691,8 @@ class TestSetIndexCustomLabelType:
         thing1 = Thing(["One", "red"])
         thing2 = Thing(["Two", "blue"])
         df = DataFrame({thing1: [0, 1], thing2: [2, 3]})
-        expected = DataFrame({thing1: [0, 1]}, index=Index([2, 3], name=thing2))
+        expected = DataFrame(
+            {thing1: [0, 1]}, index=Index([2, 3], name=thing2))
 
         # use custom label directly
         result = df.set_index(thing2)

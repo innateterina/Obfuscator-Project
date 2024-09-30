@@ -128,7 +128,8 @@ def _get_next_label(label):
     elif is_float_dtype(dtype):
         return np.nextafter(label, np.inf)
     else:
-        raise TypeError(f"cannot determine next label for type {repr(type(label))}")
+        raise TypeError(
+            f"cannot determine next label for type {repr(type(label))}")
 
 
 def _get_prev_label(label):
@@ -145,7 +146,8 @@ def _get_prev_label(label):
     elif is_float_dtype(dtype):
         return np.nextafter(label, -np.inf)
     else:
-        raise TypeError(f"cannot determine next label for type {repr(type(label))}")
+        raise TypeError(
+            f"cannot determine next label for type {repr(type(label))}")
 
 
 def _new_IntervalIndex(cls, d):
@@ -342,7 +344,8 @@ class IntervalIndex(ExtensionIndex):
         dtype: Dtype | None = None,
     ) -> IntervalIndex:
         with rewrite_exception("IntervalArray", cls.__name__):
-            arr = IntervalArray.from_tuples(data, closed=closed, copy=copy, dtype=dtype)
+            arr = IntervalArray.from_tuples(
+                data, closed=closed, copy=copy, dtype=dtype)
         return cls._simple_new(arr, name=name)
 
     # --------------------------------------------------------------------
@@ -597,7 +600,8 @@ class IntervalIndex(ExtensionIndex):
             )
 
         if isinstance(label, (IntervalMixin, IntervalIndex)):
-            raise NotImplementedError("Interval objects are not currently supported")
+            raise NotImplementedError(
+                "Interval objects are not currently supported")
 
         # GH 20921: "not is_monotonic_increasing" for the second condition
         # instead of "is_monotonic_decreasing" to account for single element
@@ -738,7 +742,8 @@ class IntervalIndex(ExtensionIndex):
             # Note: this case behaves differently from other Index subclasses
             #  because IntervalIndex does partial-int indexing
             target = self._maybe_convert_i8(target)
-            indexer, missing = self._engine.get_indexer_non_unique(target.values)
+            indexer, missing = self._engine.get_indexer_non_unique(
+                target.values)
 
         return ensure_platform_int(indexer), ensure_platform_int(missing)
 
@@ -766,7 +771,8 @@ class IntervalIndex(ExtensionIndex):
                 locs = self.get_loc(key)
                 if isinstance(locs, slice):
                     # Only needed for get_indexer_non_unique
-                    locs = np.arange(locs.start, locs.stop, locs.step, dtype="intp")
+                    locs = np.arange(locs.start, locs.stop,
+                                     locs.step, dtype="intp")
                 elif lib.is_integer(locs):
                     locs = np.array(locs, ndmin=1)
                 else:
@@ -929,7 +935,8 @@ class IntervalIndex(ExtensionIndex):
         )
 
     def _from_join_target(self, result):
-        raise NotImplementedError("IntervalIndex does not use libjoin fastpaths")
+        raise NotImplementedError(
+            "IntervalIndex does not use libjoin fastpaths")
 
     # TODO: arithmetic operations
 
@@ -952,8 +959,8 @@ def _is_type_compatible(a, b) -> bool:
     """
     Helper for interval_range to check type compat of start/end/freq.
     """
-    is_ts_compat = lambda x: isinstance(x, (Timestamp, BaseOffset))
-    is_td_compat = lambda x: isinstance(x, (Timedelta, BaseOffset))
+    def is_ts_compat(x): return isinstance(x, (Timestamp, BaseOffset))
+    def is_td_compat(x): return isinstance(x, (Timedelta, BaseOffset))
     return (
         (is_number(a) and is_number(b))
         or (is_ts_compat(a) and is_ts_compat(b))
@@ -1072,7 +1079,8 @@ def interval_range(
         )
 
     if not _is_valid_endpoint(start):
-        raise ValueError(f"start must be numeric or datetime-like, got {start}")
+        raise ValueError(
+            f"start must be numeric or datetime-like, got {start}")
     if not _is_valid_endpoint(end):
         raise ValueError(f"end must be numeric or datetime-like, got {end}")
 
@@ -1129,8 +1137,10 @@ def interval_range(
     else:
         # delegate to the appropriate range function
         if isinstance(endpoint, Timestamp):
-            breaks = date_range(start=start, end=end, periods=periods, freq=freq)
+            breaks = date_range(start=start, end=end,
+                                periods=periods, freq=freq)
         else:
-            breaks = timedelta_range(start=start, end=end, periods=periods, freq=freq)
+            breaks = timedelta_range(
+                start=start, end=end, periods=periods, freq=freq)
 
     return IntervalIndex.from_breaks(breaks, name=name, closed=closed)

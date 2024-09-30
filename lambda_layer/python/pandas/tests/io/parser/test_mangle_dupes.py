@@ -25,7 +25,8 @@ def test_basic(all_parsers):
     data = "a,a,b,b,b\n1,2,3,4,5"
     result = parser.read_csv(StringIO(data), sep=",")
 
-    expected = DataFrame([[1, 2, 3, 4, 5]], columns=["a", "a.1", "b", "b.1", "b.2"])
+    expected = DataFrame([[1, 2, 3, 4, 5]], columns=[
+                         "a", "a.1", "b", "b.1", "b.2"])
     tm.assert_frame_equal(result, expected)
 
 
@@ -54,7 +55,8 @@ def test_basic_names_raise(all_parsers):
 @pytest.mark.parametrize(
     "data,expected",
     [
-        ("a,a,a.1\n1,2,3", DataFrame([[1, 2, 3]], columns=["a", "a.2", "a.1"])),
+        ("a,a,a.1\n1,2,3", DataFrame(
+            [[1, 2, 3]], columns=["a", "a.2", "a.1"])),
         (
             "a,a,a.1,a.1.1,a.1.1.1,a.1.1.1.1\n1,2,3,4,5,6",
             DataFrame(
@@ -94,7 +96,8 @@ def test_thorough_mangle_columns(all_parsers, data, expected):
             ["a", "a", "a.1", "a.1.1", "a.1.1.1", "a.1.1.1.1"],
             DataFrame(
                 [["a", "b", "c", "d", "e", "f"], ["1", "2", "3", "4", "5", "6"]],
-                columns=["a", "a.1", "a.1.1", "a.1.1.1", "a.1.1.1.1", "a.1.1.1.1.1"],
+                columns=["a", "a.1", "a.1.1", "a.1.1.1",
+                         "a.1.1.1.1", "a.1.1.1.1.1"],
             ),
         ),
         (
@@ -176,4 +179,5 @@ def test_mangle_cols_names(all_parsers, usecol, engine):
     data = "1,2,3"
     names = ["A", "A", "B"]
     with pytest.raises(ValueError, match="Duplicate names"):
-        parser.read_csv(StringIO(data), names=names, usecols=usecol, engine=engine)
+        parser.read_csv(StringIO(data), names=names,
+                        usecols=usecol, engine=engine)

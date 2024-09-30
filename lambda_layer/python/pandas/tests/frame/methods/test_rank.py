@@ -119,7 +119,8 @@ class TestRank:
         result = df.rank(1, numeric_only=False, ascending=False)
         tm.assert_frame_equal(result, expected)
 
-        df = DataFrame({"a": [1e-20, -5, 1e-20 + 1e-40, 10, 1e60, 1e80, 1e-30]})
+        df = DataFrame(
+            {"a": [1e-20, -5, 1e-20 + 1e-40, 10, 1e60, 1e80, 1e-30]})
         exp = DataFrame({"a": [3.5, 1.0, 3.5, 5.0, 6.0, 7.0, 2.0]})
         tm.assert_frame_equal(df.rank(), exp)
 
@@ -285,7 +286,8 @@ class TestRank:
     @pytest.mark.parametrize(
         "method,exp",
         [
-            ("dense", [[1.0, 1.0, 1.0], [1.0, 0.5, 2.0 / 3], [1.0, 0.5, 1.0 / 3]]),
+            ("dense", [[1.0, 1.0, 1.0], [
+             1.0, 0.5, 2.0 / 3], [1.0, 0.5, 1.0 / 3]]),
             (
                 "min",
                 [
@@ -300,7 +302,8 @@ class TestRank:
             ),
             (
                 "average",
-                [[2.0 / 3, 1.0, 1.0], [2.0 / 3, 0.5, 2.0 / 3], [2.0 / 3, 0.5, 1.0 / 3]],
+                [[2.0 / 3, 1.0, 1.0], [2.0 / 3, 0.5, 2.0 / 3],
+                    [2.0 / 3, 0.5, 1.0 / 3]],
             ),
             (
                 "first",
@@ -385,7 +388,8 @@ class TestRank:
             ),
             ([NegInfinity(), "1", "A", "BA", "Ba", "C", Infinity()], "object"),
             (
-                [datetime(2001, 1, 1), datetime(2001, 1, 2), datetime(2001, 1, 5)],
+                [datetime(2001, 1, 1), datetime(
+                    2001, 1, 2), datetime(2001, 1, 5)],
                 "datetime64",
             ),
         ],
@@ -405,7 +409,8 @@ class TestRank:
         exp_order = np.array(range(len(values)), dtype="float64") + 1.0
         if dtype in dtype_na_map:
             na_value = dtype_na_map[dtype]
-            nan_indices = np.random.default_rng(2).choice(range(len(values)), 5)
+            nan_indices = np.random.default_rng(
+                2).choice(range(len(values)), 5)
             values = np.insert(values, nan_indices, na_value)
             exp_order = np.insert(exp_order, nan_indices, np.nan)
 
@@ -457,7 +462,8 @@ class TestRank:
         self, frame_or_series, method, na_option, ascending, expected
     ):
         obj = frame_or_series([np.inf, np.nan, -np.inf])
-        result = obj.rank(method=method, na_option=na_option, ascending=ascending)
+        result = obj.rank(method=method, na_option=na_option,
+                          ascending=ascending)
         expected = frame_or_series(expected)
         tm.assert_equal(result, expected)
 
@@ -474,7 +480,8 @@ class TestRank:
         self, frame_or_series, na_option, ascending, expected, using_infer_string
     ):
         obj = frame_or_series(["foo", "foo", None, "foo"])
-        result = obj.rank(method="first", na_option=na_option, ascending=ascending)
+        result = obj.rank(method="first", na_option=na_option,
+                          ascending=ascending)
         expected = frame_or_series(expected)
         if using_infer_string and isinstance(obj, Series):
             expected = expected.astype("uint64")
@@ -485,7 +492,8 @@ class TestRank:
         [
             (
                 {"a": [1, 2, "a"], "b": [4, 5, 6]},
-                DataFrame({"b": [1.0, 2.0, 3.0]}, columns=Index(["b"], dtype=object)),
+                DataFrame({"b": [1.0, 2.0, 3.0]},
+                          columns=Index(["b"], dtype=object)),
             ),
             ({"a": [1, 2, "a"]}, DataFrame(index=range(3), columns=[])),
         ],

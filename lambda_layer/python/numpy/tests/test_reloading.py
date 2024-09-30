@@ -38,6 +38,7 @@ def test_numpy_reloading():
     assert_(ModuleDeprecationWarning is ex.ModuleDeprecationWarning)
     assert_(VisibleDeprecationWarning is ex.VisibleDeprecationWarning)
 
+
 def test_novalue():
     import numpy as np
     for proto in range(2, pickle.HIGHEST_PROTOCOL + 1):

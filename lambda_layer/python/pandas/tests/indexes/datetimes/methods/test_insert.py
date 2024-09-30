@@ -79,7 +79,8 @@ class TestInsert:
         assert result.name == expected.name
 
     def test_insert2(self, unit):
-        idx = date_range("1/1/2000", periods=3, freq="ME", name="idx", unit=unit)
+        idx = date_range("1/1/2000", periods=3,
+                         freq="ME", name="idx", unit=unit)
 
         # preserve freq
         expected_0 = DatetimeIndex(
@@ -120,7 +121,8 @@ class TestInsert:
             assert result.freq == expected.freq
 
     def test_insert3(self, unit):
-        idx = date_range("1/1/2000", periods=3, freq="ME", name="idx", unit=unit)
+        idx = date_range("1/1/2000", periods=3,
+                         freq="ME", name="idx", unit=unit)
 
         # reset freq to None
         result = idx.insert(3, datetime(2000, 1, 2))
@@ -180,7 +182,8 @@ class TestInsert:
     # TODO: also changes DataFrame.__setitem__ with expansion
     def test_insert_mismatched_tzawareness(self):
         # see GH#7299
-        idx = date_range("1/1/2000", periods=3, freq="D", tz="Asia/Tokyo", name="idx")
+        idx = date_range("1/1/2000", periods=3, freq="D",
+                         tz="Asia/Tokyo", name="idx")
 
         # mismatched tz-awareness
         item = Timestamp("2000-01-04")
@@ -202,7 +205,8 @@ class TestInsert:
     def test_insert_mismatched_tz(self):
         # see GH#7299
         # pre-2.0 with mismatched tzs we would cast to object
-        idx = date_range("1/1/2000", periods=3, freq="D", tz="Asia/Tokyo", name="idx")
+        idx = date_range("1/1/2000", periods=3, freq="D",
+                         tz="Asia/Tokyo", name="idx")
 
         # mismatched tz -> cast to object (could reasonably cast to same tz or UTC)
         item = Timestamp("2000-01-04", tz="US/Eastern")
@@ -224,7 +228,8 @@ class TestInsert:
         tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "item", [0, np.int64(0), np.float64(0), np.array(0), np.timedelta64(456)]
+        "item", [0, np.int64(0), np.float64(
+            0), np.array(0), np.timedelta64(456)]
     )
     def test_insert_mismatched_types_raises(self, tz_aware_fixture, item):
         # GH#33703 dont cast these to dt64
@@ -237,7 +242,8 @@ class TestInsert:
             assert item.item() == 0
             expected = Index([dti[0], 0] + list(dti[1:]), dtype=object, name=9)
         else:
-            expected = Index([dti[0], item] + list(dti[1:]), dtype=object, name=9)
+            expected = Index([dti[0], item] + list(dti[1:]),
+                             dtype=object, name=9)
 
         tm.assert_index_equal(result, expected)
 

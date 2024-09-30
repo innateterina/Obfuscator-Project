@@ -137,13 +137,15 @@ def concatenate_managers(
             # TODO: support more dtypes here.  This will be simpler once
             #  JoinUnit.is_na behavior is deprecated.
             if (
-                all(_is_homogeneous_mgr(mgr, first_dtype) for mgr, _ in mgrs_indexers)
+                all(_is_homogeneous_mgr(mgr, first_dtype)
+                    for mgr, _ in mgrs_indexers)
                 and len(mgrs_indexers) > 1
             ):
                 # Fastpath!
                 # Length restriction is just to avoid having to worry about 'copy'
                 shape = tuple(len(x) for x in axes)
-                nb = _concat_homogeneous_fastpath(mgrs_indexers, shape, first_dtype)
+                nb = _concat_homogeneous_fastpath(
+                    mgrs_indexers, shape, first_dtype)
                 return BlockManager((nb,), axes)
 
     mgrs = _maybe_reindex_columns_na_proxy(axes, mgrs_indexers, needs_copy)
@@ -464,7 +466,8 @@ def _concatenate_join_units(join_units: list[JoinUnit], copy: bool) -> ArrayLike
     upcasted_na = _dtype_to_na_value(empty_dtype, has_none_blocks)
 
     to_concat = [
-        ju.get_reindexed_values(empty_dtype=empty_dtype, upcasted_na=upcasted_na)
+        ju.get_reindexed_values(empty_dtype=empty_dtype,
+                                upcasted_na=upcasted_na)
         for ju in join_units
     ]
 

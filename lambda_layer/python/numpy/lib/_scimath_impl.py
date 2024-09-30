@@ -40,7 +40,7 @@ from numpy.lib._type_check_impl import isreal
 __all__ = [
     'sqrt', 'log', 'log2', 'logn', 'log10', 'power', 'arccos', 'arcsin',
     'arctanh'
-    ]
+]
 
 
 _ln2 = nx.log(2.0)

@@ -383,7 +383,7 @@ class parserinfo(object):
             res.year = self.convertyear(res.year, res.century_specified)
 
         if ((res.tzoffset == 0 and not res.tzname) or
-             (res.tzname == 'Z' or res.tzname == 'z')):
+                (res.tzname == 'Z' or res.tzname == 'z')):
             res.tzname = "UTC"
             res.tzoffset = 0
         elif res.tzoffset != 0 and res.tzname and self.utczone(res.tzname):
@@ -661,7 +661,7 @@ class parser(object):
     class _result(_resultbase):
         __slots__ = ["year", "month", "day", "weekday",
                      "hour", "minute", "second", "microsecond",
-                     "tzname", "tzoffset", "ampm","any_unused_tokens"]
+                     "tzname", "tzoffset", "ampm", "any_unused_tokens"]
 
     def _parse(self, timestr, dayfirst=None, yearfirst=None, fuzzy=False,
                fuzzy_with_tokens=False):
@@ -820,7 +820,8 @@ class parser(object):
                     elif i + 2 < len_l and l[i + 2] == ':':
                         # -03:00
                         hour_offset = int(l[i + 1])
-                        min_offset = int(l[i + 3])  # TODO: Check that l[i+3] is minute-like?
+                        # TODO: Check that l[i+3] is minute-like?
+                        min_offset = int(l[i + 3])
                         i += 2
                     elif len_li <= 2:
                         # -[0]3
@@ -829,7 +830,8 @@ class parser(object):
                     else:
                         raise ValueError(timestr)
 
-                    res.tzoffset = signal * (hour_offset * 3600 + min_offset * 60)
+                    res.tzoffset = signal * \
+                        (hour_offset * 3600 + min_offset * 60)
 
                     # Look for a timezone name between parenthesis
                     if (i + 5 < len_l and
@@ -938,7 +940,8 @@ class parser(object):
         elif idx + 2 < len_l and tokens[idx + 1] == ':':
             # HH:MM[:SS[.ss]]
             res.hour = int(value)
-            value = self._to_decimal(tokens[idx + 2])  # TODO: try/except for this?
+            # TODO: try/except for this?
+            value = self._to_decimal(tokens[idx + 2])
             (res.minute, res.second) = self._parse_min_sec(value)
 
             if idx + 4 < len_l and tokens[idx + 3] == ':':
@@ -1389,7 +1392,7 @@ class _tzparser(object):
 
     def parse(self, tzstr):
         res = self._result()
-        l = [x for x in re.split(r'([,:.]|[a-zA-Z]+|[0-9]+)',tzstr) if x]
+        l = [x for x in re.split(r'([,:.]|[a-zA-Z]+|[0-9]+)', tzstr) if x]
         used_idxs = list()
         try:
 
@@ -1447,7 +1450,6 @@ class _tzparser(object):
                         break
                 else:
                     break
-
 
             if i < len_l:
                 for j in range(i, len_l):
@@ -1575,7 +1577,8 @@ class _tzparser(object):
             return None
 
         unused_idxs = set(range(len_l)).difference(used_idxs)
-        res.any_unused_tokens = not {l[n] for n in unused_idxs}.issubset({",",":"})
+        res.any_unused_tokens = not {l[n]
+                                     for n in unused_idxs}.issubset({",", ":"})
         return res
 
 
@@ -1594,6 +1597,7 @@ class ParserError(ValueError):
 
     .. versionadded:: 2.8.1
     """
+
     def __str__(self):
         try:
             return self.args[0] % self.args[1:]

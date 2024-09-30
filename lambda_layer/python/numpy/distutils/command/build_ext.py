@@ -7,7 +7,7 @@ from glob import glob
 
 from distutils.dep_util import newer_group
 from distutils.command.build_ext import build_ext as old_build_ext
-from distutils.errors import DistutilsFileError, DistutilsSetupError,\
+from distutils.errors import DistutilsFileError, DistutilsSetupError, \
     DistutilsError
 from distutils.file_util import copy_file
 
@@ -20,6 +20,7 @@ from numpy.distutils.misc_util import (
 )
 from numpy.distutils.command.config_compiler import show_fortran_compilers
 from numpy.distutils.ccompiler_opt import new_ccompiler_opt, CCompilerOpt
+
 
 class build_ext (old_build_ext):
 
@@ -47,7 +48,8 @@ class build_ext (old_build_ext):
          show_fortran_compilers),
     ]
 
-    boolean_options = old_build_ext.boolean_options + ['warn-error', 'disable-optimization']
+    boolean_options = old_build_ext.boolean_options + \
+        ['warn-error', 'disable-optimization']
 
     def initialize_options(self):
         old_build_ext.initialize_options(self)
@@ -64,7 +66,8 @@ class build_ext (old_build_ext):
             try:
                 self.parallel = int(self.parallel)
             except ValueError as e:
-                raise ValueError("--parallel/-j argument must be an integer") from e
+                raise ValueError(
+                    "--parallel/-j argument must be an integer") from e
 
         # Ensure that self.include_dirs and self.distribution.include_dirs
         # refer to the same list object. finalize_options will modify
@@ -84,13 +87,14 @@ class build_ext (old_build_ext):
 
         old_build_ext.finalize_options(self)
         self.set_undefined_options('build',
-                                        ('parallel', 'parallel'),
-                                        ('warn_error', 'warn_error'),
-                                        ('cpu_baseline', 'cpu_baseline'),
-                                        ('cpu_dispatch', 'cpu_dispatch'),
-                                        ('disable_optimization', 'disable_optimization'),
-                                        ('simd_test', 'simd_test')
-                                  )
+                                   ('parallel', 'parallel'),
+                                   ('warn_error', 'warn_error'),
+                                   ('cpu_baseline', 'cpu_baseline'),
+                                   ('cpu_dispatch', 'cpu_dispatch'),
+                                   ('disable_optimization',
+                                    'disable_optimization'),
+                                   ('simd_test', 'simd_test')
+                                   )
         CCompilerOpt.conf_target_groups["simd_test"] = self.simd_test
 
     def run(self):
@@ -146,8 +150,10 @@ class build_ext (old_build_ext):
         self.compiler.show_customization()
 
         if not self.disable_optimization:
-            dispatch_hpath = os.path.join("numpy", "distutils", "include", "npy_cpu_dispatch_config.h")
-            dispatch_hpath = os.path.join(self.get_finalized_command("build_src").build_src, dispatch_hpath)
+            dispatch_hpath = os.path.join(
+                "numpy", "distutils", "include", "npy_cpu_dispatch_config.h")
+            dispatch_hpath = os.path.join(self.get_finalized_command(
+                "build_src").build_src, dispatch_hpath)
             opt_cache_path = os.path.abspath(
                 os.path.join(self.build_temp, 'ccompiler_opt_cache_ext.py')
             )
@@ -165,6 +171,7 @@ class build_ext (old_build_ext):
                 cpu_baseline=self.cpu_baseline, cpu_dispatch=self.cpu_dispatch,
                 cache_path=opt_cache_path
             )
+
             def report(copt):
                 log.info("\n########### EXT COMPILER OPTIMIZATION ###########")
                 log.info(copt.report(full=True))
@@ -613,9 +620,9 @@ class build_ext (old_build_ext):
 
         if fcompiler is not None:
             objects, libraries = self._process_unlinkable_fobjects(
-                    objects, libraries,
-                    fcompiler, library_dirs,
-                    unlinkable_fobjects)
+                objects, libraries,
+                fcompiler, library_dirs,
+                unlinkable_fobjects)
 
         linker(objects, ext_filename,
                libraries=libraries,
@@ -665,8 +672,8 @@ class build_ext (old_build_ext):
         if unlinkable_fobjects:
             fobjects = [os.path.abspath(obj) for obj in unlinkable_fobjects]
             wrapped = fcompiler.wrap_unlinkable_objects(
-                    fobjects, output_dir=self.build_temp,
-                    extra_dll_dir=self.extra_dll_dir)
+                fobjects, output_dir=self.build_temp,
+                extra_dll_dir=self.extra_dll_dir)
             objects.extend(wrapped)
 
         return objects, libraries

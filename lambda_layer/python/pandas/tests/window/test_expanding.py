@@ -87,12 +87,14 @@ def test_expanding_axis(axis_frame):
     if axis == 0:
         msg = "The 'axis' keyword in DataFrame.expanding is deprecated"
         expected = DataFrame(
-            {i: [np.nan] * 2 + [float(j) for j in range(3, 11)] for i in range(20)}
+            {i: [np.nan] * 2 + [float(j) for j in range(3, 11)]
+             for i in range(20)}
         )
     else:
         # axis == 1
         msg = "Support for axis=1 in DataFrame.expanding is deprecated"
-        expected = DataFrame([[np.nan] * 2 + [float(i) for i in range(3, 21)]] * 10)
+        expected = DataFrame([[np.nan] * 2 + [float(i)
+                             for i in range(3, 21)]] * 10)
 
     with tm.assert_produces_warning(FutureWarning, match=msg):
         result = df.expanding(3, axis=axis_frame).sum()
@@ -195,9 +197,12 @@ def test_iter_expanding_dataframe(df, expected, min_periods):
 @pytest.mark.parametrize(
     "ser,expected,min_periods",
     [
-        (Series([1, 2, 3]), [([1], [0]), ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 3),
-        (Series([1, 2, 3]), [([1], [0]), ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 2),
-        (Series([1, 2, 3]), [([1], [0]), ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 1),
+        (Series([1, 2, 3]), [([1], [0]),
+         ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 3),
+        (Series([1, 2, 3]), [([1], [0]),
+         ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 2),
+        (Series([1, 2, 3]), [([1], [0]),
+         ([1, 2], [0, 1]), ([1, 2, 3], [0, 1, 2])], 1),
         (Series([1, 2]), [([1], [0]), ([1, 2], [0, 1])], 2),
         (Series([np.nan, 2]), [([np.nan], [0]), ([np.nan, 2], [0, 1])], 2),
         (Series([], dtype="int64"), [], 2),
@@ -259,7 +264,8 @@ def test_rank(window, method, pct, ascending, test_data):
     expected = ser.expanding(window).apply(
         lambda x: x.rank(method=method, pct=pct, ascending=ascending).iloc[-1]
     )
-    result = ser.expanding(window).rank(method=method, pct=pct, ascending=ascending)
+    result = ser.expanding(window).rank(
+        method=method, pct=pct, ascending=ascending)
 
     tm.assert_series_equal(result, expected)
 
@@ -285,7 +291,8 @@ def test_expanding_count(series):
 def test_expanding_quantile(series):
     result = series.expanding().quantile(0.5)
 
-    rolling_result = series.rolling(window=len(series), min_periods=1).quantile(0.5)
+    rolling_result = series.rolling(
+        window=len(series), min_periods=1).quantile(0.5)
 
     tm.assert_almost_equal(result, rolling_result)
 
@@ -449,12 +456,15 @@ def test_expanding_min_periods_apply(engine_and_raw):
 )
 def test_moment_functions_zero_length_pairwise(f):
     df1 = DataFrame()
-    df2 = DataFrame(columns=Index(["a"], name="foo"), index=Index([], name="bar"))
+    df2 = DataFrame(columns=Index(
+        ["a"], name="foo"), index=Index([], name="bar"))
     df2["a"] = df2["a"].astype("float64")
 
-    df1_expected = DataFrame(index=MultiIndex.from_product([df1.index, df1.columns]))
+    df1_expected = DataFrame(
+        index=MultiIndex.from_product([df1.index, df1.columns]))
     df2_expected = DataFrame(
-        index=MultiIndex.from_product([df2.index, df2.columns], names=["bar", "foo"]),
+        index=MultiIndex.from_product(
+            [df2.index, df2.columns], names=["bar", "foo"]),
         columns=Index(["a"], name="foo"),
         dtype="float64",
     )
@@ -518,7 +528,8 @@ def test_expanding_apply_min_periods_0(engine_and_raw):
     # GH 8080
     engine, raw = engine_and_raw
     s = Series([None, None, None])
-    result = s.expanding(min_periods=0).apply(lambda x: len(x), raw=raw, engine=engine)
+    result = s.expanding(min_periods=0).apply(
+        lambda x: len(x), raw=raw, engine=engine)
     expected = Series([1.0, 2.0, 3.0])
     tm.assert_series_equal(result, expected)
 
@@ -563,7 +574,8 @@ def test_expanding_corr_diff_index():
 
 def test_expanding_cov_pairwise_diff_length():
     # GH 7512
-    df1 = DataFrame([[1, 5], [3, 2], [3, 9]], columns=Index(["A", "B"], name="foo"))
+    df1 = DataFrame([[1, 5], [3, 2], [3, 9]],
+                    columns=Index(["A", "B"], name="foo"))
     df1a = DataFrame(
         [[1, 5], [3, 9]], index=[0, 2], columns=Index(["A", "B"], name="foo")
     )
@@ -647,7 +659,8 @@ def test_numeric_only_frame(arithmetic_win_operators, numeric_only):
         result = op(numeric_only=numeric_only)
 
         columns = ["a", "b"] if numeric_only else ["a", "b", "c"]
-        expected = df[columns].agg([kernel]).reset_index(drop=True).astype(float)
+        expected = df[columns].agg([kernel]).reset_index(
+            drop=True).astype(float)
         assert list(expected.columns) == columns
 
         tm.assert_frame_equal(result, expected)

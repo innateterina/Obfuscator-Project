@@ -79,14 +79,18 @@ class TestTimestampConstructorUnitKeyword:
                 (946688461000000000 + 500000000) / 1000000000,
                 {"unit": "s", "us": 500000},
             ],
-            [(946688461000000000 + 500000) / 1000000, {"unit": "ms", "us": 500}],
+            [(946688461000000000 + 500000) /
+             1000000, {"unit": "ms", "us": 500}],
             [(946688461000000000 + 500000) / 1000, {"unit": "us", "us": 500}],
-            [(946688461000000000 + 500000000) / 1000000, {"unit": "ms", "us": 500000}],
+            [(946688461000000000 + 500000000) /
+             1000000, {"unit": "ms", "us": 500000}],
             [946688461000000000 / 1000.0 + 5, {"unit": "us", "us": 5}],
             [946688461000000000 / 1000.0 + 5000, {"unit": "us", "us": 5000}],
             [946688461000000000 / 1000000.0 + 0.5, {"unit": "ms", "us": 500}],
-            [946688461000000000 / 1000000.0 + 0.005, {"unit": "ms", "us": 5, "ns": 5}],
-            [946688461000000000 / 1000000000.0 + 0.5, {"unit": "s", "us": 500000}],
+            [946688461000000000 / 1000000.0 + 0.005,
+                {"unit": "ms", "us": 5, "ns": 5}],
+            [946688461000000000 / 1000000000.0 +
+                0.5, {"unit": "s", "us": 500000}],
             [10957 + 0.5, {"unit": "D", "h": 12}],
         ],
     )
@@ -154,7 +158,8 @@ class TestTimestampConstructorFoldKeyword:
     def test_timestamp_constructor_retain_fold(self, tz, fold):
         # Test for GH#25057
         # Check that we retain fold
-        ts = Timestamp(year=2019, month=10, day=27, hour=1, minute=30, tz=tz, fold=fold)
+        ts = Timestamp(year=2019, month=10, day=27,
+                       hour=1, minute=30, tz=tz, fold=fold)
         result = ts.fold
         expected = fold
         assert result == expected
@@ -529,7 +534,8 @@ class TestTimestampConstructors:
         base_expected = 1_404_205_200_000_000_000
 
         # confirm base representation is correct
-        assert calendar.timegm(base_dt.timetuple()) * 1_000_000_000 == base_expected
+        assert calendar.timegm(base_dt.timetuple()) * \
+            1_000_000_000 == base_expected
 
         tests = [
             (base_str, base_dt, base_expected),
@@ -563,7 +569,8 @@ class TestTimestampConstructors:
 
         for date_str, date_obj, expected in tests:
             for result in [Timestamp(date_str), Timestamp(date_obj)]:
-                result = result.as_unit("ns")  # test originally written before non-nano
+                # test originally written before non-nano
+                result = result.as_unit("ns")
                 # only with timestring
                 assert result.as_unit("ns")._value == expected
 
@@ -599,7 +606,8 @@ class TestTimestampConstructors:
         base_expected = 1_404_205_200_000_000_000
 
         # confirm base representation is correct
-        assert calendar.timegm(base_dt.timetuple()) * 1_000_000_000 == base_expected
+        assert calendar.timegm(base_dt.timetuple()) * \
+            1_000_000_000 == base_expected
 
         tests = [
             (base_str, base_expected),
@@ -877,7 +885,8 @@ class TestTimestampConstructors:
     @pytest.mark.parametrize("offset", ["+0300", "+0200"])
     def test_construct_timestamp_near_dst(self, offset):
         # GH 20854
-        expected = Timestamp(f"2016-10-30 03:00:00{offset}", tz="Europe/Helsinki")
+        expected = Timestamp(
+            f"2016-10-30 03:00:00{offset}", tz="Europe/Helsinki")
         result = Timestamp(expected).tz_convert("Europe/Helsinki")
         assert result == expected
 

@@ -2,6 +2,7 @@
 Utility function to facilitate testing.
 
 """
+import unittest
 import os
 import sys
 import platform
@@ -21,7 +22,7 @@ import concurrent.futures
 
 import numpy as np
 from numpy._core import (
-     intp, float32, empty, arange, array_repr, ndarray, isnat, array)
+    intp, float32, empty, arange, array_repr, ndarray, isnat, array)
 from numpy import isfinite, isnan, isinf
 import numpy.linalg._umath_linalg
 from numpy._utils import _rename_parameter
@@ -29,20 +30,20 @@ from numpy._utils import _rename_parameter
 from io import StringIO
 
 __all__ = [
-        'assert_equal', 'assert_almost_equal', 'assert_approx_equal',
-        'assert_array_equal', 'assert_array_less', 'assert_string_equal',
-        'assert_array_almost_equal', 'assert_raises', 'build_err_msg',
-        'decorate_methods', 'jiffies', 'memusage', 'print_assert_equal',
-        'rundocs', 'runstring', 'verbose', 'measure',
-        'assert_', 'assert_array_almost_equal_nulp', 'assert_raises_regex',
-        'assert_array_max_ulp', 'assert_warns', 'assert_no_warnings',
-        'assert_allclose', 'IgnoreException', 'clear_and_catch_warnings',
-        'SkipTest', 'KnownFailureException', 'temppath', 'tempdir', 'IS_PYPY',
-        'HAS_REFCOUNT', "IS_WASM", 'suppress_warnings', 'assert_array_compare',
-        'assert_no_gc_cycles', 'break_cycles', 'HAS_LAPACK64', 'IS_PYSTON',
-        '_OLD_PROMOTION', 'IS_MUSL', '_SUPPORTS_SVE', 'NOGIL_BUILD',
-        'IS_EDITABLE', 'run_threaded',
-        ]
+    'assert_equal', 'assert_almost_equal', 'assert_approx_equal',
+    'assert_array_equal', 'assert_array_less', 'assert_string_equal',
+    'assert_array_almost_equal', 'assert_raises', 'build_err_msg',
+    'decorate_methods', 'jiffies', 'memusage', 'print_assert_equal',
+    'rundocs', 'runstring', 'verbose', 'measure',
+    'assert_', 'assert_array_almost_equal_nulp', 'assert_raises_regex',
+    'assert_array_max_ulp', 'assert_warns', 'assert_no_warnings',
+    'assert_allclose', 'IgnoreException', 'clear_and_catch_warnings',
+    'SkipTest', 'KnownFailureException', 'temppath', 'tempdir', 'IS_PYPY',
+    'HAS_REFCOUNT', "IS_WASM", 'suppress_warnings', 'assert_array_compare',
+    'assert_no_gc_cycles', 'break_cycles', 'HAS_LAPACK64', 'IS_PYSTON',
+    '_OLD_PROMOTION', 'IS_MUSL', '_SUPPORTS_SVE', 'NOGIL_BUILD',
+    'IS_EDITABLE', 'run_threaded',
+]
 
 
 class KnownFailureException(Exception):
@@ -60,7 +61,9 @@ IS_EDITABLE = not bool(np.__path__) or 'editable' in np.__path__[0]
 HAS_REFCOUNT = getattr(sys, 'getrefcount', None) is not None and not IS_PYSTON
 HAS_LAPACK64 = numpy.linalg._umath_linalg._ilp64
 
-_OLD_PROMOTION = lambda: np._get_promotion_state() == 'legacy'
+
+def _OLD_PROMOTION(): return np._get_promotion_state() == 'legacy'
+
 
 IS_MUSL = False
 # alternate way is
@@ -72,6 +75,7 @@ if 'musl' in _v:
     IS_MUSL = True
 
 NOGIL_BUILD = bool(sysconfig.get_config_var("Py_GIL_DISABLED"))
+
 
 def assert_(val, msg=''):
     """
@@ -108,8 +112,8 @@ if os.name == 'nt':
         import win32pdh
         if format is None:
             format = win32pdh.PDH_FMT_LONG
-        path = win32pdh.MakeCounterPath( (machine, object, instance, None,
-                                          inum, counter))
+        path = win32pdh.MakeCounterPath((machine, object, instance, None,
+                                         inum, counter))
         hq = win32pdh.OpenQuery()
         try:
             hc = win32pdh.AddCounter(hq, path)
@@ -700,7 +704,7 @@ def assert_array_compare(comparison, x, y, err_msg='', verbose=True, header='',
                          *, strict=False, names=('ACTUAL', 'DESIRED')):
     __tracebackhide__ = True  # Hide traceback for py.test
     from numpy._core import (array2string, isnan, inf, errstate,
-                            all, max, object_)
+                             all, max, object_)
 
     x = np.asanyarray(x)
     y = np.asanyarray(y)
@@ -856,27 +860,27 @@ def assert_array_compare(comparison, x, y, err_msg='', verbose=True, header='',
                         remarks.append(
                             'Max absolute difference among violations: '
                             + array2string(max_abs_error))
-                        
+
                     # note: this definition of relative error matches that one
                     # used by assert_allclose (found in np.isclose)
                     # Filter values where the divisor would be zero
                     nonzero = np.bool(y != 0)
                     nonzero_and_invalid = np.logical_and(invalids, nonzero)
-                    
+
                     if all(~nonzero_and_invalid):
                         max_rel_error = array(inf)
                     else:
                         nonzero_invalid_error = error[nonzero_and_invalid]
                         broadcasted_y = np.broadcast_to(y, error.shape)
                         nonzero_invalid_y = broadcasted_y[nonzero_and_invalid]
-                        max_rel_error = max(nonzero_invalid_error 
+                        max_rel_error = max(nonzero_invalid_error
                                             / abs(nonzero_invalid_y))
 
-                    if getattr(error, 'dtype', object_) == object_: 
+                    if getattr(error, 'dtype', object_) == object_:
                         remarks.append(
                             'Max relative difference among violations: '
                             + str(max_rel_error))
-                    else:               
+                    else:
                         remarks.append(
                             'Max relative difference among violations: '
                             + array2string(max_rel_error))
@@ -1140,8 +1144,9 @@ def assert_array_almost_equal(actual, desired, decimal=6, err_msg='',
 
     assert_array_compare(compare, actual, desired, err_msg=err_msg,
                          verbose=verbose,
-             header=('Arrays are not almost equal to %d decimals' % decimal),
-             precision=decimal)
+                         header=(
+                             'Arrays are not almost equal to %d decimals' % decimal),
+                         precision=decimal)
 
 
 def assert_array_less(x, y, err_msg='', verbose=True, *, strict=False):
@@ -1369,7 +1374,7 @@ def rundocs(filename=None, raise_on_error=True):
 
     msg = []
     if raise_on_error:
-        out = lambda s: msg.append(s)
+        def out(s): return msg.append(s)
     else:
         out = None
 
@@ -1384,7 +1389,7 @@ def check_support_sve():
     """
     gh-22982
     """
-    
+
     import subprocess
     cmd = 'lscpu'
     try:
@@ -1399,7 +1404,6 @@ _SUPPORTS_SVE = check_support_sve()
 #
 # assert_raises and assert_raises_regex are taken from unittest.
 #
-import unittest
 
 
 class _Dummy(unittest.TestCase):
@@ -1681,7 +1685,7 @@ def assert_allclose(actual, desired, rtol=1e-7, atol=0, equal_nan=True,
 
     def compare(x, y):
         return np._core.numeric.isclose(x, y, rtol=rtol, atol=atol,
-                                       equal_nan=equal_nan)
+                                        equal_nan=equal_nan)
 
     actual, desired = np.asanyarray(actual), np.asanyarray(desired)
     header = f'Not equal to tolerance rtol={rtol:g}, atol={atol:g}'
@@ -1960,7 +1964,7 @@ def assert_warns(warning_class, *args, **kwargs):
             raise RuntimeError(
                 "assert_warns does not use 'match' kwarg, "
                 "use pytest.warns instead"
-                )
+            )
         raise RuntimeError("assert_warns(...) needs at least one arg")
 
     func = args[0]
@@ -2046,7 +2050,7 @@ def _gen_alignment_data(dtype=float32, type='binary', max_size=24):
     for o in range(3):
         for s in range(o + 2, max(o + 3, max_size)):
             if type == 'unary':
-                inp = lambda: arange(s, dtype=dtype)[o:]
+                def inp(): return arange(s, dtype=dtype)[o:]
                 out = empty((s,), dtype=dtype)[o:]
                 yield out, inp(), ufmt % (o, o, s, dtype, 'out of place')
                 d = inp()
@@ -2060,8 +2064,8 @@ def _gen_alignment_data(dtype=float32, type='binary', max_size=24):
                 yield inp()[1:], inp()[:-1], ufmt % \
                     (o + 1, o, s - 1, dtype, 'aliased')
             if type == 'binary':
-                inp1 = lambda: arange(s, dtype=dtype)[o:]
-                inp2 = lambda: arange(s, dtype=dtype)[o:]
+                def inp1(): return arange(s, dtype=dtype)[o:]
+                def inp2(): return arange(s, dtype=dtype)[o:]
                 out = empty((s,), dtype=dtype)[o:]
                 yield out, inp1(), inp2(),  bfmt % \
                     (o, o, o, s, dtype, 'out of place')
@@ -2267,6 +2271,7 @@ class suppress_warnings:
             # do something which causes a warning in np.ma.core
             pass
     """
+
     def __init__(self, forwarding_rule="always"):
         self._entered = False
 
@@ -2697,7 +2702,7 @@ def _get_glibc_version():
 
 
 _glibcver = _get_glibc_version()
-_glibc_older_than = lambda x: (_glibcver != '0.0' and _glibcver < x)
+def _glibc_older_than(x): return (_glibcver != '0.0' and _glibcver < x)
 
 
 def run_threaded(func, iters, pass_count=False):

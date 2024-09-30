@@ -143,7 +143,8 @@ def test_astype_string_copy_on_pickle_roundrip():
 
 def test_astype_dict_dtypes(using_copy_on_write):
     df = DataFrame(
-        {"a": [1, 2, 3], "b": [4, 5, 6], "c": Series([1.5, 1.5, 1.5], dtype="float64")}
+        {"a": [1, 2, 3], "b": [4, 5, 6], "c": Series(
+            [1.5, 1.5, 1.5], dtype="float64")}
     )
     df_orig = df.copy()
     df2 = df.astype({"a": "float64", "c": "float64"})
@@ -241,7 +242,8 @@ def test_convert_dtypes_infer_objects(using_copy_on_write):
 
 
 def test_convert_dtypes(using_copy_on_write):
-    df = DataFrame({"a": ["a", "b"], "b": [1, 2], "c": [1.5, 2.5], "d": [True, False]})
+    df = DataFrame({"a": ["a", "b"], "b": [1, 2], "c": [
+                   1.5, 2.5], "d": [True, False]})
     df_orig = df.copy()
     df2 = df.convert_dtypes()
 

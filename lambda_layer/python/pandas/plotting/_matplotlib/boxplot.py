@@ -78,11 +78,13 @@ class BoxPlot(LinePlot):
 
     def __init__(self, data, return_type: str = "axes", **kwargs) -> None:
         if return_type not in self._valid_return_types:
-            raise ValueError("return_type must be {None, 'axes', 'dict', 'both'}")
+            raise ValueError(
+                "return_type must be {None, 'axes', 'dict', 'both'}")
 
         self.return_type = return_type
         # Do not call LinePlot.__init__ which may fill nan
-        MPLPlot.__init__(self, data, **kwargs)  # pylint: disable=non-parent-init-called
+        MPLPlot.__init__(
+            self, data, **kwargs)  # pylint: disable=non-parent-init-called
 
         if self.subplots:
             # Disable label ax sharing. Otherwise, all subplots shows last
@@ -201,7 +203,8 @@ class BoxPlot(LinePlot):
             # error: Argument "data" to "_iter_data" of "MPLPlot" has
             # incompatible type "object"; expected "DataFrame |
             # dict[Hashable, Series | DataFrame]"
-            for i, (label, y) in enumerate(self._iter_data(data=data)):  # type: ignore[arg-type]
+            # type: ignore[arg-type]
+            for i, (label, y) in enumerate(self._iter_data(data=data)):
                 ax = self._get_ax(i)
                 kwds = self.kwds.copy()
 
@@ -214,7 +217,8 @@ class BoxPlot(LinePlot):
                     # When `by` is assigned, the ticklabels will become unique grouped
                     # values, instead of label which is used as subtitle in this case.
                     # error: "Index" has no attribute "levels"; maybe "nlevels"?
-                    levels = self.data.columns.levels  # type: ignore[attr-defined]
+                    # type: ignore[attr-defined]
+                    levels = self.data.columns.levels
                     ticklabels = [pprint_thing(col) for col in levels[0]]
                 else:
                     ticklabels = [pprint_thing(label)]
@@ -326,7 +330,8 @@ def _grouped_plot_by_column(
         ax = _axes[i]
         gp_col = grouped[col]
         keys, values = zip(*gp_col)
-        re_plotf = plotf(keys, values, ax, xlabel=xlabel, ylabel=ylabel, **kwargs)
+        re_plotf = plotf(keys, values, ax, xlabel=xlabel,
+                         ylabel=ylabel, **kwargs)
         ax.set_title(col)
         ax_values.append(re_plotf)
         ax.grid(grid)
@@ -339,7 +344,8 @@ def _grouped_plot_by_column(
 
     byline = by[0] if len(by) == 1 else by
     fig.suptitle(f"Boxplot grouped by {byline}")
-    maybe_adjust_figure(fig, bottom=0.15, top=0.9, left=0.1, right=0.9, wspace=0.2)
+    maybe_adjust_figure(fig, bottom=0.15, top=0.9,
+                        left=0.1, right=0.9, wspace=0.2)
 
     return result
 
@@ -405,7 +411,8 @@ def boxplot(
             ax.set_ylabel(pprint_thing(ylabel))
 
         keys = [pprint_thing(x) for x in keys]
-        values = [np.asarray(remove_na_arraylike(v), dtype=object) for v in values]
+        values = [np.asarray(remove_na_arraylike(v), dtype=object)
+                  for v in values]
         bp = ax.boxplot(values, **kwds)
         if fontsize is not None:
             ax.tick_params(axis="both", labelsize=fontsize)
@@ -451,7 +458,8 @@ def boxplot(
         if return_type is None:
             return_type = "axes"
         if layout is not None:
-            raise ValueError("The 'layout' keyword is not supported when 'by' is None")
+            raise ValueError(
+                "The 'layout' keyword is not supported when 'by' is None")
 
         if ax is None:
             rc = {"figure.figsize": figsize} if figsize is not None else {}
@@ -541,7 +549,8 @@ def boxplot_frame_groupby(
             )
             ax.set_title(pprint_thing(key))
             ret.loc[key] = d
-        maybe_adjust_figure(fig, bottom=0.15, top=0.9, left=0.1, right=0.9, wspace=0.2)
+        maybe_adjust_figure(fig, bottom=0.15, top=0.9,
+                            left=0.1, right=0.9, wspace=0.2)
     else:
         keys, frames = zip(*grouped)
         if grouped.axis == 0:

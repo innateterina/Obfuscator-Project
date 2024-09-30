@@ -102,7 +102,8 @@ def test_raise_on_passed_int_dtype_with_nas(all_parsers):
         msg = "Unable to convert column DOY"
 
     with pytest.raises(ValueError, match=msg):
-        parser.read_csv(StringIO(data), dtype={"DOY": np.int64}, skipinitialspace=True)
+        parser.read_csv(StringIO(data), dtype={
+                        "DOY": np.int64}, skipinitialspace=True)
 
 
 def test_dtype_with_converters(all_parsers):
@@ -219,7 +220,8 @@ def test_decimal_and_exponential(
     request, python_parser_only, numeric_decimal, thousands
 ):
     # GH#31920
-    decimal_number_check(request, python_parser_only, numeric_decimal, thousands, None)
+    decimal_number_check(request, python_parser_only,
+                         numeric_decimal, thousands, None)
 
 
 @pytest.mark.parametrize("thousands", ["_", None])
@@ -246,7 +248,8 @@ def decimal_number_check(request, parser, numeric_decimal, thousands, float_prec
     value = numeric_decimal[0]
     if thousands is None and value in ("1_,", "1_234,56", "1_234,56e0"):
         request.applymarker(
-            pytest.mark.xfail(reason=f"thousands={thousands} and sep is in {value}")
+            pytest.mark.xfail(
+                reason=f"thousands={thousands} and sep is in {value}")
         )
     df = parser.read_csv(
         StringIO(value),
@@ -275,7 +278,8 @@ def test_skip_whitespace(c_parser_only, float_precision):
         header=0,
         dtype={1: np.float64},
     )
-    tm.assert_series_equal(df.iloc[:, 1], pd.Series([1.2, 2.1, 1.0, 1.2], name="num"))
+    tm.assert_series_equal(df.iloc[:, 1], pd.Series(
+        [1.2, 2.1, 1.0, 1.2], name="num"))
 
 
 @pytest.mark.usefixtures("pyarrow_xfail")
@@ -397,7 +401,8 @@ def test_dtypes_defaultdict_mangle_dup_cols(all_parsers):
     dtype["b.1"] = "int64"
     parser = all_parsers
     result = parser.read_csv(StringIO(data), dtype=dtype)
-    expected = DataFrame({"a": [1], "b": [2.0], "a.1": [3], "b.2": [4.0], "b.1": [5]})
+    expected = DataFrame({"a": [1], "b": [2.0], "a.1": [
+                         3], "b.2": [4.0], "b.1": [5]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -469,7 +474,8 @@ def test_dtype_backend_string(all_parsers, string_storage):
 a,x
 b,
 """
-        result = parser.read_csv(StringIO(data), dtype_backend="numpy_nullable")
+        result = parser.read_csv(
+            StringIO(data), dtype_backend="numpy_nullable")
 
         if string_storage == "python":
             expected = DataFrame(
@@ -510,7 +516,8 @@ def test_dtype_backend_pyarrow(all_parsers, request):
 1,2.5,True,a,,,,,12-31-2019,
 3,4.5,False,b,6,7.5,True,a,12-31-2019,
 """
-    result = parser.read_csv(StringIO(data), dtype_backend="pyarrow", parse_dates=["i"])
+    result = parser.read_csv(
+        StringIO(data), dtype_backend="pyarrow", parse_dates=["i"])
     expected = DataFrame(
         {
             "a": pd.Series([1, 3], dtype="int64[pyarrow]"),
@@ -546,7 +553,8 @@ def test_ea_int_avoid_overflow(all_parsers):
     expected = DataFrame(
         {
             "a": IntegerArray(
-                np.array([1, 1, 1582218195625938945]), np.array([False, True, False])
+                np.array([1, 1, 1582218195625938945]), np.array(
+                    [False, True, False])
             ),
             "b": 1,
         }
@@ -620,10 +628,14 @@ AMZN,20230301181139587,2023552585717889759,2023552585717263360
 MSFT,20230301181139587,2023552585717889863,2023552585717263361
 NVDA,20230301181139587,2023552585717889827,2023552585717263361"""
     orders = pd.read_csv(StringIO(data), dtype={"ID_DEAL": pd.Int64Dtype()})
-    assert len(orders.loc[orders["ID_DEAL"] == 2023552585717263358, "ID_DEAL"]) == 1
-    assert len(orders.loc[orders["ID_DEAL"] == 2023552585717263359, "ID_DEAL"]) == 1
-    assert len(orders.loc[orders["ID_DEAL"] == 2023552585717263360, "ID_DEAL"]) == 2
-    assert len(orders.loc[orders["ID_DEAL"] == 2023552585717263361, "ID_DEAL"]) == 2
+    assert len(orders.loc[orders["ID_DEAL"] ==
+               2023552585717263358, "ID_DEAL"]) == 1
+    assert len(orders.loc[orders["ID_DEAL"] ==
+               2023552585717263359, "ID_DEAL"]) == 1
+    assert len(orders.loc[orders["ID_DEAL"] ==
+               2023552585717263360, "ID_DEAL"]) == 2
+    assert len(orders.loc[orders["ID_DEAL"] ==
+               2023552585717263361, "ID_DEAL"]) == 2
 
 
 def test_dtypes_with_usecols(all_parsers):
@@ -634,7 +646,8 @@ def test_dtypes_with_usecols(all_parsers):
 1,2,3
 4,5,6"""
 
-    result = parser.read_csv(StringIO(data), usecols=["a", "c"], dtype={"a": object})
+    result = parser.read_csv(StringIO(data), usecols=[
+                             "a", "c"], dtype={"a": object})
     if parser.engine == "pyarrow":
         values = [1, 4]
     else:

@@ -37,7 +37,7 @@ __all__ = [
     'nansum', 'nanmax', 'nanmin', 'nanargmax', 'nanargmin', 'nanmean',
     'nanmedian', 'nanpercentile', 'nanvar', 'nanstd', 'nanprod',
     'nancumsum', 'nancumprod', 'nanquantile'
-    ]
+]
 
 
 def _nan_mask(a, out=None):
@@ -66,6 +66,7 @@ def _nan_mask(a, out=None):
     y = np.isnan(a, out=out)
     y = np.invert(y, out=y)
     return y
+
 
 def _replace_nan(a, val):
     """
@@ -1702,8 +1703,8 @@ def _nanquantile_ureduce_func(
 
             for ii in np.ndindex(a.shape[:-1]):
                 result[(...,) + ii] = _nanquantile_1d(
-                        a[ii], q, weights=weights[ii],
-                        overwrite_input=overwrite_input, method=method,
+                    a[ii], q, weights=weights[ii],
+                    overwrite_input=overwrite_input, method=method,
                 )
             # This path dealt with `out` already...
             return result
@@ -1722,7 +1723,7 @@ def _nanquantile_1d(
     """
     # TODO: What to do when arr1d = [1, np.nan] and weights = [0, 1]?
     arr1d, weights, overwrite_input = _remove_nan_1d(arr1d,
-        second_arr1d=weights, overwrite_input=overwrite_input)
+                                                     second_arr1d=weights, overwrite_input=overwrite_input)
     if arr1d.size == 0:
         # convert to scalar
         return np.full(q.shape, np.nan, dtype=arr1d.dtype)[()]
@@ -1881,7 +1882,7 @@ def nanvar(a, axis=None, dtype=None, out=None, ddof=0, keepdims=np._NoValue,
         _keepdims = True
 
     cnt = np.sum(~mask, axis=axis, dtype=np.intp, keepdims=_keepdims,
-                     where=where)
+                 where=where)
 
     if mean is not np._NoValue:
         avg = mean

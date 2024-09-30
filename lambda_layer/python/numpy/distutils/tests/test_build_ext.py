@@ -7,6 +7,7 @@ from textwrap import indent, dedent
 import pytest
 from numpy.testing import IS_WASM
 
+
 @pytest.mark.skipif(IS_WASM, reason="cannot start subprocess in wasm")
 @pytest.mark.slow
 def test_multi_fortran_libs_link(tmp_path):
@@ -61,12 +62,12 @@ def test_multi_fortran_libs_link(tmp_path):
     subprocess.check_call([sys.executable, 'setup.py', 'build', 'install',
                            '--prefix', str(tmp_path / 'installdir'),
                            '--record', str(tmp_path / 'tmp_install_log.txt'),
-                          ],
+                           ],
                           cwd=str(build_dir),
-                      )
+                          )
     # get the path to the so
     so = None
-    with open(tmp_path /'tmp_install_log.txt') as fid:
+    with open(tmp_path / 'tmp_install_log.txt') as fid:
         for line in fid:
             if 'dummyext' in line:
                 so = line.strip()

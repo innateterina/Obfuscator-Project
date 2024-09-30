@@ -21,6 +21,7 @@ if npyv and npyv.simd_f64:
 int_sfx = unsigned_sfx + signed_sfx
 all_sfx = unsigned_sfx + int_sfx
 
+
 @pytest.mark.skipif(not npyv, reason="could not find any SIMD extension with NPYV support")
 class Test_SIMD_MODULE:
 
@@ -38,14 +39,15 @@ class Test_SIMD_MODULE:
     def test_raises(self):
         a, b = [npyv.setall_u32(1)]*2
         for sfx in all_sfx:
-            vcb = lambda intrin: getattr(npyv, f"{intrin}_{sfx}")
+            def vcb(intrin): return getattr(npyv, f"{intrin}_{sfx}")
             pytest.raises(TypeError, vcb("add"), a)
             pytest.raises(TypeError, vcb("add"), a, b, a)
             pytest.raises(TypeError, vcb("setall"))
             pytest.raises(TypeError, vcb("setall"), [1])
             pytest.raises(TypeError, vcb("load"), 1)
             pytest.raises(ValueError, vcb("load"), [1])
-            pytest.raises(ValueError, vcb("store"), [1], getattr(npyv, f"reinterpret_{sfx}_u32")(a))
+            pytest.raises(ValueError, vcb("store"), [1], getattr(
+                npyv, f"reinterpret_{sfx}_u32")(a))
 
     @pytest.mark.skipif(not npyv2, reason=(
         "could not find a second SIMD extension with NPYV support"

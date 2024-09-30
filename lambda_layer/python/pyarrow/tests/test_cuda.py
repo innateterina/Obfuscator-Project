@@ -880,7 +880,8 @@ def _batch_copy_to_host(cbatch):
     arrs = []
     for col in cbatch.columns:
         buffers = [
-            global_context.foreign_buffer(buf.address, buf.size, buf).copy_to_host()
+            global_context.foreign_buffer(
+                buf.address, buf.size, buf).copy_to_host()
             if buf is not None else None
             for buf in col.buffers()
         ]

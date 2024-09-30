@@ -28,7 +28,8 @@ def ser():
 
 @pytest.fixture(
     params=[
-        ["average", np.array([1.5, 5.5, 7.0, 3.5, np.nan, 3.5, 1.5, 8.0, np.nan, 5.5])],
+        ["average", np.array(
+            [1.5, 5.5, 7.0, 3.5, np.nan, 3.5, 1.5, 8.0, np.nan, 5.5])],
         ["min", np.array([1, 5, 7, 3, np.nan, 3, 1, 8, np.nan, 5])],
         ["max", np.array([2, 6, 7, 4, np.nan, 4, 2, 8, np.nan, 6])],
         ["first", np.array([1, 5, 7, 3, np.nan, 4, 2, 8, np.nan, 6])],
@@ -156,7 +157,8 @@ class TestSeriesRank:
             ["first", "second", "third", "fourth", "fifth", "sixth"]
         ).astype(
             CategoricalDtype(
-                categories=["first", "second", "third", "fourth", "fifth", "sixth"],
+                categories=["first", "second", "third",
+                            "fourth", "fifth", "sixth"],
                 ordered=True,
             )
         )
@@ -168,7 +170,8 @@ class TestSeriesRank:
             ["first", "second", "third", "fourth", "fifth", "sixth"]
         ).astype(
             CategoricalDtype(
-                categories=["first", "second", "third", "fourth", "fifth", "sixth"],
+                categories=["first", "second", "third",
+                            "fourth", "fifth", "sixth"],
                 ordered=False,
             )
         )
@@ -206,11 +209,13 @@ class TestSeriesRank:
         exp_bot = Series([6.0, 5.0, 4.0, 3.0, 2.0, 1.0, 7.0])
         exp_keep = Series([6.0, 5.0, 4.0, 3.0, 2.0, 1.0, np.nan])
 
-        tm.assert_series_equal(na_ser.rank(na_option="top", ascending=False), exp_top)
+        tm.assert_series_equal(na_ser.rank(
+            na_option="top", ascending=False), exp_top)
         tm.assert_series_equal(
             na_ser.rank(na_option="bottom", ascending=False), exp_bot
         )
-        tm.assert_series_equal(na_ser.rank(na_option="keep", ascending=False), exp_keep)
+        tm.assert_series_equal(na_ser.rank(
+            na_option="keep", ascending=False), exp_keep)
 
         # Test invalid values for na_option
         msg = "na_option must be one of 'keep', 'top', or 'bottom'"
@@ -231,8 +236,10 @@ class TestSeriesRank:
         exp_keep = Series([0.25, 0.5, 0.75, 1.0, np.nan])
 
         tm.assert_series_equal(na_ser.rank(na_option="top", pct=True), exp_top)
-        tm.assert_series_equal(na_ser.rank(na_option="bottom", pct=True), exp_bot)
-        tm.assert_series_equal(na_ser.rank(na_option="keep", pct=True), exp_keep)
+        tm.assert_series_equal(na_ser.rank(
+            na_option="bottom", pct=True), exp_bot)
+        tm.assert_series_equal(na_ser.rank(
+            na_option="keep", pct=True), exp_keep)
 
     def test_rank_signature(self):
         s = Series([0, 1])
@@ -297,7 +304,8 @@ class TestSeriesRank:
             order = [ranks[0], [np.nan] * chunk, ranks[1]]
         expected = order if ascending else order[::-1]
         expected = list(chain.from_iterable(expected))
-        result = iseries.rank(method=method, na_option=na_option, ascending=ascending)
+        result = iseries.rank(
+            method=method, na_option=na_option, ascending=ascending)
         tm.assert_series_equal(result, Series(expected, dtype=exp_dtype))
 
     def test_rank_desc_mix_nans_infs(self):
@@ -328,7 +336,8 @@ class TestSeriesRank:
         vals = op(xs, value)
         ts = Series(vals, index=index)
         result = ts.rank(method=method)
-        sprank = sp_stats.rankdata(vals, method if method != "first" else "ordinal")
+        sprank = sp_stats.rankdata(
+            vals, method if method != "first" else "ordinal")
         expected = Series(sprank, index=index).astype("float64")
         tm.assert_series_equal(result, expected)
 

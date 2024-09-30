@@ -217,7 +217,8 @@ class TestConvertMetadata:
 
         df = pd.DataFrame(
             np.random.randn(5, 3),
-            columns=pd.date_range("2021-01-01", periods=3, freq="50D", tz="CET")
+            columns=pd.date_range("2021-01-01", periods=3,
+                                  freq="50D", tz="CET")
         )
         _check_pandas_roundtrip(df, preserve_index=True)
 
@@ -226,7 +227,8 @@ class TestConvertMetadata:
         df = pd.DataFrame(
             [[decimal.Decimal(5), decimal.Decimal(6)]],
             columns=pd.MultiIndex.from_product(
-                [[decimal.Decimal(1)], [decimal.Decimal(2), decimal.Decimal(3)]]
+                [[decimal.Decimal(1)], [decimal.Decimal(2),
+                                        decimal.Decimal(3)]]
             ),
             index=[decimal.Decimal(4)],
         )
@@ -1283,7 +1285,8 @@ class TestConvertDateTimeLikeTypes:
                              [pa.date32(), pa.date64(), pa.timestamp('s'),
                               pa.timestamp('ms'), pa.timestamp('us'),
                               pa.timestamp('ns'), pa.timestamp('s', 'UTC'),
-                              pa.timestamp('ms', 'UTC'), pa.timestamp('us', 'UTC'),
+                              pa.timestamp('ms', 'UTC'), pa.timestamp(
+                                  'us', 'UTC'),
                               pa.timestamp('ns', 'UTC')])
     def test_array_coerce_temporal_nanoseconds(self, arrow_type):
         data = [date(2000, 1, 1), datetime(2001, 1, 1)]
@@ -1301,7 +1304,8 @@ class TestConvertDateTimeLikeTypes:
                              [pa.date32(), pa.date64(), pa.timestamp('s'),
                               pa.timestamp('ms'), pa.timestamp('us'),
                               pa.timestamp('ns'), pa.timestamp('s', 'UTC'),
-                              pa.timestamp('ms', 'UTC'), pa.timestamp('us', 'UTC'),
+                              pa.timestamp('ms', 'UTC'), pa.timestamp(
+                                  'us', 'UTC'),
                               pa.timestamp('ns', 'UTC')])
     def test_table_coerce_temporal_nanoseconds(self, arrow_type):
         data = [date(2000, 1, 1), datetime(2001, 1, 1)]
@@ -1568,7 +1572,8 @@ class TestConvertDateTimeLikeTypes:
 
                 with pytest.raises(ValueError, match=msg):
                     # chunked array
-                    table.column('a').to_pandas(coerce_temporal_nanoseconds=True)
+                    table.column('a').to_pandas(
+                        coerce_temporal_nanoseconds=True)
 
                 # just ensure those don't give an error, but do not
                 # check actual garbage output
@@ -2303,7 +2308,8 @@ class TestConvertListTypes:
         keys = pa.array(['ignore', 'foo', 'bar', 'baz',
                          'qux', 'quux', 'ignore']).slice(1, 5)
         items = pa.array(
-            [['ignore'], ['ignore'], ['a', 'b'], ['c', 'd'], [], None, [None, 'e']],
+            [['ignore'], ['ignore'], ['a', 'b'], [
+                'c', 'd'], [], None, [None, 'e']],
             pa.list_(pa.string()),
         ).slice(2, 5)
         map = pa.MapArray.from_arrays([0, 2, 4], keys, items)
@@ -2604,7 +2610,8 @@ class TestConvertListTypes:
         arr = pa.chunked_array([arr1, arr2])
 
         actual = arr.to_pandas()
-        expected = pd.Series([[3, 4], [2, 3], [1, 2], [5, 6, 7], [6, 7, np.nan], None])
+        expected = pd.Series(
+            [[3, 4], [2, 3], [1, 2], [5, 6, 7], [6, 7, np.nan], None])
 
         tm.assert_series_equal(actual, expected)
 
@@ -3124,7 +3131,8 @@ class TestConvertMisc:
 
         expected = pd.DataFrame(columns=pd.Index([]))
         _check_pandas_roundtrip(df, expected, preserve_index=False)
-        _check_pandas_roundtrip(df, expected, preserve_index=False, as_batch=True)
+        _check_pandas_roundtrip(
+            df, expected, preserve_index=False, as_batch=True)
 
         df2 = pd.DataFrame({}, index=[0, 1, 2])
         _check_pandas_roundtrip(df2, preserve_index=True)
@@ -4181,7 +4189,8 @@ def test_dictionary_from_pandas_specified_type():
 def test_convert_categories_to_array_with_string_pyarrow_dtype():
     # gh-33727: categories should be converted to pa.Array
     if Version(pd.__version__) < Version("1.3.0"):
-        pytest.skip("PyArrow backed string data type introduced in pandas 1.3.0")
+        pytest.skip(
+            "PyArrow backed string data type introduced in pandas 1.3.0")
 
     df = pd.DataFrame({"x": ["foo", "bar", "foo"]}, dtype="string[pyarrow]")
     df = df.astype("category")
@@ -4897,7 +4906,8 @@ def test_roundtrip_nested_map_table_with_pydicts():
     table_default_roundtrip = pa.Table.from_pandas(default_df, schema=schema)
     assert table.equals(table_default_roundtrip)
 
-    table_as_pydicts_roundtrip = pa.Table.from_pandas(as_pydicts_df, schema=schema)
+    table_as_pydicts_roundtrip = pa.Table.from_pandas(
+        as_pydicts_df, schema=schema)
     assert table.equals(table_as_pydicts_roundtrip)
 
 
@@ -4963,13 +4973,16 @@ def test_roundtrip_nested_map_array_with_pydicts_sliced():
                                 DeprecationWarning)
         tm.assert_series_equal(series_default, expected_series_default)
         tm.assert_series_equal(series_pydicts, expected_series_pydicts)
-        tm.assert_series_equal(series_default_sliced, expected_series_default_sliced)
-        tm.assert_series_equal(series_pydicts_sliced, expected_series_pydicts_sliced)
+        tm.assert_series_equal(series_default_sliced,
+                               expected_series_default_sliced)
+        tm.assert_series_equal(series_pydicts_sliced,
+                               expected_series_pydicts_sliced)
 
     ty = pa.list_(pa.map_(pa.string(), pa.list_(pa.string())))
 
     def assert_roundtrip(series: pd.Series, data) -> None:
-        array_roundtrip = pa.chunked_array(pa.Array.from_pandas(series, type=ty))
+        array_roundtrip = pa.chunked_array(
+            pa.Array.from_pandas(series, type=ty))
         array_roundtrip.validate(full=True)
         assert data.equals(array_roundtrip)
 

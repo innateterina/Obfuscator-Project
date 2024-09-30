@@ -69,7 +69,8 @@ fruit:vegetable
 apple:broccoli
 pear:tomato
 """
-    exp = DataFrame({"fruit": ["apple", "pear"], "vegetable": ["broccoli", "tomato"]})
+    exp = DataFrame({"fruit": ["apple", "pear"],
+                    "vegetable": ["broccoli", "tomato"]})
 
     with tm.with_csv_dialect(dialect_name, delimiter=":"):
         if parser.engine == "pyarrow":
@@ -149,7 +150,8 @@ def test_dialect_conflict_except_delimiter(all_parsers, custom_dialect, arg, val
     "kwargs,warning_klass",
     [
         ({"sep": ","}, None),  # sep is default --> sep_override=True
-        ({"sep": "."}, ParserWarning),  # sep isn't default --> sep_override=False
+        # sep isn't default --> sep_override=False
+        ({"sep": "."}, ParserWarning),
         ({"delimiter": ":"}, None),  # No conflict
         ({"delimiter": None}, None),  # Default arguments --> sep_override=True
         ({"delimiter": ","}, ParserWarning),  # Conflict

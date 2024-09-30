@@ -56,9 +56,11 @@ class TestDataFrameRepr:
         repr(df.iloc[:61, :])
 
     def test_repr_unicode_level_names(self, frame_or_series):
-        index = MultiIndex.from_tuples([(0, 0), (1, 1)], names=["\u0394", "i1"])
+        index = MultiIndex.from_tuples(
+            [(0, 0), (1, 1)], names=["\u0394", "i1"])
 
-        obj = DataFrame(np.random.default_rng(2).standard_normal((2, 4)), index=index)
+        obj = DataFrame(np.random.default_rng(
+            2).standard_normal((2, 4)), index=index)
         obj = tm.get_obj(obj, frame_or_series)
         repr(obj)
 
@@ -78,7 +80,8 @@ class TestDataFrameRepr:
         repr(df)
 
     def test_repr_with_mi_nat(self):
-        df = DataFrame({"X": [1, 2]}, index=[[NaT, Timestamp("20130101")], ["a", "b"]])
+        df = DataFrame({"X": [1, 2]}, index=[
+                       [NaT, Timestamp("20130101")], ["a", "b"]])
         result = repr(df)
         expected = "              X\nNaT        a  1\n2013-01-01 b  2"
         assert result == expected
@@ -201,7 +204,8 @@ NaT   4"""
     @pytest.mark.slow
     def test_repr_big(self):
         # big one
-        biggie = DataFrame(np.zeros((200, 4)), columns=range(4), index=range(200))
+        biggie = DataFrame(np.zeros((200, 4)),
+                           columns=range(4), index=range(200))
         repr(biggie)
 
     def test_repr_unsortable(self):
@@ -248,7 +252,8 @@ NaT   4"""
         str(df)
 
     def test_repr_unicode_columns(self):
-        df = DataFrame({"\u05d0": [1, 2, 3], "\u05d1": [4, 5, 6], "c": [7, 8, 9]})
+        df = DataFrame({"\u05d0": [1, 2, 3], "\u05d1": [
+                       4, 5, 6], "c": [7, 8, 9]})
         repr(df.columns)  # should not raise UnicodeDecodeError
 
     def test_str_to_bytes_raises(self):
@@ -323,14 +328,16 @@ NaT   4"""
         assert result == expected
 
     def test_repr_with_categorical_index(self):
-        df = DataFrame({"A": [1, 2, 3]}, index=CategoricalIndex(["a", "b", "c"]))
+        df = DataFrame({"A": [1, 2, 3]},
+                       index=CategoricalIndex(["a", "b", "c"]))
         result = repr(df)
         expected = "   A\na  1\nb  2\nc  3"
         assert result == expected
 
     def test_repr_categorical_dates_periods(self):
         # normal DataFrame
-        dt = date_range("2011-01-01 09:00", freq="h", periods=5, tz="US/Eastern")
+        dt = date_range("2011-01-01 09:00", freq="h",
+                        periods=5, tz="US/Eastern")
         p = period_range("2011-01", freq="M", periods=5)
         df = DataFrame({"dt": dt, "p": p})
         exp = """                         dt        p
@@ -356,13 +363,15 @@ NaT   4"""
         assert result == expected
 
     def test_frame_datetime64_pre1900_repr(self):
-        df = DataFrame({"year": date_range("1/1/1700", periods=50, freq="YE-DEC")})
+        df = DataFrame(
+            {"year": date_range("1/1/1700", periods=50, freq="YE-DEC")})
         # it works!
         repr(df)
 
     def test_frame_to_string_with_periodindex(self):
         index = PeriodIndex(["2011-1", "2011-2", "2011-3"], freq="M")
-        frame = DataFrame(np.random.default_rng(2).standard_normal((3, 4)), index=index)
+        frame = DataFrame(np.random.default_rng(
+            2).standard_normal((3, 4)), index=index)
 
         # it works!
         frame.to_string()
@@ -390,7 +399,8 @@ NaT   4"""
 
     def test_to_records_no_typeerror_in_repr(self):
         # GH 48526
-        df = DataFrame([["a", "b"], ["c", "d"], ["e", "f"]], columns=["left", "right"])
+        df = DataFrame([["a", "b"], ["c", "d"], ["e", "f"]],
+                       columns=["left", "right"])
         df["record"] = df[["left", "right"]].to_records()
         expected = """  left right     record
 0    a     b  [0, a, b]
@@ -492,7 +502,8 @@ NaT   4"""
         ([2, complex("nan"), -1], [" 2.0+0.0j", " NaN+0.0j", "-1.0+0.0j"]),
         ([-2, complex("nan"), -1], ["-2.0+0.0j", " NaN+0.0j", "-1.0+0.0j"]),
         ([-1.23j, complex("nan"), -1], ["-0.00-1.23j", "  NaN+0.00j", "-1.00+0.00j"]),
-        ([1.23j, complex("nan"), 1.23], [" 0.00+1.23j", "  NaN+0.00j", " 1.23+0.00j"]),
+        ([1.23j, complex("nan"), 1.23], [
+         " 0.00+1.23j", "  NaN+0.00j", " 1.23+0.00j"]),
         (
             [-1.23j, complex(np.nan, np.nan), 1],
             ["-0.00-1.23j", "  NaN+ NaNj", " 1.00+0.00j"],

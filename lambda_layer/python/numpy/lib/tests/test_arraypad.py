@@ -180,7 +180,7 @@ class TestStatistic:
 
              99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
              99, 99, 99, 99, 99, 99, 99, 99, 99, 99]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_maximum_2(self):
@@ -204,7 +204,7 @@ class TestStatistic:
 
              100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
              100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_maximum_stat_length(self):
@@ -215,7 +215,7 @@ class TestStatistic:
              10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
              10, 10, 10, 10, 10,
 
-              1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+             1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
              11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
              21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
              31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
@@ -228,7 +228,7 @@ class TestStatistic:
 
              100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
              100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_minimum_1(self):
@@ -252,7 +252,7 @@ class TestStatistic:
 
              0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
              0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_minimum_2(self):
@@ -276,18 +276,18 @@ class TestStatistic:
 
              2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
              2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_minimum_stat_length(self):
         a = np.arange(100) + 1
         a = np.pad(a, (25, 20), 'minimum', stat_length=10)
         b = np.array(
-            [ 1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
-              1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
-              1,  1,  1,  1,  1,
+            [1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+             1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
+             1,  1,  1,  1,  1,
 
-              1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
+             1,  2,  3,  4,  5,  6,  7,  8,  9, 10,
              11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
              21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
              31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
@@ -300,7 +300,7 @@ class TestStatistic:
 
              91, 91, 91, 91, 91, 91, 91, 91, 91, 91,
              91, 91, 91, 91, 91, 91, 91, 91, 91, 91]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_median(self):
@@ -324,7 +324,7 @@ class TestStatistic:
 
              49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5,
              49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_median_01(self):
@@ -338,7 +338,7 @@ class TestStatistic:
              [8, 9, 8, 2, 8],
 
              [4, 4, 5, 4, 4]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_median_02(self):
@@ -352,7 +352,7 @@ class TestStatistic:
              [8, 9, 8, 2, 8],
 
              [5, 4, 5, 4, 5]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_median_stat_length(self):
@@ -361,11 +361,11 @@ class TestStatistic:
         a[97] = 96.
         a = np.pad(a, (25, 20), 'median', stat_length=(3, 5))
         b = np.array(
-            [ 2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,
-              2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,
-              2.,  2.,  2.,  2.,  2.,
+            [2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,
+             2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,  2.,
+             2.,  2.,  2.,  2.,  2.,
 
-              0.,  2.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.,
+             0.,  2.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.,
              10., 11., 12., 13., 14., 15., 16., 17., 18., 19.,
              20., 21., 22., 23., 24., 25., 26., 27., 28., 29.,
              30., 31., 32., 33., 34., 35., 36., 37., 38., 39.,
@@ -378,7 +378,7 @@ class TestStatistic:
 
              96., 96., 96., 96., 96., 96., 96., 96., 96., 96.,
              96., 96., 96., 96., 96., 96., 96., 96., 96., 96.]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_mean_shape_one(self):
@@ -400,7 +400,7 @@ class TestStatistic:
              [4, 4, 4, 4, 4, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6],
              [4, 4, 4, 4, 4, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6],
              [4, 4, 4, 4, 4, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_mean_2(self):
@@ -424,7 +424,7 @@ class TestStatistic:
 
              49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5,
              49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5, 49.5]
-            )
+        )
         assert_array_equal(a, b)
 
     @pytest.mark.parametrize("mode", [
@@ -469,7 +469,7 @@ class TestStatistic:
              [21, 21, 21, 20, 21, 22, 23, 24, 23, 23],
              [21, 21, 21, 20, 21, 22, 23, 24, 23, 23],
              [21, 21, 21, 20, 21, 22, 23, 24, 23, 23]]
-            )
+        )
         assert_array_equal(a, b)
 
     @pytest.mark.filterwarnings("ignore:Mean of empty slice:RuntimeWarning")
@@ -517,16 +517,16 @@ class TestConstant:
 
              20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
              20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_constant_zeros(self):
         a = np.arange(100)
         a = np.pad(a, (25, 20), 'constant')
         b = np.array(
-            [ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-              0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-              0,  0,  0,  0,  0,
+            [0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,
 
              0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
              10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -539,9 +539,9 @@ class TestConstant:
              80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
              90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
 
-              0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-              0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
-            )
+             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+             0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
+        )
         assert_array_equal(a, b)
 
     def test_check_constant_float(self):
@@ -549,19 +549,19 @@ class TestConstant:
         # the array to be padded is kept
         arr = np.arange(30).reshape(5, 6)
         test = np.pad(arr, (1, 2), mode='constant',
-                   constant_values=1.1)
+                      constant_values=1.1)
         expected = np.array(
-            [[ 1,  1,  1,  1,  1,  1,  1,  1,  1],
+            [[1,  1,  1,  1,  1,  1,  1,  1,  1],
 
-             [ 1,  0,  1,  2,  3,  4,  5,  1,  1],
-             [ 1,  6,  7,  8,  9, 10, 11,  1,  1],
-             [ 1, 12, 13, 14, 15, 16, 17,  1,  1],
-             [ 1, 18, 19, 20, 21, 22, 23,  1,  1],
-             [ 1, 24, 25, 26, 27, 28, 29,  1,  1],
+             [1,  0,  1,  2,  3,  4,  5,  1,  1],
+             [1,  6,  7,  8,  9, 10, 11,  1,  1],
+             [1, 12, 13, 14, 15, 16, 17,  1,  1],
+             [1, 18, 19, 20, 21, 22, 23,  1,  1],
+             [1, 24, 25, 26, 27, 28, 29,  1,  1],
 
-             [ 1,  1,  1,  1,  1,  1,  1,  1,  1],
-             [ 1,  1,  1,  1,  1,  1,  1,  1,  1]]
-            )
+             [1,  1,  1,  1,  1,  1,  1,  1,  1],
+             [1,  1,  1,  1,  1,  1,  1,  1,  1]]
+        )
         assert_allclose(test, expected)
 
     def test_check_constant_float2(self):
@@ -570,19 +570,19 @@ class TestConstant:
         arr = np.arange(30).reshape(5, 6)
         arr_float = arr.astype(np.float64)
         test = np.pad(arr_float, ((1, 2), (1, 2)), mode='constant',
-                   constant_values=1.1)
+                      constant_values=1.1)
         expected = np.array(
-            [[  1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1],
+            [[1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1],
 
-             [  1.1,   0. ,   1. ,   2. ,   3. ,   4. ,   5. ,   1.1,   1.1],
-             [  1.1,   6. ,   7. ,   8. ,   9. ,  10. ,  11. ,   1.1,   1.1],
-             [  1.1,  12. ,  13. ,  14. ,  15. ,  16. ,  17. ,   1.1,   1.1],
-             [  1.1,  18. ,  19. ,  20. ,  21. ,  22. ,  23. ,   1.1,   1.1],
-             [  1.1,  24. ,  25. ,  26. ,  27. ,  28. ,  29. ,   1.1,   1.1],
+             [1.1,   0.,   1.,   2.,   3.,   4.,   5.,   1.1,   1.1],
+             [1.1,   6.,   7.,   8.,   9.,  10.,  11.,   1.1,   1.1],
+             [1.1,  12.,  13.,  14.,  15.,  16.,  17.,   1.1,   1.1],
+             [1.1,  18.,  19.,  20.,  21.,  22.,  23.,   1.1,   1.1],
+             [1.1,  24.,  25.,  26.,  27.,  28.,  29.,   1.1,   1.1],
 
-             [  1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1],
-             [  1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1]]
-            )
+             [1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1],
+             [1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1,   1.1]]
+        )
         assert_allclose(test, expected)
 
     def test_check_constant_float3(self):
@@ -606,30 +606,30 @@ class TestConstant:
 
              -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2,
              -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2, -1.2]
-            )
+        )
         assert_allclose(a, b)
 
     def test_check_constant_odd_pad_amount(self):
         arr = np.arange(30).reshape(5, 6)
         test = np.pad(arr, ((1,), (2,)), mode='constant',
-                   constant_values=3)
+                      constant_values=3)
         expected = np.array(
-            [[ 3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+            [[3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
 
-             [ 3,  3,  0,  1,  2,  3,  4,  5,  3,  3],
-             [ 3,  3,  6,  7,  8,  9, 10, 11,  3,  3],
-             [ 3,  3, 12, 13, 14, 15, 16, 17,  3,  3],
-             [ 3,  3, 18, 19, 20, 21, 22, 23,  3,  3],
-             [ 3,  3, 24, 25, 26, 27, 28, 29,  3,  3],
+             [3,  3,  0,  1,  2,  3,  4,  5,  3,  3],
+             [3,  3,  6,  7,  8,  9, 10, 11,  3,  3],
+             [3,  3, 12, 13, 14, 15, 16, 17,  3,  3],
+             [3,  3, 18, 19, 20, 21, 22, 23,  3,  3],
+             [3,  3, 24, 25, 26, 27, 28, 29,  3,  3],
 
-             [ 3,  3,  3,  3,  3,  3,  3,  3,  3,  3]]
-            )
+             [3,  3,  3,  3,  3,  3,  3,  3,  3,  3]]
+        )
         assert_allclose(test, expected)
 
     def test_check_constant_pad_2d(self):
         arr = np.arange(4).reshape(2, 2)
         test = np.pad(arr, ((1, 2), (1, 3)), mode='constant',
-                          constant_values=((1, 2), (3, 4)))
+                      constant_values=((1, 2), (3, 4)))
         expected = np.array(
             [[3, 1, 1, 4, 4, 4],
              [3, 0, 1, 4, 4, 4],
@@ -696,7 +696,7 @@ class TestLinearRamp:
 
              94.3, 89.6, 84.9, 80.2, 75.5, 70.8, 66.1, 61.4, 56.7, 52.0,
              47.3, 42.6, 37.9, 33.2, 28.5, 23.8, 19.1, 14.4, 9.7, 5.]
-            )
+        )
         assert_allclose(a, b, rtol=1e-5, atol=1e-5)
 
     def test_check_2d(self):
@@ -722,9 +722,9 @@ class TestLinearRamp:
         # deliberately chosen to have a non-power-of-2 denominator such that
         # rounding to floats causes a failure.
         expected = np.array([
-            Fraction( 0, 12),
-            Fraction( 3, 12),
-            Fraction( 6, 12),
+            Fraction(0, 12),
+            Fraction(3, 12),
+            Fraction(6, 12),
             Fraction(-6, 12),
             Fraction(-4, 12),
             Fraction(-2, 12),
@@ -781,7 +781,7 @@ class TestReflect:
 
              98, 97, 96, 95, 94, 93, 92, 91, 90, 89,
              88, 87, 86, 85, 84, 83, 82, 81, 80, 79]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_odd_method(self):
@@ -805,7 +805,7 @@ class TestReflect:
 
              100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
              110, 111, 112, 113, 114, 115, 116, 117, 118, 119]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_large_pad(self):
@@ -828,7 +828,7 @@ class TestReflect:
              [5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5],
              [7, 6, 7, 8, 7, 6, 7, 8, 7, 6, 7, 8, 7, 6, 7],
              [5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_shape(self):
@@ -850,7 +850,7 @@ class TestReflect:
              [5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5],
              [5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5],
              [5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5, 6, 5, 4, 5]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_01(self):
@@ -867,12 +867,12 @@ class TestReflect:
         a = np.pad([1, 2, 3], 4, 'reflect')
         b = np.array([1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3])
         assert_array_equal(a, b)
-    
+
     def test_check_04(self):
         a = np.pad([1, 2, 3], [1, 10], 'reflect')
         b = np.array([2, 1, 2, 3, 2, 1, 2, 3, 2, 1, 2, 3, 2, 1])
         assert_array_equal(a, b)
-    
+
     def test_check_05(self):
         a = np.pad([1, 2, 3, 4], [45, 10], 'reflect')
         b = np.array(
@@ -883,12 +883,12 @@ class TestReflect:
              2, 3, 4, 3, 2, 1, 2, 3, 4, 3,
              2, 1, 2, 3, 4, 3, 2, 1, 2])
         assert_array_equal(a, b)
-    
+
     def test_check_06(self):
         a = np.pad([1, 2, 3, 4], [15, 2], 'symmetric')
         b = np.array(
-            [2, 3, 4, 4, 3, 2, 1, 1, 2, 3, 
-             4, 4, 3, 2, 1, 1, 2, 3, 4, 4, 
+            [2, 3, 4, 4, 3, 2, 1, 1, 2, 3,
+             4, 4, 3, 2, 1, 1, 2, 3, 4, 4,
              3]
         )
         assert_array_equal(a, b)
@@ -896,11 +896,11 @@ class TestReflect:
     def test_check_07(self):
         a = np.pad([1, 2, 3, 4, 5, 6], [45, 3], 'symmetric')
         b = np.array(
-            [4, 5, 6, 6, 5, 4, 3, 2, 1, 1, 
-             2, 3, 4, 5, 6, 6, 5, 4, 3, 2, 
-             1, 1, 2, 3, 4, 5, 6, 6, 5, 4, 
-             3, 2, 1, 1, 2, 3, 4, 5, 6, 6, 
-             5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 
+            [4, 5, 6, 6, 5, 4, 3, 2, 1, 1,
+             2, 3, 4, 5, 6, 6, 5, 4, 3, 2,
+             1, 1, 2, 3, 4, 5, 6, 6, 5, 4,
+             3, 2, 1, 1, 2, 3, 4, 5, 6, 6,
+             5, 4, 3, 2, 1, 1, 2, 3, 4, 5,
              6, 6, 5, 4])
         assert_array_equal(a, b)
 
@@ -951,7 +951,7 @@ class TestSymmetric:
 
              99, 98, 97, 96, 95, 94, 93, 92, 91, 90,
              89, 88, 87, 86, 85, 84, 83, 82, 81, 80]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_odd_method(self):
@@ -975,7 +975,7 @@ class TestSymmetric:
 
              99, 100, 101, 102, 103, 104, 105, 106, 107, 108,
              109, 110, 111, 112, 113, 114, 115, 116, 117, 118]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_large_pad(self):
@@ -998,7 +998,7 @@ class TestSymmetric:
              [7, 8, 8, 7, 6, 6, 7, 8, 8, 7, 6, 6, 7, 8, 8],
              [5, 6, 6, 5, 4, 4, 5, 6, 6, 5, 4, 4, 5, 6, 6],
              [5, 6, 6, 5, 4, 4, 5, 6, 6, 5, 4, 4, 5, 6, 6]]
-            )
+        )
 
         assert_array_equal(a, b)
 
@@ -1010,19 +1010,19 @@ class TestSymmetric:
              [-3, -2, -2, -1,  0,  0,  1,  2,  2,  3,  4,  4,  5,  6,  6],
              [-1,  0,  0,  1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8],
              [-1,  0,  0,  1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8],
-             [ 1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10],
+             [1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10],
 
-             [ 1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10],
-             [ 3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12],
+             [1,  2,  2,  3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10],
+             [3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12],
 
-             [ 3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12],
-             [ 5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14],
-             [ 5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14],
-             [ 7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16],
-             [ 7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16],
-             [ 9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18],
-             [ 9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18]]
-            )
+             [3,  4,  4,  5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12],
+             [5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14],
+             [5,  6,  6,  7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14],
+             [7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16],
+             [7,  8,  8,  9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16],
+             [9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18],
+             [9, 10, 10, 11, 12, 12, 13, 14, 14, 15, 16, 16, 17, 18, 18]]
+        )
         assert_array_equal(a, b)
 
     def test_check_shape(self):
@@ -1044,7 +1044,7 @@ class TestSymmetric:
              [5, 6, 6, 5, 4, 4, 5, 6, 6, 5, 4, 4, 5, 6, 6],
              [5, 6, 6, 5, 4, 4, 5, 6, 6, 5, 4, 4, 5, 6, 6],
              [5, 6, 6, 5, 4, 4, 5, 6, 6, 5, 4, 4, 5, 6, 6]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_01(self):
@@ -1085,7 +1085,7 @@ class TestWrap:
 
              0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
              10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_large_pad(self):
@@ -1145,7 +1145,7 @@ class TestWrap:
               7, 4, 5, 6, 7, 4, 5, 6, 7],
              [10, 11, 8, 9, 10, 11, 8, 9, 10, 11, 8, 9, 10, 11, 8, 9, 10,
               11, 8, 9, 10, 11, 8, 9, 10, 11]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_01(self):
@@ -1175,7 +1175,7 @@ class TestWrap:
         a = np.arange(5)
         b = np.pad(a, (0, 12), mode="wrap")
         assert_array_equal(np.r_[a, a, a, a][:-3], b)
-    
+
     def test_repeated_wrapping_multiple_origin(self):
         """
         Assert that 'wrap' pads only with multiples of the original area if
@@ -1211,7 +1211,7 @@ class TestEdge:
              [9, 9, 9, 9, 10, 11, 11, 11],
              [9, 9, 9, 9, 10, 11, 11, 11],
              [9, 9, 9, 9, 10, 11, 11, 11]]
-            )
+        )
         assert_array_equal(a, b)
 
     def test_check_width_shape_1_2(self):
@@ -1262,7 +1262,7 @@ def test_legacy_vector_functionality():
 
          [10, 10, 10, 10, 10, 10, 10],
          [10, 10, 10, 10, 10, 10, 10]]
-        )
+    )
     assert_array_equal(a, b)
 
 
@@ -1352,7 +1352,7 @@ class TestPadWidth:
              [9,  9,  9,    9, 10, 11,   11, 11],
              [9,  9,  9,    9, 10, 11,   11, 11],
              [9,  9,  9,    9, 10, 11,   11, 11]]
-            )
+        )
         assert_array_equal(a, b)
 
     @pytest.mark.parametrize("pad_width", [0, (0, 0), ((0, 0), (0, 0))])
@@ -1386,7 +1386,7 @@ def test_constant_zero_default():
 
 @pytest.mark.parametrize("mode", [1, "const", object(), None, True, False])
 def test_unsupported_mode(mode):
-    match= "mode '{}' is not supported".format(mode)
+    match = "mode '{}' is not supported".format(mode)
     with pytest.raises(ValueError, match=match):
         np.pad([1, 2, 3], 4, mode=mode)
 

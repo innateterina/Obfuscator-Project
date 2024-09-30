@@ -47,7 +47,8 @@ class TestBetweenTime:
         tz = timezones.maybe_get_tz(tzstr)
 
         rng = date_range("4/16/2012", "5/1/2012", freq="h")
-        ts = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
         if frame_or_series is DataFrame:
             ts = ts.to_frame()
 
@@ -146,7 +147,8 @@ class TestBetweenTime:
     def test_between_time_axis(self, frame_or_series):
         # GH#8839
         rng = date_range("1/1/2000", periods=100, freq="10min")
-        ts = Series(np.random.default_rng(2).standard_normal(len(rng)), index=rng)
+        ts = Series(np.random.default_rng(
+            2).standard_normal(len(rng)), index=rng)
         if frame_or_series is DataFrame:
             ts = ts.to_frame()
 
@@ -162,7 +164,8 @@ class TestBetweenTime:
     def test_between_time_axis_aliases(self, axis):
         # GH#8839
         rng = date_range("1/1/2000", periods=100, freq="10min")
-        ts = DataFrame(np.random.default_rng(2).standard_normal((len(rng), len(rng))))
+        ts = DataFrame(np.random.default_rng(
+            2).standard_normal((len(rng), len(rng))))
         stime, etime = ("08:00:00", "09:00:00")
         exp_len = 7
 
@@ -180,7 +183,8 @@ class TestBetweenTime:
         # issue 8839
         rng = date_range("1/1/2000", periods=100, freq="10min")
         mask = np.arange(0, len(rng))
-        rand_data = np.random.default_rng(2).standard_normal((len(rng), len(rng)))
+        rand_data = np.random.default_rng(
+            2).standard_normal((len(rng), len(rng)))
         ts = DataFrame(rand_data, index=rng, columns=rng)
         stime, etime = ("08:00:00", "09:00:00")
 

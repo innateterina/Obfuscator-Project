@@ -58,7 +58,8 @@ class TestEmptyFrameSetitemExpansion:
         df = DataFrame(columns=["A", "B"])
         df.loc[0] = Series(1, index=["B"])
 
-        exp = DataFrame([[np.nan, 1]], columns=["A", "B"], index=[0], dtype="float64")
+        exp = DataFrame([[np.nan, 1]], columns=["A", "B"],
+                        index=[0], dtype="float64")
         tm.assert_frame_equal(df, exp)
 
     def test_loc_setitem_zerolen_list_length_must_match_columns(self):
@@ -72,7 +73,8 @@ class TestEmptyFrameSetitemExpansion:
         df = DataFrame(columns=["A", "B"])
         df.loc[3] = [6, 7]  # length matches len(df.columns) --> OK!
 
-        exp = DataFrame([[6, 7]], index=[3], columns=["A", "B"], dtype=np.int64)
+        exp = DataFrame([[6, 7]], index=[3], columns=[
+                        "A", "B"], dtype=np.int64)
         tm.assert_frame_equal(df, exp)
 
     def test_partial_set_empty_frame(self):
@@ -153,7 +155,8 @@ class TestEmptyFrameSetitemExpansion:
 
     def test_partial_set_empty_frame_no_index(self):
         # no index to start
-        expected = DataFrame({0: Series(1, index=range(4))}, columns=["A", "B", 0])
+        expected = DataFrame(
+            {0: Series(1, index=range(4))}, columns=["A", "B", 0])
 
         df = DataFrame(columns=["A", "B"])
         df[0] = Series(1, index=range(4))
@@ -166,7 +169,8 @@ class TestEmptyFrameSetitemExpansion:
     def test_partial_set_empty_frame_row(self):
         # GH#5720, GH#5744
         # don't create rows when empty
-        expected = DataFrame(columns=["A", "B", "New"], index=Index([], dtype="int64"))
+        expected = DataFrame(
+            columns=["A", "B", "New"], index=Index([], dtype="int64"))
         expected["A"] = expected["A"].astype("int64")
         expected["B"] = expected["B"].astype("float64")
         expected["New"] = expected["New"].astype("float64")
@@ -544,7 +548,8 @@ class TestPartialSetting:
         df = orig.copy()
 
         df.loc[key, :] = df.iloc[0]
-        ex_index = Index(list(orig.index) + [key], dtype=object, name=orig.index.name)
+        ex_index = Index(list(orig.index) +
+                         [key], dtype=object, name=orig.index.name)
         ex_data = np.concatenate([orig.values, df.iloc[[0]].values], axis=0)
         expected = DataFrame(ex_data, index=ex_index, columns=orig.columns)
 
@@ -593,7 +598,8 @@ class TestPartialSetting:
             (
                 pd.timedelta_range(start="1 day", periods=20),
                 ["4D", "8D", "12D"],
-                [pd.Timedelta("4 day"), pd.Timedelta("8 day"), pd.Timedelta("12 day")],
+                [pd.Timedelta("4 day"), pd.Timedelta(
+                    "8 day"), pd.Timedelta("12 day")],
             ),
         ],
     )
@@ -621,7 +627,8 @@ class TestPartialSetting:
                 date_range(start="2000", periods=20, freq="D"),
                 ["2000-01-04", "2000-01-30"],
             ),
-            (pd.timedelta_range(start="1 day", periods=20), ["3 day", "30 day"]),
+            (pd.timedelta_range(start="1 day",
+             periods=20), ["3 day", "30 day"]),
         ],
     )
     def test_loc_with_list_of_strings_representing_datetimes_missing_value(
@@ -686,7 +693,8 @@ class TestPartialSetting:
 class TestStringSlicing:
     def test_slice_irregular_datetime_index_with_nan(self):
         # GH36953
-        index = pd.to_datetime(["2012-01-01", "2012-01-02", "2012-01-03", None])
+        index = pd.to_datetime(
+            ["2012-01-01", "2012-01-02", "2012-01-03", None])
         df = DataFrame(range(len(index)), index=index)
         expected = DataFrame(range(len(index[:3])), index=index[:3])
         with pytest.raises(KeyError, match="non-existing keys is not allowed"):

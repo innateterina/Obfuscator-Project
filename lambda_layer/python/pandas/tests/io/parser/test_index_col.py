@@ -63,7 +63,8 @@ def test_index_col_named2(all_parsers):
     )
     names = ["a", "b", "c", "d", "message"]
 
-    result = parser.read_csv(StringIO(data), names=names, index_col=["message"])
+    result = parser.read_csv(
+        StringIO(data), names=names, index_col=["message"])
     tm.assert_frame_equal(result, expected)
 
 
@@ -223,7 +224,8 @@ I11,A,A
 I12,B,B
 I2,1,3
 """
-    midx = MultiIndex.from_tuples([("A", "B"), ("A", "B.1")], names=["I11", "I12"])
+    midx = MultiIndex.from_tuples(
+        [("A", "B"), ("A", "B.1")], names=["I11", "I12"])
     idx = Index(["I2"])
     expected = DataFrame([[1, 3]], index=idx, columns=midx)
 
@@ -296,7 +298,8 @@ def test_multiindex_columns_no_data(all_parsers):
     parser = all_parsers
     result = parser.read_csv(StringIO("a0,a1,a2\nb0,b1,b2\n"), header=[0, 1])
     expected = DataFrame(
-        [], columns=MultiIndex.from_arrays([["a0", "a1", "a2"], ["b0", "b1", "b2"]])
+        [], columns=MultiIndex.from_arrays(
+            [["a0", "a1", "a2"], ["b0", "b1", "b2"]])
     )
     tm.assert_frame_equal(result, expected)
 
@@ -349,7 +352,8 @@ def test_specify_dtype_for_index_col(all_parsers, dtype, val, request):
     parser = all_parsers
     if dtype == object and parser.engine == "pyarrow":
         request.applymarker(
-            pytest.mark.xfail(reason="Cannot disable type-inference for pyarrow engine")
+            pytest.mark.xfail(
+                reason="Cannot disable type-inference for pyarrow engine")
         )
     result = parser.read_csv(StringIO(data), index_col="a", dtype={"a": dtype})
     expected = DataFrame({"b": [2]}, index=Index([val], name="a"))

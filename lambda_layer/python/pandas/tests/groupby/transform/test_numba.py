@@ -27,7 +27,8 @@ def test_correct_function_signature():
         data.groupby("key").transform(incorrect_function, engine="numba")
 
     with pytest.raises(NumbaUtilError, match="The first 2"):
-        data.groupby("key")["data"].transform(incorrect_function, engine="numba")
+        data.groupby("key")["data"].transform(
+            incorrect_function, engine="numba")
 
 
 def test_check_nopython_kwargs():
@@ -44,7 +45,8 @@ def test_check_nopython_kwargs():
         data.groupby("key").transform(incorrect_function, engine="numba", a=1)
 
     with pytest.raises(NumbaUtilError, match="numba does not support"):
-        data.groupby("key")["data"].transform(incorrect_function, engine="numba", a=1)
+        data.groupby("key")["data"].transform(
+            incorrect_function, engine="numba", a=1)
 
 
 @pytest.mark.filterwarnings("ignore")
@@ -67,12 +69,14 @@ def test_numba_vs_cython(jit, pandas_obj, nogil, parallel, nopython, as_index):
     data = DataFrame(
         {0: ["a", "a", "b", "b", "a"], 1: [1.0, 2.0, 3.0, 4.0, 5.0]}, columns=[0, 1]
     )
-    engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+    engine_kwargs = {"nogil": nogil,
+                     "parallel": parallel, "nopython": nopython}
     grouped = data.groupby(0, as_index=as_index)
     if pandas_obj == "Series":
         grouped = grouped[1]
 
-    result = grouped.transform(func, engine="numba", engine_kwargs=engine_kwargs)
+    result = grouped.transform(
+        func, engine="numba", engine_kwargs=engine_kwargs)
     expected = grouped.transform(lambda x: x + 1, engine="cython")
 
     tm.assert_equal(result, expected)
@@ -101,21 +105,25 @@ def test_cache(jit, pandas_obj, nogil, parallel, nopython):
     data = DataFrame(
         {0: ["a", "a", "b", "b", "a"], 1: [1.0, 2.0, 3.0, 4.0, 5.0]}, columns=[0, 1]
     )
-    engine_kwargs = {"nogil": nogil, "parallel": parallel, "nopython": nopython}
+    engine_kwargs = {"nogil": nogil,
+                     "parallel": parallel, "nopython": nopython}
     grouped = data.groupby(0)
     if pandas_obj == "Series":
         grouped = grouped[1]
 
-    result = grouped.transform(func_1, engine="numba", engine_kwargs=engine_kwargs)
+    result = grouped.transform(
+        func_1, engine="numba", engine_kwargs=engine_kwargs)
     expected = grouped.transform(lambda x: x + 1, engine="cython")
     tm.assert_equal(result, expected)
 
-    result = grouped.transform(func_2, engine="numba", engine_kwargs=engine_kwargs)
+    result = grouped.transform(
+        func_2, engine="numba", engine_kwargs=engine_kwargs)
     expected = grouped.transform(lambda x: x * 5, engine="cython")
     tm.assert_equal(result, expected)
 
     # Retest func_1 which should use the cache
-    result = grouped.transform(func_1, engine="numba", engine_kwargs=engine_kwargs)
+    result = grouped.transform(
+        func_1, engine="numba", engine_kwargs=engine_kwargs)
     expected = grouped.transform(lambda x: x + 1, engine="cython")
     tm.assert_equal(result, expected)
 
@@ -182,7 +190,8 @@ def test_index_data_correctly_passed():
     def f(values, index):
         return index - 1
 
-    df = DataFrame({"group": ["A", "A", "B"], "v": [4, 5, 6]}, index=[-1, -2, -3])
+    df = DataFrame({"group": ["A", "A", "B"], "v": [
+                   4, 5, 6]}, index=[-1, -2, -3])
     result = df.groupby("group").transform(f, engine="numba")
     expected = DataFrame([-4.0, -3.0, -2.0], columns=["v"], index=[-1, -2, -3])
     tm.assert_frame_equal(result, expected)
@@ -199,7 +208,8 @@ def test_engine_kwargs_not_cached():
     def func_kwargs(values, index):
         return nogil + parallel + nopython
 
-    engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+    engine_kwargs = {"nopython": nopython,
+                     "nogil": nogil, "parallel": parallel}
     df = DataFrame({"value": [0, 0, 0]})
     result = df.groupby(level=0).transform(
         func_kwargs, engine="numba", engine_kwargs=engine_kwargs
@@ -208,7 +218,8 @@ def test_engine_kwargs_not_cached():
     tm.assert_frame_equal(result, expected)
 
     nogil = False
-    engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+    engine_kwargs = {"nopython": nopython,
+                     "nogil": nogil, "parallel": parallel}
     result = df.groupby(level=0).transform(
         func_kwargs, engine="numba", engine_kwargs=engine_kwargs
     )
@@ -224,7 +235,8 @@ def test_multiindex_one_key(nogil, parallel, nopython):
         return 1
 
     df = DataFrame([{"A": 1, "B": 2, "C": 3}]).set_index(["A", "B"])
-    engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+    engine_kwargs = {"nopython": nopython,
+                     "nogil": nogil, "parallel": parallel}
     result = df.groupby("A").transform(
         numba_func, engine="numba", engine_kwargs=engine_kwargs
     )
@@ -239,7 +251,8 @@ def test_multiindex_multi_key_not_supported(nogil, parallel, nopython):
         return 1
 
     df = DataFrame([{"A": 1, "B": 2, "C": 3}]).set_index(["A", "B"])
-    engine_kwargs = {"nopython": nopython, "nogil": nogil, "parallel": parallel}
+    engine_kwargs = {"nopython": nopython,
+                     "nogil": nogil, "parallel": parallel}
     with pytest.raises(NotImplementedError, match="more than 1 grouping labels"):
         df.groupby(["A", "B"]).transform(
             numba_func, engine="numba", engine_kwargs=engine_kwargs
@@ -275,7 +288,8 @@ def test_multilabel_udf_numba_vs_cython():
     )
     gb = df.groupby(["A", "B"])
     result = gb.transform(
-        lambda values, index: (values - values.min()) / (values.max() - values.min()),
+        lambda values, index: (values - values.min()) /
+        (values.max() - values.min()),
         engine="numba",
     )
     expected = gb.transform(

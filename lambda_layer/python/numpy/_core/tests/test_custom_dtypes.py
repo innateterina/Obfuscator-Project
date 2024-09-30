@@ -89,7 +89,7 @@ class TestSFloat:
         a = self._get_array(2e300, aligned)
 
         with pytest.raises(TypeError,
-                match="error raised inside the core-loop: non-finite factor!"):
+                           match="error raised inside the core-loop: non-finite factor!"):
             a.astype(SF(2e-300))
 
     def test_sfloat_promotion(self):
@@ -126,7 +126,7 @@ class TestSFloat:
         # possible (the relaxed version of the old refusal to handle any
         # flexible dtype).
         with pytest.raises(TypeError,
-                match="the resolved dtypes are not compatible"):
+                           match="the resolved dtypes are not compatible"):
             np.multiply.reduce(a)
 
     def test_basic_ufunc_at(self):
@@ -193,7 +193,7 @@ class TestSFloat:
             np.add(a, a, out=c, casting="safe")
 
     @pytest.mark.parametrize("ufunc",
-            [np.logical_and, np.logical_or, np.logical_xor])
+                             [np.logical_and, np.logical_or, np.logical_xor])
     def test_logical_ufuncs_casts_to_bool(self, ufunc):
         a = self._get_array(2.)
         a[0] = 0.  # make sure first element is considered False.
@@ -294,6 +294,7 @@ class TestSFloat:
         arr2.flat[index] = 5.0
         np.testing.assert_array_equal(
             arr.view(np.float64), arr2.view(np.float64))
+
 
 def test_type_pickle():
     # can't actually unpickle, but we can pickle (if in namespace)

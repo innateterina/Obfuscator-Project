@@ -6,10 +6,10 @@ import warnings
 import numpy as np
 import pytest
 from numpy.testing import (
-        assert_, assert_raises, assert_equal, assert_warns,
-        assert_no_warnings, assert_array_equal, assert_array_almost_equal,
-        suppress_warnings, IS_WASM
-        )
+    assert_, assert_raises, assert_equal, assert_warns,
+    assert_no_warnings, assert_array_equal, assert_array_almost_equal,
+    suppress_warnings, IS_WASM
+)
 
 from numpy.random import MT19937, PCG64
 from numpy import random
@@ -186,6 +186,7 @@ class TestMultinomial:
     def test_multinomial_n_float(self):
         # Non-index integer types should gracefully truncate floats
         random.multinomial(100.5, [0.2, 0.8])
+
 
 class TestSetState:
     def setup_method(self):
@@ -382,11 +383,11 @@ class TestRandint:
                              [3414372578, 3437564012, 2112038651],
                              [3572980305, 2260248732, 3908238631]],
                             [[2561372503,  223155946, 3127879445],
-                             [ 441282060, 3514786552, 2148440361],
+                             [441282060, 3514786552, 2148440361],
                              [1629275283, 3479737011, 3003195987]],
-                            [[ 412181688,  940383289, 3047321305],
+                            [[412181688,  940383289, 3047321305],
                              [2978368172,  764731833, 2282559898],
-                             [ 105711276,  720447391, 3596512484]]])
+                             [105711276,  720447391, 3596512484]]])
         for size in [None, (5, 3, 3)]:
             random.seed(12345)
             x = self.rfunc([[-1], [0], [1]], [2**32 - 1, 2**32, 2**32 + 1],
@@ -756,9 +757,9 @@ class TestRandomDist:
         random.seed(self.seed)
         actual = random.beta(.1, .9, size=(3, 2))
         desired = np.array(
-                [[1.45341850513746058e-02, 5.31297615662868145e-04],
-                 [1.85366619058432324e-06, 4.19214516800110563e-03],
-                 [1.58405155108498093e-04, 1.26252891949397652e-04]])
+            [[1.45341850513746058e-02, 5.31297615662868145e-04],
+             [1.85366619058432324e-06, 4.19214516800110563e-03],
+             [1.58405155108498093e-04, 1.26252891949397652e-04]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_binomial(self):
@@ -1099,9 +1100,9 @@ class TestRandomDist:
         random.seed(self.seed)
         actual = random.pareto(a=.123456789, size=(3, 2))
         desired = np.array(
-                [[2.46852460439034849e+03, 1.41286880810518346e+03],
-                 [5.28287797029485181e+07, 6.57720981047328785e+07],
-                 [1.40840323350391515e+02, 1.98390255135251704e+05]])
+            [[2.46852460439034849e+03, 1.41286880810518346e+03],
+             [5.28287797029485181e+07, 6.57720981047328785e+07],
+             [1.40840323350391515e+02, 1.98390255135251704e+05]])
         # For some reason on 32-bit x86 Ubuntu 12.10 the [1, 0] entry in this
         # matrix differs by 24 nulps. Discussion:
         #   https://mail.python.org/pipermail/numpy-discussion/2012-September/063801.html

@@ -276,18 +276,22 @@ def test_not_present_exception():
 def test_feather_options(fsspectest):
     pytest.importorskip("pyarrow")
     df = DataFrame({"a": [0]})
-    df.to_feather("testmem://mockfile", storage_options={"test": "feather_write"})
+    df.to_feather("testmem://mockfile",
+                  storage_options={"test": "feather_write"})
     assert fsspectest.test[0] == "feather_write"
-    out = read_feather("testmem://mockfile", storage_options={"test": "feather_read"})
+    out = read_feather("testmem://mockfile",
+                       storage_options={"test": "feather_read"})
     assert fsspectest.test[0] == "feather_read"
     tm.assert_frame_equal(df, out)
 
 
 def test_pickle_options(fsspectest):
     df = DataFrame({"a": [0]})
-    df.to_pickle("testmem://mockfile", storage_options={"test": "pickle_write"})
+    df.to_pickle("testmem://mockfile",
+                 storage_options={"test": "pickle_write"})
     assert fsspectest.test[0] == "pickle_write"
-    out = read_pickle("testmem://mockfile", storage_options={"test": "pickle_read"})
+    out = read_pickle("testmem://mockfile",
+                      storage_options={"test": "pickle_read"})
     assert fsspectest.test[0] == "pickle_read"
     tm.assert_frame_equal(df, out)
 
@@ -315,7 +319,8 @@ def test_stata_options(fsspectest):
         "testmem://mockfile", storage_options={"test": "stata_write"}, write_index=False
     )
     assert fsspectest.test[0] == "stata_write"
-    out = read_stata("testmem://mockfile", storage_options={"test": "stata_read"})
+    out = read_stata("testmem://mockfile",
+                     storage_options={"test": "stata_read"})
     assert fsspectest.test[0] == "stata_read"
     tm.assert_frame_equal(df, out.astype("int64"))
 

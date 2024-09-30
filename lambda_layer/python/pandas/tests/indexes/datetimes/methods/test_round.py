@@ -42,7 +42,8 @@ class TestDatetimeIndexRound:
 
     def test_round(self, tz_naive_fixture, unit):
         tz = tz_naive_fixture
-        rng = date_range(start="2016-01-01", periods=5, freq="30Min", tz=tz, unit=unit)
+        rng = date_range(start="2016-01-01", periods=5,
+                         freq="30Min", tz=tz, unit=unit)
         elt = rng[1]
 
         expected_rng = DatetimeIndex(
@@ -75,9 +76,11 @@ class TestDatetimeIndexRound:
     def test_round2(self, tz_naive_fixture):
         tz = tz_naive_fixture
         # GH#14440 & GH#15578
-        index = DatetimeIndex(["2016-10-17 12:00:00.0015"], tz=tz).as_unit("ns")
+        index = DatetimeIndex(
+            ["2016-10-17 12:00:00.0015"], tz=tz).as_unit("ns")
         result = index.round("ms")
-        expected = DatetimeIndex(["2016-10-17 12:00:00.002000"], tz=tz).as_unit("ns")
+        expected = DatetimeIndex(
+            ["2016-10-17 12:00:00.002000"], tz=tz).as_unit("ns")
         tm.assert_index_equal(result, expected)
 
         for freq in ["us", "ns"]:
@@ -85,15 +88,19 @@ class TestDatetimeIndexRound:
 
     def test_round3(self, tz_naive_fixture):
         tz = tz_naive_fixture
-        index = DatetimeIndex(["2016-10-17 12:00:00.00149"], tz=tz).as_unit("ns")
+        index = DatetimeIndex(
+            ["2016-10-17 12:00:00.00149"], tz=tz).as_unit("ns")
         result = index.round("ms")
-        expected = DatetimeIndex(["2016-10-17 12:00:00.001000"], tz=tz).as_unit("ns")
+        expected = DatetimeIndex(
+            ["2016-10-17 12:00:00.001000"], tz=tz).as_unit("ns")
         tm.assert_index_equal(result, expected)
 
     def test_round4(self, tz_naive_fixture):
-        index = DatetimeIndex(["2016-10-17 12:00:00.001501031"], dtype="M8[ns]")
+        index = DatetimeIndex(
+            ["2016-10-17 12:00:00.001501031"], dtype="M8[ns]")
         result = index.round("10ns")
-        expected = DatetimeIndex(["2016-10-17 12:00:00.001501030"], dtype="M8[ns]")
+        expected = DatetimeIndex(
+            ["2016-10-17 12:00:00.001501030"], dtype="M8[ns]")
         tm.assert_index_equal(result, expected)
 
         ts = "2016-10-17 12:00:00.001501031"

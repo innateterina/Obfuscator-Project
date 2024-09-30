@@ -90,7 +90,8 @@ def test_non_string_na_values(all_parsers, data, na_values, request):
     # see gh-3611: with an odd float format, we can't match
     # the string "999.0" exactly but still need float matching
     parser = all_parsers
-    expected = DataFrame([[np.nan, 1.2], [2.0, np.nan], [3.0, 4.5]], columns=["A", "B"])
+    expected = DataFrame([[np.nan, 1.2], [2.0, np.nan], [
+                         3.0, 4.5]], columns=["A", "B"])
 
     if parser.engine == "pyarrow" and not all(isinstance(x, str) for x in na_values):
         msg = "The 'pyarrow' engine requires all na_values to be strings"
@@ -211,10 +212,12 @@ bar,foo,foo"""
     if parser.engine == "pyarrow":
         msg = "pyarrow engine doesn't support passing a dict for na_values"
         with pytest.raises(ValueError, match=msg):
-            parser.read_csv(StringIO(data), na_values={"A": ["foo"], "B": ["bar"]})
+            parser.read_csv(StringIO(data), na_values={
+                            "A": ["foo"], "B": ["bar"]})
         return
 
-    df = parser.read_csv(StringIO(data), na_values={"A": ["foo"], "B": ["bar"]})
+    df = parser.read_csv(StringIO(data), na_values={
+                         "A": ["foo"], "B": ["bar"]})
     expected = DataFrame(
         {
             "A": [np.nan, "bar", np.nan, "bar"],
@@ -230,7 +233,8 @@ bar,foo,foo"""
     [
         (
             [0],
-            DataFrame({"b": [np.nan], "c": [1], "d": [5]}, index=Index([0], name="a")),
+            DataFrame({"b": [np.nan], "c": [1], "d": [5]},
+                      index=Index([0], name="a")),
         ),
         (
             [0, 2],
@@ -254,7 +258,8 @@ a,b,c,d
 0,NA,1,5
 """
     parser = all_parsers
-    result = parser.read_csv(StringIO(data), na_values=set(), index_col=index_col)
+    result = parser.read_csv(
+        StringIO(data), na_values=set(), index_col=index_col)
     tm.assert_frame_equal(result, expected)
 
 
@@ -384,10 +389,12 @@ def test_no_keep_default_na_dict_na_scalar_values(all_parsers):
     if parser.engine == "pyarrow":
         msg = "The pyarrow engine doesn't support passing a dict for na_values"
         with pytest.raises(ValueError, match=msg):
-            parser.read_csv(StringIO(data), na_values={"b": 2}, keep_default_na=False)
+            parser.read_csv(StringIO(data), na_values={
+                            "b": 2}, keep_default_na=False)
         return
 
-    df = parser.read_csv(StringIO(data), na_values={"b": 2}, keep_default_na=False)
+    df = parser.read_csv(StringIO(data), na_values={
+                         "b": 2}, keep_default_na=False)
     expected = DataFrame({"a": [1], "b": [np.nan]})
     tm.assert_frame_equal(df, expected)
 
@@ -419,7 +426,8 @@ def test_no_keep_default_na_dict_na_values_diff_reprs(all_parsers, col_zero_na_v
                 StringIO(data),
                 header=None,
                 keep_default_na=False,
-                na_values={2: "", 6: "214.008", 1: "blah", 0: col_zero_na_values},
+                na_values={2: "", 6: "214.008",
+                           1: "blah", 0: col_zero_na_values},
             )
         return
 
@@ -448,7 +456,8 @@ nan,B
 3,C
 """
     parser = all_parsers
-    result = parser.read_csv(StringIO(data), na_values=["B"], na_filter=na_filter)
+    result = parser.read_csv(StringIO(data), na_values=[
+                             "B"], na_filter=na_filter)
 
     expected = DataFrame(row_data, columns=["A", "B"])
     tm.assert_frame_equal(result, expected)
@@ -563,7 +572,8 @@ def test_na_values_dict_col_index(all_parsers):
             {"na_values": [2**63]},
             DataFrame([str(2**63), str(2**63 + 1)]),
         ),
-        (str(2**63) + ",1" + "\n,2", {}, DataFrame([[str(2**63), 1], ["", 2]])),
+        (str(2**63) + ",1" + "\n,2", {},
+         DataFrame([[str(2**63), 1], ["", 2]])),
         (str(2**63) + "\n1", {"na_values": [2**63]}, DataFrame([np.nan, 1])),
     ],
 )
@@ -590,7 +600,8 @@ def test_empty_na_values_no_default_with_index(all_parsers):
     parser = all_parsers
     expected = DataFrame({"1": [2]}, index=Index(["b"], name="a"))
 
-    result = parser.read_csv(StringIO(data), index_col=0, keep_default_na=False)
+    result = parser.read_csv(
+        StringIO(data), index_col=0, keep_default_na=False)
     tm.assert_frame_equal(result, expected)
 
 
@@ -608,8 +619,10 @@ def test_no_na_filter_on_index(all_parsers, na_filter, index_data, request):
         mark = pytest.mark.xfail(reason="mismatched index result")
         request.applymarker(mark)
 
-    expected = DataFrame({"a": [1, 4], "c": [3, 6]}, index=Index(index_data, name="b"))
-    result = parser.read_csv(StringIO(data), index_col=[1], na_filter=na_filter)
+    expected = DataFrame({"a": [1, 4], "c": [3, 6]},
+                         index=Index(index_data, name="b"))
+    result = parser.read_csv(StringIO(data), index_col=[
+                             1], na_filter=na_filter)
     tm.assert_frame_equal(result, expected)
 
 
@@ -619,7 +632,8 @@ def test_inf_na_values_with_int_index(all_parsers):
     data = "idx,col1,col2\n1,3,4\n2,inf,-inf"
 
     # Don't fail with OverflowError with inf's and integer index column.
-    out = parser.read_csv(StringIO(data), index_col=[0], na_values=["inf", "-inf"])
+    out = parser.read_csv(StringIO(data), index_col=[
+                          0], na_values=["inf", "-inf"])
     expected = DataFrame(
         {"col1": [3, np.nan], "col2": [4, np.nan]}, index=Index([1, 2], name="idx")
     )

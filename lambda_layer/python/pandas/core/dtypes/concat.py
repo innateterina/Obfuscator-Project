@@ -123,7 +123,8 @@ def concat_compat(
             )
 
     if target_dtype is not None:
-        to_concat = [astype_array(arr, target_dtype, copy=False) for arr in to_concat]
+        to_concat = [astype_array(arr, target_dtype, copy=False)
+                     for arr in to_concat]
 
     if not isinstance(to_concat[0], np.ndarray):
         # i.e. isinstance(to_concat[0], ExtensionArray)
@@ -165,7 +166,8 @@ def _get_result_dtype(
         # for axis=0
         if len(dtypes) != 1:
             target_dtype = find_common_type([x.dtype for x in to_concat])
-            target_dtype = common_dtype_categorical_compat(to_concat, target_dtype)
+            target_dtype = common_dtype_categorical_compat(
+                to_concat, target_dtype)
 
     elif not len(non_empties):
         # we have all empties, but may need to coerce the result dtype to
@@ -310,11 +312,13 @@ def union_categoricals(
         categories = first.categories
         ordered = first.ordered
 
-        all_codes = [first._encode_with_my_categories(x)._codes for x in to_union]
+        all_codes = [first._encode_with_my_categories(
+            x)._codes for x in to_union]
         new_codes = np.concatenate(all_codes)
 
         if sort_categories and not ignore_order and ordered:
-            raise TypeError("Cannot use sort_categories=True with ordered Categoricals")
+            raise TypeError(
+                "Cannot use sort_categories=True with ordered Categoricals")
 
         if sort_categories and not categories.is_monotonic_increasing:
             categories = categories.sort_values()

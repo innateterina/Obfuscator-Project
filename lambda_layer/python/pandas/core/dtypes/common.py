@@ -254,7 +254,7 @@ def is_scipy_sparse(arr) -> bool:
         try:
             from scipy.sparse import issparse as _is_scipy_sparse
         except ImportError:
-            _is_scipy_sparse = lambda _: False
+            def _is_scipy_sparse(_): return False
 
     assert _is_scipy_sparse is not None
     return _is_scipy_sparse(arr)
@@ -683,7 +683,8 @@ def is_integer_dtype(arr_or_dtype) -> bool:
     return _is_dtype_type(
         arr_or_dtype, _classes_and_not_datetimelike(np.integer)
     ) or _is_dtype(
-        arr_or_dtype, lambda typ: isinstance(typ, ExtensionDtype) and typ.kind in "iu"
+        arr_or_dtype, lambda typ: isinstance(
+            typ, ExtensionDtype) and typ.kind in "iu"
     )
 
 
@@ -742,7 +743,8 @@ def is_signed_integer_dtype(arr_or_dtype) -> bool:
     return _is_dtype_type(
         arr_or_dtype, _classes_and_not_datetimelike(np.signedinteger)
     ) or _is_dtype(
-        arr_or_dtype, lambda typ: isinstance(typ, ExtensionDtype) and typ.kind == "i"
+        arr_or_dtype, lambda typ: isinstance(
+            typ, ExtensionDtype) and typ.kind == "i"
     )
 
 
@@ -792,7 +794,8 @@ def is_unsigned_integer_dtype(arr_or_dtype) -> bool:
     return _is_dtype_type(
         arr_or_dtype, _classes_and_not_datetimelike(np.unsignedinteger)
     ) or _is_dtype(
-        arr_or_dtype, lambda typ: isinstance(typ, ExtensionDtype) and typ.kind == "u"
+        arr_or_dtype, lambda typ: isinstance(
+            typ, ExtensionDtype) and typ.kind == "u"
     )
 
 
@@ -1023,8 +1026,10 @@ def is_numeric_v_string_like(a: ArrayLike, b) -> bool:
     is_a_array = isinstance(a, np.ndarray)
     is_b_array = isinstance(b, np.ndarray)
 
-    is_a_numeric_array = is_a_array and a.dtype.kind in ("u", "i", "f", "c", "b")
-    is_b_numeric_array = is_b_array and b.dtype.kind in ("u", "i", "f", "c", "b")
+    is_a_numeric_array = is_a_array and a.dtype.kind in (
+        "u", "i", "f", "c", "b")
+    is_b_numeric_array = is_b_array and b.dtype.kind in (
+        "u", "i", "f", "c", "b")
     is_a_string_array = is_a_array and a.dtype.kind in ("S", "U")
     is_b_string_array = is_b_array and b.dtype.kind in ("S", "U")
 
@@ -1119,7 +1124,8 @@ def is_numeric_dtype(arr_or_dtype) -> bool:
     return _is_dtype_type(
         arr_or_dtype, _classes_and_not_datetimelike(np.number, np.bool_)
     ) or _is_dtype(
-        arr_or_dtype, lambda typ: isinstance(typ, ExtensionDtype) and typ._is_numeric
+        arr_or_dtype, lambda typ: isinstance(
+            typ, ExtensionDtype) and typ._is_numeric
     )
 
 
@@ -1191,7 +1197,8 @@ def is_float_dtype(arr_or_dtype) -> bool:
     True
     """
     return _is_dtype_type(arr_or_dtype, classes(np.floating)) or _is_dtype(
-        arr_or_dtype, lambda typ: isinstance(typ, ExtensionDtype) and typ.kind in "f"
+        arr_or_dtype, lambda typ: isinstance(
+            typ, ExtensionDtype) and typ.kind in "f"
     )
 
 

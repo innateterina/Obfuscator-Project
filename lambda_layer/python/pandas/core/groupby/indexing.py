@@ -214,7 +214,8 @@ class GroupByIndexingMixin:
             limit_array = (
                 self._ascending_count + self._descending_count + (start + 1)
             ) < 0
-            offset_array = np.where(limit_array, self._ascending_count, offset_array)
+            offset_array = np.where(
+                limit_array, self._ascending_count, offset_array)
 
             mask &= offset_array % step == 0
 

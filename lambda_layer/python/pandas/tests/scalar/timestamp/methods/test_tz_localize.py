@@ -77,11 +77,13 @@ class TestTimestampTZLocalize:
 
         result = ts.tz_localize("US/Central", ambiguous=True)
         assert result == expected0
-        assert result._creso == getattr(NpyDatetimeUnit, f"NPY_FR_{unit}").value
+        assert result._creso == getattr(
+            NpyDatetimeUnit, f"NPY_FR_{unit}").value
 
         result = ts.tz_localize("US/Central", ambiguous=False)
         assert result == expected1
-        assert result._creso == getattr(NpyDatetimeUnit, f"NPY_FR_{unit}").value
+        assert result._creso == getattr(
+            NpyDatetimeUnit, f"NPY_FR_{unit}").value
 
     def test_tz_localize_ambiguous(self):
         ts = Timestamp("2014-11-02 01:00")
@@ -254,7 +256,8 @@ class TestTimestampTZLocalize:
     @pytest.mark.parametrize(
         "start_ts, tz, end_ts, shift",
         [
-            ["2015-03-29 02:20:00", "Europe/Warsaw", "2015-03-29 03:00:00", "forward"],
+            ["2015-03-29 02:20:00", "Europe/Warsaw",
+                "2015-03-29 03:00:00", "forward"],
             [
                 "2015-03-29 02:20:00",
                 "Europe/Warsaw",
@@ -273,7 +276,8 @@ class TestTimestampTZLocalize:
                 "2015-03-29 01:20:00",
                 timedelta(hours=-1),
             ],
-            ["2018-03-11 02:33:00", "US/Pacific", "2018-03-11 03:00:00", "forward"],
+            ["2018-03-11 02:33:00", "US/Pacific",
+                "2018-03-11 03:00:00", "forward"],
             [
                 "2018-03-11 02:33:00",
                 "US/Pacific",
@@ -316,7 +320,8 @@ class TestTimestampTZLocalize:
             assert result == expected.replace(microsecond=0, nanosecond=0)
         else:
             assert result == expected
-        assert result._creso == getattr(NpyDatetimeUnit, f"NPY_FR_{unit}").value
+        assert result._creso == getattr(
+            NpyDatetimeUnit, f"NPY_FR_{unit}").value
 
     @pytest.mark.parametrize("offset", [-1, 1])
     def test_timestamp_tz_localize_nonexistent_shift_invalid(self, offset, warsaw):

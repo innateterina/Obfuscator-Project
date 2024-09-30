@@ -73,7 +73,8 @@ class TestDataFrameValues:
         expected = series.astype("object")
 
         df = DataFrame(
-            {"a": series, "b": np.random.default_rng(2).standard_normal(len(series))}
+            {"a": series, "b": np.random.default_rng(
+                2).standard_normal(len(series))}
         )
 
         result = df.values.squeeze()
@@ -233,7 +234,8 @@ class TestDataFrameValues:
 class TestPrivateValues:
     @td.skip_array_manager_invalid_test
     def test_private_values_dt64tz(self, using_copy_on_write):
-        dta = date_range("2000", periods=4, tz="US/Central")._data.reshape(-1, 1)
+        dta = date_range("2000", periods=4,
+                         tz="US/Central")._data.reshape(-1, 1)
 
         df = DataFrame(dta, columns=["A"])
         tm.assert_equal(df._values, dta)
@@ -251,7 +253,8 @@ class TestPrivateValues:
 
     @td.skip_array_manager_invalid_test
     def test_private_values_dt64tz_multicol(self, using_copy_on_write):
-        dta = date_range("2000", periods=8, tz="US/Central")._data.reshape(-1, 2)
+        dta = date_range("2000", periods=8,
+                         tz="US/Central")._data.reshape(-1, 2)
 
         df = DataFrame(dta, columns=["A", "B"])
         tm.assert_equal(df._values, dta)

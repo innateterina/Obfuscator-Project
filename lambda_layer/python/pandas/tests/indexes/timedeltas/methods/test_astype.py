@@ -118,7 +118,8 @@ class TestTimedeltaIndex:
         )
 
         exp_values = np.asarray(td).astype("m8[s]")
-        exp_tda = TimedeltaArray._simple_new(exp_values, dtype=exp_values.dtype)
+        exp_tda = TimedeltaArray._simple_new(
+            exp_values, dtype=exp_values.dtype)
         expected = index_or_series(exp_tda)
         assert expected.dtype == "m8[s]"
         result = td.astype("timedelta64[s]")

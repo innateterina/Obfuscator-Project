@@ -233,7 +233,8 @@ def test_comparison_methods_scalar(comparison_op, dtype):
         tm.assert_numpy_array_equal(result, expected.astype(np.bool_))
     else:
         expected_dtype = "boolean[pyarrow]" if dtype.storage == "pyarrow" else "boolean"
-        expected = np.array([getattr(item, op_name)(other) for item in a], dtype=object)
+        expected = np.array([getattr(item, op_name)(other)
+                            for item in a], dtype=object)
         expected = pd.array(expected, dtype=expected_dtype)
         tm.assert_extension_array_equal(result, expected)
 
@@ -549,7 +550,8 @@ def test_arrow_load_from_zero_chunks(
     else:
         assert table.field("a").type == "large_string"
     # Instantiate the same table with no chunks at all
-    table = pa.table([pa.chunked_array([], type=pa.string())], schema=table.schema)
+    table = pa.table([pa.chunked_array([], type=pa.string())],
+                     schema=table.schema)
     with pd.option_context("string_storage", string_storage2):
         result = table.to_pandas()
     assert isinstance(result["a"].dtype, pd.StringDtype)
@@ -566,7 +568,8 @@ def test_value_counts_na(dtype):
         exp_dtype = "Int64"
     arr = pd.array(["a", "b", "a", pd.NA], dtype=dtype)
     result = arr.value_counts(dropna=False)
-    expected = pd.Series([2, 1, 1], index=arr[[0, 1, 3]], dtype=exp_dtype, name="count")
+    expected = pd.Series([2, 1, 1], index=arr[[0, 1, 3]],
+                         dtype=exp_dtype, name="count")
     tm.assert_series_equal(result, expected)
 
     result = arr.value_counts(dropna=True)
@@ -583,7 +586,8 @@ def test_value_counts_with_normalize(dtype):
         exp_dtype = "Float64"
     ser = pd.Series(["a", "b", "a", pd.NA], dtype=dtype)
     result = ser.value_counts(normalize=True)
-    expected = pd.Series([2, 1], index=ser[:2], dtype=exp_dtype, name="proportion") / 3
+    expected = pd.Series([2, 1], index=ser[:2],
+                         dtype=exp_dtype, name="proportion") / 3
     tm.assert_series_equal(result, expected)
 
 

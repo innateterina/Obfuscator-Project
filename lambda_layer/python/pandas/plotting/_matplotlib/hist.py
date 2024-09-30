@@ -76,7 +76,8 @@ class HistPlot(LinePlot):
         self.xlabel = kwargs.get("xlabel")
         self.ylabel = kwargs.get("ylabel")
         # Do not call LinePlot.__init__ which may fill nan
-        MPLPlot.__init__(self, data, **kwargs)  # pylint: disable=non-parent-init-called
+        MPLPlot.__init__(
+            self, data, **kwargs)  # pylint: disable=non-parent-init-called
 
         self.bins = self._adjust_bins(bins)
 
@@ -85,7 +86,8 @@ class HistPlot(LinePlot):
             if self.by is not None:
                 by_modified = unpack_single_str_list(self.by)
                 grouped = self.data.groupby(by_modified)[self.columns]
-                bins = [self._calculate_bins(group, bins) for key, group in grouped]
+                bins = [self._calculate_bins(group, bins)
+                        for key, group in grouped]
             else:
                 bins = self._calculate_bins(self.data, bins)
         return bins
@@ -117,7 +119,8 @@ class HistPlot(LinePlot):
             cls._initialize_stacker(ax, stacking_id, len(bins) - 1)
 
         base = np.zeros(len(bins) - 1)
-        bottom = bottom + cls._get_stacked_values(ax, stacking_id, base, kwds["label"])
+        bottom = bottom + \
+            cls._get_stacked_values(ax, stacking_id, base, kwds["label"])
         # ignore style
         n, bins, patches = ax.hist(y, bins=bins, bottom=bottom, **kwds)
         cls._update_stacker(ax, stacking_id, n)
@@ -136,7 +139,8 @@ class HistPlot(LinePlot):
 
         # error: Argument "data" to "_iter_data" of "MPLPlot" has incompatible
         # type "object"; expected "DataFrame | dict[Hashable, Series | DataFrame]"
-        for i, (label, y) in enumerate(self._iter_data(data=data)):  # type: ignore[arg-type]
+        # type: ignore[arg-type]
+        for i, (label, y) in enumerate(self._iter_data(data=data)):
             ax = self._get_ax(i)
 
             kwds = self.kwds.copy()
@@ -161,11 +165,13 @@ class HistPlot(LinePlot):
                 kwds.pop("color")
 
             if self.weights is not None:
-                kwds["weights"] = type(self)._get_column_weights(self.weights, i, y)
+                kwds["weights"] = type(
+                    self)._get_column_weights(self.weights, i, y)
 
             y = reformat_hist_y_given_by(y, self.by)
 
-            artists = self._plot(ax, y, column_num=i, stacking_id=stacking_id, **kwds)
+            artists = self._plot(ax, y, column_num=i,
+                                 stacking_id=stacking_id, **kwds)
 
             # when by is applied, show title for subplots to know which group it is
             if self.by is not None:
@@ -236,7 +242,8 @@ class KdePlot(HistPlot):
         self, data, bw_method=None, ind=None, *, weights=None, **kwargs
     ) -> None:
         # Do not call LinePlot.__init__ which may fill nan
-        MPLPlot.__init__(self, data, **kwargs)  # pylint: disable=non-parent-init-called
+        MPLPlot.__init__(
+            self, data, **kwargs)  # pylint: disable=non-parent-init-called
         self.bw_method = bw_method
         self.ind = ind
         self.weights = weights
@@ -262,7 +269,7 @@ class KdePlot(HistPlot):
 
     @classmethod
     # error: Signature of "_plot" incompatible with supertype "MPLPlot"
-    def _plot(  #  type: ignore[override]
+    def _plot(  # type: ignore[override]
         cls,
         ax: Axes,
         y: np.ndarray,
@@ -437,7 +444,8 @@ def hist_series(
 
     if by is None:
         if kwds.get("layout", None) is not None:
-            raise ValueError("The 'layout' keyword is not supported when 'by' is None")
+            raise ValueError(
+                "The 'layout' keyword is not supported when 'by' is None")
         # hack until the plotting interface is a bit more unified
         fig = kwds.pop(
             "figure", plt.gcf() if plt.get_fignums() else plt.figure(figsize=figsize)

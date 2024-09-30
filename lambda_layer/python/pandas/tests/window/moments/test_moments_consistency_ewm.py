@@ -49,7 +49,8 @@ def create_mock_series_weights(s, com, adjust, ignore_na):
                 if prev_i == -1:
                     w.iat[i] = 1.0
                 else:
-                    w.iat[i] = alpha * sum_wts / pow(1.0 - alpha, count - prev_i)
+                    w.iat[i] = alpha * sum_wts / \
+                        pow(1.0 - alpha, count - prev_i)
                 sum_wts += w.iat[i]
                 prev_i = count
                 count += 1
@@ -64,8 +65,10 @@ def test_ewm_consistency_mean(all_data, adjust, ignore_na, min_periods):
     result = all_data.ewm(
         com=com, min_periods=min_periods, adjust=adjust, ignore_na=ignore_na
     ).mean()
-    weights = create_mock_weights(all_data, com=com, adjust=adjust, ignore_na=ignore_na)
-    expected = all_data.multiply(weights).cumsum().divide(weights.cumsum()).ffill()
+    weights = create_mock_weights(
+        all_data, com=com, adjust=adjust, ignore_na=ignore_na)
+    expected = all_data.multiply(
+        weights).cumsum().divide(weights.cumsum()).ffill()
     expected[
         all_data.expanding().count() < (max(min_periods, 1) if min_periods else 1)
     ] = np.nan
@@ -112,7 +115,8 @@ def test_ewm_consistency_var_debiasing_factors(
         com=com, min_periods=min_periods, adjust=adjust, ignore_na=ignore_na
     ).var(bias=True)
 
-    weights = create_mock_weights(all_data, com=com, adjust=adjust, ignore_na=ignore_na)
+    weights = create_mock_weights(
+        all_data, com=com, adjust=adjust, ignore_na=ignore_na)
     cum_sum = weights.cumsum().ffill()
     cum_sum_sq = (weights * weights).cumsum().ffill()
     numerator = cum_sum * cum_sum

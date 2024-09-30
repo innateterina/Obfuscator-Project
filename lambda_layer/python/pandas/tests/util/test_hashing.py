@@ -90,7 +90,8 @@ def test_hash_tuples():
     tm.assert_numpy_array_equal(result, expected)
 
     # We only need to support MultiIndex and list-of-tuples
-    msg = "|".join(["object is not iterable", "zip argument #1 must support iteration"])
+    msg = "|".join(["object is not iterable",
+                   "zip argument #1 must support iteration"])
     with pytest.raises(TypeError, match=msg):
         hash_tuples(tuples[0])
 
@@ -199,7 +200,8 @@ def test_hash_pandas_object_diff_index_non_empty(obj):
         timedelta_range("1 day", periods=2),
         period_range("2020-01-01", freq="D", periods=2),
         MultiIndex.from_product(
-            [range(5), ["foo", "bar", "baz"], pd.date_range("20130101", periods=2)]
+            [range(5), ["foo", "bar", "baz"],
+             pd.date_range("20130101", periods=2)]
         ),
         MultiIndex.from_product([pd.CategoricalIndex(list("aabc")), range(3)]),
     ],
@@ -265,7 +267,8 @@ def test_categorical_with_nan_consistency():
     )
     expected = hash_array(c, categorize=False)
 
-    c = pd.Categorical.from_codes([-1, 0], categories=[pd.Timestamp("2012-01-01")])
+    c = pd.Categorical.from_codes(
+        [-1, 0], categories=[pd.Timestamp("2012-01-01")])
     result = hash_array(c, categorize=False)
 
     assert result[0] in expected
@@ -369,7 +372,8 @@ def test_hash_collisions():
     tm.assert_numpy_array_equal(result2, expected2)
 
     result = hash_array(np.asarray(hashes, dtype=object), "utf8")
-    tm.assert_numpy_array_equal(result, np.concatenate([expected1, expected2], axis=0))
+    tm.assert_numpy_array_equal(
+        result, np.concatenate([expected1, expected2], axis=0))
 
 
 @pytest.mark.parametrize(
@@ -413,5 +417,6 @@ def test_hashable_tuple_args():
 def test_hash_object_none_key():
     # https://github.com/pandas-dev/pandas/issues/30887
     result = pd.util.hash_pandas_object(Series(["a", "b"]), hash_key=None)
-    expected = Series([4578374827886788867, 17338122309987883691], dtype="uint64")
+    expected = Series(
+        [4578374827886788867, 17338122309987883691], dtype="uint64")
     tm.assert_series_equal(result, expected)

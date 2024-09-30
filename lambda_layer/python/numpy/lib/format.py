@@ -176,7 +176,7 @@ __all__ = []
 EXPECTED_KEYS = {'descr', 'fortran_order', 'shape'}
 MAGIC_PREFIX = b'\x93NUMPY'
 MAGIC_LEN = len(MAGIC_PREFIX) + 2
-ARRAY_ALIGN = 64 # plausible values are powers of 2 between 16 and 4096
+ARRAY_ALIGN = 64  # plausible values are powers of 2 between 16 and 4096
 BUFFER_SIZE = 2**18  # size of buffer for reading npz files in bytes
 # allow growth within the address space of a 64 bit machine along one axis
 GROWTH_AXIS_MAX_DIGITS = 21  # = len(str(8*2**64-1)) hypothetical int1 dtype
@@ -194,10 +194,12 @@ _header_size_info = {
 # This is an arbitrary, low limit which should make it safe in practice.
 _MAX_HEADER_SIZE = 10000
 
+
 def _check_version(version):
     if version not in [(1, 0), (2, 0), (3, 0), None]:
         msg = "we only support format version (1,0), (2,0), and (3,0), not %s"
         raise ValueError(msg % (version,))
+
 
 def magic(major, minor):
     """ Return the magic string for the given file format version.
@@ -220,6 +222,7 @@ def magic(major, minor):
     if minor < 0 or minor > 255:
         raise ValueError("minor version must be 0 <= minor < 256")
     return MAGIC_PREFIX + bytes([major, minor])
+
 
 def read_magic(fp):
     """ Read the magic string to get the version of the file format.
@@ -299,6 +302,7 @@ def dtype_to_descr(dtype):
     else:
         return dtype.str
 
+
 def descr_to_dtype(descr):
     """
     Returns a dtype based off the given description.
@@ -355,6 +359,7 @@ def descr_to_dtype(descr):
     return numpy.dtype({'names': names, 'formats': formats, 'titles': titles,
                         'offsets': offsets, 'itemsize': offset})
 
+
 def header_data_from_array_1_0(array):
     """ Get the dictionary of header metadata from a numpy.ndarray.
 
@@ -392,7 +397,8 @@ def _wrap_header(header, version):
     fmt, encoding = _header_size_info[version]
     header = header.encode(encoding)
     hlen = len(header) + 1
-    padlen = ARRAY_ALIGN - ((MAGIC_LEN + struct.calcsize(fmt) + hlen) % ARRAY_ALIGN)
+    padlen = ARRAY_ALIGN - \
+        ((MAGIC_LEN + struct.calcsize(fmt) + hlen) % ARRAY_ALIGN)
     try:
         header_prefix = magic(*version) + struct.pack(fmt, hlen + padlen)
     except struct.error:
@@ -466,6 +472,7 @@ def _write_array_header(fp, d, version=None):
         header = _wrap_header(header, version)
     fp.write(header)
 
+
 def write_array_header_1_0(fp, d):
     """ Write the header for an array using the 1.0 format.
 
@@ -493,6 +500,7 @@ def write_array_header_2_0(fp, d):
         representation to the header of the file.
     """
     _write_array_header(fp, d, (2, 0))
+
 
 def read_array_header_1_0(fp, max_header_size=_MAX_HEADER_SIZE):
     """
@@ -528,7 +536,8 @@ def read_array_header_1_0(fp, max_header_size=_MAX_HEADER_SIZE):
 
     """
     return _read_array_header(
-            fp, version=(1, 0), max_header_size=max_header_size)
+        fp, version=(1, 0), max_header_size=max_header_size)
+
 
 def read_array_header_2_0(fp, max_header_size=_MAX_HEADER_SIZE):
     """
@@ -566,7 +575,7 @@ def read_array_header_2_0(fp, max_header_size=_MAX_HEADER_SIZE):
 
     """
     return _read_array_header(
-            fp, version=(2, 0), max_header_size=max_header_size)
+        fp, version=(2, 0), max_header_size=max_header_size)
 
 
 def _filter_header(s):
@@ -617,7 +626,8 @@ def _read_array_header(fp, version, max_header_size=_MAX_HEADER_SIZE):
         raise ValueError("Invalid version {!r}".format(version))
     hlength_type, encoding = hinfo
 
-    hlength_str = _read_bytes(fp, struct.calcsize(hlength_type), "array header length")
+    hlength_str = _read_bytes(fp, struct.calcsize(
+        hlength_type), "array header length")
     header_length = struct.unpack(hlength_type, hlength_str)[0]
     header = _read_bytes(fp, header_length, "array header")
     header = header.decode(encoding)
@@ -683,6 +693,7 @@ def _read_array_header(fp, version, max_header_size=_MAX_HEADER_SIZE):
         raise ValueError(msg.format(d['descr'])) from e
 
     return d['shape'], d['fortran_order'], dtype
+
 
 def write_array(fp, array, version=None, allow_pickle=True, pickle_kwargs=None):
     """
@@ -809,7 +820,7 @@ def read_array(fp, allow_pickle=False, pickle_kwargs=None, *,
     version = read_magic(fp)
     _check_version(version)
     shape, fortran_order, dtype = _read_array_header(
-            fp, version, max_header_size=max_header_size)
+        fp, version, max_header_size=max_header_size)
     if len(shape) == 0:
         count = 1
     else:
@@ -850,7 +861,8 @@ def read_array(fp, allow_pickle=False, pickle_kwargs=None, *,
 
             if dtype.itemsize > 0:
                 # If dtype.itemsize == 0 then there's nothing more to read
-                max_read_count = BUFFER_SIZE // min(BUFFER_SIZE, dtype.itemsize)
+                max_read_count = BUFFER_SIZE // min(
+                    BUFFER_SIZE, dtype.itemsize)
 
                 for i in range(0, count, max_read_count):
                     read_count = min(max_read_count, count - i)
@@ -953,7 +965,7 @@ def open_memmap(filename, mode='r+', dtype=None, shape=None,
             _check_version(version)
 
             shape, fortran_order, dtype = _read_array_header(
-                    fp, version, max_header_size=max_header_size)
+                fp, version, max_header_size=max_header_size)
             if dtype.hasobject:
                 msg = "Array can't be memory-mapped: Python objects in dtype."
                 raise ValueError(msg)
@@ -970,7 +982,7 @@ def open_memmap(filename, mode='r+', dtype=None, shape=None,
         mode = 'r+'
 
     marray = numpy.memmap(filename, dtype=dtype, shape=shape, order=order,
-        mode=mode, offset=offset)
+                          mode=mode, offset=offset)
 
     return marray
 

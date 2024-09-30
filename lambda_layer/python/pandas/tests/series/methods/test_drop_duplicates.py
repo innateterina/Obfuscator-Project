@@ -72,7 +72,8 @@ def test_drop_duplicates_no_duplicates(any_numpy_dtype, keep, values):
 
 class TestSeriesDropDuplicates:
     @pytest.fixture(
-        params=["int_", "uint", "float64", "str_", "timedelta64[h]", "datetime64[D]"]
+        params=["int_", "uint", "float64", "str_",
+                "timedelta64[h]", "datetime64[D]"]
     )
     def dtype(self, request):
         return request.param
@@ -239,7 +240,8 @@ class TestSeriesDropDuplicates:
         )
         result = ser.drop_duplicates()
         expected = Series(
-            Categorical([True, False, np.nan], categories=[True, False], ordered=True),
+            Categorical([True, False, np.nan], categories=[
+                        True, False], ordered=True),
             index=[0, 1, 4],
         )
         tm.assert_series_equal(result, expected)

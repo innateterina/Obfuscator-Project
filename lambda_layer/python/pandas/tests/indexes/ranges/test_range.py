@@ -76,7 +76,8 @@ class TestRangeIndex:
         result = idx[1:4]
 
         # test 0th element
-        tm.assert_index_equal(idx[0:4], result.insert(0, idx[0]), exact="equiv")
+        tm.assert_index_equal(
+            idx[0:4], result.insert(0, idx[0]), exact="equiv")
 
         # GH 18295 (test missing)
         expected = Index([0, np.nan, 1, 2, 3, 4], dtype=np.float64)
@@ -357,7 +358,8 @@ class TestRangeIndex:
         assert not i.identical(index)
         assert Index(same_values, name="foo", dtype=object).identical(i)
 
-        assert not index.copy(dtype=object).identical(index.copy(dtype="int64"))
+        assert not index.copy(dtype=object).identical(
+            index.copy(dtype="int64"))
 
     def test_nbytes(self):
         # memory savings vs int index
@@ -533,8 +535,10 @@ class TestRangeIndex:
                 RangeIndex(-2, 6),
             ),
             ([RangeIndex(3), Index([-1, 3, 15])], Index([0, 1, 2, -1, 3, 15])),
-            ([RangeIndex(3), Index([-1, 3.1, 15.0])], Index([0, 1, 2, -1, 3.1, 15.0])),
-            ([RangeIndex(3), Index(["a", None, 14])], Index([0, 1, 2, "a", None, 14])),
+            ([RangeIndex(3), Index([-1, 3.1, 15.0])],
+             Index([0, 1, 2, -1, 3.1, 15.0])),
+            ([RangeIndex(3), Index(["a", None, 14])],
+             Index([0, 1, 2, "a", None, 14])),
             ([RangeIndex(3, 1), Index(["a", None, 14])], Index(["a", None, 14])),
         ],
     )

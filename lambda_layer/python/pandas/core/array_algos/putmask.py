@@ -45,7 +45,8 @@ def putmask_inplace(values: ArrayLike, mask: npt.NDArray[np.bool_], value: Any) 
         # GH#43424: np.putmask raises TypeError if we cannot cast between types with
         # rule = "safe", a stricter guarantee we may not have here
         or (
-            isinstance(value, np.ndarray) and not np.can_cast(value.dtype, values.dtype)
+            isinstance(value, np.ndarray) and not np.can_cast(
+                value.dtype, values.dtype)
         )
     ):
         # GH#19266 using np.putmask gives unexpected results with listlike value

@@ -24,7 +24,8 @@ class TestDataFrameDataTypes:
         tm.assert_series_equal(nocols_df.dtypes, Series(dtype=object))
 
         norows_df = DataFrame(columns=list("abc"))
-        tm.assert_series_equal(norows_df.dtypes, Series(object, index=list("abc")))
+        tm.assert_series_equal(
+            norows_df.dtypes, Series(object, index=list("abc")))
 
         norows_int_df = DataFrame(columns=list("abc")).astype(np.int32)
         tm.assert_series_equal(
@@ -67,7 +68,8 @@ class TestDataFrameDataTypes:
             df.dtypes,
             Series({"a": np.float64, "b": np.float64, "c": np.float64}),
         )
-        tm.assert_series_equal(df.iloc[:, 2:].dtypes, Series({"c": np.float64}))
+        tm.assert_series_equal(
+            df.iloc[:, 2:].dtypes, Series({"c": np.float64}))
         tm.assert_series_equal(
             df.dtypes,
             Series({"a": np.float64, "b": np.float64, "c": np.float64}),

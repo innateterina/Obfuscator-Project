@@ -71,7 +71,8 @@ class TestDatetimeArrayConstructor:
     def test_from_pandas_array(self):
         arr = pd.array(np.arange(5, dtype=np.int64)) * 3600 * 10**9
 
-        result = DatetimeArray._from_sequence(arr, dtype="M8[ns]")._with_freq("infer")
+        result = DatetimeArray._from_sequence(
+            arr, dtype="M8[ns]")._with_freq("infer")
 
         expected = pd.date_range("1970-01-01", periods=5, freq="h")._data
         tm.assert_datetime_array_equal(result, expected)
@@ -126,7 +127,8 @@ class TestDatetimeArrayConstructor:
         depr_msg = "DatetimeArray.__init__ is deprecated"
         with tm.assert_produces_warning(FutureWarning, match=depr_msg):
             with pytest.raises(ValueError, match="Unexpected value for 'dtype'."):
-                DatetimeArray(np.array([1, 2, 3], dtype="i8"), dtype="category")
+                DatetimeArray(
+                    np.array([1, 2, 3], dtype="i8"), dtype="category")
 
         with tm.assert_produces_warning(FutureWarning, match=depr_msg):
             with pytest.raises(ValueError, match="Unexpected value for 'dtype'."):
@@ -260,7 +262,8 @@ def test_from_arrow_from_empty(unit, tz):
     dtype = DatetimeTZDtype(unit=unit, tz=tz)
 
     result = dtype.__from_arrow__(arr)
-    expected = DatetimeArray._from_sequence(np.array(data, dtype=f"datetime64[{unit}]"))
+    expected = DatetimeArray._from_sequence(
+        np.array(data, dtype=f"datetime64[{unit}]"))
     expected = expected.tz_localize(tz=tz)
     tm.assert_extension_array_equal(result, expected)
 
@@ -276,7 +279,8 @@ def test_from_arrow_from_integers():
     dtype = DatetimeTZDtype(unit="ns", tz="UTC")
 
     result = dtype.__from_arrow__(arr)
-    expected = DatetimeArray._from_sequence(np.array(data, dtype="datetime64[ns]"))
+    expected = DatetimeArray._from_sequence(
+        np.array(data, dtype="datetime64[ns]"))
     expected = expected.tz_localize("UTC")
     tm.assert_extension_array_equal(result, expected)
 

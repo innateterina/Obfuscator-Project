@@ -124,7 +124,8 @@ class TestDatetimeIndex:
 
     def test_astype_str_tz_and_name(self):
         # test astype string with tz and name
-        dti = date_range("2012-01-01", periods=3, name="test_name", tz="US/Eastern")
+        dti = date_range("2012-01-01", periods=3,
+                         name="test_name", tz="US/Eastern")
         result = dti.astype(str)
         expected = Index(
             [
@@ -175,7 +176,8 @@ class TestDatetimeIndex:
         tm.assert_index_equal(result, idx)
         assert result is idx
 
-        idx_tz = DatetimeIndex(["2016-05-16", "NaT", NaT, np.nan], tz="EST", name="idx")
+        idx_tz = DatetimeIndex(
+            ["2016-05-16", "NaT", NaT, np.nan], tz="EST", name="idx")
         msg = "Cannot use .astype to convert from timezone-aware"
         with pytest.raises(TypeError, match=msg):
             # dt64tz->dt64 deprecated
@@ -192,7 +194,8 @@ class TestDatetimeIndex:
 
     @pytest.mark.parametrize("tz", [None, "Asia/Tokyo"])
     def test_astype_object_tz(self, tz):
-        idx = date_range(start="2013-01-01", periods=4, freq="ME", name="idx", tz=tz)
+        idx = date_range(start="2013-01-01", periods=4,
+                         freq="ME", name="idx", tz=tz)
         expected_list = [
             Timestamp("2013-01-31", tz=tz),
             Timestamp("2013-02-28", tz=tz),
@@ -206,7 +209,8 @@ class TestDatetimeIndex:
 
     def test_astype_object_with_nat(self):
         idx = DatetimeIndex(
-            [datetime(2013, 1, 1), datetime(2013, 1, 2), NaT, datetime(2013, 1, 4)],
+            [datetime(2013, 1, 1), datetime(2013, 1, 2),
+             NaT, datetime(2013, 1, 4)],
             name="idx",
         )
         expected_list = [
@@ -260,7 +264,8 @@ class TestDatetimeIndex:
                 assert x.tzinfo == stamp.tzinfo
 
         rng = date_range("20090415", "20090519")
-        rng_eastern = date_range("20090415", "20090519", tz=pytz.timezone("US/Eastern"))
+        rng_eastern = date_range(
+            "20090415", "20090519", tz=pytz.timezone("US/Eastern"))
         rng_utc = date_range("20090415", "20090519", tz=pytz.utc)
 
         _check_rng(rng)
@@ -277,7 +282,8 @@ class TestDatetimeIndex:
                 assert x.tzinfo == stamp.tzinfo
 
         rng = date_range("20090415", "20090519")
-        rng_eastern = date_range("20090415", "20090519", tz="dateutil/US/Eastern")
+        rng_eastern = date_range(
+            "20090415", "20090519", tz="dateutil/US/Eastern")
         rng_utc = date_range("20090415", "20090519", tz=dateutil.tz.tzutc())
 
         _check_rng(rng)
@@ -292,7 +298,8 @@ class TestDatetimeIndex:
         # GH 20997, 20964, 24559
         val = [Timestamp("2018-01-01", tz=tz).as_unit("ns")._value]
         result = Index(val, name="idx").astype(dtype)
-        expected = DatetimeIndex(["2018-01-01"], tz=tz, name="idx").as_unit("ns")
+        expected = DatetimeIndex(
+            ["2018-01-01"], tz=tz, name="idx").as_unit("ns")
         tm.assert_index_equal(result, expected)
 
     def test_dti_astype_period(self):

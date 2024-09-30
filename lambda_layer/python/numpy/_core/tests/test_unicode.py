@@ -3,6 +3,7 @@ import pytest
 import numpy as np
 from numpy.testing import assert_, assert_equal, assert_array_equal
 
+
 def buffer_length(arr):
     if isinstance(arr, str):
         if not arr:
@@ -110,7 +111,7 @@ class CreateValues:
         assert_(ua_scalar == self.ucs_value*self.ulen)
         # Encode to UTF-8 and double check
         assert_(ua_scalar.encode('utf-8') ==
-                        (self.ucs_value*self.ulen).encode('utf-8'))
+                (self.ucs_value*self.ulen).encode('utf-8'))
         # Check buffer lengths for scalars
         if self.ucs_value == ucs4_value:
             # In UCS2, the \U0010FFFF will be represented using a
@@ -134,7 +135,8 @@ class CreateValues:
 
     def test_valuesMD(self):
         # Check creation of multi-dimensional objects with values
-        ua = np.array([[[self.ucs_value*self.ulen]*2]*3]*4, dtype='U%s' % self.ulen)
+        ua = np.array([[[self.ucs_value*self.ulen]*2]*3]
+                      * 4, dtype='U%s' % self.ulen)
         self.content_check(ua, ua[0, 0, 0], 4*self.ulen*2*3*4)
         self.content_check(ua, ua[-1, -1, -1], 4*self.ulen*2*3*4)
 
@@ -192,7 +194,7 @@ class AssignValues:
         assert_(ua_scalar == self.ucs_value*self.ulen)
         # Encode to UTF-8 and double check
         assert_(ua_scalar.encode('utf-8') ==
-                        (self.ucs_value*self.ulen).encode('utf-8'))
+                (self.ucs_value*self.ulen).encode('utf-8'))
         # Check buffer lengths for scalars
         if self.ucs_value == ucs4_value:
             # In UCS2, the \U0010FFFF will be represented using a

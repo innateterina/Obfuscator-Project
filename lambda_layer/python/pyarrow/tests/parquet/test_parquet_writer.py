@@ -215,7 +215,8 @@ def test_parquet_writer_chunk_size(tempdir):
         if chunk_size is None:
             pq.write_table(table, tempdir / 'test.parquet')
         else:
-            pq.write_table(table, tempdir / 'test.parquet', row_group_size=chunk_size)
+            pq.write_table(table, tempdir / 'test.parquet',
+                           row_group_size=chunk_size)
         metadata = pq.read_metadata(tempdir / 'test.parquet')
         expected_chunk_size = default_chunk_size if chunk_size is None else chunk_size
         assert metadata.num_row_groups == expect_num_chunks
@@ -229,7 +230,8 @@ def test_parquet_writer_chunk_size(tempdir):
             assert metadata.row_group(
                 expect_num_chunks - 1).num_rows == latched_chunk_size
         else:
-            assert metadata.row_group(expect_num_chunks - 1).num_rows == remainder
+            assert metadata.row_group(
+                expect_num_chunks - 1).num_rows == remainder
 
     check_chunk_size(default_chunk_size * 2, default_chunk_size - 100, 3)
     check_chunk_size(default_chunk_size * 2, default_chunk_size, 2)

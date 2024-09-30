@@ -81,7 +81,8 @@ def to_dict(
         "dict", "list", "series", "split", "tight", "records", "index"
     ] = "dict",
     *,
-    into: type[MutableMappingT] | MutableMappingT = dict,  # type: ignore[assignment]
+    # type: ignore[assignment]
+    into: type[MutableMappingT] | MutableMappingT = dict,
     index: bool = True,
 ) -> MutableMappingT | list[MutableMappingT]:
     """
@@ -158,7 +159,8 @@ def to_dict(
         if col_dtype == np.dtype(object) or isinstance(col_dtype, ExtensionDtype)
     ]
     box_na_values = [
-        lib.no_default if not isinstance(col_dtype, BaseMaskedDtype) else libmissing.NA
+        lib.no_default if not isinstance(
+            col_dtype, BaseMaskedDtype) else libmissing.NA
         for i, col_dtype in enumerate(df.dtypes.values)
     ]
     are_all_object_dtype_cols = len(box_native_indices) == len(df.dtypes)
@@ -171,7 +173,8 @@ def to_dict(
         return into_c(
             (
                 k,
-                list(map(maybe_box_native, v.to_numpy(na_value=box_na_values[i])))
+                list(map(maybe_box_native, v.to_numpy(
+                    na_value=box_na_values[i])))
                 if i in object_dtype_indices_as_set
                 else list(map(maybe_box_native, v.to_numpy())),
             )
@@ -239,7 +242,8 @@ def to_dict(
 
     elif orient == "index":
         if not df.index.is_unique:
-            raise ValueError("DataFrame index must be unique for orient='index'.")
+            raise ValueError(
+                "DataFrame index must be unique for orient='index'.")
         columns = df.columns.tolist()
         if are_all_object_dtype_cols:
             return into_c(

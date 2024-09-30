@@ -205,7 +205,8 @@ class NDArrayBackedExtensionArray(NDArrayBacked, ExtensionArray):
         )
 
     # Signature of "argmin" incompatible with supertype "ExtensionArray"
-    def argmin(self, axis: AxisInt = 0, skipna: bool = True):  # type: ignore[override]
+    # type: ignore[override]
+    def argmin(self, axis: AxisInt = 0, skipna: bool = True):
         # override base class by adding axis keyword
         validate_bool_kwarg(skipna, "skipna")
         if not skipna and self._hasna:
@@ -213,7 +214,8 @@ class NDArrayBackedExtensionArray(NDArrayBacked, ExtensionArray):
         return nargminmax(self, "argmin", axis=axis)
 
     # Signature of "argmax" incompatible with supertype "ExtensionArray"
-    def argmax(self, axis: AxisInt = 0, skipna: bool = True):  # type: ignore[override]
+    # type: ignore[override]
+    def argmax(self, axis: AxisInt = 0, skipna: bool = True):
         # override base class by adding axis keyword
         validate_bool_kwarg(skipna, "skipna")
         if not skipna and self._hasna:
@@ -288,7 +290,8 @@ class NDArrayBackedExtensionArray(NDArrayBacked, ExtensionArray):
 
         # error: Incompatible types in assignment (expression has type "ExtensionArray",
         # variable has type "Union[int, slice, ndarray]")
-        key = extract_array(key, extract_numpy=True)  # type: ignore[assignment]
+        # type: ignore[assignment]
+        key = extract_array(key, extract_numpy=True)
         key = check_array_indexer(self, key)
         result = self._ndarray[key]
         if lib.is_scalar(result):
@@ -514,7 +517,8 @@ class NDArrayBackedExtensionArray(NDArrayBacked, ExtensionArray):
         arr = self._ndarray
         fill_value = self._internal_fill_value
 
-        res_values = quantile_with_mask(arr, mask, fill_value, qs, interpolation)
+        res_values = quantile_with_mask(
+            arr, mask, fill_value, qs, interpolation)
 
         res_values = self._cast_quantile_result(res_values)
         return self._from_backing_data(res_values)

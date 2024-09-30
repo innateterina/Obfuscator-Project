@@ -112,7 +112,8 @@ class TestPeriodIndex:
             assert getattr(x, field) == val
 
     def test_is_(self):
-        create_index = lambda: period_range(freq="Y", start="1/1/2001", end="12/1/2009")
+        def create_index(): return period_range(
+            freq="Y", start="1/1/2001", end="12/1/2009")
         index = create_index()
         assert index.is_(index)
         assert not index.is_(create_index())

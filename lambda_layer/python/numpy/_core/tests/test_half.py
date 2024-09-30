@@ -16,6 +16,7 @@ def assert_raises_fpe(strmatch, callable, *args, **kwargs):
         assert_(False,
                 "Did not raise floating point %s error" % strmatch)
 
+
 class TestHalf:
     def setup_method(self):
         # An array of all possible float16 values
@@ -29,8 +30,8 @@ class TestHalf:
 
         # An array of all non-NaN float16 values, in sorted order
         self.nonan_f16 = np.concatenate(
-                                (np.arange(0xfc00, 0x7fff, -1, dtype=uint16),
-                                 np.arange(0x0000, 0x7c01, 1, dtype=uint16)))
+            (np.arange(0xfc00, 0x7fff, -1, dtype=uint16),
+             np.arange(0x0000, 0x7c01, 1, dtype=uint16)))
         self.nonan_f16.dtype = float16
         self.nonan_f32 = np.array(self.nonan_f16, dtype=float32)
         self.nonan_f64 = np.array(self.nonan_f16, dtype=float64)
@@ -231,7 +232,7 @@ class TestHalf:
                       1.0+2.0**-12,   # rounds to 1.0
                       65519,          # rounds to 65504
                       65520],         # rounds to inf
-                      dtype=float64)
+                     dtype=float64)
         rounded = [2.0**-24,
                    0.0,
                    0.0,
@@ -274,8 +275,8 @@ class TestHalf:
         if len(a32_fail) != 0:
             bad_index = a32_fail[0]
             assert_equal(self.finite_f32, a_manual,
-                 "First non-equal is half value 0x%x -> %g != %g" %
-                            (a_bits[bad_index],
+                         "First non-equal is half value 0x%x -> %g != %g" %
+                         (a_bits[bad_index],
                              self.finite_f32[bad_index],
                              a_manual[bad_index]))
 
@@ -283,8 +284,8 @@ class TestHalf:
         if len(a64_fail) != 0:
             bad_index = a64_fail[0]
             assert_equal(self.finite_f64, a_manual,
-                 "First non-equal is half value 0x%x -> %g != %g" %
-                            (a_bits[bad_index],
+                         "First non-equal is half value 0x%x -> %g != %g" %
+                         (a_bits[bad_index],
                              self.finite_f64[bad_index],
                              a_manual[bad_index]))
 
@@ -339,10 +340,12 @@ class TestHalf:
                      95)
 
         # argmax
-        a = np.array([0, -np.inf, -2, 0.5, 12.55, 7.3, 2.1, 12.4], dtype=float16)
+        a = np.array([0, -np.inf, -2, 0.5, 12.55,
+                     7.3, 2.1, 12.4], dtype=float16)
         assert_equal(a.argmax(),
                      4)
-        a = np.array([0, -np.inf, -2, np.inf, 12.55, np.nan, 2.1, 12.4], dtype=float16)
+        a = np.array([0, -np.inf, -2, np.inf, 12.55,
+                     np.nan, 2.1, 12.4], dtype=float16)
         assert_equal(a.argmax(),
                      5)
 
@@ -449,7 +452,8 @@ class TestHalf:
         assert_equal(np.remainder(a, b), [0, 1, 0, 0, 2])
         assert_equal(np.divmod(a, b), ([0, 0, 2, 1, 0], [0, 1, 0, 0, 2]))
         assert_equal(np.square(b), [4, 25, 1, 16, 9])
-        assert_equal(np.reciprocal(b), [-0.5, 0.199951171875, 1, 0.25, 0.333251953125])
+        assert_equal(np.reciprocal(
+            b), [-0.5, 0.199951171875, 1, 0.25, 0.333251953125])
         assert_equal(np.ones_like(b), [1, 1, 1, 1, 1])
         assert_equal(np.conjugate(b), b)
         assert_equal(np.absolute(b), [2, 5, 1, 4, 3])
@@ -457,7 +461,8 @@ class TestHalf:
         assert_equal(np.positive(b), b)
         assert_equal(np.sign(b), [-1, 1, 1, 1, 1])
         assert_equal(np.modf(b), ([0, 0, 0, 0, 0], b))
-        assert_equal(np.frexp(b), ([-0.5, 0.625, 0.5, 0.5, 0.75], [2, 3, 1, 3, 2]))
+        assert_equal(
+            np.frexp(b), ([-0.5, 0.625, 0.5, 0.5, 0.75], [2, 3, 1, 3, 2]))
         assert_equal(np.ldexp(b, [0, 1, 2, 4, 2]), [-2, 10, 4, 64, 12])
 
     @np._no_nep50_warning()
@@ -502,44 +507,47 @@ class TestHalf:
             by16 = float16(1e4)
 
             # Underflow errors
-            assert_raises_fpe('underflow', lambda a, b:a*b, sx16, sx16)
-            assert_raises_fpe('underflow', lambda a, b:a*b, sx16, sy16)
-            assert_raises_fpe('underflow', lambda a, b:a*b, sy16, sx16)
-            assert_raises_fpe('underflow', lambda a, b:a*b, sy16, sy16)
-            assert_raises_fpe('underflow', lambda a, b:a/b, sx16, bx16)
-            assert_raises_fpe('underflow', lambda a, b:a/b, sx16, by16)
-            assert_raises_fpe('underflow', lambda a, b:a/b, sy16, bx16)
-            assert_raises_fpe('underflow', lambda a, b:a/b, sy16, by16)
-            assert_raises_fpe('underflow', lambda a, b:a/b,
-                                             float16(2.**-14), float16(2**11))
-            assert_raises_fpe('underflow', lambda a, b:a/b,
-                                             float16(-2.**-14), float16(2**11))
-            assert_raises_fpe('underflow', lambda a, b:a/b,
-                                             float16(2.**-14+2**-24), float16(2))
-            assert_raises_fpe('underflow', lambda a, b:a/b,
-                                             float16(-2.**-14-2**-24), float16(2))
-            assert_raises_fpe('underflow', lambda a, b:a/b,
-                                             float16(2.**-14+2**-23), float16(4))
+            assert_raises_fpe('underflow', lambda a, b: a*b, sx16, sx16)
+            assert_raises_fpe('underflow', lambda a, b: a*b, sx16, sy16)
+            assert_raises_fpe('underflow', lambda a, b: a*b, sy16, sx16)
+            assert_raises_fpe('underflow', lambda a, b: a*b, sy16, sy16)
+            assert_raises_fpe('underflow', lambda a, b: a/b, sx16, bx16)
+            assert_raises_fpe('underflow', lambda a, b: a/b, sx16, by16)
+            assert_raises_fpe('underflow', lambda a, b: a/b, sy16, bx16)
+            assert_raises_fpe('underflow', lambda a, b: a/b, sy16, by16)
+            assert_raises_fpe('underflow', lambda a, b: a/b,
+                              float16(2.**-14), float16(2**11))
+            assert_raises_fpe('underflow', lambda a, b: a/b,
+                              float16(-2.**-14), float16(2**11))
+            assert_raises_fpe('underflow', lambda a, b: a/b,
+                              float16(2.**-14+2**-24), float16(2))
+            assert_raises_fpe('underflow', lambda a, b: a/b,
+                              float16(-2.**-14-2**-24), float16(2))
+            assert_raises_fpe('underflow', lambda a, b: a/b,
+                              float16(2.**-14+2**-23), float16(4))
 
             # Overflow errors
-            assert_raises_fpe('overflow', lambda a, b:a*b, bx16, bx16)
-            assert_raises_fpe('overflow', lambda a, b:a*b, bx16, by16)
-            assert_raises_fpe('overflow', lambda a, b:a*b, by16, bx16)
-            assert_raises_fpe('overflow', lambda a, b:a*b, by16, by16)
-            assert_raises_fpe('overflow', lambda a, b:a/b, bx16, sx16)
-            assert_raises_fpe('overflow', lambda a, b:a/b, bx16, sy16)
-            assert_raises_fpe('overflow', lambda a, b:a/b, by16, sx16)
-            assert_raises_fpe('overflow', lambda a, b:a/b, by16, sy16)
-            assert_raises_fpe('overflow', lambda a, b:a+b,
-                                             float16(65504), float16(17))
-            assert_raises_fpe('overflow', lambda a, b:a-b,
-                                             float16(-65504), float16(17))
-            assert_raises_fpe('overflow', np.nextafter, float16(65504), float16(np.inf))
-            assert_raises_fpe('overflow', np.nextafter, float16(-65504), float16(-np.inf))
+            assert_raises_fpe('overflow', lambda a, b: a*b, bx16, bx16)
+            assert_raises_fpe('overflow', lambda a, b: a*b, bx16, by16)
+            assert_raises_fpe('overflow', lambda a, b: a*b, by16, bx16)
+            assert_raises_fpe('overflow', lambda a, b: a*b, by16, by16)
+            assert_raises_fpe('overflow', lambda a, b: a/b, bx16, sx16)
+            assert_raises_fpe('overflow', lambda a, b: a/b, bx16, sy16)
+            assert_raises_fpe('overflow', lambda a, b: a/b, by16, sx16)
+            assert_raises_fpe('overflow', lambda a, b: a/b, by16, sy16)
+            assert_raises_fpe('overflow', lambda a, b: a+b,
+                              float16(65504), float16(17))
+            assert_raises_fpe('overflow', lambda a, b: a-b,
+                              float16(-65504), float16(17))
+            assert_raises_fpe('overflow', np.nextafter,
+                              float16(65504), float16(np.inf))
+            assert_raises_fpe('overflow', np.nextafter,
+                              float16(-65504), float16(-np.inf))
             assert_raises_fpe('overflow', np.spacing, float16(65504))
 
             # Invalid value errors
-            assert_raises_fpe('invalid', np.divide, float16(np.inf), float16(np.inf))
+            assert_raises_fpe('invalid', np.divide,
+                              float16(np.inf), float16(np.inf))
             assert_raises_fpe('invalid', np.spacing, float16(np.inf))
             assert_raises_fpe('invalid', np.spacing, float16(np.nan))
 

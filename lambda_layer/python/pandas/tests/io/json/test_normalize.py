@@ -40,7 +40,8 @@ def deep_nested():
         {
             "country": "Germany",
             "states": [
-                {"name": "Bayern", "cities": [{"name": "Munich", "pop": 12347}]},
+                {"name": "Bayern", "cities": [
+                    {"name": "Munich", "pop": 12347}]},
                 {
                     "name": "Nordrhein-Westfalen",
                     "cities": [
@@ -227,14 +228,16 @@ class TestJSONNormalize:
             meta=["country", ["states", "name"]],
             sep="_",
         )
-        expected = Index(["name", "pop", "country", "states_name"]).sort_values()
+        expected = Index(
+            ["name", "pop", "country", "states_name"]).sort_values()
         assert result.columns.sort_values().equals(expected)
 
     def test_normalize_with_multichar_separator(self):
         # GH #43831
         data = {"a": [1, 2], "b": {"b_1": 2, "b_2": (3, 4)}}
         result = json_normalize(data, sep="__")
-        expected = DataFrame([[[1, 2], 2, (3, 4)]], columns=["a", "b__b_1", "b__b_2"])
+        expected = DataFrame([[[1, 2], 2, (3, 4)]], columns=[
+                             "a", "b__b_1", "b__b_2"])
         tm.assert_frame_equal(result, expected)
 
     def test_value_array_record_prefix(self):
@@ -365,7 +368,8 @@ class TestJSONNormalize:
         with pytest.raises(ValueError, match=msg):
             json_normalize(data, "data", meta=["foo", "bar"])
 
-        result = json_normalize(data, "data", meta=["foo", "bar"], meta_prefix="meta")
+        result = json_normalize(
+            data, "data", meta=["foo", "bar"], meta_prefix="meta")
 
         for val in ["metafoo", "metabar", "foo", "bar"]:
             assert val in result
@@ -557,7 +561,8 @@ class TestJSONNormalize:
         # GH 31507
         data = """[{"id": 99, "data": [{"one": 1, "two": 2}]}]"""
 
-        result = json_normalize(json.loads(data), record_path=["data"], meta=["id"])
+        result = json_normalize(json.loads(
+            data), record_path=["data"], meta=["id"])
         expected = DataFrame(
             {"one": [1], "two": [2], "id": np.array([99], dtype=object)}
         )
@@ -578,7 +583,8 @@ class TestJSONNormalize:
         # 49861
         data = {"_id": {"a1": 10, "l2": {"l3": 0}}, "gg": 4}
         result = json_normalize(data, sep="_")
-        expected = DataFrame([[4, 10, 0]], columns=["gg", "_id_a1", "_id_l2_l3"])
+        expected = DataFrame([[4, 10, 0]], columns=[
+                             "gg", "_id_a1", "_id_l2_l3"])
 
         tm.assert_frame_equal(result, expected)
 
@@ -652,7 +658,8 @@ class TestNestedToRecord:
     def test_missing_nested_meta(self):
         # GH44312
         # If errors="ignore" and nested metadata is null, we should return nan
-        data = {"meta": "foo", "nested_meta": None, "value": [{"rec": 1}, {"rec": 2}]}
+        data = {"meta": "foo", "nested_meta": None,
+                "value": [{"rec": 1}, {"rec": 2}]}
         result = json_normalize(
             data,
             record_path="value",
@@ -713,7 +720,8 @@ class TestNestedToRecord:
     def test_donot_drop_nonevalues(self):
         # GH21356
         data = [
-            {"info": None, "author_name": {"first": "Smith", "last_name": "Appleseed"}},
+            {"info": None, "author_name": {
+                "first": "Smith", "last_name": "Appleseed"}},
             {
                 "info": {"created_at": "11/08/1993", "last_updated": "26/05/2012"},
                 "author_name": {"first": "Jane", "last_name": "Doe"},
@@ -845,7 +853,8 @@ class TestNestedToRecord:
     )
     def test_with_max_level(self, max_level, expected, max_level_test_input_data):
         # GH23843: Enhanced JSON normalize
-        output = nested_to_record(max_level_test_input_data, max_level=max_level)
+        output = nested_to_record(
+            max_level_test_input_data, max_level=max_level)
         assert output == expected
 
     def test_with_large_max_level(self):

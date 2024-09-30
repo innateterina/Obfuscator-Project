@@ -171,7 +171,8 @@ class ArrowParserWrapper(ParserBase):
                 # The only way self.names is not the same length as number of cols is
                 # if we have int index_col. We should just pad the names(they will get
                 # removed anyways) to expected length then.
-                self.names = list(range(num_cols - len(self.names))) + self.names
+                self.names = list(
+                    range(num_cols - len(self.names))) + self.names
                 multi_index_named = False
             frame.columns = self.names
         # we only need the frame not the names
@@ -246,7 +247,8 @@ class ArrowParserWrapper(ParserBase):
         self._get_pyarrow_options()
 
         try:
-            convert_options = pyarrow_csv.ConvertOptions(**self.convert_options)
+            convert_options = pyarrow_csv.ConvertOptions(
+                **self.convert_options)
         except TypeError:
             include = self.convert_options.get("include_columns", None)
             if include is not None:

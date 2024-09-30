@@ -102,5 +102,7 @@ def test_cell_value_type(ext, value, cell_value_type, cell_value_attribute, cell
             ]
 
             cell = sheet_cells[0]
-            assert cell.attributes.get((OFFICENS, "value-type")) == cell_value_type
-            assert cell.attributes.get((OFFICENS, cell_value_attribute)) == cell_value
+            assert cell.attributes.get(
+                (OFFICENS, "value-type")) == cell_value_type
+            assert cell.attributes.get(
+                (OFFICENS, cell_value_attribute)) == cell_value

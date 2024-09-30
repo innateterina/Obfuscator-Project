@@ -63,7 +63,8 @@ def test_tseries_indices_frame(setup_path):
         tm.assert_class_equal(result.index, df.index, obj="dataframe index")
 
         idx = period_range("2020-01-01", periods=10, freq="D")
-        df = DataFrame(np.random.default_rng(2).standard_normal((len(idx), 3)), idx)
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((len(idx), 3)), idx)
         store["a"] = df
         result = store["a"]
 

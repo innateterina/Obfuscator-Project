@@ -9,26 +9,32 @@ else:
     from numpy.distutils.ccompiler_opt import CCompilerOpt
 
 arch_compilers = dict(
-    x86 = ("gcc", "clang", "icc", "iccw", "msvc"),
-    x64 = ("gcc", "clang", "icc", "iccw", "msvc"),
-    ppc64 = ("gcc", "clang"),
-    ppc64le = ("gcc", "clang"),
-    armhf = ("gcc", "clang"),
-    aarch64 = ("gcc", "clang"),
-    narch = ("gcc",)
+    x86=("gcc", "clang", "icc", "iccw", "msvc"),
+    x64=("gcc", "clang", "icc", "iccw", "msvc"),
+    ppc64=("gcc", "clang"),
+    ppc64le=("gcc", "clang"),
+    armhf=("gcc", "clang"),
+    aarch64=("gcc", "clang"),
+    narch=("gcc",)
 )
+
 
 class FakeCCompilerOpt(CCompilerOpt):
     fake_info = ("arch", "compiler", "extra_args")
+
     def __init__(self, *args, **kwargs):
         CCompilerOpt.__init__(self, None, **kwargs)
+
     def dist_compile(self, sources, flags, **kwargs):
         return sources
+
     def dist_info(self):
         return FakeCCompilerOpt.fake_info
+
     @staticmethod
     def dist_log(*args, stderr=False):
         pass
+
 
 class _TestConfFeatures(FakeCCompilerOpt):
     """A hook to check the sanity of configured features
@@ -58,7 +64,8 @@ class _TestConfFeatures(FakeCCompilerOpt):
         ).format(log, feature_name, self.cc_march, self.cc_name)
 
         if not feature_name.isupper():
-            raise AssertionError(error_msg + "feature name must be in uppercase")
+            raise AssertionError(
+                error_msg + "feature name must be in uppercase")
 
         for option, val in feature_dict.items():
             self.test_option_types(error_msg, option, val)
@@ -66,7 +73,8 @@ class _TestConfFeatures(FakeCCompilerOpt):
 
         self.test_implies(error_msg, search_in, feature_name, feature_dict)
         self.test_group(error_msg, search_in, feature_name, feature_dict)
-        self.test_extra_checks(error_msg, search_in, feature_name, feature_dict)
+        self.test_extra_checks(error_msg, search_in,
+                               feature_name, feature_dict)
 
     def test_option_types(self, error_msg, option, val):
         for tp, available in (
@@ -77,7 +85,7 @@ class _TestConfFeatures(FakeCCompilerOpt):
             ((int,),  ("interest",)),
             ((bool,), ("implies_detect",)),
             ((bool, type(None)), ("autovec",)),
-        ) :
+        ):
             found_it = option in available
             if not found_it:
                 continue
@@ -85,24 +93,27 @@ class _TestConfFeatures(FakeCCompilerOpt):
                 error_tp = [t.__name__ for t in (*tp,)]
                 error_tp = ' or '.join(error_tp)
                 raise AssertionError(error_msg +
-                    "expected '%s' type for option '%s' not '%s'" % (
-                     error_tp, option, type(val).__name__
-                ))
+                                     "expected '%s' type for option '%s' not '%s'" % (
+                                         error_tp, option, type(val).__name__
+                                     ))
             break
 
         if not found_it:
-            raise AssertionError(error_msg + "invalid option name '%s'" % option)
+            raise AssertionError(
+                error_msg + "invalid option name '%s'" % option)
 
     def test_duplicates(self, error_msg, option, val):
         if option not in (
             "implies", "headers", "flags", "group", "detect", "extra_checks"
-        ) : return
+        ):
+            return
 
         if isinstance(val, str):
             val = val.split()
 
         if len(val) != len(set(val)):
-            raise AssertionError(error_msg + "duplicated values in option '%s'" % option)
+            raise AssertionError(
+                error_msg + "duplicated values in option '%s'" % option)
 
     def test_implies(self, error_msg, search_in, feature_name, feature_dict):
         if feature_dict.get("disabled") is not None:
@@ -120,9 +131,11 @@ class _TestConfFeatures(FakeCCompilerOpt):
             impl_dict = search_in.get(impl)
             if impl_dict is not None:
                 if "disable" in impl_dict:
-                    raise AssertionError(error_msg + "implies disabled feature '%s'" % impl)
+                    raise AssertionError(
+                        error_msg + "implies disabled feature '%s'" % impl)
                 continue
-            raise AssertionError(error_msg + "implies non-exist feature '%s'" % impl)
+            raise AssertionError(
+                error_msg + "implies non-exist feature '%s'" % impl)
 
     def test_group(self, error_msg, search_in, feature_name, feature_dict):
         if feature_dict.get("disabled") is not None:
@@ -138,8 +151,8 @@ class _TestConfFeatures(FakeCCompilerOpt):
             if not impl_dict or "disable" in impl_dict:
                 continue
             raise AssertionError(error_msg +
-                "in option 'group', '%s' already exists as a feature name" % f
-            )
+                                 "in option 'group', '%s' already exists as a feature name" % f
+                                 )
 
     def test_extra_checks(self, error_msg, search_in, feature_name, feature_dict):
         if feature_dict.get("disabled") is not None:
@@ -155,8 +168,9 @@ class _TestConfFeatures(FakeCCompilerOpt):
             if not impl_dict or "disable" in impl_dict:
                 continue
             raise AssertionError(error_msg +
-                "in option 'extra_checks', extra test case '%s' already exists as a feature name" % f
-            )
+                                 "in option 'extra_checks', extra test case '%s' already exists as a feature name" % f
+                                 )
+
 
 class TestConfFeatures(unittest.TestCase):
     def __init__(self, methodName="runTest"):
@@ -171,6 +185,7 @@ class TestConfFeatures(unittest.TestCase):
             for cc in compilers:
                 FakeCCompilerOpt.fake_info = (arch, cc, "")
                 _TestConfFeatures()
+
 
 if is_standalone:
     unittest.main()

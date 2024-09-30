@@ -146,7 +146,8 @@ def test_compression_utf_encoding(all_parsers, csv_dir_path, utf_value, encoding
     encoding = encoding_fmt.format(utf_value)
     path = os.path.join(csv_dir_path, f"utf{utf_value}_ex_small.zip")
 
-    result = parser.read_csv(path, encoding=encoding, compression="zip", sep="\t")
+    result = parser.read_csv(path, encoding=encoding,
+                             compression="zip", sep="\t")
     expected = DataFrame(
         {
             "Country": ["Venezuela", "Venezuela"],
@@ -186,7 +187,8 @@ def test_ignore_compression_extension(all_parsers):
                 Path(path_csv).read_text(encoding="utf-8"), encoding="utf-8"
             )
 
-            tm.assert_frame_equal(parser.read_csv(path_zip, compression=None), df)
+            tm.assert_frame_equal(parser.read_csv(
+                path_zip, compression=None), df)
 
 
 def test_writes_tar_gz(all_parsers):

@@ -128,7 +128,8 @@ class TestSlicing:
         expected = s[s.index.year == 2005]
         tm.assert_series_equal(result, expected)
 
-        df = DataFrame(np.random.default_rng(2).random((len(dti), 5)), index=dti)
+        df = DataFrame(np.random.default_rng(
+            2).random((len(dti), 5)), index=dti)
         result = df.loc["2005"]
         expected = df[df.index.year == 2005]
         tm.assert_frame_equal(result, expected)
@@ -159,7 +160,8 @@ class TestSlicing:
         s = Series(np.arange(len(dti)), index=dti)
         assert len(s["2001Q1"]) == 90
 
-        df = DataFrame(np.random.default_rng(2).random((len(dti), 5)), index=dti)
+        df = DataFrame(np.random.default_rng(
+            2).random((len(dti), 5)), index=dti)
         assert len(df.loc["1Q01"]) == 90
 
     def test_slice_month(self):
@@ -167,7 +169,8 @@ class TestSlicing:
         s = Series(np.arange(len(dti)), index=dti)
         assert len(s["2005-11"]) == 30
 
-        df = DataFrame(np.random.default_rng(2).random((len(dti), 5)), index=dti)
+        df = DataFrame(np.random.default_rng(
+            2).random((len(dti), 5)), index=dti)
         assert len(df.loc["2005-11"]) == 30
 
         tm.assert_series_equal(s["2005-11"], s["11-2005"])
@@ -205,7 +208,8 @@ class TestSlicing:
             s["2004-12-31 00"]
 
     def test_partial_slice_hourly(self):
-        rng = date_range(freq="min", start=datetime(2005, 1, 1, 20, 0, 0), periods=500)
+        rng = date_range(freq="min", start=datetime(
+            2005, 1, 1, 20, 0, 0), periods=500)
         s = Series(np.arange(len(rng)), index=rng)
 
         result = s["2005-1-1"]
@@ -219,7 +223,8 @@ class TestSlicing:
             s["2004-12-31 00:15"]
 
     def test_partial_slice_minutely(self):
-        rng = date_range(freq="s", start=datetime(2005, 1, 1, 23, 59, 0), periods=500)
+        rng = date_range(freq="s", start=datetime(
+            2005, 1, 1, 23, 59, 0), periods=500)
         s = Series(np.arange(len(rng)), index=rng)
 
         result = s["2005-1-1 23:59"]
@@ -308,7 +313,7 @@ class TestSlicing:
             # Compatible with existing key
             # Should return scalar for Series
             # and raise KeyError for Frame
-            for fmt in formats[rnum + 1 :]:
+            for fmt in formats[rnum + 1:]:
                 ts_string = index[1].strftime(fmt)
                 result = df["a"][ts_string]
                 assert isinstance(result, np.int64)
@@ -319,7 +324,7 @@ class TestSlicing:
 
             # Not compatible with existing key
             # Should raise KeyError
-            for fmt, res in list(zip(formats, resolutions))[rnum + 1 :]:
+            for fmt, res in list(zip(formats, resolutions))[rnum + 1:]:
                 ts = index[1] + Timedelta("1 " + res)
                 ts_string = ts.strftime(fmt)
                 msg = rf"^'{ts_string}'$"
@@ -410,7 +415,7 @@ class TestSlicing:
             columns=["1"],
             index=date_range("2016-10-01T00:00:00", "2016-10-01T23:59:59"),
         )
-        result = df.loc[datetime(2016, 10, 1) :]
+        result = df.loc[datetime(2016, 10, 1):]
         tm.assert_frame_equal(result, df)
 
         result = df.loc["2016-10-01T00:00:00":]
@@ -448,7 +453,7 @@ class TestSlicing:
         start = str(start)
         end = str(end)
         with pytest.raises(ValueError, match="Both dates must"):
-            df[start : end[:-4] + "1:00"]
+            df[start: end[:-4] + "1:00"]
 
         with pytest.raises(ValueError, match="The index must be timezone"):
             df = df.tz_localize(None)

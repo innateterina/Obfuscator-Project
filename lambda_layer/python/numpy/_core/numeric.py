@@ -1,3 +1,13 @@
+from ._ufunc_config import *
+from . import _ufunc_config
+from ._asarray import *
+from . import _asarray
+from .arrayprint import *
+from . import arrayprint
+from .fromnumeric import *
+from . import fromnumeric
+from .numerictypes import *
+from .umath import *
 import functools
 import itertools
 import operator
@@ -297,7 +307,7 @@ def ones_like(
 def _full_dispatcher(
     shape, fill_value, dtype=None, order=None, *, device=None, like=None
 ):
-    return(like,)
+    return (like,)
 
 
 @set_array_function_like_doc
@@ -1921,7 +1931,7 @@ def fromfunction(function, shape, *, dtype=float, like=None, **kwargs):
     """
     if like is not None:
         return _fromfunction_with_like(
-                like, function, shape, dtype=dtype, **kwargs)
+            like, function, shape, dtype=dtype, **kwargs)
 
     args = indices(shape, dtype=dtype)
     return function(*args, **kwargs)
@@ -2711,16 +2721,6 @@ def extend_all(module):
             __all__.append(a)
 
 
-from .umath import *
-from .numerictypes import *
-from . import fromnumeric
-from .fromnumeric import *
-from . import arrayprint
-from .arrayprint import *
-from . import _asarray
-from ._asarray import *
-from . import _ufunc_config
-from ._ufunc_config import *
 extend_all(fromnumeric)
 extend_all(umath)
 extend_all(numerictypes)

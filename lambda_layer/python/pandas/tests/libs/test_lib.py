@@ -101,7 +101,8 @@ class TestIndexing:
         tm.assert_numpy_array_equal(target[indices], target[maybe_slice])
 
     @pytest.mark.parametrize(
-        "case", [[2, 1, 2, 0], [2, 2, 1, 0], [0, 1, 2, 1], [-2, 0, 2], [2, 0, -2]]
+        "case", [[2, 1, 2, 0], [2, 2, 1, 0], [
+            0, 1, 2, 1], [-2, 0, 2], [2, 0, -2]]
     )
     def test_maybe_indices_to_slice_left_edge_not_slice(self, case):
         # not slice

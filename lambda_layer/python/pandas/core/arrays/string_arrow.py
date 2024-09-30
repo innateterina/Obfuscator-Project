@@ -189,7 +189,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
             # numerical issues with Float32Dtype
             na_values = scalars._mask
             result = scalars._data
-            result = lib.ensure_string_array(result, copy=copy, convert_na_value=False)
+            result = lib.ensure_string_array(
+                result, copy=copy, convert_na_value=False)
             return cls(pa.array(result, mask=na_values, type=pa.large_string()))
         elif isinstance(scalars, (pa.Array, pa.ChunkedArray)):
             return cls(pc.cast(scalars, pa.large_string()))
@@ -247,7 +248,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
             return np.zeros(len(self), dtype=bool)
 
         result = pc.is_in(
-            self._pa_array, value_set=pa.array(value_set, type=self._pa_array.type)
+            self._pa_array, value_set=pa.array(
+                value_set, type=self._pa_array.type)
         )
         # pyarrow 2.0.0 returned nulls, so we explicily specify dtype to convert nulls
         # to False
@@ -356,9 +358,11 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
             return super()._str_contains(pat, case, flags, na, regex)
 
         if regex:
-            result = pc.match_substring_regex(self._pa_array, pat, ignore_case=not case)
+            result = pc.match_substring_regex(
+                self._pa_array, pat, ignore_case=not case)
         else:
-            result = pc.match_substring(self._pa_array, pat, ignore_case=not case)
+            result = pc.match_substring(
+                self._pa_array, pat, ignore_case=not case)
         result = self._result_converter(result, na=na)
         if not isna(na):
             result[isna(result)] = bool(na)
@@ -378,7 +382,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
                 result = pc.starts_with(self._pa_array, pattern=pat[0])
 
                 for p in pat[1:]:
-                    result = pc.or_(result, pc.starts_with(self._pa_array, pattern=p))
+                    result = pc.or_(result, pc.starts_with(
+                        self._pa_array, pattern=p))
         if not isna(na):
             result = result.fill_null(na)
         return self._result_converter(result)
@@ -397,7 +402,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
                 result = pc.ends_with(self._pa_array, pattern=pat[0])
 
                 for p in pat[1:]:
-                    result = pc.or_(result, pc.ends_with(self._pa_array, pattern=p))
+                    result = pc.or_(result, pc.ends_with(
+                        self._pa_array, pattern=p))
         if not isna(na):
             result = result.fill_null(na)
         return self._result_converter(result)
@@ -416,7 +422,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
             return super()._str_replace(pat, repl, n, case, flags, regex)
 
         func = pc.replace_substring_regex if regex else pc.replace_substring
-        result = func(self._pa_array, pattern=pat, replacement=repl, max_replacements=n)
+        result = func(self._pa_array, pattern=pat,
+                      replacement=repl, max_replacements=n)
         return type(self)(result)
 
     def _str_repeat(self, repeats: int | Sequence[int]):
@@ -449,7 +456,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
         if step is None:
             step = 1
         return type(self)(
-            pc.utf8_slice_codeunits(self._pa_array, start=start, stop=stop, step=step)
+            pc.utf8_slice_codeunits(
+                self._pa_array, start=start, stop=stop, step=step)
         )
 
     def _str_isalnum(self):
@@ -554,7 +562,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
         return self._convert_int_dtype(result)
 
     def _str_get_dummies(self, sep: str = "|"):
-        dummies_pa, labels = ArrowExtensionArray(self._pa_array)._str_get_dummies(sep)
+        dummies_pa, labels = ArrowExtensionArray(
+            self._pa_array)._str_get_dummies(sep)
         if len(labels) == 0:
             return np.empty(shape=(0, 0), dtype=np.int64), labels
         dummies = np.vstack(dummies_pa.to_numpy())
@@ -566,7 +575,8 @@ class ArrowStringArray(ObjectStringArrayMixin, ArrowExtensionArray, BaseStringAr
     def _reduce(
         self, name: str, *, skipna: bool = True, keepdims: bool = False, **kwargs
     ):
-        result = self._reduce_calc(name, skipna=skipna, keepdims=keepdims, **kwargs)
+        result = self._reduce_calc(
+            name, skipna=skipna, keepdims=keepdims, **kwargs)
         if name in ("argmin", "argmax") and isinstance(result, pa.Array):
             return self._convert_int_dtype(result)
         elif isinstance(result, pa.Array):

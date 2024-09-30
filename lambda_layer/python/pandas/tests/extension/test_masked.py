@@ -49,7 +49,8 @@ from pandas.core.arrays.integer import (
 )
 from pandas.tests.extension import base
 
-is_windows_or_32bit = (is_platform_windows() and not np_version_gt2) or not IS64
+is_windows_or_32bit = (is_platform_windows()
+                       and not np_version_gt2) or not IS64
 
 pytestmark = [
     pytest.mark.filterwarnings(
@@ -57,7 +58,8 @@ pytestmark = [
     ),
     pytest.mark.filterwarnings("ignore:Mean of empty slice:RuntimeWarning"),
     # overflow only relevant for Floating dtype cases cases
-    pytest.mark.filterwarnings("ignore:overflow encountered in reduce:RuntimeWarning"),
+    pytest.mark.filterwarnings(
+        "ignore:overflow encountered in reduce:RuntimeWarning"),
 ]
 
 
@@ -181,7 +183,8 @@ class TestMaskedArrays(base.ExtensionTests):
 
     def test_map_na_action_ignore(self, data_missing_for_sorting):
         zero = data_missing_for_sorting[2]
-        result = data_missing_for_sorting.map(lambda x: zero, na_action="ignore")
+        result = data_missing_for_sorting.map(
+            lambda x: zero, na_action="ignore")
         if data_missing_for_sorting.dtype.kind == "b":
             expected = np.array([False, pd.NA, False], dtype=object)
         else:
@@ -403,7 +406,8 @@ class TestMaskedArrays(base.ExtensionTests):
             result = getattr(ser[:12], op_name)(skipna=skipna)
             expected = pd.Series(
                 pd.array(
-                    getattr(ser[:12].astype("float64"), op_name)(skipna=skipna),
+                    getattr(ser[:12].astype("float64"),
+                            op_name)(skipna=skipna),
                     dtype=expected_dtype,
                 )
             )

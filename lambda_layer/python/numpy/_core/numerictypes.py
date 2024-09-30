@@ -81,15 +81,15 @@ import warnings
 
 from . import multiarray as ma
 from .multiarray import (
-        ndarray, array, dtype, datetime_data, datetime_as_string,
-        busday_offset, busday_count, is_busday, busdaycalendar
-        )
+    ndarray, array, dtype, datetime_data, datetime_as_string,
+    busday_offset, busday_count, is_busday, busdaycalendar
+)
 from .._utils import set_module
 
 # we add more at the bottom
 __all__ = [
-    'ScalarType', 'typecodes', 'issubdtype', 'datetime_data', 
-    'datetime_as_string', 'busday_offset', 'busday_count', 
+    'ScalarType', 'typecodes', 'issubdtype', 'datetime_data',
+    'datetime_as_string', 'busday_offset', 'busday_count',
     'is_busday', 'busdaycalendar', 'isdtype'
 ]
 
@@ -119,6 +119,7 @@ genericTypeRank = ['bool', 'int8', 'uint8', 'int16', 'uint16',
                    'float256',
                    'complex32', 'complex64', 'complex128', 'complex160',
                    'complex192', 'complex256', 'complex512', 'object']
+
 
 @set_module('numpy')
 def maximum_sctype(t):
@@ -229,7 +230,7 @@ def issctype(rep):
             return False
     except Exception:
         return False
-        
+
 
 @set_module('numpy')
 def obj2sctype(rep, default=None):
@@ -618,6 +619,7 @@ typecodes = {'Character': 'c',
 # backwards compatibility --- deprecated name
 # Formal deprecation: Numpy 1.20.0, 2020-10-19 (see numpy/__init__.py)
 typeDict = sctypeDict
+
 
 def _register_types():
     numbers.Integral.register(integer)

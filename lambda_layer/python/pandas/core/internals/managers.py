@@ -406,7 +406,8 @@ class BaseBlockManager(DataManager):
                         0, blk_loc, values
                     )
                     # first block equals values
-                    self.blocks[0].setitem((indexer[0], np.arange(len(blk_loc))), value)
+                    self.blocks[0].setitem(
+                        (indexer[0], np.arange(len(blk_loc))), value)
                     return self
             # No need to split if we either set all columns or on a single block
             # manager
@@ -534,7 +535,8 @@ class BaseBlockManager(DataManager):
             return self.make_empty()
 
         # FIXME: optimization potential
-        indexer = np.sort(np.concatenate([b.mgr_locs.as_array for b in blocks]))
+        indexer = np.sort(np.concatenate(
+            [b.mgr_locs.as_array for b in blocks]))
         inv_indexer = lib.get_reverse_indexer(indexer, self.shape[0])
 
         new_blocks: list[Block] = []
@@ -816,7 +818,8 @@ class BaseBlockManager(DataManager):
                     deep = not (only_slice or using_copy_on_write())
                     for mgr_loc in mgr_locs:
                         newblk = blk.copy(deep=deep)
-                        newblk.mgr_locs = BlockPlacement(slice(mgr_loc, mgr_loc + 1))
+                        newblk.mgr_locs = BlockPlacement(
+                            slice(mgr_loc, mgr_loc + 1))
                         blocks.append(newblk)
 
                 else:
@@ -828,7 +831,8 @@ class BaseBlockManager(DataManager):
                         taker = lib.maybe_indices_to_slice(taker, max_len)
 
                     if isinstance(taker, slice):
-                        nb = blk.getitem_block_columns(taker, new_mgr_locs=mgr_locs)
+                        nb = blk.getitem_block_columns(
+                            taker, new_mgr_locs=mgr_locs)
                         blocks.append(nb)
                     elif only_slice:
                         # GH#33597 slice instead of take, so we get
@@ -836,7 +840,8 @@ class BaseBlockManager(DataManager):
                         for i, ml in zip(taker, mgr_locs):
                             slc = slice(i, i + 1)
                             bp = BlockPlacement(ml)
-                            nb = blk.getitem_block_columns(slc, new_mgr_locs=bp)
+                            nb = blk.getitem_block_columns(
+                                slc, new_mgr_locs=bp)
                             # We have np.shares_memory(nb.values, blk.values)
                             blocks.append(nb)
                     else:
@@ -1166,7 +1171,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
 
             new_blknos = np.empty(self.nblocks, dtype=np.intp)
             new_blknos.fill(-1)
-            new_blknos[~is_deleted] = np.arange(self.nblocks - len(removed_blknos))
+            new_blknos[~is_deleted] = np.arange(
+                self.nblocks - len(removed_blknos))
             self._blknos = new_blknos[self._blknos]
             self.blocks = tuple(
                 blk for i, blk in enumerate(self.blocks) if i not in set(removed_blknos)
@@ -1190,7 +1196,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
                     for mgr_loc in unfit_idxr
                 )
 
-                self._blknos[unfit_idxr] = np.arange(unfit_count) + len(self.blocks)
+                self._blknos[unfit_idxr] = np.arange(
+                    unfit_count) + len(self.blocks)
                 self._blklocs[unfit_idxr] = 0
 
             else:
@@ -1248,7 +1255,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
 
         nr_blocks = len(self.blocks)
         blocks_tup = (
-            self.blocks[:blkno_l] + (first_nb,) + self.blocks[blkno_l + 1 :] + nbs_tup
+            self.blocks[:blkno_l] + (first_nb,) +
+            self.blocks[blkno_l + 1:] + nbs_tup
         )
         self.blocks = blocks_tup
 
@@ -1291,7 +1299,7 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
 
         nb = new_block_2d(value, placement=blk._mgr_locs, refs=refs)
         old_blocks = self.blocks
-        new_blocks = old_blocks[:blkno] + (nb,) + old_blocks[blkno + 1 :]
+        new_blocks = old_blocks[:blkno] + (nb,) + old_blocks[blkno + 1:]
         self.blocks = new_blocks
         return
 
@@ -1423,7 +1431,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
         elif loc == 0:
             # np.append is a lot faster, let's use it if we can.
             self._blklocs = np.append(self._blklocs[::-1], 0)[::-1]
-            self._blknos = np.append(self._blknos[::-1], len(self.blocks))[::-1]
+            self._blknos = np.append(
+                self._blknos[::-1], len(self.blocks))[::-1]
         else:
             new_blklocs, new_blknos = libinternals.update_blklocs_and_blknos(
                 self.blklocs, self.blknos, loc, len(self.blocks)
@@ -1439,7 +1448,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
         is_deleted[indexer] = True
         taker = (~is_deleted).nonzero()[0]
 
-        nbs = self._slice_take_blocks_ax0(taker, only_slice=True, ref_inplace_op=True)
+        nbs = self._slice_take_blocks_ax0(
+            taker, only_slice=True, ref_inplace_op=True)
         new_columns = self.items[~is_deleted]
         axes = [new_columns, self.axes[1]]
         return type(self)(tuple(nbs), axes, verify_integrity=False)
@@ -1611,7 +1621,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
 
         new_columns = new_columns[columns_mask]
 
-        bm = BlockManager(new_blocks, [new_columns, new_index], verify_integrity=False)
+        bm = BlockManager(
+            new_blocks, [new_columns, new_index], verify_integrity=False)
         return bm
 
     def to_dict(self) -> dict[str, Self]:
@@ -1819,7 +1830,8 @@ class BlockManager(libinternals.BlockManager, BaseBlockManager):
         """
         Concatenate uniformly-indexed BlockManagers vertically.
         """
-        raise NotImplementedError("This logic lives (for now) in internals.concat")
+        raise NotImplementedError(
+            "This logic lives (for now) in internals.concat")
 
 
 class SingleBlockManager(BaseBlockManager, SingleDataManager):
@@ -1930,7 +1942,8 @@ class SingleBlockManager(BaseBlockManager, SingleDataManager):
                 for b in state["blocks"]
             )
         else:
-            raise NotImplementedError("pre-0.14.1 pickles are no longer supported")
+            raise NotImplementedError(
+                "pre-0.14.1 pickles are no longer supported")
 
         self._post_setstate()
 
@@ -2168,7 +2181,8 @@ def raise_construction_error(
         raise e
     if block_shape[0] == 0:
         raise ValueError("Empty data passed with indices specified.")
-    raise ValueError(f"Shape of passed values is {passed}, indices imply {implied}")
+    raise ValueError(
+        f"Shape of passed values is {passed}, indices imply {implied}")
 
 
 # -----------------------------------------------------------------------
@@ -2212,7 +2226,8 @@ def _form_blocks(arrays: list[ArrayLike], consolidate: bool, refs: list) -> list
             values, placement = _stack_arrays(list(tup_block), dtype)
             if is_dtlike:
                 values = ensure_wrapped_if_datetimelike(values)
-            blk = block_type(values, placement=BlockPlacement(placement), ndim=2)
+            blk = block_type(
+                values, placement=BlockPlacement(placement), ndim=2)
             nbs.append(blk)
 
         elif is_1d_only_ea_dtype(dtype):
@@ -2261,7 +2276,7 @@ def _consolidate(blocks: tuple[Block, ...]) -> tuple[Block, ...]:
     Merge blocks having same dtype, exclude non-consolidating blocks
     """
     # sort by _can_consolidate, dtype
-    gkey = lambda x: x._consolidate_key
+    def gkey(x): return x._consolidate_key
     grouper = itertools.groupby(sorted(blocks, key=gkey), gkey)
 
     new_blocks: list[Block] = []
@@ -2291,7 +2306,8 @@ def _merge_blocks(
             # ExtensionArray]]; expected List[Union[complex, generic,
             # Sequence[Union[int, float, complex, str, bytes, generic]],
             # Sequence[Sequence[Any]], SupportsArray]]
-            new_values = np.vstack([b.values for b in blocks])  # type: ignore[misc]
+            # type: ignore[misc]
+            new_values = np.vstack([b.values for b in blocks])
         else:
             bvals = [blk.values for blk in blocks]
             bvals2 = cast(Sequence[NDArrayBackedExtensionArray], bvals)

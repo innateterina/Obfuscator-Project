@@ -132,7 +132,7 @@ class Arrayterator:
 
         """
         slice_ = tuple(slice(*t) for t in zip(
-                self.start, self.stop, self.step))
+            self.start, self.stop, self.step))
         return self.var[slice_]
 
     @property
@@ -173,7 +173,7 @@ class Arrayterator:
 
         """
         return tuple(((stop-start-1)//step+1) for start, stop, step in
-                zip(self.start, self.stop, self.step))
+                     zip(self.start, self.stop, self.step))
 
     def __iter__(self):
         # Skip arrays with degenerate dimensions

@@ -11,7 +11,8 @@ import pandas._testing as tm
 def test_compare_axis(align_axis):
     # GH#30429
     df = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
         columns=["col1", "col2", "col3"],
     )
     df2 = df.copy()
@@ -22,7 +23,8 @@ def test_compare_axis(align_axis):
 
     if align_axis in (1, "columns"):
         indices = pd.Index([0, 2])
-        columns = pd.MultiIndex.from_product([["col1", "col3"], ["self", "other"]])
+        columns = pd.MultiIndex.from_product(
+            [["col1", "col3"], ["self", "other"]])
         expected = pd.DataFrame(
             [["a", "c", np.nan, np.nan], [np.nan, np.nan, 3.0, 4.0]],
             index=indices,
@@ -50,7 +52,8 @@ def test_compare_axis(align_axis):
 )
 def test_compare_various_formats(keep_shape, keep_equal):
     df = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
         columns=["col1", "col2", "col3"],
     )
     df2 = df.copy()
@@ -86,7 +89,8 @@ def test_compare_various_formats(keep_shape, keep_equal):
             )
     else:
         indices = pd.Index([0, 2])
-        columns = pd.MultiIndex.from_product([["col1", "col3"], ["self", "other"]])
+        columns = pd.MultiIndex.from_product(
+            [["col1", "col3"], ["self", "other"]])
         expected = pd.DataFrame(
             [["a", "c", 1.0, 1.0], ["c", "c", 3.0, 4.0]], index=indices, columns=columns
         )
@@ -97,7 +101,8 @@ def test_compare_with_equal_nulls():
     # We want to make sure two NaNs are considered the same
     # and dropped where applicable
     df = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
         columns=["col1", "col2", "col3"],
     )
     df2 = df.copy()
@@ -114,7 +119,8 @@ def test_compare_with_non_equal_nulls():
     # We want to make sure the relevant NaNs do not get dropped
     # even if the entire row or column are NaNs
     df = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
         columns=["col1", "col2", "col3"],
     )
     df2 = df.copy()
@@ -136,9 +142,11 @@ def test_compare_with_non_equal_nulls():
 @pytest.mark.parametrize("align_axis", [0, 1])
 def test_compare_multi_index(align_axis):
     df = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]}
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]}
     )
-    df.columns = pd.MultiIndex.from_arrays([["a", "a", "b"], ["col1", "col2", "col3"]])
+    df.columns = pd.MultiIndex.from_arrays(
+        [["a", "a", "b"], ["col1", "col2", "col3"]])
     df.index = pd.MultiIndex.from_arrays([["x", "x", "y"], [0, 1, 2]])
 
     df2 = df.copy()
@@ -149,7 +157,8 @@ def test_compare_multi_index(align_axis):
 
     if align_axis == 0:
         indices = pd.MultiIndex.from_arrays(
-            [["x", "x", "y", "y"], [0, 0, 2, 2], ["self", "other", "self", "other"]]
+            [["x", "x", "y", "y"], [0, 0, 2, 2], [
+                "self", "other", "self", "other"]]
         )
         columns = pd.MultiIndex.from_arrays([["a", "b"], ["col1", "col3"]])
         data = [["a", np.nan], ["c", np.nan], [np.nan, 3.0], [np.nan, 4.0]]
@@ -193,7 +202,8 @@ def test_compare_unaligned_objects():
 def test_compare_result_names():
     # GH 44354
     df1 = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
     )
     df2 = pd.DataFrame(
         {
@@ -227,7 +237,8 @@ def test_compare_result_names():
 def test_invalid_input_result_names(result_names):
     # GH 44354
     df1 = pd.DataFrame(
-        {"col1": ["a", "b", "c"], "col2": [1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
+        {"col1": ["a", "b", "c"], "col2": [
+            1.0, 2.0, np.nan], "col3": [1.0, 2.0, 3.0]},
     )
     df2 = pd.DataFrame(
         {
@@ -289,7 +300,8 @@ def test_compare_ea_and_np_dtype(val1, val2):
 )
 def test_compare_nullable_int64_dtype(df1_val, df2_val, diff_self, diff_other):
     # GH 48966
-    df1 = pd.DataFrame({"a": pd.Series([df1_val, pd.NA], dtype="Int64"), "b": [1.0, 2]})
+    df1 = pd.DataFrame(
+        {"a": pd.Series([df1_val, pd.NA], dtype="Int64"), "b": [1.0, 2]})
     df2 = df1.copy()
     df2.loc[0, "a"] = df2_val
 

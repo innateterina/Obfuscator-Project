@@ -1,3 +1,4 @@
+from pandas.io.formats.style import Styler
 from textwrap import dedent
 
 import pytest
@@ -8,8 +9,6 @@ from pandas import (
 )
 
 pytest.importorskip("jinja2")
-
-from pandas.io.formats.style import Styler
 
 
 @pytest.fixture
@@ -49,9 +48,9 @@ def test_format_non_unique(df):
 def test_apply_map_non_unique_raises(df, func):
     # GH 41269
     if func == "apply":
-        op = lambda s: ["color: red;"] * len(s)
+        def op(s): return ["color: red;"] * len(s)
     else:
-        op = lambda v: "color: red;"
+        def op(v): return "color: red;"
 
     with pytest.raises(KeyError, match="`Styler.apply` and `.map` are not"):
         getattr(df.style, func)(op)._compute()
@@ -79,32 +78,38 @@ def test_table_styles_dict_non_unique_columns(styler):
 
 def test_tooltips_non_unique_raises(styler):
     # ttips has unique keys
-    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "d"], index=["a", "b"])
+    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                      "c", "d"], index=["a", "b"])
     styler.set_tooltips(ttips=ttips)  # OK
 
     # ttips has non-unique columns
-    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "c"], index=["a", "b"])
+    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                      "c", "c"], index=["a", "b"])
     with pytest.raises(KeyError, match="Tooltips render only if `ttips` has unique"):
         styler.set_tooltips(ttips=ttips)
 
     # ttips has non-unique index
-    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "d"], index=["a", "a"])
+    ttips = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                      "c", "d"], index=["a", "a"])
     with pytest.raises(KeyError, match="Tooltips render only if `ttips` has unique"):
         styler.set_tooltips(ttips=ttips)
 
 
 def test_set_td_classes_non_unique_raises(styler):
     # classes has unique keys
-    classes = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "d"], index=["a", "b"])
+    classes = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                        "c", "d"], index=["a", "b"])
     styler.set_td_classes(classes=classes)  # OK
 
     # classes has non-unique columns
-    classes = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "c"], index=["a", "b"])
+    classes = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                        "c", "c"], index=["a", "b"])
     with pytest.raises(KeyError, match="Classes render only if `classes` has unique"):
         styler.set_td_classes(classes=classes)
 
     # classes has non-unique index
-    classes = DataFrame([["1", "2"], ["3", "4"]], columns=["c", "d"], index=["a", "a"])
+    classes = DataFrame([["1", "2"], ["3", "4"]], columns=[
+                        "c", "d"], index=["a", "a"])
     with pytest.raises(KeyError, match="Classes render only if `classes` has unique"):
         styler.set_td_classes(classes=classes)
 

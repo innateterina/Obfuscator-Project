@@ -102,7 +102,8 @@ class TestEmptyConcat:
         "left,right,expected",
         [
             # booleans
-            (np.bool_, np.int32, np.object_),  # changed from int32 in 2.0 GH#39817
+            # changed from int32 in 2.0 GH#39817
+            (np.bool_, np.int32, np.object_),
             (np.bool_, np.float32, np.object_),
             # datetime-like
             ("m8[ns]", np.bool_, np.object_),
@@ -179,7 +180,8 @@ class TestEmptyConcat:
     def test_concat_empty_series_dtypes_triple(self):
         assert (
             concat(
-                [Series(dtype="M8[ns]"), Series(dtype=np.bool_), Series(dtype=np.int64)]
+                [Series(dtype="M8[ns]"), Series(
+                    dtype=np.bool_), Series(dtype=np.int64)]
             ).dtype
             == np.object_
         )
@@ -188,7 +190,8 @@ class TestEmptyConcat:
         # GH#18515
         assert (
             concat(
-                [Series(np.array([]), dtype="category"), Series(dtype="float64")]
+                [Series(np.array([]), dtype="category"),
+                 Series(dtype="float64")]
             ).dtype
             == "float64"
         )
@@ -216,7 +219,8 @@ class TestEmptyConcat:
 
     def test_concat_empty_df_object_dtype(self):
         # GH 9149
-        df_1 = DataFrame({"Row": [0, 1, 1], "EmptyCol": np.nan, "NumberCol": [1, 2, 3]})
+        df_1 = DataFrame(
+            {"Row": [0, 1, 1], "EmptyCol": np.nan, "NumberCol": [1, 2, 3]})
         df_2 = DataFrame(columns=df_1.columns)
         result = concat([df_1, df_2], axis=0)
         expected = df_1.astype(object)

@@ -26,7 +26,8 @@ class TestDataFrameCombineFirst:
         b = Series(range(2), index=range(5, 7))
         g = DataFrame({"A": a, "B": b})
 
-        exp = DataFrame({"A": list("abab"), "B": [0, 1, 0, 1]}, index=[0, 1, 5, 6])
+        exp = DataFrame(
+            {"A": list("abab"), "B": [0, 1, 0, 1]}, index=[0, 1, 5, 6])
         combined = f.combine_first(g)
         tm.assert_frame_equal(combined, exp)
 
@@ -130,7 +131,8 @@ class TestDataFrameCombineFirst:
     def test_combine_first_doc_example(self):
         # doc example
         df1 = DataFrame(
-            {"A": [1.0, np.nan, 3.0, 5.0, np.nan], "B": [np.nan, 2.0, 3.0, np.nan, 6.0]}
+            {"A": [1.0, np.nan, 3.0, 5.0, np.nan],
+                "B": [np.nan, 2.0, 3.0, np.nan, 6.0]}
         )
 
         df2 = DataFrame(
@@ -141,7 +143,8 @@ class TestDataFrameCombineFirst:
         )
 
         result = df1.combine_first(df2)
-        expected = DataFrame({"A": [1, 2, 3, 5, 3, 7.0], "B": [np.nan, 2, 3, 4, 6, 8]})
+        expected = DataFrame(
+            {"A": [1, 2, 3, 5, 3, 7.0], "B": [np.nan, 2, 3, 4, 6, 8]})
         tm.assert_frame_equal(result, expected)
 
     def test_combine_first_return_obj_type_with_bools(self):
@@ -150,7 +153,8 @@ class TestDataFrameCombineFirst:
         df1 = DataFrame(
             [[np.nan, 3.0, True], [-4.6, np.nan, True], [np.nan, 7.0, False]]
         )
-        df2 = DataFrame([[-42.6, np.nan, True], [-5.0, 1.6, False]], index=[1, 2])
+        df2 = DataFrame(
+            [[-42.6, np.nan, True], [-5.0, 1.6, False]], index=[1, 2])
 
         expected = Series([True, True, False], name=2, dtype=bool)
 
@@ -164,24 +168,32 @@ class TestDataFrameCombineFirst:
         "data1, data2, data_expected",
         (
             (
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
                 [pd.NaT, pd.NaT, pd.NaT],
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
             ),
             (
                 [pd.NaT, pd.NaT, pd.NaT],
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
             ),
             (
                 [datetime(2000, 1, 2), pd.NaT, pd.NaT],
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
-                [datetime(2000, 1, 2), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 2), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
             ),
             (
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
                 [datetime(2000, 1, 2), pd.NaT, pd.NaT],
-                [datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)],
+                [datetime(2000, 1, 1), datetime(
+                    2000, 1, 2), datetime(2000, 1, 3)],
             ),
         ),
     )
@@ -213,7 +225,8 @@ class TestDataFrameCombineFirst:
         assert res["b"].dtype == "int64"
 
         res = dfa.iloc[:0].combine_first(dfb)
-        exp = DataFrame({"a": [np.nan, np.nan], "b": [4, 5]}, columns=["a", "b"])
+        exp = DataFrame({"a": [np.nan, np.nan], "b": [
+                        4, 5]}, columns=["a", "b"])
         tm.assert_frame_equal(res, exp)
         # TODO: this must be datetime64
         assert res["a"].dtype == "float64"
@@ -222,13 +235,15 @@ class TestDataFrameCombineFirst:
 
     def test_combine_first_timezone(self, unit):
         # see gh-7630
-        data1 = pd.to_datetime("20100101 01:01").tz_localize("UTC").as_unit(unit)
+        data1 = pd.to_datetime("20100101 01:01").tz_localize(
+            "UTC").as_unit(unit)
         df1 = DataFrame(
             columns=["UTCdatetime", "abc"],
             data=data1,
             index=pd.date_range("20140627", periods=1),
         )
-        data2 = pd.to_datetime("20121212 12:12").tz_localize("UTC").as_unit(unit)
+        data2 = pd.to_datetime("20121212 12:12").tz_localize(
+            "UTC").as_unit(unit)
         df2 = DataFrame(
             columns=["UTCdatetime", "xyz"],
             data=data2,
@@ -302,7 +317,8 @@ class TestDataFrameCombineFirst:
         assert res["DATE"].dtype == "datetime64[ns, US/Eastern]"
 
     def test_combine_first_timezone5(self, unit):
-        dts1 = pd.date_range("2015-01-01", "2015-01-02", tz="US/Eastern", unit=unit)
+        dts1 = pd.date_range("2015-01-01", "2015-01-02",
+                             tz="US/Eastern", unit=unit)
         df1 = DataFrame({"DATE": dts1})
         dts2 = pd.date_range("2015-01-01", "2015-01-03", unit=unit)
         df2 = DataFrame({"DATE": dts2})
@@ -332,7 +348,8 @@ class TestDataFrameCombineFirst:
         assert res["TD"].dtype == "timedelta64[ns]"
 
     def test_combine_first_period(self):
-        data1 = pd.PeriodIndex(["2011-01", "NaT", "2011-03", "2011-04"], freq="M")
+        data1 = pd.PeriodIndex(
+            ["2011-01", "NaT", "2011-03", "2011-04"], freq="M")
         df1 = DataFrame({"P": data1}, index=[1, 3, 5, 7])
         data2 = pd.PeriodIndex(["2012-01-01", "2012-02", "2012-03"], freq="M")
         df2 = DataFrame({"P": data2}, index=[2, 4, 5])
@@ -346,7 +363,8 @@ class TestDataFrameCombineFirst:
         assert res["P"].dtype == data1.dtype
 
         # different freq
-        dts2 = pd.PeriodIndex(["2012-01-01", "2012-01-02", "2012-01-03"], freq="D")
+        dts2 = pd.PeriodIndex(
+            ["2012-01-01", "2012-01-02", "2012-01-03"], freq="D")
         df2 = DataFrame({"P": dts2}, index=[2, 4, 5])
 
         res = df1.combine_first(df2)
@@ -392,7 +410,8 @@ class TestDataFrameCombineFirst:
         df = DataFrame(
             {"a": ["962", "85"], "b": [pd.NA] * 2}, dtype=nullable_string_dtype
         )
-        df2 = DataFrame({"a": ["85"], "b": [pd.NA]}, dtype=nullable_string_dtype)
+        df2 = DataFrame({"a": ["85"], "b": [pd.NA]},
+                        dtype=nullable_string_dtype)
         df.set_index(["a", "b"], inplace=True)
         df2.set_index(["a", "b"], inplace=True)
         result = df.combine_first(df2)
@@ -504,12 +523,14 @@ def test_combine_first_duplicates_rows_for_nan_index_values():
     # GH39881
     df1 = DataFrame(
         {"x": [9, 10, 11]},
-        index=MultiIndex.from_arrays([[1, 2, 3], [np.nan, 5, 6]], names=["a", "b"]),
+        index=MultiIndex.from_arrays(
+            [[1, 2, 3], [np.nan, 5, 6]], names=["a", "b"]),
     )
 
     df2 = DataFrame(
         {"y": [12, 13, 14]},
-        index=MultiIndex.from_arrays([[1, 2, 4], [np.nan, 5, 7]], names=["a", "b"]),
+        index=MultiIndex.from_arrays(
+            [[1, 2, 4], [np.nan, 5, 7]], names=["a", "b"]),
     )
 
     expected = DataFrame(

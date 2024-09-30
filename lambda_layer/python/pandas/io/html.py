@@ -115,7 +115,8 @@ def _get_skiprows(skiprows: int | Sequence[int] | slice | None) -> int | Sequenc
         return cast("int | Sequence[int]", skiprows)
     elif skiprows is None:
         return 0
-    raise TypeError(f"{type(skiprows).__name__} is not a valid type for skipping rows")
+    raise TypeError(
+        f"{type(skiprows).__name__} is not a valid type for skipping rows")
 
 
 def _read(
@@ -509,7 +510,8 @@ class _HtmlFrameParser:
                     prev_i, prev_text, prev_rowspan = remainder.pop(0)
                     texts.append(prev_text)
                     if prev_rowspan > 1:
-                        next_remainder.append((prev_i, prev_text, prev_rowspan - 1))
+                        next_remainder.append(
+                            (prev_i, prev_text, prev_rowspan - 1))
                     index += 1
 
                 # Append the text from this <td>, colspan times
@@ -530,7 +532,8 @@ class _HtmlFrameParser:
             for prev_i, prev_text, prev_rowspan in remainder:
                 texts.append(prev_text)
                 if prev_rowspan > 1:
-                    next_remainder.append((prev_i, prev_text, prev_rowspan - 1))
+                    next_remainder.append(
+                        (prev_i, prev_text, prev_rowspan - 1))
 
             all_texts.append(texts)
             remainder = next_remainder
@@ -543,7 +546,8 @@ class _HtmlFrameParser:
             for prev_i, prev_text, prev_rowspan in remainder:
                 texts.append(prev_text)
                 if prev_rowspan > 1:
-                    next_remainder.append((prev_i, prev_text, prev_rowspan - 1))
+                    next_remainder.append(
+                        (prev_i, prev_text, prev_rowspan - 1))
             all_texts.append(texts)
             remainder = next_remainder
 
@@ -613,7 +617,8 @@ class _BeautifulSoupHtml5LibFrameParser(_HtmlFrameParser):
                 result.append(table)
             unique_tables.add(table)
         if not result:
-            raise ValueError(f"No tables found matching pattern {repr(match.pattern)}")
+            raise ValueError(
+                f"No tables found matching pattern {repr(match.pattern)}")
         return result
 
     def _href_getter(self, obj) -> str | None:
@@ -658,7 +663,8 @@ class _BeautifulSoupHtml5LibFrameParser(_HtmlFrameParser):
             udoc = bdoc
             from_encoding = self.encoding
 
-        soup = BeautifulSoup(udoc, features="html5lib", from_encoding=from_encoding)
+        soup = BeautifulSoup(udoc, features="html5lib",
+                             from_encoding=from_encoding)
 
         for br in soup.find_all("br"):
             br.replace_with("\n" + br.text)
@@ -865,7 +871,8 @@ def _data_to_frame(**kwargs):
                 header = 0
             else:
                 # ignore all-empty-text rows
-                header = [i for i, row in enumerate(head) if any(text for text in row)]
+                header = [i for i, row in enumerate(
+                    head) if any(text for text in row)]
 
     if foot:
         body += foot
@@ -1013,7 +1020,8 @@ def _parse(
                 df.columns, MultiIndex
             ):
                 df.columns = Index(
-                    ((col[0], None if isna(col[1]) else col[1]) for col in df.columns),
+                    ((col[0], None if isna(col[1]) else col[1])
+                     for col in df.columns),
                     tupleize_cols=False,
                 )
 

@@ -52,8 +52,10 @@ def test_get_offset_name():
 
 
 class TestFY5253LastOfMonth:
-    offset_lom_sat_aug = makeFY5253LastOfMonth(1, startingMonth=8, weekday=WeekDay.SAT)
-    offset_lom_sat_sep = makeFY5253LastOfMonth(1, startingMonth=9, weekday=WeekDay.SAT)
+    offset_lom_sat_aug = makeFY5253LastOfMonth(
+        1, startingMonth=8, weekday=WeekDay.SAT)
+    offset_lom_sat_sep = makeFY5253LastOfMonth(
+        1, startingMonth=9, weekday=WeekDay.SAT)
 
     on_offset_cases = [
         # From Wikipedia (see:
@@ -99,7 +101,8 @@ class TestFY5253LastOfMonth:
         assert_is_on_offset(offset, dt, expected)
 
     def test_apply(self):
-        offset_lom_aug_sat = makeFY5253LastOfMonth(startingMonth=8, weekday=WeekDay.SAT)
+        offset_lom_aug_sat = makeFY5253LastOfMonth(
+            startingMonth=8, weekday=WeekDay.SAT)
         offset_lom_aug_sat_1 = makeFY5253LastOfMonth(
             n=1, startingMonth=8, weekday=WeekDay.SAT
         )
@@ -121,10 +124,13 @@ class TestFY5253LastOfMonth:
         tests = [
             (offset_lom_aug_sat, date_seq_lom_aug_sat),
             (offset_lom_aug_sat_1, date_seq_lom_aug_sat),
-            (offset_lom_aug_sat, [datetime(2006, 8, 25)] + date_seq_lom_aug_sat),
-            (offset_lom_aug_sat_1, [datetime(2006, 8, 27)] + date_seq_lom_aug_sat[1:]),
+            (offset_lom_aug_sat, [
+             datetime(2006, 8, 25)] + date_seq_lom_aug_sat),
+            (offset_lom_aug_sat_1, [
+             datetime(2006, 8, 27)] + date_seq_lom_aug_sat[1:]),
             (
-                makeFY5253LastOfMonth(n=-1, startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253LastOfMonth(
+                    n=-1, startingMonth=8, weekday=WeekDay.SAT),
                 list(reversed(date_seq_lom_aug_sat)),
             ),
         ]
@@ -148,14 +154,21 @@ class TestFY5253NearestEndMonth:
             startingMonth=8, weekday=WeekDay.FRI
         ).get_year_end(datetime(2013, 1, 1)) == datetime(2013, 8, 30)
 
-        offset_n = FY5253(weekday=WeekDay.TUE, startingMonth=12, variation="nearest")
-        assert offset_n.get_year_end(datetime(2012, 1, 1)) == datetime(2013, 1, 1)
-        assert offset_n.get_year_end(datetime(2012, 1, 10)) == datetime(2013, 1, 1)
+        offset_n = FY5253(weekday=WeekDay.TUE,
+                          startingMonth=12, variation="nearest")
+        assert offset_n.get_year_end(
+            datetime(2012, 1, 1)) == datetime(2013, 1, 1)
+        assert offset_n.get_year_end(
+            datetime(2012, 1, 10)) == datetime(2013, 1, 1)
 
-        assert offset_n.get_year_end(datetime(2013, 1, 1)) == datetime(2013, 12, 31)
-        assert offset_n.get_year_end(datetime(2013, 1, 2)) == datetime(2013, 12, 31)
-        assert offset_n.get_year_end(datetime(2013, 1, 3)) == datetime(2013, 12, 31)
-        assert offset_n.get_year_end(datetime(2013, 1, 10)) == datetime(2013, 12, 31)
+        assert offset_n.get_year_end(
+            datetime(2013, 1, 1)) == datetime(2013, 12, 31)
+        assert offset_n.get_year_end(
+            datetime(2013, 1, 2)) == datetime(2013, 12, 31)
+        assert offset_n.get_year_end(
+            datetime(2013, 1, 3)) == datetime(2013, 12, 31)
+        assert offset_n.get_year_end(
+            datetime(2013, 1, 10)) == datetime(2013, 12, 31)
 
         JNJ = FY5253(n=1, startingMonth=12, weekday=6, variation="nearest")
         assert JNJ.get_year_end(datetime(2006, 1, 1)) == datetime(2006, 12, 31)
@@ -166,7 +179,8 @@ class TestFY5253NearestEndMonth:
     offset_lom_aug_thu = makeFY5253NearestEndMonth(
         1, startingMonth=8, weekday=WeekDay.THU
     )
-    offset_n = FY5253(weekday=WeekDay.TUE, startingMonth=12, variation="nearest")
+    offset_n = FY5253(weekday=WeekDay.TUE,
+                      startingMonth=12, variation="nearest")
 
     on_offset_cases = [
         #    From Wikipedia (see:
@@ -245,43 +259,53 @@ class TestFY5253NearestEndMonth:
             datetime(2012, 12, 30),
         ]
 
-        DEC_SAT = FY5253(n=-1, startingMonth=12, weekday=5, variation="nearest")
+        DEC_SAT = FY5253(n=-1, startingMonth=12,
+                         weekday=5, variation="nearest")
 
         tests = [
             (
-                makeFY5253NearestEndMonth(startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253NearestEndMonth(
+                    startingMonth=8, weekday=WeekDay.SAT),
                 date_seq_nem_8_sat,
             ),
             (
-                makeFY5253NearestEndMonth(n=1, startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253NearestEndMonth(
+                    n=1, startingMonth=8, weekday=WeekDay.SAT),
                 date_seq_nem_8_sat,
             ),
             (
-                makeFY5253NearestEndMonth(startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253NearestEndMonth(
+                    startingMonth=8, weekday=WeekDay.SAT),
                 [datetime(2006, 9, 1)] + date_seq_nem_8_sat,
             ),
             (
-                makeFY5253NearestEndMonth(n=1, startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253NearestEndMonth(
+                    n=1, startingMonth=8, weekday=WeekDay.SAT),
                 [datetime(2006, 9, 3)] + date_seq_nem_8_sat[1:],
             ),
             (
-                makeFY5253NearestEndMonth(n=-1, startingMonth=8, weekday=WeekDay.SAT),
+                makeFY5253NearestEndMonth(
+                    n=-1, startingMonth=8, weekday=WeekDay.SAT),
                 list(reversed(date_seq_nem_8_sat)),
             ),
             (
-                makeFY5253NearestEndMonth(n=1, startingMonth=12, weekday=WeekDay.SUN),
+                makeFY5253NearestEndMonth(
+                    n=1, startingMonth=12, weekday=WeekDay.SUN),
                 JNJ,
             ),
             (
-                makeFY5253NearestEndMonth(n=-1, startingMonth=12, weekday=WeekDay.SUN),
+                makeFY5253NearestEndMonth(
+                    n=-1, startingMonth=12, weekday=WeekDay.SUN),
                 list(reversed(JNJ)),
             ),
             (
-                makeFY5253NearestEndMonth(n=1, startingMonth=12, weekday=WeekDay.SUN),
+                makeFY5253NearestEndMonth(
+                    n=1, startingMonth=12, weekday=WeekDay.SUN),
                 [datetime(2005, 1, 2), datetime(2006, 1, 1)],
             ),
             (
-                makeFY5253NearestEndMonth(n=1, startingMonth=12, weekday=WeekDay.SUN),
+                makeFY5253NearestEndMonth(
+                    n=1, startingMonth=12, weekday=WeekDay.SUN),
                 [datetime(2006, 1, 2), datetime(2006, 12, 31)],
             ),
             (DEC_SAT, [datetime(2013, 1, 15), datetime(2012, 12, 29)]),
@@ -520,7 +544,8 @@ class TestFY5253NearestEndMonthQuarter:
     offset_nem_thu_aug_4 = makeFY5253NearestEndMonthQuarter(
         1, startingMonth=8, weekday=WeekDay.THU, qtr_with_extra_week=4
     )
-    offset_n = FY5253(weekday=WeekDay.TUE, startingMonth=12, variation="nearest")
+    offset_n = FY5253(weekday=WeekDay.TUE,
+                      startingMonth=12, variation="nearest")
 
     on_offset_cases = [
         # From Wikipedia
@@ -586,14 +611,17 @@ class TestFY5253NearestEndMonthQuarter:
             assert_offset_equal(offset, date, expected)
             date = date + offset
 
-        assert_offset_equal(offset, datetime(2012, 5, 31), datetime(2012, 8, 30))
-        assert_offset_equal(offset, datetime(2012, 5, 30), datetime(2012, 5, 31))
+        assert_offset_equal(offset, datetime(
+            2012, 5, 31), datetime(2012, 8, 30))
+        assert_offset_equal(offset, datetime(
+            2012, 5, 30), datetime(2012, 5, 31))
 
         offset2 = FY5253Quarter(
             weekday=5, startingMonth=12, variation="last", qtr_with_extra_week=4
         )
 
-        assert_offset_equal(offset2, datetime(2013, 1, 15), datetime(2013, 3, 30))
+        assert_offset_equal(offset2, datetime(
+            2013, 1, 15), datetime(2013, 3, 30))
 
 
 def test_bunched_yearends():
@@ -619,7 +647,8 @@ def test_bunched_yearends():
 def test_fy5253_last_onoffset():
     # GH#18877 dates on the year-end but not normalized to midnight
     offset = FY5253(n=-5, startingMonth=5, variation="last", weekday=0)
-    ts = Timestamp("1984-05-28 06:29:43.955911354+0200", tz="Europe/San_Marino")
+    ts = Timestamp("1984-05-28 06:29:43.955911354+0200",
+                   tz="Europe/San_Marino")
     fast = offset.is_on_offset(ts)
     slow = (ts + offset) - offset == ts
     assert fast == slow

@@ -69,7 +69,8 @@ class TestBuildSchema:
             "primaryKey": ["idx"],
         }
         if using_infer_string:
-            expected["fields"][2] = {"name": "B", "type": "any", "extDtype": "string"}
+            expected["fields"][2] = {"name": "B",
+                                     "type": "any", "extDtype": "string"}
         assert result == expected
         result = build_table_schema(df_schema)
         assert "pandas_version" in result
@@ -122,7 +123,8 @@ class TestBuildSchema:
                 "type": "any",
                 "extDtype": "string",
             }
-            expected["fields"][3] = {"name": "B", "type": "any", "extDtype": "string"}
+            expected["fields"][3] = {"name": "B",
+                                     "type": "any", "extDtype": "string"}
         assert result == expected
 
         df.index.names = ["idx0", None]
@@ -136,20 +138,23 @@ class TestTableSchemaType:
     @pytest.mark.parametrize("int_type", [int, np.int16, np.int32, np.int64])
     def test_as_json_table_type_int_data(self, int_type):
         int_data = [1, 2, 3]
-        assert as_json_table_type(np.array(int_data, dtype=int_type).dtype) == "integer"
+        assert as_json_table_type(
+            np.array(int_data, dtype=int_type).dtype) == "integer"
 
     @pytest.mark.parametrize("float_type", [float, np.float16, np.float32, np.float64])
     def test_as_json_table_type_float_data(self, float_type):
         float_data = [1.0, 2.0, 3.0]
         assert (
-            as_json_table_type(np.array(float_data, dtype=float_type).dtype) == "number"
+            as_json_table_type(
+                np.array(float_data, dtype=float_type).dtype) == "number"
         )
 
     @pytest.mark.parametrize("bool_type", [bool, np.bool_])
     def test_as_json_table_type_bool_data(self, bool_type):
         bool_data = [True, False]
         assert (
-            as_json_table_type(np.array(bool_data, dtype=bool_type).dtype) == "boolean"
+            as_json_table_type(
+                np.array(bool_data, dtype=bool_type).dtype) == "boolean"
         )
 
     @pytest.mark.parametrize(
@@ -167,7 +172,8 @@ class TestTableSchemaType:
 
     @pytest.mark.parametrize(
         "str_data",
-        [pd.Series(["a", "b"], dtype=object), pd.Index(["a", "b"], dtype=object)],
+        [pd.Series(["a", "b"], dtype=object),
+         pd.Index(["a", "b"], dtype=object)],
     )
     def test_as_json_table_type_string_data(self, str_data):
         assert as_json_table_type(str_data.dtype) == "string"
@@ -216,7 +222,8 @@ class TestTableSchemaType:
     def test_as_json_table_type_timedelta_dtypes(self, td_dtype):
         assert as_json_table_type(td_dtype) == "duration"
 
-    @pytest.mark.parametrize("str_dtype", [object])  # TODO(GH#14904) flesh out dtypes?
+    # TODO(GH#14904) flesh out dtypes?
+    @pytest.mark.parametrize("str_dtype", [object])
     def test_as_json_table_type_string_dtypes(self, str_dtype):
         assert as_json_table_type(str_dtype) == "string"
 
@@ -235,7 +242,8 @@ class TestTableOrient:
         assert "pandas_version" in result["schema"]
         result["schema"].pop("pandas_version")
 
-        fields = [{"name": "id", "type": "integer"}, {"name": "a", "type": "integer"}]
+        fields = [{"name": "id", "type": "integer"},
+                  {"name": "a", "type": "integer"}]
 
         schema = {"fields": fields, "primaryKey": ["id"]}
 
@@ -526,7 +534,8 @@ class TestTableOrient:
             ({"type": "boolean"}, "bool"),
             ({"type": "duration"}, "timedelta64"),
             ({"type": "datetime"}, "datetime64[ns]"),
-            ({"type": "datetime", "tz": "US/Hawaii"}, "datetime64[ns, US/Hawaii]"),
+            ({"type": "datetime", "tz": "US/Hawaii"},
+             "datetime64[ns, US/Hawaii]"),
             ({"type": "any"}, "object"),
             (
                 {
@@ -628,8 +637,10 @@ class TestTableOrient:
         "idx",
         [
             pd.Index([], name="index"),
-            pd.MultiIndex.from_arrays([["foo"], ["bar"]], names=("level_0", "level_1")),
-            pd.MultiIndex.from_arrays([["foo"], ["bar"]], names=("foo", "level_1")),
+            pd.MultiIndex.from_arrays(
+                [["foo"], ["bar"]], names=("level_0", "level_1")),
+            pd.MultiIndex.from_arrays(
+                [["foo"], ["bar"]], names=("foo", "level_1")),
         ],
     )
     def test_warns_non_roundtrippable_names(self, idx):
@@ -655,7 +666,8 @@ class TestTableOrient:
             DataFrame({"A": [1]}, index=pd.Index([1], name="A")),
             DataFrame(
                 {"A": [1]},
-                index=pd.MultiIndex.from_arrays([["a"], [1]], names=["A", "a"]),
+                index=pd.MultiIndex.from_arrays(
+                    [["a"], [1]], names=["A", "a"]),
             ),
         ],
     )
@@ -676,7 +688,8 @@ class TestTableOrient:
 class TestTableOrientReader:
     @pytest.mark.parametrize(
         "index_nm",
-        [None, "idx", pytest.param("index", marks=pytest.mark.xfail), "level_0"],
+        [None, "idx", pytest.param(
+            "index", marks=pytest.mark.xfail), "level_0"],
     )
     @pytest.mark.parametrize(
         "vals",
@@ -720,7 +733,8 @@ class TestTableOrientReader:
 
     @pytest.mark.parametrize(
         "index_nm",
-        [None, "idx", pytest.param("index", marks=pytest.mark.xfail), "level_0"],
+        [None, "idx", pytest.param(
+            "index", marks=pytest.mark.xfail), "level_0"],
     )
     @pytest.mark.parametrize(
         "vals",
@@ -770,7 +784,8 @@ class TestTableOrientReader:
             )._with_freq(None),
             pd.MultiIndex.from_product(
                 [
-                    pd.date_range("2020-08-30", freq="d", periods=2, tz="US/Central"),
+                    pd.date_range("2020-08-30", freq="d",
+                                  periods=2, tz="US/Central"),
                     ["x", "y"],
                 ],
             ),
@@ -817,7 +832,8 @@ class TestTableOrientReader:
 
     @pytest.mark.parametrize(
         "index_names",
-        [[None, None], ["foo", "bar"], ["foo", None], [None, "foo"], ["index", "foo"]],
+        [[None, None], ["foo", "bar"], ["foo", None],
+            [None, "foo"], ["index", "foo"]],
     )
     def test_multiindex(self, index_names):
         # GH 18912

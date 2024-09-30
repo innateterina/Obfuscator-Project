@@ -311,7 +311,8 @@ def is_terminal() -> bool:
 
 
 with cf.config_prefix("display"):
-    cf.register_option("precision", 6, pc_precision_doc, validator=is_nonnegative_int)
+    cf.register_option("precision", 6, pc_precision_doc,
+                       validator=is_nonnegative_int)
     cf.register_option(
         "float_format",
         None,
@@ -324,14 +325,16 @@ with cf.config_prefix("display"):
         pc_max_info_rows_doc,
         validator=is_int,
     )
-    cf.register_option("max_rows", 60, pc_max_rows_doc, validator=is_nonnegative_int)
+    cf.register_option("max_rows", 60, pc_max_rows_doc,
+                       validator=is_nonnegative_int)
     cf.register_option(
         "min_rows",
         10,
         pc_min_rows_doc,
         validator=is_instance_factory([type(None), int]),
     )
-    cf.register_option("max_categories", 8, pc_max_categories_doc, validator=is_int)
+    cf.register_option("max_categories", 8,
+                       pc_max_categories_doc, validator=is_int)
 
     cf.register_option(
         "max_colwidth",
@@ -352,13 +355,17 @@ with cf.config_prefix("display"):
         pc_large_repr_doc,
         validator=is_one_of_factory(["truncate", "info"]),
     )
-    cf.register_option("max_info_columns", 100, pc_max_info_cols_doc, validator=is_int)
+    cf.register_option("max_info_columns", 100,
+                       pc_max_info_cols_doc, validator=is_int)
     cf.register_option(
         "colheader_justify", "right", colheader_justify_doc, validator=is_text
     )
-    cf.register_option("notebook_repr_html", True, pc_nb_repr_h_doc, validator=is_bool)
-    cf.register_option("pprint_nest_depth", 3, pc_pprint_nest_depth, validator=is_int)
-    cf.register_option("multi_sparse", True, pc_multi_sparse_doc, validator=is_bool)
+    cf.register_option("notebook_repr_html", True,
+                       pc_nb_repr_h_doc, validator=is_bool)
+    cf.register_option("pprint_nest_depth", 3,
+                       pc_pprint_nest_depth, validator=is_int)
+    cf.register_option("multi_sparse", True,
+                       pc_multi_sparse_doc, validator=is_bool)
     cf.register_option("expand_frame_repr", True, pc_expand_repr_doc)
     cf.register_option(
         "show_dimensions",
@@ -427,7 +434,8 @@ def use_inf_as_na_cb(key) -> None:
 
 
 with cf.config_prefix("mode"):
-    cf.register_option("use_inf_as_na", False, use_inf_as_na_doc, cb=use_inf_as_na_cb)
+    cf.register_option("use_inf_as_na", False,
+                       use_inf_as_na_doc, cb=use_inf_as_na_cb)
 
 cf.deprecate_option(
     # GH#51684
@@ -804,7 +812,8 @@ styler_mathjax = """
 """
 
 with cf.config_prefix("styler"):
-    cf.register_option("sparse.index", True, styler_sparse_index_doc, validator=is_bool)
+    cf.register_option("sparse.index", True,
+                       styler_sparse_index_doc, validator=is_bool)
 
     cf.register_option(
         "sparse.columns", True, styler_sparse_columns_doc, validator=is_bool
@@ -838,7 +847,8 @@ with cf.config_prefix("styler"):
         validator=is_nonnegative_int,
     )
 
-    cf.register_option("render.encoding", "utf-8", styler_encoding, validator=is_str)
+    cf.register_option("render.encoding", "utf-8",
+                       styler_encoding, validator=is_str)
 
     cf.register_option("format.decimal", ".", styler_decimal, validator=is_str)
 
@@ -883,7 +893,8 @@ with cf.config_prefix("styler"):
         validator=is_one_of_factory(["c", "t", "b", "naive"]),
     )
 
-    val_mca = ["r", "|r|", "|r", "r|", "c", "|c|", "|c", "c|", "l", "|l|", "|l", "l|"]
+    val_mca = ["r", "|r|", "|r", "r|", "c",
+               "|c|", "|c", "c|", "l", "|l|", "|l", "l|"]
     val_mca += ["naive-l", "naive-r"]
     cf.register_option(
         "latex.multicol_align",

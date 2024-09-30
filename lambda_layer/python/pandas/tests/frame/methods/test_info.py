@@ -49,7 +49,8 @@ def test_info_empty():
 
 def test_info_categorical_column_smoke_test():
     n = 2500
-    df = DataFrame({"int64": np.random.default_rng(2).integers(100, size=n, dtype=int)})
+    df = DataFrame({"int64": np.random.default_rng(
+        2).integers(100, size=n, dtype=int)})
     df["category"] = Series(
         np.array(list("abcdefghij")).take(
             np.random.default_rng(2).integers(0, 10, size=n, dtype=int)
@@ -106,7 +107,8 @@ def test_info_smoke_test2(float_frame):
     ],
 )
 def test_info_default_verbose_selection(num_columns, max_info_columns, verbose):
-    frame = DataFrame(np.random.default_rng(2).standard_normal((5, num_columns)))
+    frame = DataFrame(np.random.default_rng(
+        2).standard_normal((5, num_columns)))
     with option_context("display.max_info_columns", max_info_columns):
         io_default = StringIO()
         frame.info(buf=io_default)
@@ -405,7 +407,8 @@ def test_info_memory_usage_deep_not_pypy():
     )
 
     df_object = DataFrame({"a": ["a"]})
-    assert df_object.memory_usage(deep=True).sum() > df_object.memory_usage().sum()
+    assert df_object.memory_usage(
+        deep=True).sum() > df_object.memory_usage().sum()
 
 
 @pytest.mark.xfail(not PYPY, reason="on PyPy deep=True does not change result")
@@ -417,7 +420,8 @@ def test_info_memory_usage_deep_pypy():
     )
 
     df_object = DataFrame({"a": ["a"]})
-    assert df_object.memory_usage(deep=True).sum() == df_object.memory_usage().sum()
+    assert df_object.memory_usage(
+        deep=True).sum() == df_object.memory_usage().sum()
 
 
 @pytest.mark.skipif(PYPY, reason="PyPy getsizeof() fails by design")

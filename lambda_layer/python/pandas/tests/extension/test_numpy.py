@@ -227,7 +227,8 @@ class TestNumpyExtensionArray(base.ExtensionTests):
 
     def test_insert(self, data, request):
         if data.dtype.numpy_dtype == object:
-            mark = pytest.mark.xfail(reason="Dimension mismatch in np.concatenate")
+            mark = pytest.mark.xfail(
+                reason="Dimension mismatch in np.concatenate")
             request.applymarker(mark)
 
         super().test_insert(data)
@@ -382,7 +383,8 @@ class TestNumpyExtensionArray(base.ExtensionTests):
             (pd.array([0, 1, 2, pd.NA], dtype="Int64"), False),
             (pd.array([0, 1, 2, pd.NA], dtype="Int64"), False),
         ],
-        ids=["list-False", "list-True", "integer-array-False", "integer-array-True"],
+        ids=["list-False", "list-True",
+             "integer-array-False", "integer-array-True"],
     )
     def test_setitem_integer_with_missing_raises(self, data, idx, box_in_series):
         super().test_setitem_integer_with_missing_raises(data, idx, box_in_series)

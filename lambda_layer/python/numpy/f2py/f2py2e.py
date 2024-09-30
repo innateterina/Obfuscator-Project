@@ -40,7 +40,7 @@ outmess = auxfuncs.outmess
 MESON_ONLY_VER = (sys.version_info >= (3, 12))
 
 __usage__ =\
-f"""Usage:
+    f"""Usage:
 
 1) To construct extension module sources:
 
@@ -208,7 +208,8 @@ def scaninputline(inputline):
     dorestdoc = 0
     wrapfuncs = 1
     buildpath = '.'
-    include_paths, freethreading_compatible, inputline = get_newer_options(inputline)
+    include_paths, freethreading_compatible, inputline = get_newer_options(
+        inputline)
     signsfile, modulename = None, None
     options = {'buildpath': buildpath,
                'coutput': None,
@@ -542,20 +543,26 @@ class CombineIncludePaths(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         include_paths_set = set(getattr(namespace, 'include_paths', []) or [])
         if option_string == "--include_paths":
-            outmess("Use --include-paths or -I instead of --include_paths which will be removed")
+            outmess(
+                "Use --include-paths or -I instead of --include_paths which will be removed")
         if option_string == "--include-paths" or option_string == "--include_paths":
             include_paths_set.update(values.split(':'))
         else:
             include_paths_set.add(values)
         setattr(namespace, 'include_paths', list(include_paths_set))
 
+
 def f2py_parser():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("-I", dest="include_paths", action=CombineIncludePaths)
-    parser.add_argument("--include-paths", dest="include_paths", action=CombineIncludePaths)
-    parser.add_argument("--include_paths", dest="include_paths", action=CombineIncludePaths)
-    parser.add_argument("--freethreading-compatible", dest="ftcompat", action=argparse.BooleanOptionalAction)
+    parser.add_argument("--include-paths",
+                        dest="include_paths", action=CombineIncludePaths)
+    parser.add_argument("--include_paths",
+                        dest="include_paths", action=CombineIncludePaths)
+    parser.add_argument("--freethreading-compatible",
+                        dest="ftcompat", action=argparse.BooleanOptionalAction)
     return parser
+
 
 def get_newer_options(iline):
     iline = (' '.join(iline)).split()
@@ -566,12 +573,15 @@ def get_newer_options(iline):
         ipaths = []
     return ipaths, args.ftcompat, remain
 
+
 def make_f2py_compile_parser():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("--dep", action="append", dest="dependencies")
-    parser.add_argument("--backend", choices=['meson', 'distutils'], default='distutils')
+    parser.add_argument(
+        "--backend", choices=['meson', 'distutils'], default='distutils')
     parser.add_argument("-m", dest="module_name")
     return parser
+
 
 def preparse_sysargv():
     # To keep backwards bug compatibility, newer flags are handled by argparse,
@@ -592,6 +602,7 @@ def preparse_sysargv():
         "backend": backend_key,
         "modulename": args.module_name,
     }
+
 
 def run_compile():
     """
@@ -653,12 +664,15 @@ def run_compile():
     sys.argv = [_m for _m in sys.argv if _m not in flib_flags]
     # TODO: Once distutils is dropped completely, i.e. min_ver >= 3.12, unify into --fflags
     reg_f77_f90_flags = re.compile(r'--f(77|90)flags=')
-    reg_distutils_flags = re.compile(r'--((f(77|90)exec|opt|arch)=|(debug|noopt|noarch|help-fcompiler))')
+    reg_distutils_flags = re.compile(
+        r'--((f(77|90)exec|opt|arch)=|(debug|noopt|noarch|help-fcompiler))')
     fc_flags = [_m for _m in sys.argv[1:] if reg_f77_f90_flags.match(_m)]
-    distutils_flags = [_m for _m in sys.argv[1:] if reg_distutils_flags.match(_m)]
+    distutils_flags = [_m for _m in sys.argv[1:]
+                       if reg_distutils_flags.match(_m)]
     if not (MESON_ONLY_VER or backend_key == 'meson'):
         fc_flags.extend(distutils_flags)
-    sys.argv = [_m for _m in sys.argv if _m not in (fc_flags + distutils_flags)]
+    sys.argv = [_m for _m in sys.argv if _m not in (
+        fc_flags + distutils_flags)]
 
     del_list = []
     for s in flib_flags:
@@ -668,7 +682,7 @@ def run_compile():
                 outmess(
                     "--fcompiler cannot be used with meson,"
                     "set compiler with the FC environment variable\n"
-                    )
+                )
             else:
                 from numpy.distutils import fcompiler
                 fcompiler.load_all_fcompiler_classes()
@@ -726,9 +740,11 @@ def run_compile():
     # Construct wrappers / signatures / things
     if backend_key == 'meson':
         if not pyf_files:
-            outmess('Using meson backend\nWill pass --lower to f2py\nSee https://numpy.org/doc/stable/f2py/buildtools/meson.html\n')
+            outmess(
+                'Using meson backend\nWill pass --lower to f2py\nSee https://numpy.org/doc/stable/f2py/buildtools/meson.html\n')
             f2py_flags.append('--lower')
-            run_main(f" {' '.join(f2py_flags)} -m {modulename} {' '.join(sources)}".split())
+            run_main(
+                f" {' '.join(f2py_flags)} -m {modulename} {' '.join(sources)}".split())
         else:
             run_main(f" {' '.join(f2py_flags)} {' '.join(pyf_files)}".split())
 
@@ -770,6 +786,7 @@ def validate_modulename(pyf_files, modulename='untitled'):
             )
             modulename = pyf_modname
     return modulename
+
 
 def main():
     if '--help-link' in sys.argv[1:]:

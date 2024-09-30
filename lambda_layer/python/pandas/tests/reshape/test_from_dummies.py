@@ -146,7 +146,8 @@ def test_error_with_prefix_default_category_wrong_type(dummies_with_unassigned):
             r"Received 'default_category' of type: list"
         ),
     ):
-        from_dummies(dummies_with_unassigned, sep="_", default_category=["x", "y"])
+        from_dummies(dummies_with_unassigned, sep="_",
+                     default_category=["x", "y"])
 
 
 def test_error_with_prefix_default_category_dict_not_complete(
@@ -159,7 +160,8 @@ def test_error_with_prefix_default_category_dict_not_complete(
             r"the length of the columns being encoded \(2\)"
         ),
     ):
-        from_dummies(dummies_with_unassigned, sep="_", default_category={"col1": "x"})
+        from_dummies(dummies_with_unassigned, sep="_",
+                     default_category={"col1": "x"})
 
 
 def test_error_with_prefix_contains_nan(dummies_basic):
@@ -225,7 +227,8 @@ def test_roundtrip_with_prefixes():
 
 
 def test_no_prefix_string_cats_basic():
-    dummies = DataFrame({"a": [1, 0, 0, 1], "b": [0, 1, 0, 0], "c": [0, 0, 1, 0]})
+    dummies = DataFrame(
+        {"a": [1, 0, 0, 1], "b": [0, 1, 0, 0], "c": [0, 0, 1, 0]})
     expected = DataFrame({"": ["a", "b", "c", "a"]})
     result = from_dummies(dummies)
     tm.assert_frame_equal(result, expected)
@@ -264,7 +267,8 @@ def test_no_prefix_int_cats_basic():
 
 def test_no_prefix_float_cats_basic():
     dummies = DataFrame(
-        {1.0: [1, 0, 0, 0], 25.0: [0, 1, 0, 0], 2.5: [0, 0, 1, 0], 5.84: [0, 0, 0, 1]}
+        {1.0: [1, 0, 0, 0], 25.0: [0, 1, 0, 0],
+            2.5: [0, 0, 1, 0], 5.84: [0, 0, 0, 1]}
     )
     expected = DataFrame({"": [1.0, 25.0, 2.5, 5.84]})
     result = from_dummies(dummies)
@@ -356,7 +360,8 @@ def test_with_prefix_contains_get_dummies_NaN_column():
             "col2_NaN": [1, 0, 0],
         },
     )
-    expected = DataFrame({"col1": ["a", "b", "NaN"], "col2": ["NaN", "a", "c"]})
+    expected = DataFrame(
+        {"col1": ["a", "b", "NaN"], "col2": ["NaN", "a", "c"]})
     result = from_dummies(dummies, sep="_")
     tm.assert_frame_equal(result, expected)
 
@@ -391,7 +396,8 @@ def test_with_prefix_contains_get_dummies_NaN_column():
         ),
         pytest.param(
             {"col2": (1, 2), "col1": [1.25, False]},
-            DataFrame({"col1": ["a", "b", [1.25, False]], "col2": [(1, 2), "a", "c"]}),
+            DataFrame({"col1": ["a", "b", [1.25, False]],
+                      "col2": [(1, 2), "a", "c"]}),
             id="default_category is a dict with list and tuple values",
         ),
     ],

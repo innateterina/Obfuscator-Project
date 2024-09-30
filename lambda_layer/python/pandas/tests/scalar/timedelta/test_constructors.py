@@ -159,7 +159,8 @@ class TestTimedeltaConstructorUnitKeyword:
             tm.assert_index_equal(result, expected)
 
             # scalar
-            expected = Timedelta(np.timedelta64(2, np_unit).astype("timedelta64[ns]"))
+            expected = Timedelta(np.timedelta64(
+                2, np_unit).astype("timedelta64[ns]"))
             result = to_timedelta(2, unit=unit)
             assert result == expected
             result = Timedelta(2, unit=unit)
@@ -399,7 +400,8 @@ def test_construction():
     ),
 )
 @pytest.mark.parametrize(
-    "npdtype", [np.int64, np.int32, np.int16, np.float64, np.float32, np.float16]
+    "npdtype", [np.int64, np.int32, np.int16,
+                np.float64, np.float32, np.float16]
 )
 def test_td_construction_with_np_dtypes(npdtype, item):
     # GH#8757: test construction with np dtypes
@@ -468,7 +470,8 @@ def test_construction_out_of_bounds_td64ns(val, unit):
 
     # Timedelta.max is just under 106752 days
     td64 = np.timedelta64(val, unit)
-    assert td64.astype("m8[ns]").view("i8") < 0  # i.e. naive astype will be wrong
+    # i.e. naive astype will be wrong
+    assert td64.astype("m8[ns]").view("i8") < 0
 
     td = Timedelta(td64)
     if unit != "M":
@@ -484,7 +487,8 @@ def test_construction_out_of_bounds_td64ns(val, unit):
     assert Timedelta(td64 - 1) == td64 - 1
 
     td64 *= -1
-    assert td64.astype("m8[ns]").view("i8") > 0  # i.e. naive astype will be wrong
+    # i.e. naive astype will be wrong
+    assert td64.astype("m8[ns]").view("i8") > 0
 
     td2 = Timedelta(td64)
     msg = r"Cannot cast -1067\d\d days .* to unit='ns' without overflow"
@@ -635,7 +639,8 @@ def test_timedelta_pass_td_and_kwargs_raises():
     [
         (Timedelta, "10s", "ms", (ValueError, "unit must not be specified")),
         (to_timedelta, "10s", "ms", (ValueError, "unit must not be specified")),
-        (to_timedelta, ["1", 2, 3], "s", (ValueError, "unit must not be specified")),
+        (to_timedelta, ["1", 2, 3], "s",
+         (ValueError, "unit must not be specified")),
     ],
 )
 def test_string_with_unit(constructor, value, unit, expectation):

@@ -3,6 +3,7 @@ from distutils.dist import Distribution
 
 __metaclass__ = type
 
+
 class EnvironmentConfig:
     def __init__(self, distutils_section='ALL', **kw):
         self._distutils_section = distutils_section
@@ -14,7 +15,7 @@ class EnvironmentConfig:
         conf_desc = self._conf_keys[name]
         hook, envvar, confvar, convert, append = conf_desc
         if not convert:
-            convert = lambda x : x
+            def convert(x): return x
         print('%s.%s:' % (self._distutils_section, name))
         v = self._hook_handler(name, hook)
         print('  hook   : %s' % (convert(v),))
@@ -52,7 +53,7 @@ class EnvironmentConfig:
     def _get_var(self, name, conf_desc):
         hook, envvar, confvar, convert, append = conf_desc
         if convert is None:
-            convert = lambda x: x
+            def convert(x): return x
         var = self._hook_handler(name, hook)
         if envvar is not None:
             envvar_contents = os.environ.get(envvar)
@@ -73,7 +74,6 @@ class EnvironmentConfig:
                 source, confvar_contents = self._conf[confvar]
                 var = convert(confvar_contents)
         return var
-
 
     def clone(self, hook_handler):
         ec = self.__class__(distutils_section=self._distutils_section,

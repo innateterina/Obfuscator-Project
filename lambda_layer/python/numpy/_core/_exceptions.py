@@ -7,6 +7,7 @@ users who silence the exceptions.
 """
 from .._utils import set_module
 
+
 def _unpack_tuple(tup):
     if len(tup) == 1:
         return tup[0]
@@ -31,6 +32,7 @@ def _display_as_base(cls):
 
 class UFuncTypeError(TypeError):
     """ Base class for all ufunc exceptions """
+
     def __init__(self, ufunc):
         self.ufunc = ufunc
 
@@ -38,6 +40,7 @@ class UFuncTypeError(TypeError):
 @_display_as_base
 class _UFuncNoLoopError(UFuncTypeError):
     """ Thrown when a ufunc loop cannot be found """
+
     def __init__(self, ufunc, dtypes):
         super().__init__(ufunc)
         self.dtypes = tuple(dtypes)
@@ -56,6 +59,7 @@ class _UFuncNoLoopError(UFuncTypeError):
 @_display_as_base
 class _UFuncBinaryResolutionError(_UFuncNoLoopError):
     """ Thrown when a binary resolution fails """
+
     def __init__(self, ufunc, dtypes):
         super().__init__(ufunc, dtypes)
         assert len(self.dtypes) == 2
@@ -80,6 +84,7 @@ class _UFuncCastingError(UFuncTypeError):
 @_display_as_base
 class _UFuncInputCastingError(_UFuncCastingError):
     """ Thrown when a ufunc input cannot be casted """
+
     def __init__(self, ufunc, casting, from_, to, i):
         super().__init__(ufunc, casting, from_, to)
         self.in_i = i
@@ -98,6 +103,7 @@ class _UFuncInputCastingError(_UFuncCastingError):
 @_display_as_base
 class _UFuncOutputCastingError(_UFuncCastingError):
     """ Thrown when a ufunc output cannot be casted """
+
     def __init__(self, ufunc, casting, from_, to, i):
         super().__init__(ufunc, casting, from_, to)
         self.out_i = i
@@ -116,6 +122,7 @@ class _UFuncOutputCastingError(_UFuncCastingError):
 @_display_as_base
 class _ArrayMemoryError(MemoryError):
     """ Thrown when an array cannot be allocated"""
+
     def __init__(self, shape, dtype):
         self.shape = shape
         self.dtype = dtype

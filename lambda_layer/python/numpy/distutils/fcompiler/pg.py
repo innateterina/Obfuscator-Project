@@ -1,4 +1,5 @@
 # http://www.pgroup.com
+import functools
 import sys
 
 from numpy.distutils.fcompiler import FCompiler
@@ -61,8 +62,6 @@ class PGroupFCompiler(FCompiler):
     def runtime_library_dir_option(self, dir):
         return '-R%s' % dir
 
-
-import functools
 
 class PGroupFlangCompiler(FCompiler):
     compiler_type = 'flang'

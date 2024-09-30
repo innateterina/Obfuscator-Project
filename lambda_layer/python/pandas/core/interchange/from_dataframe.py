@@ -103,7 +103,8 @@ def _from_dataframe(df: DataFrameXchg, allow_copy: bool = True):
     elif len(pandas_dfs) == 1:
         pandas_df = pandas_dfs[0]
     else:
-        pandas_df = pd.concat(pandas_dfs, axis=0, ignore_index=True, copy=False)
+        pandas_df = pd.concat(pandas_dfs, axis=0,
+                              ignore_index=True, copy=False)
 
     index_obj = df.metadata.get("pandas.index", None)
     if index_obj is not None:
@@ -202,7 +203,8 @@ def categorical_column_to_series(col: Column) -> tuple[pd.Series, Any]:
     categorical = col.describe_categorical
 
     if not categorical["is_dictionary"]:
-        raise NotImplementedError("Non-dictionary categoricals not supported yet")
+        raise NotImplementedError(
+            "Non-dictionary categoricals not supported yet")
 
     cat_column = categorical["categories"]
     if hasattr(cat_column, "_col"):
@@ -281,7 +283,8 @@ def string_column_to_ndarray(col: Column) -> tuple[np.ndarray, Any]:
         Endianness.NATIVE,
     )
     # Specify zero offset as we don't want to chunk the string data
-    data = buffer_to_ndarray(data_buff, data_dtype, offset=0, length=data_buff.bufsize)
+    data = buffer_to_ndarray(data_buff, data_dtype,
+                             offset=0, length=data_buff.bufsize)
 
     # Retrieve the offsets buffer containing the index offsets demarcating
     # the beginning and the ending of each string
@@ -313,7 +316,7 @@ def string_column_to_ndarray(col: Column) -> tuple[np.ndarray, Any]:
             continue
 
         # Extract a range of code units
-        units = data[offsets[i] : offsets[i + 1]]
+        units = data[offsets[i]: offsets[i + 1]]
 
         # Convert the list of code units to bytes
         str_bytes = bytes(units)
@@ -351,7 +354,8 @@ def parse_datetime_format_str(format_str, data) -> pd.Series | np.ndarray:
         if unit == "D":
             # NumPy doesn't support DAY unit, so converting days to seconds
             # (converting to uint64 to avoid overflow)
-            data = (data.astype(np.uint64) * (24 * 60 * 60)).astype("datetime64[s]")
+            data = (data.astype(np.uint64) * (24 * 60 * 60)
+                    ).astype("datetime64[s]")
         elif unit == "m":
             data = data.astype("datetime64[ms]")
         else:
@@ -393,7 +397,8 @@ def datetime_column_to_ndarray(col: Column) -> tuple[np.ndarray | pd.Series, Any
         length=col.size(),
     )
 
-    data = parse_datetime_format_str(format_str, data)  # type: ignore[assignment]
+    data = parse_datetime_format_str(
+        format_str, data)  # type: ignore[assignment]
     data = set_nulls(data, col, buffers["validity"])
     return data, buffers
 
@@ -434,7 +439,8 @@ def buffer_to_ndarray(
 
     column_dtype = _NP_DTYPES.get(kind, {}).get(bit_width, None)
     if column_dtype is None:
-        raise NotImplementedError(f"Conversion for {dtype} is not yet supported.")
+        raise NotImplementedError(
+            f"Conversion for {dtype} is not yet supported.")
 
     # TODO: No DLPack yet, so need to construct a new ndarray from the data pointer
     # and size in the buffer plus the dtype on the column. Use DLPack as NumPy supports
@@ -505,7 +511,8 @@ def set_nulls(
     elif null_kind in (ColumnNullType.NON_NULLABLE, ColumnNullType.USE_NAN):
         pass
     else:
-        raise NotImplementedError(f"Null kind {null_kind} is not yet supported.")
+        raise NotImplementedError(
+            f"Null kind {null_kind} is not yet supported.")
 
     if null_pos is not None and np.any(null_pos):
         if not allow_modify_inplace:

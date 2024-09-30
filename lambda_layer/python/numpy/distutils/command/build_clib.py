@@ -44,7 +44,7 @@ class build_clib(old_build_clib):
     ]
 
     boolean_options = old_build_clib.boolean_options + \
-    ['inplace', 'warn-error', 'disable-optimization']
+        ['inplace', 'warn-error', 'disable-optimization']
 
     def initialize_options(self):
         old_build_clib.initialize_options(self)
@@ -56,21 +56,21 @@ class build_clib(old_build_clib):
         self.cpu_dispatch = None
         self.disable_optimization = None
 
-
     def finalize_options(self):
         if self.parallel:
             try:
                 self.parallel = int(self.parallel)
             except ValueError as e:
-                raise ValueError("--parallel/-j argument must be an integer") from e
+                raise ValueError(
+                    "--parallel/-j argument must be an integer") from e
         old_build_clib.finalize_options(self)
         self.set_undefined_options('build',
-                                        ('parallel', 'parallel'),
-                                        ('warn_error', 'warn_error'),
-                                        ('cpu_baseline', 'cpu_baseline'),
-                                        ('cpu_dispatch', 'cpu_dispatch'),
-                                        ('disable_optimization', 'disable_optimization')
-                                  )
+                                   ('parallel', 'parallel'),
+                                   ('warn_error', 'warn_error'),
+                                   ('cpu_baseline', 'cpu_baseline'),
+                                   ('cpu_dispatch', 'cpu_dispatch'),
+                                   ('disable_optimization', 'disable_optimization')
+                                   )
 
     def have_f_sources(self):
         for (lib_name, build_info) in self.libraries:
@@ -118,8 +118,10 @@ class build_clib(old_build_clib):
         self.compiler.show_customization()
 
         if not self.disable_optimization:
-            dispatch_hpath = os.path.join("numpy", "distutils", "include", "npy_cpu_dispatch_config.h")
-            dispatch_hpath = os.path.join(self.get_finalized_command("build_src").build_src, dispatch_hpath)
+            dispatch_hpath = os.path.join(
+                "numpy", "distutils", "include", "npy_cpu_dispatch_config.h")
+            dispatch_hpath = os.path.join(self.get_finalized_command(
+                "build_src").build_src, dispatch_hpath)
             opt_cache_path = os.path.abspath(
                 os.path.join(self.build_temp, 'ccompiler_opt_cache_clib.py')
             )
@@ -137,6 +139,7 @@ class build_clib(old_build_clib):
                 cpu_baseline=self.cpu_baseline, cpu_dispatch=self.cpu_dispatch,
                 cache_path=opt_cache_path
             )
+
             def report(copt):
                 log.info("\n########### CLIB COMPILER OPTIMIZATION ###########")
                 log.info(copt.report(full=True))

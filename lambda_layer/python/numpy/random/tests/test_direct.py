@@ -371,6 +371,7 @@ class Base:
         assert_state_equal(state, alt_state[0])
         assert isinstance(alt_state[1], SeedSequence)
 
+
 class TestPhilox(Base):
     @classmethod
     def setup_class(cls):
@@ -383,7 +384,8 @@ class TestPhilox(Base):
             join(pwd, './data/philox-testset-2.csv'))
         cls.seed_error_type = TypeError
         cls.invalid_init_types = []
-        cls.invalid_init_values = [(1, None, 1), (-1,), (None, None, 2 ** 257 + 1)]
+        cls.invalid_init_values = [
+            (1, None, 1), (-1,), (None, None, 2 ** 257 + 1)]
 
     def test_set_key(self):
         bit_generator = self.bit_generator(*self.data1['seed'])
@@ -430,7 +432,6 @@ class TestPCG64(Base):
         state = pcg.state["state"]
         advanced_state = 135275564607035429730177404003164635391
         assert state["state"] == advanced_state
-
 
 
 class TestPCG64DXSM(Base):

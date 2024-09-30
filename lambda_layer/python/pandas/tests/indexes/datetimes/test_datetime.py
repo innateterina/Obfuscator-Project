@@ -206,7 +206,8 @@ class TestDatetimeIndex:
         f"in a future version, please use '{freq[1:]}' instead."
 
         with tm.assert_produces_warning(FutureWarning, match=msg):
-            expected = date_range(start="2016-02-21", end="2016-08-21", freq=freq_depr)
+            expected = date_range(start="2016-02-21",
+                                  end="2016-08-21", freq=freq_depr)
         result = DatetimeIndex(
             data=expected_values,
             dtype="datetime64[ns]",

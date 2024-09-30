@@ -1,3 +1,4 @@
+from pandas.io.formats.style import Styler
 from textwrap import (
     dedent,
     indent,
@@ -13,7 +14,6 @@ from pandas import (
 )
 
 jinja2 = pytest.importorskip("jinja2")
-from pandas.io.formats.style import Styler
 
 
 @pytest.fixture
@@ -260,12 +260,14 @@ def test_from_custom_template_table(tmpdir):
             {% endblock table %}"""
         )
     )
-    result = Styler.from_custom_template(str(tmpdir.join("tpl")), "myhtml_table.tpl")
+    result = Styler.from_custom_template(
+        str(tmpdir.join("tpl")), "myhtml_table.tpl")
     assert issubclass(result, Styler)
     assert result.env is not Styler.env
     assert result.template_html_table is not Styler.template_html_table
     styler = result(DataFrame({"A": [1, 2]}))
-    assert "<h1>My Title</h1>\n\n\n<table" in styler.to_html(custom_title="My Title")
+    assert "<h1>My Title</h1>\n\n\n<table" in styler.to_html(
+        custom_title="My Title")
 
 
 def test_from_custom_template_style(tmpdir):
@@ -318,15 +320,18 @@ def test_sticky_basic(styler, index, columns, index_name):
     res = styler.set_uuid("").to_html()
 
     # test index stickys over thead and tbody
-    assert (left_css.format("thead tr th:nth-child(1)", "3 !important") in res) is index
+    assert (left_css.format("thead tr th:nth-child(1)",
+            "3 !important") in res) is index
     assert (left_css.format("tbody tr th:nth-child(1)", "1") in res) is index
 
     # test column stickys including if name row
     assert (
-        top_css.format("thead tr:nth-child(1) th", "0", "2", "  height: 25px;\n") in res
+        top_css.format("thead tr:nth-child(1) th", "0",
+                       "2", "  height: 25px;\n") in res
     ) is (columns and index_name)
     assert (
-        top_css.format("thead tr:nth-child(2) th", "25", "2", "  height: 25px;\n")
+        top_css.format("thead tr:nth-child(2) th",
+                       "25", "2", "  height: 25px;\n")
         in res
     ) is (columns and index_name)
     assert (top_css.format("thead tr:nth-child(1) th", "0", "2", "") in res) is (
@@ -359,7 +364,8 @@ def test_sticky_mi(styler_mi, index, columns):
     ) is index
     assert (left_css.format("tbody tr th.level0", "0", "1") in res) is index
     assert (
-        left_css.format("thead tr th:nth-child(2)", "75", "3 !important") in res
+        left_css.format("thead tr th:nth-child(2)",
+                        "75", "3 !important") in res
     ) is index
     assert (left_css.format("tbody tr th.level1", "75", "1") in res) is index
 
@@ -372,7 +378,8 @@ def test_sticky_mi(styler_mi, index, columns):
 @pytest.mark.parametrize("columns", [False, True])
 @pytest.mark.parametrize("levels", [[1], ["one"], "one"])
 def test_sticky_levels(styler_mi, index, columns, levels):
-    styler_mi.index.names, styler_mi.columns.names = ["zero", "one"], ["zero", "one"]
+    styler_mi.index.names, styler_mi.columns.names = [
+        "zero", "one"], ["zero", "one"]
     if index:
         styler_mi.set_sticky(axis=0, levels=levels)
     if columns:
@@ -424,7 +431,8 @@ def test_sparse_options(sparse_index, sparse_columns):
     ):
         html1 = styler.to_html()
         assert (html1 == default_html) is (sparse_index and sparse_columns)
-    html2 = styler.to_html(sparse_index=sparse_index, sparse_columns=sparse_columns)
+    html2 = styler.to_html(sparse_index=sparse_index,
+                           sparse_columns=sparse_columns)
     assert html1 == html2
 
 
@@ -432,7 +440,7 @@ def test_sparse_options(sparse_index, sparse_columns):
 @pytest.mark.parametrize("columns", [True, False])
 def test_map_header_cell_ids(styler, index, columns):
     # GH 41893
-    func = lambda v: "attr: val;"
+    def func(v): return "attr: val;"
     styler.uuid, styler.cell_ids = "", False
     if index:
         styler.map_index(func, axis="index")
@@ -452,7 +460,8 @@ def test_map_header_cell_ids(styler, index, columns):
     assert (
         '<th id="T__level0_row1" class="row_heading level0 row1" >b</th>' in result
     ) is index
-    assert ("#T__level0_row0, #T__level0_row1 {\n  attr: val;\n}" in result) is index
+    assert (
+        "#T__level0_row0, #T__level0_row1 {\n  attr: val;\n}" in result) is index
 
     # test column header ids where needed and css styles
     assert (
@@ -471,7 +480,8 @@ def test_maximums(styler_mi, rows, cols):
 
     assert ">5</td>" in result  # [[0,1], [4,5]] always visible
     assert (">8</td>" in result) is not rows  # first trimmed vertical element
-    assert (">2</td>" in result) is not cols  # first trimmed horizontal element
+    # first trimmed horizontal element
+    assert (">2</td>" in result) is not cols
 
 
 def test_replaced_css_class_names():
@@ -682,7 +692,8 @@ def test_hiding_index_columns_multiindex_trimming():
     df.index = MultiIndex.from_product([[0, 1, 2, 3], [0, 1]])
     df.index.names, df.columns.names = ["a", "b"], ["c", "d"]
     styler = Styler(df, cell_ids=False, uuid_len=0)
-    styler.hide([(0, 0), (0, 1), (1, 0)], axis=1).hide([(0, 0), (0, 1), (1, 0)], axis=0)
+    styler.hide([(0, 0), (0, 1), (1, 0)], axis=1).hide(
+        [(0, 0), (0, 1), (1, 0)], axis=0)
     with option_context("styler.render.max_rows", 4, "styler.render.max_columns", 4):
         result = styler.to_html()
 
@@ -810,7 +821,8 @@ def test_rendered_links(type, text, exp, found):
     rendered = f'<a href="{found}" target="_blank">{found}</a>'
     result = styler.to_html()
     assert (rendered in result) is exp
-    assert (text in result) is not exp  # test conversion done when expected and not
+    # test conversion done when expected and not
+    assert (text in result) is not exp
 
 
 def test_multiple_rendered_links():

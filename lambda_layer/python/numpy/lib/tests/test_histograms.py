@@ -5,7 +5,7 @@ from numpy.testing import (
     assert_, assert_equal, assert_array_equal, assert_almost_equal,
     assert_array_almost_equal, assert_raises, assert_allclose,
     assert_array_max_ulp, assert_raises_regex, suppress_warnings,
-    )
+)
 from numpy.testing._private.utils import requires_memory
 import pytest
 
@@ -100,7 +100,6 @@ class TestHistogram:
         w = np.arange(11) + .5
         with assert_raises_regex(ValueError, "same shape as"):
             h, b = histogram(a, range=[1, 9], weights=w, density=True)
-
 
     def test_type(self):
         # Check the type of the returned histogram
@@ -212,7 +211,7 @@ class TestHistogram:
         assert_array_equal(a, np.array([0]))
         assert_array_equal(b, np.array([0, 1]))
 
-    def test_error_binnum_type (self):
+    def test_error_binnum_type(self):
         # Tests if right Error is raised if bins argument is float
         vals = np.linspace(0.0, 1.0, num=100)
         histogram(vals, 5)
@@ -221,9 +220,9 @@ class TestHistogram:
     def test_finite_range(self):
         # Normal ranges should be fine
         vals = np.linspace(0.0, 1.0, num=100)
-        histogram(vals, range=[0.25,0.75])
-        assert_raises(ValueError, histogram, vals, range=[np.nan,0.75])
-        assert_raises(ValueError, histogram, vals, range=[0.25,np.inf])
+        histogram(vals, range=[0.25, 0.75])
+        assert_raises(ValueError, histogram, vals, range=[np.nan, 0.75])
+        assert_raises(ValueError, histogram, vals, range=[0.25, np.inf])
 
     def test_invalid_range(self):
         # start of range must be < end of range
@@ -265,9 +264,9 @@ class TestHistogram:
     def test_object_array_of_0d(self):
         # gh-7864
         assert_raises(ValueError,
-            histogram, [np.array(0.4) for i in range(10)] + [-np.inf])
+                      histogram, [np.array(0.4) for i in range(10)] + [-np.inf])
         assert_raises(ValueError,
-            histogram, [np.array(0.4) for i in range(10)] + [np.inf])
+                      histogram, [np.array(0.4) for i in range(10)] + [np.inf])
 
         # these should not crash
         np.histogram([np.array(0.5) for i in range(10)] + [.500000000000001])
@@ -541,7 +540,8 @@ class TestHistogramOptimBinNums:
         def nbins_ratio(seed, size):
             rng = np.random.RandomState(seed)
             x = rng.normal(loc=0, scale=2, size=size)
-            a, b = len(np.histogram(x, 'stone')[0]), len(np.histogram(x, 'scott')[0])
+            a, b = len(np.histogram(x, 'stone')[0]), len(
+                np.histogram(x, 'scott')[0])
             return a / (a + b)
 
         ll = [[nbins_ratio(seed, size) for size in np.geomspace(start=10, stop=100, num=4).round().astype(int)]
@@ -561,13 +561,13 @@ class TestHistogramOptimBinNums:
         # some basic sanity checking, with some fixed data.
         # Checking for the correct number of bins
         basic_test = {
-                      50:   {'fd': 8,  'scott': 8,  'rice': 15,
+            50:   {'fd': 8,  'scott': 8,  'rice': 15,
                              'sturges': 14, 'auto': 14, 'stone': 8},
-                      500:  {'fd': 15, 'scott': 16, 'rice': 32,
+            500:  {'fd': 15, 'scott': 16, 'rice': 32,
                              'sturges': 20, 'auto': 20, 'stone': 80},
-                      5000: {'fd': 33, 'scott': 33, 'rice': 69,
+            5000: {'fd': 33, 'scott': 33, 'rice': 69,
                              'sturges': 27, 'auto': 33, 'stone': 80}
-                     }
+        }
 
         for testlen, expectedResults in basic_test.items():
             # create some sort of non uniform data to test with
@@ -577,7 +577,7 @@ class TestHistogramOptimBinNums:
             x3 = np.linspace(-100, -50, testlen)
             x = np.hstack((x1, x2, x3))
             for estimator, numbins in expectedResults.items():
-                a, b = np.histogram(x, estimator, range = (-20, 20))
+                a, b = np.histogram(x, estimator, range=(-20, 20))
                 msg = "For the {0} estimator".format(estimator)
                 msg += " with datasize of {0}".format(testlen)
                 assert_equal(len(a), numbins, err_msg=msg)
@@ -824,7 +824,8 @@ class TestHistogramdd:
         assert_equal(hist, relative_areas)
 
         # resulting histogram should be uniform, since counts and areas are proportional
-        hist, edges = histogramdd((y, x), bins=(y_edges, x_edges), density=True)
+        hist, edges = histogramdd(
+            (y, x), bins=(y_edges, x_edges), density=True)
         assert_equal(hist, 1 / (8*8))
 
     def test_density_non_uniform_1d(self):

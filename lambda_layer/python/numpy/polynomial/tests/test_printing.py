@@ -92,6 +92,7 @@ class TestStrUnicodeSuperSubscripts:
         tgt = '0.0 + 1.0·(-3.0 + 2.0x)'
         assert_equal(res, tgt)
 
+
 class TestStrAscii:
 
     @pytest.fixture(scope='class', autouse=True)
@@ -178,6 +179,7 @@ class TestStrAscii:
         tgt = '0.0 + 1.0 (-3.0 + 2.0x)'
         assert_equal(res, tgt)
 
+
 class TestLinebreaking:
 
     @pytest.fixture(scope='class', autouse=True)
@@ -205,8 +207,8 @@ class TestLinebreaking:
     def test_first_linebreak_multiline_one_less_than_linewidth(self):
         # Multiline str where len(first_line) + len(next_term) == lw - 1 == 74
         p = poly.Polynomial(
-                [12345678, 12345678, 12345678, 12345678, 1, 12345678]
-            )
+            [12345678, 12345678, 12345678, 12345678, 1, 12345678]
+        )
         assert_equal(len(str(p).split('\n')[0]), 74)
         assert_equal(str(p), (
             '12345678.0 + 12345678.0 x + 12345678.0 x**2 + '
@@ -216,8 +218,8 @@ class TestLinebreaking:
     def test_first_linebreak_multiline_on_linewidth(self):
         # First line is one character longer than previous test
         p = poly.Polynomial(
-                [12345678, 12345678, 12345678, 12345678.12, 1, 12345678]
-            )
+            [12345678, 12345678, 12345678, 12345678.12, 1, 12345678]
+        )
         assert_equal(str(p), (
             '12345678.0 + 12345678.0 x + 12345678.0 x**2 + '
             '12345678.12 x**3 +\n1.0 x**4 + 12345678.0 x**5'
@@ -408,42 +410,42 @@ class TestLatexRepr:
         # default input
         p = poly.Polynomial([1, 2, 3])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0 + 2.0\,x + 3.0\,x^{2}$')
+                     r'$x \mapsto 1.0 + 2.0\,x + 3.0\,x^{2}$')
 
         # translated input
         p = poly.Polynomial([1, 2, 3], domain=[-2, 0])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0 + 2.0\,\left(1.0 + x\right) + 3.0\,\left(1.0 + x\right)^{2}$')
+                     r'$x \mapsto 1.0 + 2.0\,\left(1.0 + x\right) + 3.0\,\left(1.0 + x\right)^{2}$')
 
         # scaled input
         p = poly.Polynomial([1, 2, 3], domain=[-0.5, 0.5])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0 + 2.0\,\left(2.0x\right) + 3.0\,\left(2.0x\right)^{2}$')
+                     r'$x \mapsto 1.0 + 2.0\,\left(2.0x\right) + 3.0\,\left(2.0x\right)^{2}$')
 
         # affine input
         p = poly.Polynomial([1, 2, 3], domain=[-1, 0])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0 + 2.0\,\left(1.0 + 2.0x\right) + 3.0\,\left(1.0 + 2.0x\right)^{2}$')
+                     r'$x \mapsto 1.0 + 2.0\,\left(1.0 + 2.0x\right) + 3.0\,\left(1.0 + 2.0x\right)^{2}$')
 
     def test_basis_func(self):
         p = poly.Chebyshev([1, 2, 3])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0\,{T}_{0}(x) + 2.0\,{T}_{1}(x) + 3.0\,{T}_{2}(x)$')
+                     r'$x \mapsto 1.0\,{T}_{0}(x) + 2.0\,{T}_{1}(x) + 3.0\,{T}_{2}(x)$')
         # affine input - check no surplus parens are added
         p = poly.Chebyshev([1, 2, 3], domain=[-1, 0])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0\,{T}_{0}(1.0 + 2.0x) + 2.0\,{T}_{1}(1.0 + 2.0x) + 3.0\,{T}_{2}(1.0 + 2.0x)$')
+                     r'$x \mapsto 1.0\,{T}_{0}(1.0 + 2.0x) + 2.0\,{T}_{1}(1.0 + 2.0x) + 3.0\,{T}_{2}(1.0 + 2.0x)$')
 
     def test_multichar_basis_func(self):
         p = poly.HermiteE([1, 2, 3])
         assert_equal(self.as_latex(p),
-            r'$x \mapsto 1.0\,{He}_{0}(x) + 2.0\,{He}_{1}(x) + 3.0\,{He}_{2}(x)$')
+                     r'$x \mapsto 1.0\,{He}_{0}(x) + 2.0\,{He}_{1}(x) + 3.0\,{He}_{2}(x)$')
 
     def test_symbol_basic(self):
         # default input
         p = poly.Polynomial([1, 2, 3], symbol='z')
         assert_equal(self.as_latex(p),
-            r'$z \mapsto 1.0 + 2.0\,z + 3.0\,z^{2}$')
+                     r'$z \mapsto 1.0 + 2.0\,z + 3.0\,z^{2}$')
 
         # translated input
         p = poly.Polynomial([1, 2, 3], domain=[-2, 0], symbol='z')
@@ -480,6 +482,7 @@ class TestLatexRepr:
         p = poly.Polynomial(coefs)
         assert_equal(self.as_latex(p), '$x \\mapsto 1/2 + 1\\,x$')
 
+
 SWITCH_TO_EXP = (
     '1.0 + (1.0e-01) x + (1.0e-02) x**2',
     '1.2 + (1.2e-01) x + (1.2e-02) x**2',
@@ -492,6 +495,7 @@ SWITCH_TO_EXP = (
     '(1.234568e-04) x**4 + (1.234568e-05) x**5',
     '1.2345679 + 0.1234568 x + 0.0123457 x**2 + 0.0012346 x**3 + '
     '(1.2345679e-04) x**4 + (1.2345679e-05) x**5')
+
 
 class TestPrintOptions:
     """
@@ -516,32 +520,32 @@ class TestPrintOptions:
     def test_latex(self):
         p = poly.Polynomial([1/2, 1/7, 1/7*10**8, 1/7*10**9])
         assert_equal(p._repr_latex_(),
-            r'$x \mapsto \text{0.5} + \text{0.14285714}\,x + '
-            r'\text{14285714.28571429}\,x^{2} + '
-            r'\text{(1.42857143e+08)}\,x^{3}$')
-        
+                     r'$x \mapsto \text{0.5} + \text{0.14285714}\,x + '
+                     r'\text{14285714.28571429}\,x^{2} + '
+                     r'\text{(1.42857143e+08)}\,x^{3}$')
+
         with printoptions(precision=3):
             assert_equal(p._repr_latex_(),
-                r'$x \mapsto \text{0.5} + \text{0.143}\,x + '
-                r'\text{14285714.286}\,x^{2} + \text{(1.429e+08)}\,x^{3}$')
+                         r'$x \mapsto \text{0.5} + \text{0.143}\,x + '
+                         r'\text{14285714.286}\,x^{2} + \text{(1.429e+08)}\,x^{3}$')
 
     def test_fixed(self):
         p = poly.Polynomial([1/2])
         assert_equal(str(p), '0.5')
-        
+
         with printoptions(floatmode='fixed'):
             assert_equal(str(p), '0.50000000')
-        
+
         with printoptions(floatmode='fixed', precision=4):
             assert_equal(str(p), '0.5000')
 
     def test_switch_to_exp(self):
         for i, s in enumerate(SWITCH_TO_EXP):
             with printoptions(precision=i):
-                p = poly.Polynomial([1.23456789*10**-i 
+                p = poly.Polynomial([1.23456789*10**-i
                                      for i in range(i//2+3)])
-                assert str(p).replace('\n', ' ') == s 
-    
+                assert str(p).replace('\n', ' ') == s
+
     def test_non_finite(self):
         p = poly.Polynomial([nan, inf])
         assert str(p) == 'nan + inf x'

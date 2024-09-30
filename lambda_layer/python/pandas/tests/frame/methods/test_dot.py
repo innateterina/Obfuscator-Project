@@ -141,7 +141,8 @@ class TestDataFrameDot(DotSharedTests):
 
 @pytest.mark.parametrize(
     "dtype,exp_dtype",
-    [("Float32", "Float64"), ("Int16", "Int32"), ("float[pyarrow]", "double[pyarrow]")],
+    [("Float32", "Float64"), ("Int16", "Int32"),
+     ("float[pyarrow]", "double[pyarrow]")],
 )
 def test_arrow_dtype(dtype, exp_dtype):
     pytest.importorskip("pyarrow")

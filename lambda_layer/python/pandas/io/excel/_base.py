@@ -386,7 +386,8 @@ def read_excel(
     | Callable[[str], bool]
     | None = ...,
     dtype: DtypeArg | None = ...,
-    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf",
+                    "pyxlsb", "calamine"] | None = ...,
     converters: dict[str, Callable] | dict[int, Callable] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
@@ -425,7 +426,8 @@ def read_excel(
     | Callable[[str], bool]
     | None = ...,
     dtype: DtypeArg | None = ...,
-    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"] | None = ...,
+    engine: Literal["xlrd", "openpyxl", "odf",
+                    "pyxlsb", "calamine"] | None = ...,
     converters: dict[str, Callable] | dict[int, Callable] | None = ...,
     true_values: Iterable[Hashable] | None = ...,
     false_values: Iterable[Hashable] | None = ...,
@@ -464,7 +466,8 @@ def read_excel(
     | Callable[[str], bool]
     | None = None,
     dtype: DtypeArg | None = None,
-    engine: Literal["xlrd", "openpyxl", "odf", "pyxlsb", "calamine"] | None = None,
+    engine: Literal["xlrd", "openpyxl", "odf",
+                    "pyxlsb", "calamine"] | None = None,
     converters: dict[str, Callable] | dict[int, Callable] | None = None,
     true_values: Iterable[Hashable] | None = None,
     false_values: Iterable[Hashable] | None = None,
@@ -570,7 +573,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
             # N.B. xlrd.Book has a read attribute too
             self.handles.handle.seek(0)
             try:
-                self.book = self.load_workbook(self.handles.handle, engine_kwargs)
+                self.book = self.load_workbook(
+                    self.handles.handle, engine_kwargs)
             except Exception:
                 self.close()
                 raise
@@ -759,7 +763,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
             sheets = [sheet_name]
 
         # handle same-type duplicates.
-        sheets = cast(Union[list[int], list[str]], list(dict.fromkeys(sheets).keys()))
+        sheets = cast(Union[list[int], list[str]],
+                      list(dict.fromkeys(sheets).keys()))
 
         output = {}
 
@@ -774,7 +779,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
             else:  # assume an integer if not a string
                 sheet = self.get_sheet_by_index(asheetname)
 
-            file_rows_needed = self._calc_rows(header, index_col, skiprows, nrows)
+            file_rows_needed = self._calc_rows(
+                header, index_col, skiprows, nrows)
             data = self.get_sheet_data(sheet, file_rows_needed)
             if hasattr(sheet, "close"):
                 # pyxlsb opens two TemporaryFiles
@@ -815,7 +821,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
                             f"{len(data) - 1} of data.",
                         )
 
-                    data[row], control_row = fill_mi_header(data[row], control_row)
+                    data[row], control_row = fill_mi_header(
+                        data[row], control_row)
 
                     if index_col is not None:
                         header_name, _ = pop_header_name(data[row], index_col)
@@ -842,7 +849,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
                         for i, x in enumerate(potential_index_names)
                         if not control_row[i] and i not in index_col_list
                     ]
-                    has_index_names = all(x == "" or x is None for x in potential_data)
+                    has_index_names = all(
+                        x == "" or x is None for x in potential_data)
 
             if is_list_like(index_col):
                 # Forward fill values for MultiIndex index.
@@ -912,7 +920,8 @@ class BaseExcelReader(Generic[_WorkbookT]):
                 output[asheetname] = DataFrame()
 
             except Exception as err:
-                err.args = (f"{err.args[0]} (sheet: {asheetname})", *err.args[1:])
+                err.args = (
+                    f"{err.args[0]} (sheet: {asheetname})", *err.args[1:])
                 raise err
 
         if last_sheetname is None:
@@ -1133,11 +1142,13 @@ class ExcelWriter(Generic[_WorkbookT]):
                     ext = "xlsx"
 
                 try:
-                    engine = config.get_option(f"io.excel.{ext}.writer", silent=True)
+                    engine = config.get_option(
+                        f"io.excel.{ext}.writer", silent=True)
                     if engine == "auto":
                         engine = get_default_engine(ext, mode="writer")
                 except KeyError as err:
-                    raise ValueError(f"No engine for filetype: '{ext}'") from err
+                    raise ValueError(
+                        f"No engine for filetype: '{ext}'") from err
 
             # for mypy
             assert engine is not None
@@ -1233,7 +1244,8 @@ class ExcelWriter(Generic[_WorkbookT]):
                 "Valid options are 'error', 'new', 'replace' and 'overlay'."
             )
         if if_sheet_exists and "r+" not in mode:
-            raise ValueError("if_sheet_exists is only valid in append mode (mode='a')")
+            raise ValueError(
+                "if_sheet_exists is only valid in append mode (mode='a')")
         if if_sheet_exists is None:
             if_sheet_exists = "error"
         self._if_sheet_exists = if_sheet_exists
@@ -1287,7 +1299,8 @@ class ExcelWriter(Generic[_WorkbookT]):
         if sheet_name is None:
             sheet_name = self._cur_sheet
         if sheet_name is None:  # pragma: no cover
-            raise ValueError("Must pass explicit sheet_name or set _cur_sheet property")
+            raise ValueError(
+                "Must pass explicit sheet_name or set _cur_sheet property")
         return sheet_name
 
     def _value_with_fmt(
@@ -1337,7 +1350,8 @@ class ExcelWriter(Generic[_WorkbookT]):
         if ext.startswith("."):
             ext = ext[1:]
         if not any(ext in extension for extension in cls._supported_extensions):
-            raise ValueError(f"Invalid extension for engine '{cls.engine}': '{ext}'")
+            raise ValueError(
+                f"Invalid extension for engine '{cls.engine}': '{ext}'")
         return True
 
     # Allow use as a contextmanager

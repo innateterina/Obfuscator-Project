@@ -22,7 +22,8 @@ c_names_dict = dict(
 
 def get_testdir():
     testroot = Path(__file__).resolve().parent / "src"
-    return  testroot / "array_from_pyobj"
+    return testroot / "array_from_pyobj"
+
 
 def setup_module():
     """
@@ -35,7 +36,7 @@ def setup_module():
         src = [
             get_testdir() / "wrapmodule.c",
         ]
-        wrap = util.build_meson(src, module_name = "test_array_from_pyobj_ext")
+        wrap = util.build_meson(src, module_name="test_array_from_pyobj_ext")
 
 
 def flags_info(arr):
@@ -321,7 +322,7 @@ class Array:
             ))  # strides
         assert self.arr_attr[5][-2:] == self.pyarr_attr[5][-2:], repr((
             self.arr_attr[5], self.pyarr_attr[5]
-            ))  # descr
+        ))  # descr
         assert self.arr_attr[6] == self.pyarr_attr[6], repr((
             self.arr_attr[6],
             self.pyarr_attr[6],

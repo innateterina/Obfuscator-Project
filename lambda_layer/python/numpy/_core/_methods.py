@@ -29,32 +29,38 @@ umr_all = um.logical_and.reduce
 
 # Complex types to -> (2,)float view for fast-path computation in _var()
 _complex_to_float = {
-    nt.dtype(nt.csingle) : nt.dtype(nt.single),
-    nt.dtype(nt.cdouble) : nt.dtype(nt.double),
+    nt.dtype(nt.csingle): nt.dtype(nt.single),
+    nt.dtype(nt.cdouble): nt.dtype(nt.double),
 }
 # Special case for windows: ensure double takes precedence
 if nt.dtype(nt.longdouble) != nt.dtype(nt.double):
     _complex_to_float.update({
-        nt.dtype(nt.clongdouble) : nt.dtype(nt.longdouble),
+        nt.dtype(nt.clongdouble): nt.dtype(nt.longdouble),
     })
 
 # avoid keyword arguments to speed up parsing, saves about 15%-20% for very
 # small reductions
+
+
 def _amax(a, axis=None, out=None, keepdims=False,
           initial=_NoValue, where=True):
     return umr_maximum(a, axis, None, out, keepdims, initial, where)
+
 
 def _amin(a, axis=None, out=None, keepdims=False,
           initial=_NoValue, where=True):
     return umr_minimum(a, axis, None, out, keepdims, initial, where)
 
+
 def _sum(a, axis=None, dtype=None, out=None, keepdims=False,
          initial=_NoValue, where=True):
     return umr_sum(a, axis, dtype, out, keepdims, initial, where)
 
+
 def _prod(a, axis=None, dtype=None, out=None, keepdims=False,
           initial=_NoValue, where=True):
     return umr_prod(a, axis, dtype, out, keepdims, initial, where)
+
 
 def _any(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     # By default, return a boolean for any and all
@@ -65,6 +71,7 @@ def _any(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         return umr_any(a, axis, dtype, out, keepdims)
     return umr_any(a, axis, dtype, out, keepdims, where=where)
 
+
 def _all(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     # By default, return a boolean for any and all
     if dtype is None:
@@ -73,6 +80,7 @@ def _all(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     if where is True:
         return umr_all(a, axis, dtype, out, keepdims)
     return umr_all(a, axis, dtype, out, keepdims, where=where)
+
 
 def _count_reduce_items(arr, axis, keepdims=False, where=True):
     # fast-path for the default case
@@ -97,6 +105,7 @@ def _count_reduce_items(arr, axis, keepdims=False, where=True):
                         keepdims)
     return items
 
+
 def _clip(a, min=None, max=None, out=None, **kwargs):
     if a.dtype.kind in "iu":
         # If min/max is a Python integer, deal with out-of-bound values here.
@@ -115,6 +124,7 @@ def _clip(a, min=None, max=None, out=None, **kwargs):
         return um.maximum(a, min, out=out, **kwargs)
     else:
         return um.clip(a, min, max, out=out, **kwargs)
+
 
 def _mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     arr = asanyarray(a)
@@ -137,7 +147,7 @@ def _mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
     if isinstance(ret, mu.ndarray):
         with _no_nep50_warning():
             ret = um.true_divide(
-                    ret, rcount, out=ret, casting='unsafe', subok=False)
+                ret, rcount, out=ret, casting='unsafe', subok=False)
         if is_float16_result and out is None:
             ret = arr.dtype.type(ret)
     elif hasattr(ret, 'dtype'):
@@ -149,6 +159,7 @@ def _mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=True):
         ret = ret / rcount
 
     return ret
+
 
 def _var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *,
          where=True, mean=None):
@@ -214,13 +225,14 @@ def _var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *,
     if isinstance(ret, mu.ndarray):
         with _no_nep50_warning():
             ret = um.true_divide(
-                    ret, rcount, out=ret, casting='unsafe', subok=False)
+                ret, rcount, out=ret, casting='unsafe', subok=False)
     elif hasattr(ret, 'dtype'):
         ret = ret.dtype.type(ret / rcount)
     else:
         ret = ret / rcount
 
     return ret
+
 
 def _std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *,
          where=True, mean=None):
@@ -236,12 +248,14 @@ def _std(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *,
 
     return ret
 
+
 def _ptp(a, axis=None, out=None, keepdims=False):
     return um.subtract(
         umr_maximum(a, axis, None, out, keepdims),
         umr_minimum(a, axis, None, None, keepdims),
         out
     )
+
 
 def _dump(self, file, protocol=2):
     if hasattr(file, 'write'):
@@ -251,10 +265,12 @@ def _dump(self, file, protocol=2):
     with ctx as f:
         pickle.dump(self, f, protocol=protocol)
 
+
 def _dumps(self, protocol=2):
     return pickle.dumps(self, protocol=protocol)
 
+
 def _bitwise_count(a, out=None, *, where=True, casting='same_kind',
-          order='K', dtype=None, subok=True):
+                   order='K', dtype=None, subok=True):
     return umr_bitwise_count(a, out, where=where, casting=casting,
-            order=order, dtype=dtype, subok=subok)
+                             order=order, dtype=dtype, subok=subok)

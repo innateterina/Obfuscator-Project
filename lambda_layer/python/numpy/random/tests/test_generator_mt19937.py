@@ -24,8 +24,8 @@ JUMP_TEST_DATA = [
         "jumped": {"key_sha256": "ff682ac12bb140f2d72fba8d3506cf4e46817a0db27aae1683867629031d8d55", "pos": 598},
     },
     {
-        "seed":384908324,
-        "steps":312,
+        "seed": 384908324,
+        "steps": 312,
         "initial": {"key_sha256": "16b791a1e04886ccbbb4d448d6ff791267dc458ae599475d08d5cced29d11614", "pos": 311},
         "jumped": {"key_sha256": "a0110a2cf23b56be0feaed8f787a7fc84bef0cb5623003d75b26bdfa1c18002c", "pos": 276},
     },
@@ -263,10 +263,10 @@ class TestMultivariateHypergeometric:
         sample = random.multivariate_hypergeometric([20, 30, 50], 50,
                                                     size=5,
                                                     method='marginals')
-        expected = np.array([[ 9, 17, 24],
-                             [ 7, 13, 30],
-                             [ 9, 15, 26],
-                             [ 9, 17, 24],
+        expected = np.array([[9, 17, 24],
+                             [7, 13, 30],
+                             [9, 15, 26],
+                             [9, 17, 24],
                              [12, 14, 24]])
         assert_array_equal(sample, expected)
 
@@ -478,15 +478,15 @@ class TestIntegers:
             size = 1000
             random = Generator(MT19937(1234))
             scalar = random.integers(lbnd, ubnd, size=size, endpoint=endpoint,
-                                dtype=dt)
+                                     dtype=dt)
 
             random = Generator(MT19937(1234))
             scalar_array = random.integers([lbnd], [ubnd], size=size,
-                                      endpoint=endpoint, dtype=dt)
+                                           endpoint=endpoint, dtype=dt)
 
             random = Generator(MT19937(1234))
             array = random.integers([lbnd] * size, [ubnd] *
-                               size, size=size, endpoint=endpoint, dtype=dt)
+                                    size, size=size, endpoint=endpoint, dtype=dt)
             assert_array_equal(scalar, scalar_array)
             assert_array_equal(scalar, array)
 
@@ -510,10 +510,10 @@ class TestIntegers:
             # view as little endian for hash
             if sys.byteorder == 'little':
                 val = random.integers(0, 6 - endpoint, size=1000, endpoint=endpoint,
-                                 dtype=dt)
+                                      dtype=dt)
             else:
                 val = random.integers(0, 6 - endpoint, size=1000, endpoint=endpoint,
-                                 dtype=dt).byteswap()
+                                      dtype=dt).byteswap()
 
             res = hashlib.sha256(val).hexdigest()
             assert_(tgt[np.dtype(dt).name] == res)
@@ -521,7 +521,7 @@ class TestIntegers:
         # bools do not depend on endianness
         random = Generator(MT19937(1234))
         val = random.integers(0, 2 - endpoint, size=1000, endpoint=endpoint,
-                         dtype=bool).view(np.int8)
+                              dtype=bool).view(np.int8)
         res = hashlib.sha256(val).hexdigest()
         assert_(tgt[np.dtype(bool).name] == res)
 
@@ -534,17 +534,17 @@ class TestIntegers:
             # view as little endian for hash
             random = Generator(MT19937(1234))
             val = random.integers(lbnd, ubnd, size=1000, endpoint=endpoint,
-                             dtype=dt)
+                                  dtype=dt)
 
             random = Generator(MT19937(1234))
             val_bc = random.integers([lbnd] * 1000, ubnd, endpoint=endpoint,
-                                dtype=dt)
+                                     dtype=dt)
 
             assert_array_equal(val, val_bc)
 
             random = Generator(MT19937(1234))
             val_bc = random.integers([lbnd] * 1000, [ubnd] * 1000,
-                                endpoint=endpoint, dtype=dt)
+                                     endpoint=endpoint, dtype=dt)
 
             assert_array_equal(val, val_bc)
 
@@ -568,15 +568,15 @@ class TestIntegers:
                              [1417365545,  760222891, 1909653332],
                              [3788118662,  660249498, 4092002593]],
                             [[3625610153, 2979601262, 3844162757],
-                             [ 685800658,  120261497, 2694012896],
+                             [685800658,  120261497, 2694012896],
                              [1207779440, 1586594375, 3854335050]],
                             [[3004074748, 2310761796, 3012642217],
                              [2067714190, 2786677879, 1363865881],
-                             [ 791663441, 1867303284, 2169727960]],
+                             [791663441, 1867303284, 2169727960]],
                             [[1939603804, 1250951100,  298950036],
                              [1040128489, 3791912209, 3317053765],
                              [3155528714,   61360675, 2305155588]],
-                            [[ 817688762, 1335621943, 3288952434],
+                            [[817688762, 1335621943, 3288952434],
                              [1770890872, 1102951817, 1957607470],
                              [3099996017,  798043451,   48334215]]])
         for size in [None, (5, 3, 3)]:
@@ -693,11 +693,14 @@ class TestIntegers:
     # chi2max is the maximum acceptable chi-squared value.
     @pytest.mark.slow
     @pytest.mark.parametrize('sample_size,high,dtype,chi2max',
-        [(5000000, 5, np.int8, 125.0),          # p-value ~4.6e-25
-         (5000000, 7, np.uint8, 150.0),         # p-value ~7.7e-30
-         (10000000, 2500, np.int16, 3300.0),    # p-value ~3.0e-25
-         (50000000, 5000, np.uint16, 6500.0),   # p-value ~3.5e-25
-        ])
+                             [(5000000, 5, np.int8, 125.0),          # p-value ~4.6e-25
+                              # p-value ~7.7e-30
+                              (5000000, 7, np.uint8, 150.0),
+                                 # p-value ~3.0e-25
+                                 (10000000, 2500, np.int16, 3300.0),
+                                 # p-value ~3.5e-25
+                                 (50000000, 5000, np.uint16, 6500.0),
+                              ])
     def test_integers_small_dtype_chisquared(self, sample_size, high,
                                              dtype, chi2max):
         # Regression test for gh-14774.
@@ -733,7 +736,7 @@ class TestRandomDist:
     def test_integers_closed(self):
         random = Generator(MT19937(self.seed))
         actual = random.integers(-99, 99, size=(3, 2), endpoint=True)
-        desired = np.array([[-80, -56], [ 41, 38], [-83, -15]])
+        desired = np.array([[-80, -56], [41, 38], [-83, -15]])
         assert_array_equal(actual, desired)
 
     def test_integers_max_int(self):
@@ -763,7 +766,7 @@ class TestRandomDist:
     def test_random_float(self):
         random = Generator(MT19937(self.seed))
         actual = random.random((3, 2))
-        desired = np.array([[0.0969992 , 0.70751746],
+        desired = np.array([[0.0969992, 0.70751746],
                             [0.08436483, 0.76773121],
                             [0.66506902, 0.71548719]])
         assert_array_almost_equal(actual, desired, decimal=7)
@@ -979,9 +982,9 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = np.arange(16).reshape((4, 4))
         random.shuffle(actual, axis=1)
-        desired = np.array([[ 0,  3,  1,  2],
-                            [ 4,  7,  5,  6],
-                            [ 8, 11,  9, 10],
+        desired = np.array([[0,  3,  1,  2],
+                            [4,  7,  5,  6],
+                            [8, 11,  9, 10],
                             [12, 15, 13, 14]])
         assert_array_equal(actual, desired)
         random = Generator(MT19937(self.seed))
@@ -1069,9 +1072,9 @@ class TestRandomDist:
 
     def test_permutation_custom_axis(self):
         a = np.arange(16).reshape((4, 4))
-        desired = np.array([[ 0,  3,  1,  2],
-                            [ 4,  7,  5,  6],
-                            [ 8, 11,  9, 10],
+        desired = np.array([[0,  3,  1,  2],
+                            [4,  7,  5,  6],
+                            [8, 11,  9, 10],
                             [12, 15, 13, 14]])
         random = Generator(MT19937(self.seed))
         actual = random.permutation(a, axis=1)
@@ -1094,7 +1097,7 @@ class TestRandomDist:
                                                [8, 4, 2, 5,  1,  6]])),
                               (0, np.array([[6, 1, 2, 9, 10, 11],
                                             [0, 7, 8, 3,  4,  5]])),
-                              (1, np.array([[ 5, 3,  4, 0, 2, 1],
+                              (1, np.array([[5, 3,  4, 0, 2, 1],
                                             [11, 9, 10, 6, 8, 7]]))])
     def test_permuted(self, dtype, axis, expected):
         random = Generator(MT19937(self.seed))
@@ -1179,10 +1182,10 @@ class TestRandomDist:
         alpha = np.array([51.72840233779265162, 39.74494232180943953])
         actual = random.dirichlet(alpha, size=(3, 2))
         desired = np.array([[[0.5439892869558927,  0.45601071304410745],
-                             [0.5588917345860708,  0.4411082654139292 ]],
+                             [0.5588917345860708,  0.4411082654139292]],
                             [[0.5632074165063435,  0.43679258349365657],
                              [0.54862581112627,    0.45137418887373015]],
-                            [[0.49961831357047226, 0.5003816864295278 ],
+                            [[0.49961831357047226, 0.5003816864295278],
                              [0.52374806183482,    0.47625193816517997]]])
         assert_array_almost_equal(actual, desired, decimal=15)
         bad_alpha = np.array([5.4e-01, -1.0e-16])
@@ -1275,7 +1278,7 @@ class TestRandomDist:
         actual = random.exponential(1.1234, size=(3, 2))
         desired = np.array([[0.098845481066258, 1.560752510746964],
                             [0.075730916041636, 1.769098974710777],
-                            [1.488602544592235, 2.49684815275751 ]])
+                            [1.488602544592235, 2.49684815275751]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_exponential_0(self):
@@ -1286,14 +1289,14 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = random.f(12, 77, size=(3, 2))
         desired = np.array([[0.461720027077085, 1.100441958872451],
-                            [1.100337455217484, 0.91421736740018 ],
+                            [1.100337455217484, 0.91421736740018],
                             [0.500811891303113, 0.826802454552058]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_gamma(self):
         random = Generator(MT19937(self.seed))
         actual = random.gamma(5, 3, size=(3, 2))
-        desired = np.array([[ 5.03850858902096,  7.9228656732049 ],
+        desired = np.array([[5.03850858902096,  7.9228656732049],
                             [18.73983605132985, 19.57961681699238],
                             [18.17897755150825, 18.17653912505234]])
         assert_array_almost_equal(actual, desired, decimal=14)
@@ -1322,8 +1325,8 @@ class TestRandomDist:
     def test_gumbel(self):
         random = Generator(MT19937(self.seed))
         actual = random.gumbel(loc=.123456789, scale=2.0, size=(3, 2))
-        desired = np.array([[ 4.688397515056245, -0.289514845417841],
-                            [ 4.981176042584683, -0.633224272589149],
+        desired = np.array([[4.688397515056245, -0.289514845417841],
+                            [4.981176042584683, -0.633224272589149],
                             [-0.055915275687488, -0.333962478257953]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
@@ -1334,8 +1337,8 @@ class TestRandomDist:
     def test_hypergeometric(self):
         random = Generator(MT19937(self.seed))
         actual = random.hypergeometric(10.1, 5.5, 14, size=(3, 2))
-        desired = np.array([[ 9, 9],
-                            [ 9, 9],
+        desired = np.array([[9, 9],
+                            [9, 9],
                             [10, 9]])
         assert_array_equal(actual, desired)
 
@@ -1362,7 +1365,7 @@ class TestRandomDist:
         actual = random.laplace(loc=.123456789, scale=2.0, size=(3, 2))
         desired = np.array([[-3.156353949272393,  1.195863024830054],
                             [-3.435458081645966,  1.656882398925444],
-                            [ 0.924824032467446,  1.251116432209336]])
+                            [0.924824032467446,  1.251116432209336]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_laplace_0(self):
@@ -1373,16 +1376,16 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = random.logistic(loc=.123456789, scale=2.0, size=(3, 2))
         desired = np.array([[-4.338584631510999,  1.890171436749954],
-                            [-4.64547787337966 ,  2.514545562919217],
-                            [ 1.495389489198666,  1.967827627577474]])
+                            [-4.64547787337966,  2.514545562919217],
+                            [1.495389489198666,  1.967827627577474]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_lognormal(self):
         random = Generator(MT19937(self.seed))
         actual = random.lognormal(mean=.123456789, sigma=2.0, size=(3, 2))
-        desired = np.array([[ 0.0268252166335, 13.9534486483053],
-                            [ 0.1204014788936,  2.2422077497792],
-                            [ 4.2484199496128, 12.0093343977523]])
+        desired = np.array([[0.0268252166335, 13.9534486483053],
+                            [0.1204014788936,  2.2422077497792],
+                            [4.2484199496128, 12.0093343977523]])
         assert_array_almost_equal(actual, desired, decimal=13)
 
     def test_lognormal_0(self):
@@ -1433,12 +1436,12 @@ class TestRandomDist:
         cov = [[1, 0], [0, 1]]
         size = (3, 2)
         actual = random.multivariate_normal(mean, cov, size, method=method)
-        desired = np.array([[[-1.747478062846581,  11.25613495182354  ],
-                             [-0.9967333370066214, 10.342002097029821 ]],
-                            [[ 0.7850019631242964, 11.181113712443013 ],
-                             [ 0.8901349653255224,  8.873825399642492 ]],
-                            [[ 0.7130260107430003,  9.551628690083056 ],
-                             [ 0.7127098726541128, 11.991709234143173 ]]])
+        desired = np.array([[[-1.747478062846581,  11.25613495182354],
+                             [-0.9967333370066214, 10.342002097029821]],
+                            [[0.7850019631242964, 11.181113712443013],
+                             [0.8901349653255224,  8.873825399642492]],
+                            [[0.7130260107430003,  9.551628690083056],
+                             [0.7127098726541128, 11.991709234143173]]])
 
         assert_array_almost_equal(actual, desired, decimal=15)
 
@@ -1548,9 +1551,9 @@ class TestRandomDist:
     def test_noncentral_chisquare(self):
         random = Generator(MT19937(self.seed))
         actual = random.noncentral_chisquare(df=5, nonc=5, size=(3, 2))
-        desired = np.array([[ 1.70561552362133, 15.97378184942111],
+        desired = np.array([[1.70561552362133, 15.97378184942111],
                             [13.71483425173724, 20.17859633310629],
-                            [11.3615477156643 ,  3.67891108738029]])
+                            [11.3615477156643,  3.67891108738029]])
         assert_array_almost_equal(actual, desired, decimal=14)
 
         actual = random.noncentral_chisquare(df=.5, nonc=.2, size=(3, 2))
@@ -1570,8 +1573,8 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = random.noncentral_f(dfnum=5, dfden=2, nonc=1,
                                      size=(3, 2))
-        desired = np.array([[0.060310671139  , 0.23866058175939],
-                            [0.86860246709073, 0.2668510459738 ],
+        desired = np.array([[0.060310671139, 0.23866058175939],
+                            [0.86860246709073, 0.2668510459738],
                             [0.23375780078364, 1.88922102885943]])
         assert_array_almost_equal(actual, desired, decimal=14)
 
@@ -1585,7 +1588,7 @@ class TestRandomDist:
         actual = random.normal(loc=.123456789, scale=2.0, size=(3, 2))
         desired = np.array([[-3.618412914693162,  2.635726692647081],
                             [-2.116923463013243,  0.807460983059643],
-                            [ 1.446547137248593,  2.485684213886024]])
+                            [1.446547137248593,  2.485684213886024]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_normal_0(self):
@@ -1649,7 +1652,7 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = random.standard_cauchy(size=(3, 2))
         desired = np.array([[-1.489437778266206, -3.275389641569784],
-                            [ 0.560102864910406, -0.680780916282552],
+                            [0.560102864910406, -0.680780916282552],
                             [-1.314912905226277,  0.295852965660225]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
@@ -1668,7 +1671,7 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         actual = random.standard_gamma(shape=3, size=(3, 2))
         desired = np.array([[0.62970724056362, 1.22379851271008],
-                            [3.899412530884  , 4.12479964250139],
+                            [3.899412530884, 4.12479964250139],
                             [3.74994102464584, 3.74929307690815]])
         assert_array_almost_equal(actual, desired, decimal=14)
 
@@ -1681,8 +1684,8 @@ class TestRandomDist:
     def test_standard_gamma_float(self):
         random = Generator(MT19937(self.seed))
         actual = random.standard_gamma(shape=3, size=(3, 2))
-        desired = np.array([[0.62971, 1.2238 ],
-                            [3.89941, 4.1248 ],
+        desired = np.array([[0.62971, 1.2238],
+                            [3.89941, 4.1248],
                             [3.74994, 3.74929]])
         assert_array_almost_equal(actual, desired, decimal=5)
 
@@ -1691,8 +1694,8 @@ class TestRandomDist:
         random = Generator(MT19937(self.seed))
         random.standard_gamma(10.0, out=actual, dtype=np.float32)
         desired = np.array([[10.14987,  7.87012],
-                             [ 9.46284, 12.56832],
-                             [13.82495,  7.81533]], dtype=np.float32)
+                            [9.46284, 12.56832],
+                            [13.82495,  7.81533]], dtype=np.float32)
         assert_array_almost_equal(actual, desired, decimal=5)
 
         random = Generator(MT19937(self.seed))
@@ -1717,9 +1720,9 @@ class TestRandomDist:
     def test_standard_normal(self):
         random = Generator(MT19937(self.seed))
         actual = random.standard_normal(size=(3, 2))
-        desired = np.array([[-1.870934851846581,  1.25613495182354 ],
+        desired = np.array([[-1.870934851846581,  1.25613495182354],
                             [-1.120190126006621,  0.342002097029821],
-                            [ 0.661545174124296,  1.181113712443012]])
+                            [0.661545174124296,  1.181113712443012]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_standard_normal_unsupported_type(self):
@@ -1728,24 +1731,24 @@ class TestRandomDist:
     def test_standard_t(self):
         random = Generator(MT19937(self.seed))
         actual = random.standard_t(df=10, size=(3, 2))
-        desired = np.array([[-1.484666193042647,  0.30597891831161 ],
-                            [ 1.056684299648085, -0.407312602088507],
-                            [ 0.130704414281157, -2.038053410490321]])
+        desired = np.array([[-1.484666193042647,  0.30597891831161],
+                            [1.056684299648085, -0.407312602088507],
+                            [0.130704414281157, -2.038053410490321]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
     def test_triangular(self):
         random = Generator(MT19937(self.seed))
         actual = random.triangular(left=5.12, mode=10.23, right=20.34,
                                    size=(3, 2))
-        desired = np.array([[ 7.86664070590917, 13.6313848513185 ],
-                            [ 7.68152445215983, 14.36169131136546],
+        desired = np.array([[7.86664070590917, 13.6313848513185],
+                            [7.68152445215983, 14.36169131136546],
                             [13.16105603911429, 13.72341621856971]])
         assert_array_almost_equal(actual, desired, decimal=14)
 
     def test_uniform(self):
         random = Generator(MT19937(self.seed))
         actual = random.uniform(low=1.23, high=10.54, size=(3, 2))
-        desired = np.array([[2.13306255040998 , 7.816987531021207],
+        desired = np.array([[2.13306255040998, 7.816987531021207],
                             [2.015436610109887, 8.377577533009589],
                             [7.421792588856135, 7.891185744455209]])
         assert_array_almost_equal(actual, desired, decimal=15)
@@ -1779,7 +1782,7 @@ class TestRandomDist:
         func = random.uniform
         assert_raises(ValueError, func, 2, 1)
         assert_raises(ValueError, func,  [1, 2], [1, 1])
-        assert_raises(ValueError, func,  [[0, 1],[2, 3]], 2)
+        assert_raises(ValueError, func,  [[0, 1], [2, 3]], 2)
 
     def test_scalar_exception_propagation(self):
         # Tests that exceptions are correctly propagated in distributions
@@ -1806,8 +1809,8 @@ class TestRandomDist:
     def test_vonmises(self):
         random = Generator(MT19937(self.seed))
         actual = random.vonmises(mu=1.23, kappa=1.54, size=(3, 2))
-        desired = np.array([[ 1.107972248690106,  2.841536476232361],
-                            [ 1.832602376042457,  1.945511926976032],
+        desired = np.array([[1.107972248690106,  2.841536476232361],
+                            [1.832602376042457,  1.945511926976032],
                             [-0.260147475776542,  2.058047492231698]])
         assert_array_almost_equal(actual, desired, decimal=15)
 
@@ -1846,7 +1849,7 @@ class TestRandomDist:
     def test_wald(self):
         random = Generator(MT19937(self.seed))
         actual = random.wald(mean=1.23, scale=1.54, size=(3, 2))
-        desired = np.array([[0.26871721804551, 3.2233942732115 ],
+        desired = np.array([[0.26871721804551, 3.2233942732115],
                             [2.20328374987066, 2.40958405189353],
                             [2.07093587449261, 0.73073890064369]])
         assert_array_almost_equal(actual, desired, decimal=14)
@@ -1867,8 +1870,8 @@ class TestRandomDist:
     def test_zipf(self):
         random = Generator(MT19937(self.seed))
         actual = random.zipf(a=1.23, size=(3, 2))
-        desired = np.array([[  1,   1],
-                            [ 10, 867],
+        desired = np.array([[1,   1],
+                            [10, 867],
                             [354,   2]])
         assert_array_equal(actual, desired)
 
@@ -1884,7 +1887,8 @@ class TestBroadcast:
         low = [0]
         high = [1]
         uniform = random.uniform
-        desired = np.array([0.16693771389729, 0.19635129550675, 0.75563050964095])
+        desired = np.array(
+            [0.16693771389729, 0.19635129550675, 0.75563050964095])
 
         random = Generator(MT19937(self.seed))
         actual = random.uniform(low * 3, high)
@@ -1899,7 +1903,8 @@ class TestBroadcast:
         scale = [1]
         bad_scale = [-1]
         random = Generator(MT19937(self.seed))
-        desired = np.array([-0.38736406738527,  0.79594375042255,  0.0197076236097])
+        desired = np.array(
+            [-0.38736406738527,  0.79594375042255,  0.0197076236097])
 
         random = Generator(MT19937(self.seed))
         actual = random.normal(loc * 3, scale)
@@ -1917,7 +1922,8 @@ class TestBroadcast:
         b = [2]
         bad_a = [-1]
         bad_b = [-2]
-        desired = np.array([0.18719338682602, 0.73234824491364, 0.17928615186455])
+        desired = np.array(
+            [0.18719338682602, 0.73234824491364, 0.17928615186455])
 
         random = Generator(MT19937(self.seed))
         beta = random.beta
@@ -1933,7 +1939,8 @@ class TestBroadcast:
     def test_exponential(self):
         scale = [1]
         bad_scale = [-1]
-        desired = np.array([0.67245993212806, 0.21380495318094, 0.7177848928629])
+        desired = np.array(
+            [0.67245993212806, 0.21380495318094, 0.7177848928629])
 
         random = Generator(MT19937(self.seed))
         actual = random.exponential(scale * 3)
@@ -1943,7 +1950,8 @@ class TestBroadcast:
     def test_standard_gamma(self):
         shape = [1]
         bad_shape = [-1]
-        desired = np.array([0.67245993212806, 0.21380495318094, 0.7177848928629])
+        desired = np.array(
+            [0.67245993212806, 0.21380495318094, 0.7177848928629])
 
         random = Generator(MT19937(self.seed))
         std_gamma = random.standard_gamma
@@ -1956,7 +1964,8 @@ class TestBroadcast:
         scale = [2]
         bad_shape = [-1]
         bad_scale = [-2]
-        desired = np.array([1.34491986425611, 0.42760990636187, 1.4355697857258])
+        desired = np.array(
+            [1.34491986425611, 0.42760990636187, 1.4355697857258])
 
         random = Generator(MT19937(self.seed))
         gamma = random.gamma
@@ -1977,7 +1986,8 @@ class TestBroadcast:
         dfden = [2]
         bad_dfnum = [-1]
         bad_dfden = [-2]
-        desired = np.array([0.07765056244107, 7.72951397913186, 0.05786093891763])
+        desired = np.array(
+            [0.07765056244107, 7.72951397913186, 0.05786093891763])
 
         random = Generator(MT19937(self.seed))
         f = random.f
@@ -2000,7 +2010,8 @@ class TestBroadcast:
         bad_dfnum = [0]
         bad_dfden = [-1]
         bad_nonc = [-2]
-        desired = np.array([2.02434240411421, 12.91838601070124, 1.24395160354629])
+        desired = np.array(
+            [2.02434240411421, 12.91838601070124, 1.24395160354629])
 
         random = Generator(MT19937(self.seed))
         nonc_f = random.noncentral_f
@@ -2037,7 +2048,8 @@ class TestBroadcast:
     def test_chisquare(self):
         df = [1]
         bad_df = [-1]
-        desired = np.array([0.05573640064251, 1.47220224353539, 2.9469379318589])
+        desired = np.array(
+            [0.05573640064251, 1.47220224353539, 2.9469379318589])
 
         random = Generator(MT19937(self.seed))
         actual = random.chisquare(df * 3)
@@ -2049,7 +2061,8 @@ class TestBroadcast:
         nonc = [2]
         bad_df = [-1]
         bad_nonc = [-2]
-        desired = np.array([0.07710766249436, 5.27829115110304, 0.630732147399])
+        desired = np.array(
+            [0.07710766249436, 5.27829115110304, 0.630732147399])
 
         random = Generator(MT19937(self.seed))
         nonc_chi = random.noncentral_chisquare
@@ -2068,7 +2081,8 @@ class TestBroadcast:
     def test_standard_t(self):
         df = [1]
         bad_df = [-1]
-        desired = np.array([-1.39498829447098, -1.23058658835223, 0.17207021065983])
+        desired = np.array(
+            [-1.39498829447098, -1.23058658835223, 0.17207021065983])
 
         random = Generator(MT19937(self.seed))
         actual = random.standard_t(df * 3)
@@ -2079,7 +2093,8 @@ class TestBroadcast:
         mu = [2]
         kappa = [1]
         bad_kappa = [-1]
-        desired = np.array([2.25935584988528, 2.23326261461399, -2.84152146503326])
+        desired = np.array(
+            [2.25935584988528, 2.23326261461399, -2.84152146503326])
 
         random = Generator(MT19937(self.seed))
         actual = random.vonmises(mu * 3, kappa)
@@ -2094,7 +2109,8 @@ class TestBroadcast:
     def test_pareto(self):
         a = [1]
         bad_a = [-1]
-        desired = np.array([0.95905052946317, 0.2383810889437 , 1.04988745750013])
+        desired = np.array(
+            [0.95905052946317, 0.2383810889437, 1.04988745750013])
 
         random = Generator(MT19937(self.seed))
         actual = random.pareto(a * 3)
@@ -2104,7 +2120,8 @@ class TestBroadcast:
     def test_weibull(self):
         a = [1]
         bad_a = [-1]
-        desired = np.array([0.67245993212806, 0.21380495318094, 0.7177848928629])
+        desired = np.array(
+            [0.67245993212806, 0.21380495318094, 0.7177848928629])
 
         random = Generator(MT19937(self.seed))
         actual = random.weibull(a * 3)
@@ -2114,7 +2131,8 @@ class TestBroadcast:
     def test_power(self):
         a = [1]
         bad_a = [-1]
-        desired = np.array([0.48954864361052, 0.19249412888486, 0.51216834058807])
+        desired = np.array(
+            [0.48954864361052, 0.19249412888486, 0.51216834058807])
 
         random = Generator(MT19937(self.seed))
         actual = random.power(a * 3)
@@ -2125,7 +2143,8 @@ class TestBroadcast:
         loc = [0]
         scale = [1]
         bad_scale = [-1]
-        desired = np.array([-1.09698732625119, -0.93470271947368, 0.71592671378202])
+        desired = np.array(
+            [-1.09698732625119, -0.93470271947368, 0.71592671378202])
 
         random = Generator(MT19937(self.seed))
         laplace = random.laplace
@@ -2143,7 +2162,8 @@ class TestBroadcast:
         loc = [0]
         scale = [1]
         bad_scale = [-1]
-        desired = np.array([1.70020068231762, 1.52054354273631, -0.34293267607081])
+        desired = np.array(
+            [1.70020068231762, 1.52054354273631, -0.34293267607081])
 
         random = Generator(MT19937(self.seed))
         gumbel = random.gumbel
@@ -2161,7 +2181,8 @@ class TestBroadcast:
         loc = [0]
         scale = [1]
         bad_scale = [-1]
-        desired = np.array([-1.607487640433, -1.40925686003678, 1.12887112820397])
+        desired = np.array(
+            [-1.607487640433, -1.40925686003678, 1.12887112820397])
 
         random = Generator(MT19937(self.seed))
         actual = random.logistic(loc * 3, scale)
@@ -2178,7 +2199,8 @@ class TestBroadcast:
         mean = [0]
         sigma = [1]
         bad_sigma = [-1]
-        desired = np.array([0.67884390500697, 2.21653186290321, 1.01990310084276])
+        desired = np.array(
+            [0.67884390500697, 2.21653186290321, 1.01990310084276])
 
         random = Generator(MT19937(self.seed))
         lognormal = random.lognormal
@@ -2209,7 +2231,8 @@ class TestBroadcast:
         scale = [1]
         bad_mean = [0]
         bad_scale = [-2]
-        desired = np.array([0.38052407392905, 0.50701641508592, 0.484935249864])
+        desired = np.array(
+            [0.38052407392905, 0.50701641508592, 0.484935249864])
 
         random = Generator(MT19937(self.seed))
         actual = random.wald(mean * 3, scale)
@@ -2230,7 +2253,8 @@ class TestBroadcast:
         bad_left_one = [3]
         bad_mode_one = [4]
         bad_left_two, bad_mode_two = right * 2
-        desired = np.array([1.57781954604754, 1.62665986867957, 2.30090130831326])
+        desired = np.array(
+            [1.57781954604754, 1.62665986867957, 2.30090130831326])
 
         random = Generator(MT19937(self.seed))
         triangular = random.triangular
@@ -2365,18 +2389,26 @@ class TestBroadcast:
         random = Generator(MT19937(self.seed))
         actual = random.hypergeometric(ngood * 3, nbad, nsample)
         assert_array_equal(actual, desired)
-        assert_raises(ValueError, random.hypergeometric, bad_ngood * 3, nbad, nsample)
-        assert_raises(ValueError, random.hypergeometric, ngood * 3, bad_nbad, nsample)
-        assert_raises(ValueError, random.hypergeometric, ngood * 3, nbad, bad_nsample_one)
-        assert_raises(ValueError, random.hypergeometric, ngood * 3, nbad, bad_nsample_two)
+        assert_raises(ValueError, random.hypergeometric,
+                      bad_ngood * 3, nbad, nsample)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood * 3, bad_nbad, nsample)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood * 3, nbad, bad_nsample_one)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood * 3, nbad, bad_nsample_two)
 
         random = Generator(MT19937(self.seed))
         actual = random.hypergeometric(ngood, nbad * 3, nsample)
         assert_array_equal(actual, desired)
-        assert_raises(ValueError, random.hypergeometric, bad_ngood, nbad * 3, nsample)
-        assert_raises(ValueError, random.hypergeometric, ngood, bad_nbad * 3, nsample)
-        assert_raises(ValueError, random.hypergeometric, ngood, nbad * 3, bad_nsample_one)
-        assert_raises(ValueError, random.hypergeometric, ngood, nbad * 3, bad_nsample_two)
+        assert_raises(ValueError, random.hypergeometric,
+                      bad_ngood, nbad * 3, nsample)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood, bad_nbad * 3, nsample)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood, nbad * 3, bad_nsample_one)
+        assert_raises(ValueError, random.hypergeometric,
+                      ngood, nbad * 3, bad_nsample_two)
 
         random = Generator(MT19937(self.seed))
         hypergeom = random.hypergeometric

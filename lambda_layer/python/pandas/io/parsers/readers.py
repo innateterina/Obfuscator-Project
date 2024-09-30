@@ -480,7 +480,8 @@ class _Fwf_Defaults(TypedDict):
     widths: None
 
 
-_fwf_defaults: _Fwf_Defaults = {"colspecs": "infer", "infer_nrows": 100, "widths": None}
+_fwf_defaults: _Fwf_Defaults = {
+    "colspecs": "infer", "infer_nrows": 100, "widths": None}
 _c_unsupported = {"skipfooter"}
 _python_unsupported = {"low_memory", "float_precision"}
 _pyarrow_unsupported = {
@@ -575,7 +576,8 @@ def _validate_names(names: Sequence[Hashable] | None) -> None:
         if len(names) != len(set(names)):
             raise ValueError("Duplicate names are not allowed.")
         if not (
-            is_list_like(names, allow_sets=False) or isinstance(names, abc.KeysView)
+            is_list_like(names, allow_sets=False) or isinstance(
+                names, abc.KeysView)
         ):
             raise ValueError("Names should be an ordered collection.")
 
@@ -957,7 +959,8 @@ def read_csv(
         depr = False
         # error: Item "bool" of "bool | Sequence[Hashable] | None" has no
         # attribute "__iter__" (not iterable)
-        if not all(is_hashable(x) for x in parse_dates):  # type: ignore[union-attr]
+        # type: ignore[union-attr]
+        if not all(is_hashable(x) for x in parse_dates):
             depr = True
         elif isinstance(parse_dates, dict) and any(
             lib.is_list_like(x) for x in parse_dates.values()
@@ -1341,7 +1344,8 @@ def read_table(
         keep_date_col = False
 
     # error: Item "bool" of "bool | Sequence[Hashable]" has no attribute "__iter__"
-    if lib.is_list_like(parse_dates) and not all(is_hashable(x) for x in parse_dates):  # type: ignore[union-attr]
+    # type: ignore[union-attr]
+    if lib.is_list_like(parse_dates) and not all(is_hashable(x) for x in parse_dates):
         # GH#55569
         warnings.warn(
             "Support for nested sequences for 'parse_dates' in pd.read_table "
@@ -1523,7 +1527,8 @@ def read_fwf(
     if colspecs is None and widths is None:
         raise ValueError("Must specify either colspecs or widths")
     if colspecs not in (None, "infer") and widths is not None:
-        raise ValueError("You must specify only one of 'widths' and 'colspecs'")
+        raise ValueError(
+            "You must specify only one of 'widths' and 'colspecs'")
 
     # Compute 'colspecs' from 'widths', if specified.
     if widths is not None:
@@ -1552,7 +1557,8 @@ def read_fwf(
                         len_index = len(index_col)
             if kwds.get("usecols") is None and len(names) + len_index != len(colspecs):
                 # If usecols is used colspec may be longer than names
-                raise ValueError("Length of colspecs must match length of names")
+                raise ValueError(
+                    "Length of colspecs must match length of names")
 
     kwds["colspecs"] = colspecs
     kwds["infer_nrows"] = infer_nrows
@@ -1943,7 +1949,8 @@ class TextFileReader(abc.Iterator):
                 dtype_arg = None
 
             if isinstance(dtype_arg, dict):
-                dtype = defaultdict(lambda: None)  # type: ignore[var-annotated]
+                # type: ignore[var-annotated]
+                dtype = defaultdict(lambda: None)
                 dtype.update(dtype_arg)
             elif dtype_arg is not None and pandas_dtype(dtype_arg) in (
                 np.str_,
@@ -1961,7 +1968,8 @@ class TextFileReader(abc.Iterator):
                         if pandas_dtype(dtype[k]) in (np.str_, np.object_)
                         else None
                     )
-                    new_col_dict[k] = Series(v, index=index, dtype=d, copy=False)
+                    new_col_dict[k] = Series(
+                        v, index=index, dtype=d, copy=False)
             else:
                 new_col_dict = col_dict
 
@@ -2208,7 +2216,8 @@ def _refine_defaults_read(
         )
 
     if delimiter and (sep is not lib.no_default):
-        raise ValueError("Specified a sep and a delimiter; you can only specify one.")
+        raise ValueError(
+            "Specified a sep and a delimiter; you can only specify one.")
 
     kwds["names"] = None if names is lib.no_default else names
 
@@ -2255,7 +2264,8 @@ def _refine_defaults_read(
             )
         kwds["on_bad_lines"] = on_bad_lines
     else:
-        raise ValueError(f"Argument {on_bad_lines} is invalid for on_bad_lines")
+        raise ValueError(
+            f"Argument {on_bad_lines} is invalid for on_bad_lines")
 
     check_dtype_backend(dtype_backend)
 

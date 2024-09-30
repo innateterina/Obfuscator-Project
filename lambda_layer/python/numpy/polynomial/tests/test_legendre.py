@@ -8,7 +8,7 @@ import numpy.polynomial.legendre as leg
 from numpy.polynomial.polynomial import polyval
 from numpy.testing import (
     assert_almost_equal, assert_raises, assert_equal, assert_,
-    )
+)
 
 L0 = np.array([1])
 L1 = np.array([0, 1])
@@ -106,7 +106,7 @@ class TestArithmetic:
                 msg = f"At i={i}, j={j}"
                 c = np.arange(i + 1)
                 tgt = reduce(leg.legmul, [c]*j, np.array([1]))
-                res = leg.legpow(c, j) 
+                res = leg.legpow(c, j)
                 assert_equal(trim(res), trim(tgt), err_msg=msg)
 
 
@@ -121,10 +121,10 @@ class TestEvaluation:
     y = polyval(x, [1., 2., 3.])
 
     def test_legval(self):
-        #check empty input
+        # check empty input
         assert_equal(leg.legval([], [1]).size, 0)
 
-        #check normal input)
+        # check normal input)
         x = np.linspace(-1, 1)
         y = [polyval(x, c) for c in Llist]
         for i in range(10):
@@ -133,7 +133,7 @@ class TestEvaluation:
             res = leg.legval(x, [0]*i + [1])
             assert_almost_equal(res, tgt, err_msg=msg)
 
-        #check that shape is preserved
+        # check that shape is preserved
         for i in range(3):
             dims = [2]*i
             x = np.zeros(dims)
@@ -145,15 +145,15 @@ class TestEvaluation:
         x1, x2, x3 = self.x
         y1, y2, y3 = self.y
 
-        #test exceptions
+        # test exceptions
         assert_raises(ValueError, leg.legval2d, x1, x2[:2], self.c2d)
 
-        #test values
+        # test values
         tgt = y1*y2
         res = leg.legval2d(x1, x2, self.c2d)
         assert_almost_equal(res, tgt)
 
-        #test shape
+        # test shape
         z = np.ones((2, 3))
         res = leg.legval2d(z, z, self.c2d)
         assert_(res.shape == (2, 3))
@@ -162,15 +162,15 @@ class TestEvaluation:
         x1, x2, x3 = self.x
         y1, y2, y3 = self.y
 
-        #test exceptions
+        # test exceptions
         assert_raises(ValueError, leg.legval3d, x1, x2, x3[:2], self.c3d)
 
-        #test values
+        # test values
         tgt = y1*y2*y3
         res = leg.legval3d(x1, x2, x3, self.c3d)
         assert_almost_equal(res, tgt)
 
-        #test shape
+        # test shape
         z = np.ones((2, 3))
         res = leg.legval3d(z, z, z, self.c3d)
         assert_(res.shape == (2, 3))
@@ -179,12 +179,12 @@ class TestEvaluation:
         x1, x2, x3 = self.x
         y1, y2, y3 = self.y
 
-        #test values
+        # test values
         tgt = np.einsum('i,j->ij', y1, y2)
         res = leg.leggrid2d(x1, x2, self.c2d)
         assert_almost_equal(res, tgt)
 
-        #test shape
+        # test shape
         z = np.ones((2, 3))
         res = leg.leggrid2d(z, z, self.c2d)
         assert_(res.shape == (2, 3)*2)
@@ -193,12 +193,12 @@ class TestEvaluation:
         x1, x2, x3 = self.x
         y1, y2, y3 = self.y
 
-        #test values
+        # test values
         tgt = np.einsum('i,j,k->ijk', y1, y2, y3)
         res = leg.leggrid3d(x1, x2, x3, self.c3d)
         assert_almost_equal(res, tgt)
 
-        #test shape
+        # test shape
         z = np.ones((2, 3))
         res = leg.leggrid3d(z, z, z, self.c3d)
         assert_(res.shape == (2, 3)*3)
@@ -351,6 +351,7 @@ class TestDerivative:
     def test_legder_orderhigherthancoeff(self):
         c = (1, 2, 3, 4)
         assert_equal(leg.legder(c, 4), [0])
+
 
 class TestVander:
     # some random values in [-1, 1)

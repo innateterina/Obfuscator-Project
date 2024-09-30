@@ -11,20 +11,20 @@ from numpy._core import transpose, overrides
 from numpy._core.numeric import (
     ones, zeros_like, arange, concatenate, array, asarray, asanyarray, empty,
     ndarray, take, dot, where, intp, integer, isscalar, absolute
-    )
+)
 from numpy._core.umath import (
     pi, add, arctan2, frompyfunc, cos, less_equal, sqrt, sin,
     mod, exp, not_equal, subtract, minimum
-    )
+)
 from numpy._core.fromnumeric import (
     ravel, nonzero, partition, mean, any, sum
-    )
+)
 from numpy._core.numerictypes import typecodes
 from numpy.lib._twodim_base_impl import diag
 from numpy._core.multiarray import (
     _place, bincount, normalize_axis_index, _monotonicity,
     interp as compiled_interp, interp_complex as compiled_interp_complex
-    )
+)
 from numpy._core._multiarray_umath import _array_converter
 from numpy._utils import set_module
 
@@ -45,7 +45,7 @@ __all__ = [
     'blackman', 'kaiser', 'trapezoid', 'trapz', 'i0',
     'meshgrid', 'delete', 'insert', 'append', 'interp',
     'quantile'
-    ]
+]
 
 # _QuantileMethods is a dictionary listing all the supported methods to
 # compute quantile/percentile.
@@ -130,8 +130,8 @@ _QuantileMethods = dict(
     ),
     midpoint=dict(
         get_virtual_index=lambda n, quantiles: 0.5 * (
-                np.floor((n - 1) * quantiles)
-                + np.ceil((n - 1) * quantiles)),
+            np.floor((n - 1) * quantiles)
+            + np.ceil((n - 1) * quantiles)),
         fix_gamma=lambda gamma, index: _get_gamma_mask(
             shape=gamma.shape,
             default_value=0.5,
@@ -221,9 +221,9 @@ def rot90(m, k=1, axes=(0, 1)):
         raise ValueError("Axes must be different.")
 
     if (axes[0] >= m.ndim or axes[0] < -m.ndim
-        or axes[1] >= m.ndim or axes[1] < -m.ndim):
+            or axes[1] >= m.ndim or axes[1] < -m.ndim):
         raise ValueError("Axes={} out of range for array of ndim={}."
-            .format(axes, m.ndim))
+                         .format(axes, m.ndim))
 
     k %= 4
 
@@ -391,7 +391,7 @@ def iterable(y):
 
 def _weights_are_valid(weights, a, axis):
     """Validate weights array.
-    
+
     We assume, weights is not None.
     """
     wgt = np.asanyarray(weights)
@@ -451,7 +451,7 @@ def average(a, axis=None, weights=None, returned=False, *,
         The calculation is::
 
             avg = sum(a * weights) / sum(weights)
-        
+
         where the sum is over all included elements.
         The only constraint on the values of `weights` is that `sum(weights)`
         must not be 0.
@@ -576,7 +576,7 @@ def average(a, axis=None, weights=None, returned=False, *,
                 "Weights sum to zero, can't be normalized")
 
         avg = avg_as_array = np.multiply(a, wgt,
-                          dtype=result_dtype).sum(axis, **keepdims_kw) / scl
+                                         dtype=result_dtype).sum(axis, **keepdims_kw) / scl
 
     if returned:
         if scl.shape != avg_as_array.shape:
@@ -1300,7 +1300,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
         slice4[axis] = slice(2, None)
 
         if uniform_spacing:
-            out[tuple(slice1)] = (f[tuple(slice4)] - f[tuple(slice2)]) / (2. * ax_dx)
+            out[tuple(slice1)] = (f[tuple(slice4)] -
+                                  f[tuple(slice2)]) / (2. * ax_dx)
         else:
             dx1 = ax_dx[0:-1]
             dx2 = ax_dx[1:]
@@ -1312,7 +1313,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
             shape[axis] = -1
             a.shape = b.shape = c.shape = shape
             # 1D equivalent -- out[1:-1] = a * f[:-2] + b * f[1:-1] + c * f[2:]
-            out[tuple(slice1)] = a * f[tuple(slice2)] + b * f[tuple(slice3)] + c * f[tuple(slice4)]
+            out[tuple(slice1)] = a * f[tuple(slice2)] + b * \
+                f[tuple(slice3)] + c * f[tuple(slice4)]
 
         # Numerical differentiation: 1st order edges
         if edge_order == 1:
@@ -1347,7 +1349,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
                 b = (dx1 + dx2) / (dx1 * dx2)
                 c = - dx1 / (dx2 * (dx1 + dx2))
             # 1D equivalent -- out[0] = a * f[0] + b * f[1] + c * f[2]
-            out[tuple(slice1)] = a * f[tuple(slice2)] + b * f[tuple(slice3)] + c * f[tuple(slice4)]
+            out[tuple(slice1)] = a * f[tuple(slice2)] + b * \
+                f[tuple(slice3)] + c * f[tuple(slice4)]
 
             slice1[axis] = -1
             slice2[axis] = -3
@@ -1364,7 +1367,8 @@ def gradient(f, *varargs, axis=None, edge_order=1):
                 b = - (dx2 + dx1) / (dx1 * dx2)
                 c = (2. * dx2 + dx1) / (dx2 * (dx1 + dx2))
             # 1D equivalent -- out[-1] = a * f[-3] + b * f[-2] + c * f[-1]
-            out[tuple(slice1)] = a * f[tuple(slice2)] + b * f[tuple(slice3)] + c * f[tuple(slice4)]
+            out[tuple(slice1)] = a * f[tuple(slice2)] + b * \
+                f[tuple(slice3)] + c * f[tuple(slice4)]
 
         outvals.append(out)
 
@@ -1478,7 +1482,8 @@ def diff(a, n=1, axis=-1, prepend=np._NoValue, append=np._NoValue):
     a = asanyarray(a)
     nd = a.ndim
     if nd == 0:
-        raise ValueError("diff requires input that is at least one dimensional")
+        raise ValueError(
+            "diff requires input that is at least one dimensional")
     axis = normalize_axis_index(axis, nd)
 
     combined = []
@@ -2072,7 +2077,7 @@ def disp(mesg, device=None, linefeed=True):
         "(deprecated in NumPy 2.0)",
         DeprecationWarning,
         stacklevel=2
-    )    
+    )
 
     if device is None:
         device = sys.stdout
@@ -2380,12 +2385,13 @@ class vectorize:
     >>> as_float([0, 1, 2])
     array([0., 1., 2.])
     """
+
     def __init__(self, pyfunc=np._NoValue, otypes=None, doc=None,
                  excluded=None, cache=False, signature=None):
 
         if (pyfunc != np._NoValue) and (not callable(pyfunc)):
-            #Splitting the error message to keep
-            #the length below 79 characters.
+            # Splitting the error message to keep
+            # the length below 79 characters.
             part1 = "When used as a decorator, "
             part2 = "only accepts keyword arguments."
             raise TypeError(part1 + part2)
@@ -3417,7 +3423,7 @@ def hamming(M):
     return 0.54 + 0.46*cos(pi*n/(M-1))
 
 
-## Code from cephes for i0
+# Code from cephes for i0
 
 _i0A = [
     -4.41534164647933937950E-18,
@@ -3450,7 +3456,7 @@ _i0A = [
     1.71620901522208775349E-1,
     -3.04682672343198398683E-1,
     6.76795274409476084995E-1
-    ]
+]
 
 _i0B = [
     -7.23318048787475395456E-18,
@@ -3478,7 +3484,7 @@ _i0B = [
     6.88975834691682398426E-5,
     3.36911647825569408990E-3,
     8.04490411014108831608E-1
-    ]
+]
 
 
 def _chbevl(x, vals):
@@ -3565,7 +3571,7 @@ def i0(x):
     x = np.abs(x)
     return piecewise(x, [x <= 8.0], [_i0_1, _i0_2])
 
-## End of cephes code for i0
+# End of cephes code for i0
 
 
 @set_module('numpy')
@@ -3882,7 +3888,7 @@ def median(a, axis=None, out=None, overwrite_input=False, keepdims=False):
         Axis or axes along which the medians are computed. The default,
         axis=None, will compute the median along a flattened version of
         the array.
-        
+
         .. versionadded:: 1.9.0
 
         If a sequence of axes, the array is first flattened along the
@@ -4575,7 +4581,7 @@ def _compute_virtual_index(n, quantiles, alpha: float, beta: float):
     DOI: 10.1080/00031305.1996.10473566
     """
     return n * quantiles + (
-            alpha + quantiles * (1 - alpha - beta)
+        alpha + quantiles * (1 - alpha - beta)
     ) - 1
 
 
@@ -4650,13 +4656,14 @@ def _discret_interpolation_to_boundaries(index, gamma_condition_fun):
 def _closest_observation(n, quantiles):
     # "choose the nearest even order statistic at g=0" (H&F (1996) pp. 362).
     # Order is 1-based so for zero-based indexing round to nearest odd index.
-    gamma_fun = lambda gamma, index: (gamma == 0) & (np.floor(index) % 2 == 1)
+    def gamma_fun(gamma, index): return (
+        gamma == 0) & (np.floor(index) % 2 == 1)
     return _discret_interpolation_to_boundaries((n * quantiles) - 1 - 0.5,
                                                 gamma_fun)
 
 
 def _inverted_cdf(n, quantiles):
-    gamma_fun = lambda gamma, _: (gamma == 0)
+    def gamma_fun(gamma, _): return (gamma == 0)
     return _discret_interpolation_to_boundaries((n * quantiles) - 1,
                                                 gamma_fun)
 
@@ -4824,9 +4831,9 @@ def _quantile(
             result_shape = virtual_indexes.shape + (1,) * (arr.ndim - 1)
             gamma = gamma.reshape(result_shape)
             result = _lerp(previous,
-                        next,
-                        gamma,
-                        out=out)
+                           next,
+                           gamma,
+                           out=out)
     else:
         # Weighted case
         # This implements method="inverted_cdf", the only supported weighted
@@ -4880,7 +4887,7 @@ def _quantile(
             return result
 
         r_shape = arr.shape[1:]
-        if quantiles.ndim > 0: 
+        if quantiles.ndim > 0:
             r_shape = quantiles.shape + r_shape
         if out is None:
             result = np.empty_like(arr, shape=r_shape)
@@ -5549,10 +5556,10 @@ def insert(arr, obj, values, axis=None):
                 "integer", FutureWarning, stacklevel=2)
             indices = indices.astype(intp)
             # Code after warning period:
-            #if obj.ndim != 1:
+            # if obj.ndim != 1:
             #    raise ValueError('boolean array argument obj to insert '
             #                     'must be one dimensional')
-            #indices = np.flatnonzero(obj)
+            # indices = np.flatnonzero(obj)
         elif indices.ndim > 1:
             raise ValueError(
                 "index array argument obj to insert must be one dimensional "

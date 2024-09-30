@@ -407,7 +407,8 @@ def _datetimelike_compat(func: F) -> F:
             result = _wrap_results(result, orig_values.dtype, fill_value=iNaT)
             if not skipna:
                 assert mask is not None  # checked above
-                result = _mask_datetimelike_result(result, axis, mask, orig_values)
+                result = _mask_datetimelike_result(
+                    result, axis, mask, orig_values)
 
         return result
 
@@ -440,7 +441,7 @@ def _na_for_min_count(values: np.ndarray, axis: AxisInt | None) -> Scalar | np.n
     elif axis is None:
         return fill_value
     else:
-        result_shape = values.shape[:axis] + values.shape[axis + 1 :]
+        result_shape = values.shape[:axis] + values.shape[axis + 1:]
 
         return np.full(result_shape, fill_value, dtype=values.dtype)
 
@@ -644,7 +645,8 @@ def nansum(
         dtype_sum = np.dtype(np.float64)
 
     the_sum = values.sum(axis, dtype=dtype_sum)
-    the_sum = _maybe_null_out(the_sum, axis, mask, values.shape, min_count=min_count)
+    the_sum = _maybe_null_out(
+        the_sum, axis, mask, values.shape, min_count=min_count)
 
     return the_sum
 
@@ -947,7 +949,8 @@ def nanstd(
     orig_dtype = values.dtype
     values, mask = _get_values(values, skipna, mask=mask)
 
-    result = np.sqrt(nanvar(values, axis=axis, skipna=skipna, ddof=ddof, mask=mask))
+    result = np.sqrt(
+        nanvar(values, axis=axis, skipna=skipna, ddof=ddof, mask=mask))
     return _wrap_results(result, orig_dtype)
 
 
@@ -996,7 +999,8 @@ def nanvar(
             values[mask] = np.nan
 
     if values.dtype.kind == "f":
-        count, d = _get_counts_nanvar(values.shape, mask, axis, ddof, values.dtype)
+        count, d = _get_counts_nanvar(
+            values.shape, mask, axis, ddof, values.dtype)
     else:
         count, d = _get_counts_nanvar(values.shape, mask, axis, ddof)
 
@@ -1148,7 +1152,8 @@ def nanargmax(
     result = values.argmax(axis)
     # error: Argument 1 to "_maybe_arg_null_out" has incompatible type "Any |
     # signedinteger[Any]"; expected "ndarray[Any, Any]"
-    result = _maybe_arg_null_out(result, axis, mask, skipna)  # type: ignore[arg-type]
+    result = _maybe_arg_null_out(
+        result, axis, mask, skipna)  # type: ignore[arg-type]
     return result
 
 
@@ -1194,7 +1199,8 @@ def nanargmin(
     result = values.argmin(axis)
     # error: Argument 1 to "_maybe_arg_null_out" has incompatible type "Any |
     # signedinteger[Any]"; expected "ndarray[Any, Any]"
-    result = _maybe_arg_null_out(result, axis, mask, skipna)  # type: ignore[arg-type]
+    result = _maybe_arg_null_out(
+        result, axis, mask, skipna)  # type: ignore[arg-type]
     return result
 
 
@@ -1519,7 +1525,7 @@ def _maybe_null_out(
         else:
             # we have no nulls, kept mask=None in _maybe_get_mask
             below_count = shape[axis] - min_count < 0
-            new_shape = shape[:axis] + shape[axis + 1 :]
+            new_shape = shape[:axis] + shape[axis + 1:]
             null_mask = np.broadcast_to(below_count, new_shape)
 
         if np.any(null_mask):
@@ -1691,7 +1697,8 @@ def _ensure_numeric(x):
                     x = x.astype(np.float64)
                 except ValueError as err:
                     # GH#29941 we get here with object arrays containing strs
-                    raise TypeError(f"Could not convert {x} to numeric") from err
+                    raise TypeError(
+                        f"Could not convert {x} to numeric") from err
             else:
                 if not np.any(np.imag(x)):
                     x = x.real

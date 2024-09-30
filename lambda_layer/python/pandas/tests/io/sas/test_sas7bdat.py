@@ -294,7 +294,8 @@ def test_max_sas_date(datapath):
                 dtype="M8[s]",
             ),
         },
-        columns=["text", "dt_as_float", "dt_as_dt", "date_as_float", "date_as_date"],
+        columns=["text", "dt_as_float", "dt_as_dt",
+                 "date_as_float", "date_as_date"],
     )
 
     if not IS64:
@@ -309,7 +310,8 @@ def test_max_sas_date_iterator(datapath):
     # when called as an iterator, only those chunks with a date > pd.Timestamp.max
     # are returned as datetime.datetime, if this happens that whole chunk is returned
     # as datetime.datetime
-    col_order = ["text", "dt_as_float", "dt_as_dt", "date_as_float", "date_as_date"]
+    col_order = ["text", "dt_as_float", "dt_as_dt",
+                 "date_as_float", "date_as_date"]
     fname = datapath("io", "sas", "data", "max_sas_date.sas7bdat")
     results = []
     for df in pd.read_sas(fname, encoding="iso-8859-1", chunksize=1):

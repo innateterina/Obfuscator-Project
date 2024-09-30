@@ -111,7 +111,8 @@ class TestJoin:
 
         res, lidx, ridx = index.join(other, how="right", return_indexers=True)
         eres = other
-        elidx = np.array([-1, -1, -1, -1, -1, -1, -1, 9, -1, 8, -1], dtype=np.intp)
+        elidx = np.array([-1, -1, -1, -1, -1, -1, -1,
+                         9, -1, 8, -1], dtype=np.intp)
 
         assert isinstance(other, Index) and other.dtype == np.int64
         tm.assert_index_equal(res, eres)
@@ -165,7 +166,8 @@ class TestJoin:
 
         eres = Index([0, 2, 4, 4, 6, 8, 10, 12, 14, 16, 18])
         elidx = np.array([0, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9], dtype=np.intp)
-        eridx = np.array([-1, -1, 0, 1, -1, -1, -1, -1, -1, -1, -1], dtype=np.intp)
+        eridx = np.array([-1, -1, 0, 1, -1, -1, -1, -
+                         1, -1, -1, -1], dtype=np.intp)
 
         tm.assert_index_equal(res, eres)
         tm.assert_numpy_array_equal(lidx, elidx)

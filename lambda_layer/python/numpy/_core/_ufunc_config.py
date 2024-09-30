@@ -102,7 +102,7 @@ def seterr(all=None, divide=None, over=None, under=None, invalid=None):
     old.pop("bufsize", None)
 
     extobj = _make_extobj(
-            all=all, divide=divide, over=over, under=under, invalid=invalid)
+        all=all, divide=divide, over=over, under=under, invalid=invalid)
     _extobj_contextvar.set(extobj)
     return old
 
@@ -444,13 +444,13 @@ class errstate:
             raise TypeError("Cannot enter `np.errstate` twice.")
         if self._call is _Unspecified:
             extobj = _make_extobj(
-                    all=self._all, divide=self._divide, over=self._over,
-                    under=self._under, invalid=self._invalid)
+                all=self._all, divide=self._divide, over=self._over,
+                under=self._under, invalid=self._invalid)
         else:
             extobj = _make_extobj(
-                    call=self._call,
-                    all=self._all, divide=self._divide, over=self._over,
-                    under=self._under, invalid=self._invalid)
+                call=self._call,
+                all=self._all, divide=self._divide, over=self._over,
+                under=self._under, invalid=self._invalid)
 
         self._token = _extobj_contextvar.set(extobj)
 
@@ -466,13 +466,13 @@ class errstate:
         def inner(*args, **kwargs):
             if self._call is _Unspecified:
                 extobj = _make_extobj(
-                        all=self._all, divide=self._divide, over=self._over,
-                        under=self._under, invalid=self._invalid)
+                    all=self._all, divide=self._divide, over=self._over,
+                    under=self._under, invalid=self._invalid)
             else:
                 extobj = _make_extobj(
-                        call=self._call,
-                        all=self._all, divide=self._divide, over=self._over,
-                        under=self._under, invalid=self._invalid)
+                    call=self._call,
+                    all=self._all, divide=self._divide, over=self._over,
+                    under=self._under, invalid=self._invalid)
 
             _token = _extobj_contextvar.set(extobj)
             try:
@@ -485,6 +485,7 @@ class errstate:
 
 
 NO_NEP50_WARNING = contextvars.ContextVar("_no_nep50_warning", default=False)
+
 
 @set_module('numpy')
 @contextlib.contextmanager

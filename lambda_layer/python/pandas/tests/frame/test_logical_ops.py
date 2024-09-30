@@ -101,7 +101,8 @@ class TestDataFrameLogicalOperators:
 
         df1 = DataFrame(1.0, index=[1], columns=["A"])
         df2 = DataFrame(True, index=[1], columns=["A"])
-        msg = re.escape("unsupported operand type(s) for |: 'float' and 'bool'")
+        msg = re.escape(
+            "unsupported operand type(s) for |: 'float' and 'bool'")
         with pytest.raises(TypeError, match=msg):
             df1 | df2
 
@@ -128,7 +129,8 @@ class TestDataFrameLogicalOperators:
 
         def _check_unary_op(op):
             result = op(df1)
-            expected = DataFrame(op(df1.values), index=df1.index, columns=df1.columns)
+            expected = DataFrame(
+                op(df1.values), index=df1.index, columns=df1.columns)
             assert result.values.dtype == np.bool_
             tm.assert_frame_equal(result, expected)
 

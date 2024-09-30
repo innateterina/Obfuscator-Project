@@ -61,11 +61,13 @@ def create_valid_python_identifier(name: str) -> str:
         }
     )
 
-    name = "".join([special_characters_replacements.get(char, char) for char in name])
+    name = "".join([special_characters_replacements.get(char, char)
+                   for char in name])
     name = f"BACKTICK_QUOTED_STRING_{name}"
 
     if not name.isidentifier():
-        raise SyntaxError(f"Could not convert '{name}' to a valid Python identifier.")
+        raise SyntaxError(
+            f"Could not convert '{name}' to a valid Python identifier.")
 
     return name
 
@@ -193,6 +195,7 @@ def tokenize_string(source: str) -> Iterator[tuple[int, str]]:
                     token_generator, source, string_start=start[1] + 1
                 )
             except Exception as err:
-                raise SyntaxError(f"Failed to parse backticks in '{source}'.") from err
+                raise SyntaxError(
+                    f"Failed to parse backticks in '{source}'.") from err
         else:
             yield toknum, tokval

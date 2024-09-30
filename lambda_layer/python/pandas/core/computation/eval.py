@@ -363,7 +363,8 @@ def eval(
                     "if all expressions contain an assignment"
                 )
             if inplace:
-                raise ValueError("Cannot operate inplace if there is no assignment")
+                raise ValueError(
+                    "Cannot operate inplace if there is no assignment")
 
         # assign if needed
         assigner = parsed_expr.assigner
@@ -379,7 +380,8 @@ def eval(
                     else:
                         target = target.copy()
                 except AttributeError as err:
-                    raise ValueError("Cannot return a copy of the target") from err
+                    raise ValueError(
+                        "Cannot return a copy of the target") from err
             else:
                 target = env.target
 
@@ -391,9 +393,11 @@ def eval(
                 if inplace and isinstance(target, NDFrame):
                     target.loc[:, assigner] = ret
                 else:
-                    target[assigner] = ret  # pyright: ignore[reportGeneralTypeIssues]
+                    # pyright: ignore[reportGeneralTypeIssues]
+                    target[assigner] = ret
             except (TypeError, IndexError) as err:
-                raise ValueError("Cannot assign expression output to target") from err
+                raise ValueError(
+                    "Cannot assign expression output to target") from err
 
             if not resolvers:
                 resolvers = ({assigner: ret},)

@@ -46,7 +46,8 @@ class TestConcatenate:
 
     def test_concat_copy(self, using_array_manager, using_copy_on_write):
         df = DataFrame(np.random.default_rng(2).standard_normal((4, 3)))
-        df2 = DataFrame(np.random.default_rng(2).integers(0, 10, size=4).reshape(4, 1))
+        df2 = DataFrame(np.random.default_rng(
+            2).integers(0, 10, size=4).reshape(4, 1))
         df3 = DataFrame({5: "foo"}, index=range(4))
 
         # These are actual copies.
@@ -96,7 +97,8 @@ class TestConcatenate:
                 assert arr.base is df2._mgr.arrays[0].base
             elif arr.dtype == object:
                 # this is a view on df3
-                assert any(np.shares_memory(arr, other) for other in df3._mgr.arrays)
+                assert any(np.shares_memory(arr, other)
+                           for other in df3._mgr.arrays)
 
     def test_concat_with_group_keys(self):
         # axis=0
@@ -111,7 +113,8 @@ class TestConcatenate:
         tm.assert_frame_equal(result, expected)
 
         result = concat([df, df], keys=[0, 1])
-        exp_index2 = MultiIndex.from_arrays([[0, 0, 0, 1, 1, 1], [0, 1, 2, 0, 1, 2]])
+        exp_index2 = MultiIndex.from_arrays(
+            [[0, 0, 0, 1, 1, 1], [0, 1, 2, 0, 1, 2]])
         expected = DataFrame(np.r_[df.values, df.values], index=exp_index2)
         tm.assert_frame_equal(result, expected)
 
@@ -139,7 +142,8 @@ class TestConcatenate:
             names=["group_key"],
         )
 
-        tm.assert_index_equal(result.columns.levels[0], Index(level, name="group_key"))
+        tm.assert_index_equal(
+            result.columns.levels[0], Index(level, name="group_key"))
         tm.assert_index_equal(result.columns.levels[1], Index([0, 1, 2, 3]))
 
         assert result.columns.names == ["group_key", None]
@@ -163,7 +167,8 @@ class TestConcatenate:
         tm.assert_frame_equal(result, expected)
 
         result = concat(frames, axis=1)
-        expected = concat([frames[k] for k in sorted_keys], keys=sorted_keys, axis=1)
+        expected = concat([frames[k]
+                          for k in sorted_keys], keys=sorted_keys, axis=1)
         tm.assert_frame_equal(result, expected)
 
         keys = ["baz", "foo", "bar"]
@@ -179,7 +184,8 @@ class TestConcatenate:
         names = ["first", "second"]
         result = concat(
             [df, df2, df, df2],
-            keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+            keys=[("foo", "one"), ("foo", "two"),
+                  ("baz", "one"), ("baz", "two")],
             levels=levels,
             names=names,
         )
@@ -196,7 +202,8 @@ class TestConcatenate:
         # no names
         result = concat(
             [df, df2, df, df2],
-            keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+            keys=[("foo", "one"), ("foo", "two"),
+                  ("baz", "one"), ("baz", "two")],
             levels=levels,
         )
         assert result.index.names == (None,) * 3
@@ -204,7 +211,8 @@ class TestConcatenate:
         # no levels
         result = concat(
             [df, df2, df, df2],
-            keys=[("foo", "one"), ("foo", "two"), ("baz", "one"), ("baz", "two")],
+            keys=[("foo", "one"), ("foo", "two"),
+                  ("baz", "one"), ("baz", "two")],
             names=["first", "second"],
         )
         assert result.index.names == ("first", "second", None)
@@ -214,16 +222,20 @@ class TestConcatenate:
 
     def test_concat_keys_levels_no_overlap(self):
         # GH #1406
-        df = DataFrame(np.random.default_rng(2).standard_normal((1, 3)), index=["a"])
-        df2 = DataFrame(np.random.default_rng(2).standard_normal((1, 4)), index=["b"])
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((1, 3)), index=["a"])
+        df2 = DataFrame(np.random.default_rng(
+            2).standard_normal((1, 4)), index=["b"])
 
         msg = "Values not found in passed level"
         with pytest.raises(ValueError, match=msg):
-            concat([df, df], keys=["one", "two"], levels=[["foo", "bar", "baz"]])
+            concat([df, df], keys=["one", "two"],
+                   levels=[["foo", "bar", "baz"]])
 
         msg = "Key one not in level"
         with pytest.raises(ValueError, match=msg):
-            concat([df, df2], keys=["one", "two"], levels=[["foo", "bar", "baz"]])
+            concat([df, df2], keys=["one", "two"],
+                   levels=[["foo", "bar", "baz"]])
 
     def test_crossed_dtypes_weird_corner(self):
         columns = ["A", "B", "C", "D"]
@@ -253,9 +265,12 @@ class TestConcatenate:
         )
         tm.assert_frame_equal(appended, expected)
 
-        df = DataFrame(np.random.default_rng(2).standard_normal((1, 3)), index=["a"])
-        df2 = DataFrame(np.random.default_rng(2).standard_normal((1, 4)), index=["b"])
-        result = concat([df, df2], keys=["one", "two"], names=["first", "second"])
+        df = DataFrame(np.random.default_rng(
+            2).standard_normal((1, 3)), index=["a"])
+        df2 = DataFrame(np.random.default_rng(
+            2).standard_normal((1, 4)), index=["b"])
+        result = concat([df, df2], keys=["one", "two"],
+                        names=["first", "second"])
         assert result.index.names == ("first", "second")
 
     def test_with_mixed_tuples(self, sort):
@@ -364,7 +379,8 @@ class TestConcatenate:
 
     def test_dtype_coercion(self):
         # 12411
-        df = DataFrame({"date": [pd.Timestamp("20130101").tz_localize("UTC"), pd.NaT]})
+        df = DataFrame(
+            {"date": [pd.Timestamp("20130101").tz_localize("UTC"), pd.NaT]})
 
         result = concat([df.iloc[[0]], df.iloc[[1]]])
         tm.assert_series_equal(result.dtypes, df.dtypes)
@@ -403,14 +419,16 @@ class TestConcatenate:
         # #1649
         df0 = DataFrame([[10, 20, 30], [10, 20, 30], [10, 20, 30]])
 
-        result = concat({"a": None, "b": df0, "c": df0[:2], "d": df0[:1], "e": df0})
+        result = concat(
+            {"a": None, "b": df0, "c": df0[:2], "d": df0[:1], "e": df0})
         expected = concat({"b": df0, "c": df0[:2], "d": df0[:1], "e": df0})
         tm.assert_frame_equal(result, expected)
 
         result = concat(
             [None, df0, df0[:2], df0[:1], df0], keys=["a", "b", "c", "d", "e"]
         )
-        expected = concat([df0, df0[:2], df0[:1], df0], keys=["b", "c", "d", "e"])
+        expected = concat([df0, df0[:2], df0[:1], df0],
+                          keys=["b", "c", "d", "e"])
         tm.assert_frame_equal(result, expected)
 
     def test_concat_bug_1719(self):
@@ -472,7 +490,8 @@ class TestConcatenate:
         tm.assert_frame_equal(
             concat((df for df in (df1, df2)), ignore_index=True), expected
         )
-        tm.assert_frame_equal(concat(deque((df1, df2)), ignore_index=True), expected)
+        tm.assert_frame_equal(
+            concat(deque((df1, df2)), ignore_index=True), expected)
 
         class CustomIterator1:
             def __len__(self) -> int:
@@ -484,19 +503,22 @@ class TestConcatenate:
                 except KeyError as err:
                     raise IndexError from err
 
-        tm.assert_frame_equal(concat(CustomIterator1(), ignore_index=True), expected)
+        tm.assert_frame_equal(
+            concat(CustomIterator1(), ignore_index=True), expected)
 
         class CustomIterator2(abc.Iterable):
             def __iter__(self) -> Iterator:
                 yield df1
                 yield df2
 
-        tm.assert_frame_equal(concat(CustomIterator2(), ignore_index=True), expected)
+        tm.assert_frame_equal(
+            concat(CustomIterator2(), ignore_index=True), expected)
 
     def test_concat_order(self):
         # GH 17344, GH#47331
         dfs = [DataFrame(index=range(3), columns=["a", 1, None])]
-        dfs += [DataFrame(index=range(3), columns=[None, 1, "a"]) for _ in range(100)]
+        dfs += [DataFrame(index=range(3), columns=[None, 1, "a"])
+                for _ in range(100)]
 
         result = concat(dfs, sort=True).columns
         expected = Index([1, "a", None])
@@ -515,7 +537,8 @@ class TestConcatenate:
         expected = concat(
             [Series(range(3)), Series(range(4))], keys=["First", "Another"]
         )
-        result = concat({"First": Series(range(3)), "Another": Series(range(4))})
+        result = concat({"First": Series(range(3)),
+                        "Another": Series(range(4))})
         tm.assert_series_equal(result, expected)
 
     def test_concat_duplicate_indices_raise(self):
@@ -827,7 +850,8 @@ def test_concat_ignore_all_na_object_float(empty_dtype, df_dtype):
     with tm.assert_produces_warning(warn, match=msg):
         result = concat([empty, df], ignore_index=True)
 
-    expected = DataFrame({"foo": [np.nan, 1, 2], "bar": [np.nan, 1, 2]}, dtype=df_dtype)
+    expected = DataFrame({"foo": [np.nan, 1, 2], "bar": [
+                         np.nan, 1, 2]}, dtype=df_dtype)
     tm.assert_frame_equal(result, expected)
 
 
@@ -842,7 +866,8 @@ def test_concat_ignore_empty_from_reindex():
     msg = "The behavior of DataFrame concatenation with empty or all-NA entries"
     with tm.assert_produces_warning(FutureWarning, match=msg):
         result = concat([df1, aligned], ignore_index=True)
-    expected = df1 = DataFrame({"a": [1, 2], "b": [pd.Timestamp("2012-01-01"), pd.NaT]})
+    expected = df1 = DataFrame(
+        {"a": [1, 2], "b": [pd.Timestamp("2012-01-01"), pd.NaT]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -908,5 +933,6 @@ def test_concat_none_with_timezone_timestamp():
     msg = "The behavior of DataFrame concatenation with empty or all-NA entries"
     with tm.assert_produces_warning(FutureWarning, match=msg):
         result = concat([df1, df2], ignore_index=True)
-    expected = DataFrame({"A": [None, pd.Timestamp("1990-12-20 00:00:00+00:00")]})
+    expected = DataFrame(
+        {"A": [None, pd.Timestamp("1990-12-20 00:00:00+00:00")]})
     tm.assert_frame_equal(result, expected)

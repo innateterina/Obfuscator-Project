@@ -222,7 +222,8 @@ def hash_tuples(
 
     # hash the list-of-ndarrays
     hashes = (
-        cat._hash_pandas_object(encoding=encoding, hash_key=hash_key, categorize=False)
+        cat._hash_pandas_object(
+            encoding=encoding, hash_key=hash_key, categorize=False)
         for cat in cat_vals
     )
     h = combine_hash_arrays(hashes, len(cat_vals))
@@ -316,7 +317,8 @@ def _hash_ndarray(
             )
 
             codes, categories = factorize(vals, sort=False)
-            dtype = CategoricalDtype(categories=Index(categories), ordered=False)
+            dtype = CategoricalDtype(
+                categories=Index(categories), ordered=False)
             cat = Categorical._simple_new(codes, dtype)
             return cat._hash_pandas_object(
                 encoding=encoding, hash_key=hash_key, categorize=False

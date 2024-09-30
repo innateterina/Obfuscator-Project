@@ -83,7 +83,8 @@ def _new_DatetimeIndex(cls, d):
             #  a DatetimeArray to adapt to the newer _simple_new signature
             tz = d.pop("tz")
             freq = d.pop("freq")
-            dta = DatetimeArray._simple_new(data, dtype=tz_to_dtype(tz), freq=freq)
+            dta = DatetimeArray._simple_new(
+                data, dtype=tz_to_dtype(tz), freq=freq)
         else:
             dta = data
             for key in ["tz", "freq"]:
@@ -813,7 +814,8 @@ class DatetimeIndex(DatetimeTimedeltaMixin):
         else:
             join_op = operator.or_
 
-        mask = join_op(lop(start_micros, time_micros), rop(time_micros, end_micros))
+        mask = join_op(lop(start_micros, time_micros),
+                       rop(time_micros, end_micros))
 
         return mask.nonzero()[0]
 

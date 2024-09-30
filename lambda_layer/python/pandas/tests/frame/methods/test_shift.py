@@ -214,7 +214,8 @@ class TestDataFrameShift:
         )
 
         unshifted_ser = ser.shift(5).shift(-5)
-        tm.assert_numpy_array_equal(unshifted_ser.dropna().values, ser.values[:-5])
+        tm.assert_numpy_array_equal(
+            unshifted_ser.dropna().values, ser.values[:-5])
 
     def test_shift_by_offset(self, datetime_frame, frame_or_series):
         # shift by DateOffset
@@ -235,7 +236,8 @@ class TestDataFrameShift:
         d = obj.index[0]
         shifted_d = d + offset * 5
         if frame_or_series is DataFrame:
-            tm.assert_series_equal(obj.xs(d), shifted.xs(shifted_d), check_names=False)
+            tm.assert_series_equal(obj.xs(d), shifted.xs(
+                shifted_d), check_names=False)
         else:
             tm.assert_almost_equal(obj.at[d], shifted.at[shifted_d])
 
@@ -255,7 +257,8 @@ class TestDataFrameShift:
                 unshifted.iloc[:, 0].dropna().values, ps.iloc[:-1, 0].values
             )
         else:
-            tm.assert_numpy_array_equal(unshifted.dropna().values, ps.values[:-1])
+            tm.assert_numpy_array_equal(
+                unshifted.dropna().values, ps.values[:-1])
 
         shifted2 = ps.shift(1, "D")
         shifted3 = ps.shift(1, offsets.Day())
@@ -466,7 +469,8 @@ class TestDataFrameShift:
 
         tm.assert_frame_equal(result, expected)
 
-    @td.skip_array_manager_not_yet_implemented  # TODO(ArrayManager) axis=1 support
+    # TODO(ArrayManager) axis=1 support
+    @td.skip_array_manager_not_yet_implemented
     def test_shift_axis1_multiple_blocks_with_int_fill(self):
         # GH#42719
         rng = np.random.default_rng(2)
@@ -494,7 +498,8 @@ class TestDataFrameShift:
         tm.assert_frame_equal(result, expected)
 
     def test_period_index_frame_shift_with_freq(self, frame_or_series):
-        ps = DataFrame(range(4), index=pd.period_range("2020-01-01", periods=4))
+        ps = DataFrame(range(4), index=pd.period_range(
+            "2020-01-01", periods=4))
         ps = tm.get_obj(ps, frame_or_series)
 
         shifted = ps.shift(1, freq="infer")
@@ -531,7 +536,8 @@ class TestDataFrameShift:
         tm.assert_equal(unshifted, inferred_ts)
 
     def test_period_index_frame_shift_with_freq_error(self, frame_or_series):
-        ps = DataFrame(range(4), index=pd.period_range("2020-01-01", periods=4))
+        ps = DataFrame(range(4), index=pd.period_range(
+            "2020-01-01", periods=4))
         ps = tm.get_obj(ps, frame_or_series)
         msg = "Given freq M does not match PeriodIndex freq D"
         with pytest.raises(ValueError, match=msg):
@@ -737,7 +743,8 @@ class TestDataFrameShift:
 
         # test suffix
         shifted = df[["a"]].shift(shifts, suffix="_suffix")
-        expected = DataFrame({"a_suffix_0": [1, 2], "a_suffix_1": [np.nan, 1.0]})
+        expected = DataFrame(
+            {"a_suffix_0": [1, 2], "a_suffix_1": [np.nan, 1.0]})
         tm.assert_frame_equal(shifted, expected)
 
         # check bad inputs when doing multiple shifts

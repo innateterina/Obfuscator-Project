@@ -75,11 +75,13 @@ def test_groupby_resample_api():
         date_range("2016-01-03", periods=8).tolist()
         + date_range("2016-01-17", periods=8).tolist()
     )
-    index = pd.MultiIndex.from_arrays([[1] * 8 + [2] * 8, i], names=["group", "date"])
+    index = pd.MultiIndex.from_arrays(
+        [[1] * 8 + [2] * 8, i], names=["group", "date"])
     expected = DataFrame({"val": [5] * 7 + [6] + [7] * 7 + [8]}, index=index)
     msg = "DataFrameGroupBy.apply operated on the grouping columns"
     with tm.assert_produces_warning(DeprecationWarning, match=msg):
-        result = df.groupby("group").apply(lambda x: x.resample("1D").ffill())[["val"]]
+        result = df.groupby("group").apply(
+            lambda x: x.resample("1D").ffill())[["val"]]
     tm.assert_frame_equal(result, expected)
 
 
@@ -117,7 +119,8 @@ def test_resample_group_keys():
     # group_keys=True
     expected.index = pd.MultiIndex.from_arrays(
         [
-            pd.to_datetime(["2000-01-01", "2000-01-06"]).as_unit("ns").repeat(5),
+            pd.to_datetime(["2000-01-01", "2000-01-06"]
+                           ).as_unit("ns").repeat(5),
             expected.index,
         ]
     )
@@ -339,7 +342,8 @@ def test_apply_without_aggregation(func, _test_series):
 
 
 def test_apply_without_aggregation2(_test_series):
-    grouped = _test_series.to_frame(name="foo").resample("20min", group_keys=False)
+    grouped = _test_series.to_frame(
+        name="foo").resample("20min", group_keys=False)
     result = grouped["foo"].apply(lambda x: x)
     tm.assert_series_equal(result, _test_series.rename("foo"))
 
@@ -459,7 +463,8 @@ def df_grouper_resample(df):
 
 
 @pytest.fixture(
-    params=["df_resample", "df_col_resample", "df_mult_resample", "df_grouper_resample"]
+    params=["df_resample", "df_col_resample",
+            "df_mult_resample", "df_grouper_resample"]
 )
 def cases(request):
     return request.getfixturevalue(request.param)
@@ -467,7 +472,8 @@ def cases(request):
 
 def test_agg_mixed_column_aggregation(cases, a_mean, a_std, b_mean, b_std, request):
     expected = pd.concat([a_mean, a_std, b_mean, b_std], axis=1)
-    expected.columns = pd.MultiIndex.from_product([["A", "B"], ["mean", "std"]])
+    expected.columns = pd.MultiIndex.from_product(
+        [["A", "B"], ["mean", "std"]])
     msg = "using SeriesGroupBy.[mean|std]"
     # "date" is an index and a column, so get included in the agg
     if "df_mult" in request.node.callspec.id:
@@ -545,7 +551,8 @@ def test_agg_dict_of_lists(cases, a_mean, a_std, b_mean, b_std):
     [
         {"func": {"A": np.sum, "B": lambda x: np.std(x, ddof=1)}},
         {"A": ("A", np.sum), "B": ("B", lambda x: np.std(x, ddof=1))},
-        {"A": NamedAgg("A", np.sum), "B": NamedAgg("B", lambda x: np.std(x, ddof=1))},
+        {"A": NamedAgg("A", np.sum), "B": NamedAgg(
+            "B", lambda x: np.std(x, ddof=1))},
     ],
 )
 def test_agg_with_lambda(cases, agg):
@@ -621,7 +628,8 @@ def test_agg_specificationerror_invalid_names(cases):
 
 
 @pytest.mark.parametrize(
-    "func", [["min"], ["mean", "max"], {"A": "sum"}, {"A": "prod", "B": "median"}]
+    "func", [["min"], ["mean", "max"], {
+        "A": "sum"}, {"A": "prod", "B": "median"}]
 )
 def test_multi_agg_axis_1_raises(func):
     # GH#46904
@@ -662,7 +670,8 @@ def test_agg_nested_dicts():
     msg = "nested renamer is not supported"
     for t in cases:
         with pytest.raises(pd.errors.SpecificationError, match=msg):
-            t.aggregate({"r1": {"A": ["mean", "sum"]}, "r2": {"B": ["mean", "sum"]}})
+            t.aggregate({"r1": {"A": ["mean", "sum"]},
+                        "r2": {"B": ["mean", "sum"]}})
 
     for t in cases:
         with pytest.raises(pd.errors.SpecificationError, match=msg):
@@ -686,7 +695,8 @@ def test_try_aggregate_non_existing_column():
     # Error as we don't have 'z' column
     msg = r"Column\(s\) \['z'\] do not exist"
     with pytest.raises(KeyError, match=msg):
-        df.resample("30min").agg({"x": ["mean"], "y": ["median"], "z": ["sum"]})
+        df.resample("30min").agg(
+            {"x": ["mean"], "y": ["median"], "z": ["sum"]})
 
 
 def test_agg_list_like_func_with_args():
@@ -786,7 +796,8 @@ def test_agg_with_datetime_index_list_agg_func(col_name):
     result = df.resample("1d").aggregate(["mean"])
     expected = DataFrame(
         [47.5, 143.5, 195.5],
-        index=date_range(start="2017-01-01", freq="D", periods=3, tz="Europe/Berlin"),
+        index=date_range(start="2017-01-01", freq="D",
+                         periods=3, tz="Europe/Berlin"),
         columns=pd.MultiIndex(levels=[[col_name], ["mean"]], codes=[[0], [0]]),
     )
     tm.assert_frame_equal(result, expected)
@@ -920,7 +931,8 @@ def test_end_and_end_day_origin(
         ("mean", lib.no_default, "Could not convert"),
         ("median", True, {"num": [12.5]}),
         ("median", False, r"Cannot convert \['cat_1' 'cat_2'\] to numeric"),
-        ("median", lib.no_default, r"Cannot convert \['cat_1' 'cat_2'\] to numeric"),
+        ("median", lib.no_default,
+         r"Cannot convert \['cat_1' 'cat_2'\] to numeric"),
         ("std", True, {"num": [10.606601717798213]}),
         ("std", False, "could not convert string to float"),
         ("std", lib.no_default, "could not convert string to float"),

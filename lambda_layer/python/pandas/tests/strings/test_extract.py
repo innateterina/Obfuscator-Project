@@ -41,7 +41,8 @@ def test_extract_expand_kwarg(any_string_dtype):
 
 def test_extract_expand_False_mixed_object():
     ser = Series(
-        ["aBAD_BAD", np.nan, "BAD_b_BAD", True, datetime.today(), "foo", None, 1, 2.0]
+        ["aBAD_BAD", np.nan, "BAD_b_BAD", True,
+            datetime.today(), "foo", None, 1, 2.0]
     )
 
     # two groups
@@ -106,7 +107,8 @@ def test_extract_expand_capture_groups(any_string_dtype):
     # two groups, no matches
     result = s.str.extract("(_)(_)", expand=False)
     expected = DataFrame(
-        [[np.nan, np.nan], [np.nan, np.nan], [np.nan, np.nan]], dtype=any_string_dtype
+        [[np.nan, np.nan], [np.nan, np.nan], [
+            np.nan, np.nan]], dtype=any_string_dtype
     )
     tm.assert_frame_equal(result, expected)
 
@@ -124,7 +126,8 @@ def test_extract_expand_capture_groups(any_string_dtype):
 
     # one named group
     result = s.str.extract("(?P<letter>[AB])", expand=False)
-    expected = Series(["A", "B", np.nan], name="letter", dtype=any_string_dtype)
+    expected = Series(["A", "B", np.nan], name="letter",
+                      dtype=any_string_dtype)
     tm.assert_series_equal(result, expected)
 
     # two named groups
@@ -283,7 +286,8 @@ def test_extract_series(name, any_string_dtype):
     # two groups, no matches
     result = s.str.extract("(_)(_)", expand=True)
     expected = DataFrame(
-        [[np.nan, np.nan], [np.nan, np.nan], [np.nan, np.nan]], dtype=any_string_dtype
+        [[np.nan, np.nan], [np.nan, np.nan], [
+            np.nan, np.nan]], dtype=any_string_dtype
     )
     tm.assert_frame_equal(result, expected)
 
@@ -301,7 +305,8 @@ def test_extract_series(name, any_string_dtype):
 
     # one named group
     result = s.str.extract("(?P<letter>[AB])", expand=True)
-    expected = DataFrame({"letter": ["A", "B", np.nan]}, dtype=any_string_dtype)
+    expected = DataFrame(
+        {"letter": ["A", "B", np.nan]}, dtype=any_string_dtype)
     tm.assert_frame_equal(result, expected)
 
     # two named groups
@@ -371,7 +376,8 @@ def test_extract_dataframe_capture_groups_index(index, any_string_dtype):
     s = Series(data, index=index, dtype=any_string_dtype)
 
     result = s.str.extract(r"(\d)", expand=True)
-    expected = DataFrame(["1", "2", np.nan], index=index, dtype=any_string_dtype)
+    expected = DataFrame(["1", "2", np.nan], index=index,
+                         dtype=any_string_dtype)
     tm.assert_frame_equal(result, expected)
 
     result = s.str.extract(r"(?P<letter>\D)(?P<number>\d)?", expand=True)
@@ -494,7 +500,8 @@ def test_extractall_column_names(pat, expected_names, any_string_dtype):
     result = s.str.extractall(pat)
     expected = DataFrame(
         [("A", "1"), (np.nan, "3"), (np.nan, "2")],
-        index=MultiIndex.from_tuples([(1, 0), (2, 0), (2, 1)], names=(None, "match")),
+        index=MultiIndex.from_tuples(
+            [(1, 0), (2, 0), (2, 1)], names=(None, "match")),
         columns=expected_names,
         dtype=any_string_dtype,
     )
@@ -502,7 +509,8 @@ def test_extractall_column_names(pat, expected_names, any_string_dtype):
 
 
 def test_extractall_single_group(any_string_dtype):
-    s = Series(["a3", "b3", "d4c2"], name="series_name", dtype=any_string_dtype)
+    s = Series(["a3", "b3", "d4c2"], name="series_name",
+               dtype=any_string_dtype)
     expected_index = MultiIndex.from_tuples(
         [(0, 0), (1, 0), (2, 0), (2, 1)], names=(None, "match")
     )
@@ -526,7 +534,8 @@ def test_extractall_single_group_with_quantifier(any_string_dtype):
     # GH#13382
     # extractall(one un-named group with quantifier) returns DataFrame with one un-named
     # column.
-    s = Series(["ab3", "abc3", "d4cd2"], name="series_name", dtype=any_string_dtype)
+    s = Series(["ab3", "abc3", "d4cd2"],
+               name="series_name", dtype=any_string_dtype)
     result = s.str.extractall(r"([a-z]+)")
     expected = DataFrame(
         ["ab", "abc", "d", "cd"],
@@ -564,12 +573,14 @@ def test_extractall_no_matches(data, names, any_string_dtype):
 
     # one un-named group.
     result = s.str.extractall("(z)")
-    expected = DataFrame(columns=[0], index=expected_index, dtype=any_string_dtype)
+    expected = DataFrame(
+        columns=[0], index=expected_index, dtype=any_string_dtype)
     tm.assert_frame_equal(result, expected)
 
     # two un-named groups.
     result = s.str.extractall("(z)(z)")
-    expected = DataFrame(columns=[0, 1], index=expected_index, dtype=any_string_dtype)
+    expected = DataFrame(
+        columns=[0, 1], index=expected_index, dtype=any_string_dtype)
     tm.assert_frame_equal(result, expected)
 
     # one named group.
@@ -599,7 +610,8 @@ def test_extractall_stringindex(any_string_dtype):
     result = s.str.extractall(r"[ab](?P<digit>\d)")
     expected = DataFrame(
         {"digit": ["1", "2", "1"]},
-        index=MultiIndex.from_tuples([(0, 0), (0, 1), (1, 0)], names=[None, "match"]),
+        index=MultiIndex.from_tuples(
+            [(0, 0), (0, 1), (1, 0)], names=[None, "match"]),
         dtype=any_string_dtype,
     )
     tm.assert_frame_equal(result, expected)
@@ -634,13 +646,15 @@ def test_extractall_stringindex(any_string_dtype):
 def test_extractall_no_capture_groups_raises(any_string_dtype):
     # Does not make sense to use extractall with a regex that has no capture groups.
     # (it returns DataFrame with one column for each capture group)
-    s = Series(["a3", "b3", "d4c2"], name="series_name", dtype=any_string_dtype)
+    s = Series(["a3", "b3", "d4c2"], name="series_name",
+               dtype=any_string_dtype)
     with pytest.raises(ValueError, match="no capture groups"):
         s.str.extractall(r"[a-z]")
 
 
 def test_extract_index_one_two_groups():
-    s = Series(["a3", "b3", "d4c2"], index=["A3", "B3", "D4"], name="series_name")
+    s = Series(["a3", "b3", "d4c2"], index=[
+               "A3", "B3", "D4"], name="series_name")
     r = s.index.str.extract(r"([A-Z])", expand=True)
     e = DataFrame(["A", "B", "D"])
     tm.assert_frame_equal(r, e)
@@ -688,7 +702,8 @@ def test_extractall_same_as_extract_subject_index(any_string_dtype):
         [("A", "first"), ("B", "second"), ("C", "third")],
         names=("capital", "ordinal"),
     )
-    s = Series(["a3", "b3", "c2"], index=mi, name="series_name", dtype=any_string_dtype)
+    s = Series(["a3", "b3", "c2"], index=mi,
+               name="series_name", dtype=any_string_dtype)
 
     pattern_two_noname = r"([a-z])([0-9])"
     extract_two_noname = s.str.extract(pattern_two_noname, expand=True)
@@ -720,5 +735,6 @@ def test_extractall_preserves_dtype():
     # the dtype is preserved in the resulting DataFrame's column.
     pa = pytest.importorskip("pyarrow")
 
-    result = Series(["abc", "ab"], dtype=ArrowDtype(pa.string())).str.extractall("(ab)")
+    result = Series(["abc", "ab"], dtype=ArrowDtype(
+        pa.string())).str.extractall("(ab)")
     assert result.dtypes[0] == "string[pyarrow]"

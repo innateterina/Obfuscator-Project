@@ -19,7 +19,8 @@ from pandas.core.arrays import IntervalArray
     params=[
         (Index([0, 2, 4]), Index([1, 3, 5])),
         (Index([0.0, 1.0, 2.0]), Index([1.0, 2.0, 3.0])),
-        (timedelta_range("0 days", periods=3), timedelta_range("1 day", periods=3)),
+        (timedelta_range("0 days", periods=3),
+         timedelta_range("1 day", periods=3)),
         (date_range("20170101", periods=3), date_range("20170102", periods=3)),
         (
             date_range("20170101", periods=3, tz="US/Eastern"),

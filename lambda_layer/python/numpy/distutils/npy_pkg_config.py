@@ -5,28 +5,33 @@ import os
 from configparser import RawConfigParser
 
 __all__ = ['FormatError', 'PkgNotFound', 'LibraryInfo', 'VariableSet',
-        'read_config', 'parse_flags']
+           'read_config', 'parse_flags']
 
 _VAR = re.compile(r'\$\{([a-zA-Z0-9_-]+)\}')
+
 
 class FormatError(OSError):
     """
     Exception thrown when there is a problem parsing a configuration file.
 
     """
+
     def __init__(self, msg):
         self.msg = msg
 
     def __str__(self):
         return self.msg
+
 
 class PkgNotFound(OSError):
     """Exception raised when a package can not be located."""
+
     def __init__(self, msg):
         self.msg = msg
 
     def __str__(self):
         return self.msg
+
 
 def parse_flags(line):
     """
@@ -70,8 +75,10 @@ def parse_flags(line):
 
     return d
 
+
 def _escape_backslash(val):
     return val.replace('\\', '\\\\')
+
 
 class LibraryInfo:
     """
@@ -100,6 +107,7 @@ class LibraryInfo:
     attributes of the same name.
 
     """
+
     def __init__(self, name, description, version, sections, vars, requires=None):
         self.name = name
         self.description = description
@@ -145,6 +153,7 @@ class LibraryInfo:
 
         return "\n".join(m)
 
+
 class VariableSet:
     """
     Container object for the variables defined in a config file.
@@ -158,6 +167,7 @@ class VariableSet:
         Dict of items in the "variables" section of the configuration file.
 
     """
+
     def __init__(self, d):
         self._raw_data = dict([(k, v) for k, v in d.items()])
 
@@ -213,6 +223,7 @@ class VariableSet:
         self._raw_data[name] = value
         self._init_parse_var(name, value)
 
+
 def parse_meta(config):
     if not config.has_section('meta'):
         raise FormatError("No meta section found !")
@@ -222,12 +233,13 @@ def parse_meta(config):
     for k in ['name', 'description', 'version']:
         if not k in d:
             raise FormatError("Option %s (section [meta]) is mandatory, "
-                "but not found" % k)
+                              "but not found" % k)
 
     if not 'requires' in d:
         d['requires'] = []
 
     return d
+
 
 def parse_variables(config):
     if not config.has_section('variables'):
@@ -240,11 +252,14 @@ def parse_variables(config):
 
     return VariableSet(d)
 
+
 def parse_sections(config):
     return meta_d, r
 
+
 def pkg_to_filename(pkg_name):
     return "%s.ini" % pkg_name
+
 
 def parse_config(filename, dirs=None):
     if dirs:
@@ -282,12 +297,14 @@ def parse_config(filename, dirs=None):
 
     return meta, vars, sections, requires
 
+
 def _read_config_imp(filenames, dirs=None):
     def _read_config(f):
         meta, vars, sections, reqs = parse_config(f, dirs)
         # recursively add sections and variables of required libraries
         for rname, rvalue in reqs.items():
-            nmeta, nvars, nsections, nreqs = _read_config(pkg_to_filename(rvalue))
+            nmeta, nvars, nsections, nreqs = _read_config(
+                pkg_to_filename(rvalue))
 
             # Update var dict for variables not in 'top' config file
             for k, v in nvars.items():
@@ -316,13 +333,16 @@ def _read_config_imp(filenames, dirs=None):
         vars["pkgdir"] = _escape_backslash(os.path.dirname(mod.__file__))
 
     return LibraryInfo(name=meta["name"], description=meta["description"],
-            version=meta["version"], sections=sections, vars=VariableSet(vars))
+                       version=meta["version"], sections=sections, vars=VariableSet(vars))
+
 
 # Trivial cache to cache LibraryInfo instances creation. To be really
 # efficient, the cache should be handled in read_config, since a same file can
 # be parsed many time outside LibraryInfo creation, but I doubt this will be a
 # problem in practice
 _CACHE = {}
+
+
 def read_config(pkgname, dirs=None):
     """
     Return library info for a package from its configuration file.
@@ -371,6 +391,7 @@ def read_config(pkgname, dirs=None):
 
 # TODO:
 #   - implements version comparison (modversion + atleast)
+
 
 # pkg-config simple emulator - useful for debugging, and maybe later to query
 # the system

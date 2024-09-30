@@ -148,7 +148,8 @@ def _astype_float_to_int_nansafe(
     if dtype.kind == "u":
         # GH#45151
         if not (values >= 0).all():
-            raise ValueError(f"Cannot losslessly cast from {values.dtype} to {dtype}")
+            raise ValueError(
+                f"Cannot losslessly cast from {values.dtype} to {dtype}")
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
         return values.astype(dtype, copy=copy)

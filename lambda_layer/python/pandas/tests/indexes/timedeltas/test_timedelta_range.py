@@ -19,7 +19,8 @@ class TestTimedeltas:
     def test_timedelta_range_unit(self):
         # GH#49824
         tdi = timedelta_range("0 Days", periods=10, freq="100000D", unit="s")
-        exp_arr = (np.arange(10, dtype="i8") * 100_000).view("m8[D]").astype("m8[s]")
+        exp_arr = (np.arange(10, dtype="i8") *
+                   100_000).view("m8[D]").astype("m8[s]")
         tm.assert_numpy_array_equal(tdi.to_numpy(), exp_arr)
 
     def test_timedelta_range(self):
@@ -32,7 +33,8 @@ class TestTimedeltas:
         tm.assert_index_equal(result, expected)
 
         expected = to_timedelta(np.arange(5), unit="D") + Second(2) + Day()
-        result = timedelta_range("1 days, 00:00:02", "5 days, 00:00:02", freq="D")
+        result = timedelta_range(
+            "1 days, 00:00:02", "5 days, 00:00:02", freq="D")
         tm.assert_index_equal(result, expected)
 
         expected = to_timedelta([1, 3, 5, 7, 9], unit="D") + Second(2)
@@ -70,7 +72,8 @@ class TestTimedeltas:
             tm.assert_index_equal(result, expected)
 
     @pytest.mark.parametrize(
-        "periods, freq", [(3, "2D"), (5, "D"), (6, "19h12min"), (7, "16h"), (9, "12h")]
+        "periods, freq", [(3, "2D"), (5, "D"),
+                          (6, "19h12min"), (7, "16h"), (9, "12h")]
     )
     def test_linspace_behavior(self, periods, freq):
         # GH 20976

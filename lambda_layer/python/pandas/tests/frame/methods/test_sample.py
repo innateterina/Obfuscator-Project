@@ -28,7 +28,8 @@ class TestSample:
 
         seed = np.random.default_rng(2).integers(0, 100)
         tm.assert_equal(
-            obj.sample(n=4, random_state=seed), obj.sample(n=4, random_state=seed)
+            obj.sample(n=4, random_state=seed), obj.sample(
+                n=4, random_state=seed)
         )
 
         tm.assert_equal(
@@ -174,7 +175,8 @@ class TestSample:
         obj = DataFrame({"col1": range(10, 20), "col2": range(20, 30)})
         obj = tm.get_obj(obj, frame_or_series)
         result = obj.sample(n=3, random_state=eval(func_str)(arg))
-        expected = obj.sample(n=3, random_state=com.random_state(eval(func_str)(arg)))
+        expected = obj.sample(
+            n=3, random_state=com.random_state(eval(func_str)(arg)))
         tm.assert_equal(result, expected)
 
     def test_sample_generator(self, frame_or_series):
@@ -253,7 +255,8 @@ class TestSampleDataFrame:
         # Check that re-normalizes weights that don't sum to one.
         weights_less_than_1 = [0] * 10
         weights_less_than_1[0] = 0.5
-        tm.assert_frame_equal(df.sample(n=1, weights=weights_less_than_1), df.iloc[:1])
+        tm.assert_frame_equal(
+            df.sample(n=1, weights=weights_less_than_1), df.iloc[:1])
 
         ###
         # Test axis argument
@@ -268,12 +271,14 @@ class TestSampleDataFrame:
 
         # Different axis arg types
         tm.assert_frame_equal(
-            df.sample(n=1, axis="columns", weights=second_column_weight), df[["col2"]]
+            df.sample(n=1, axis="columns",
+                      weights=second_column_weight), df[["col2"]]
         )
 
         weight = [0] * 10
         weight[5] = 0.5
-        tm.assert_frame_equal(df.sample(n=1, axis="rows", weights=weight), df.iloc[5:6])
+        tm.assert_frame_equal(
+            df.sample(n=1, axis="rows", weights=weight), df.iloc[5:6])
         tm.assert_frame_equal(
             df.sample(n=1, axis="index", weights=weight), df.iloc[5:6]
         )
@@ -302,19 +307,22 @@ class TestSampleDataFrame:
         easy_weight_list[2] = 1
 
         df = DataFrame(
-            {"col1": range(10, 20), "col2": range(20, 30), "colString": ["a"] * 10}
+            {"col1": range(10, 20), "col2": range(
+                20, 30), "colString": ["a"] * 10}
         )
         sample1 = df.sample(n=1, axis=1, weights=easy_weight_list)
         tm.assert_frame_equal(sample1, df[["colString"]])
 
         # Test default axes
         tm.assert_frame_equal(
-            df.sample(n=3, random_state=42), df.sample(n=3, axis=0, random_state=42)
+            df.sample(n=3, random_state=42), df.sample(
+                n=3, axis=0, random_state=42)
         )
 
     def test_sample_aligns_weights_with_frame(self):
         # Test that function aligns weights with frame
-        df = DataFrame({"col1": [5, 6, 7], "col2": ["a", "b", "c"]}, index=[9, 5, 3])
+        df = DataFrame({"col1": [5, 6, 7], "col2": [
+                       "a", "b", "c"]}, index=[9, 5, 3])
         ser = Series([1, 0, 0], index=[3, 5, 9])
         tm.assert_frame_equal(df.loc[[3]], df.sample(1, weights=ser))
 
@@ -365,7 +373,8 @@ class TestSampleDataFrame:
     def test_sample_ignore_index(self):
         # GH 38581
         df = DataFrame(
-            {"col1": range(10, 20), "col2": range(20, 30), "colString": ["a"] * 10}
+            {"col1": range(10, 20), "col2": range(
+                20, 30), "colString": ["a"] * 10}
         )
         result = df.sample(3, ignore_index=True)
         expected_index = Index(range(3))

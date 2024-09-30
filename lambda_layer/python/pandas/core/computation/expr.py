@@ -188,7 +188,8 @@ def _filter_nodes(superclass, all_nodes=_all_nodes):
     """
     Filter out AST nodes that are subclasses of ``superclass``.
     """
-    node_names = (node.__name__ for node in all_nodes if issubclass(node, superclass))
+    node_names = (
+        node.__name__ for node in all_nodes if issubclass(node, superclass))
     return frozenset(node_names)
 
 
@@ -451,7 +452,8 @@ class BaseExprVisitor(ast.NodeVisitor):
             left = self.visit(node.left, side="left")
         if right is None:
             right = self.visit(node.right, side="right")
-        op, op_class, left, right = self._rewrite_membership_op(node, left, right)
+        op, op_class, left, right = self._rewrite_membership_op(
+            node, left, right)
         return op, op_class, left, right
 
     def _maybe_downcast_constants(self, left, right):
@@ -613,7 +615,8 @@ class BaseExprVisitor(ast.NodeVisitor):
         if len(node.targets) != 1:
             raise SyntaxError("can only assign a single expression")
         if not isinstance(node.targets[0], ast.Name):
-            raise SyntaxError("left hand side of an assignment must be a single name")
+            raise SyntaxError(
+                "left hand side of an assignment must be a single name")
         if self.env.target is None:
             raise ValueError("cannot assign without a target object")
 
@@ -669,7 +672,8 @@ class BaseExprVisitor(ast.NodeVisitor):
         if res is None:
             # error: "expr" has no attribute "id"
             raise ValueError(
-                f"Invalid function call {node.func.id}"  # type: ignore[attr-defined]
+                # type: ignore[attr-defined]
+                f"Invalid function call {node.func.id}"
             )
         if hasattr(res, "value"):
             res = res.value
@@ -719,7 +723,8 @@ class BaseExprVisitor(ast.NodeVisitor):
         values = []
         for op, comp in zip(ops, comps):
             new_node = self.visit(
-                ast.Compare(comparators=[comp], left=left, ops=[self.translate_In(op)])
+                ast.Compare(comparators=[comp], left=left, ops=[
+                            self.translate_In(op)])
             )
             left = comp
             values.append(new_node)
@@ -735,7 +740,8 @@ class BaseExprVisitor(ast.NodeVisitor):
             lhs = self._try_visit_binop(x)
             rhs = self._try_visit_binop(y)
 
-            op, op_class, lhs, rhs = self._maybe_transform_eq_ne(node, lhs, rhs)
+            op, op_class, lhs, rhs = self._maybe_transform_eq_ne(
+                node, lhs, rhs)
             return self._maybe_evaluate_binop(op, node.op, lhs, rhs)
 
         operands = node.values
@@ -748,7 +754,8 @@ _numexpr_supported_calls = frozenset(REDUCTIONS + MATHOPS)
 
 @disallow(
     (_unsupported_nodes | _python_not_supported)
-    - (_boolop_nodes | frozenset(["BoolOp", "Attribute", "In", "NotIn", "Tuple"]))
+    - (_boolop_nodes | frozenset(["BoolOp",
+       "Attribute", "In", "NotIn", "Tuple"]))
 )
 class PandasExprVisitor(BaseExprVisitor):
     def __init__(
@@ -758,7 +765,8 @@ class PandasExprVisitor(BaseExprVisitor):
         parser,
         preparser=partial(
             _preparse,
-            f=_compose(_replace_locals, _replace_booleans, clean_backtick_quoted_toks),
+            f=_compose(_replace_locals, _replace_booleans,
+                       clean_backtick_quoted_toks),
         ),
     ) -> None:
         super().__init__(env, engine, parser, preparser)

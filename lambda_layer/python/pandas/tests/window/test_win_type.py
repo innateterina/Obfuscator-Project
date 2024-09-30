@@ -114,7 +114,8 @@ def test_window_with_args(step):
     )
     expected = concat([r.mean(std=10), r.mean(std=0.01)], axis=1)
     expected.columns = ["<lambda>", "<lambda>"]
-    result = r.aggregate([lambda x: x.mean(std=10), lambda x: x.mean(std=0.01)])
+    result = r.aggregate(
+        [lambda x: x.mean(std=10), lambda x: x.mean(std=0.01)])
     tm.assert_frame_equal(result, expected)
 
     def a(x):
@@ -148,7 +149,8 @@ def test_consistent_win_type_freq(arg):
 
 def test_win_type_freq_return_none():
     # GH 48838
-    freq_roll = Series(range(2), index=date_range("2020", periods=2)).rolling("2s")
+    freq_roll = Series(range(2), index=date_range(
+        "2020", periods=2)).rolling("2s")
     assert freq_roll.win_type is None
 
 
@@ -168,7 +170,8 @@ def test_win_type_not_implemented():
 def test_cmov_mean(step):
     # GH 8238
     pytest.importorskip("scipy")
-    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81, 13.49, 16.68, 9.48, 10.63, 14.48])
+    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81,
+                    13.49, 16.68, 9.48, 10.63, 14.48])
     result = Series(vals).rolling(5, center=True, step=step).mean()
     expected_values = [
         np.nan,
@@ -189,8 +192,10 @@ def test_cmov_mean(step):
 def test_cmov_window(step):
     # GH 8238
     pytest.importorskip("scipy")
-    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81, 13.49, 16.68, 9.48, 10.63, 14.48])
-    result = Series(vals).rolling(5, win_type="boxcar", center=True, step=step).mean()
+    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81,
+                    13.49, 16.68, 9.48, 10.63, 14.48])
+    result = Series(vals).rolling(5, win_type="boxcar",
+                                  center=True, step=step).mean()
     expected_values = [
         np.nan,
         np.nan,
@@ -326,7 +331,8 @@ def test_cmov_window_na_min_periods(step, min_periods):
     vals[4] = np.nan
     vals[8] = np.nan
 
-    xp = vals.rolling(5, min_periods=min_periods, center=True, step=step).mean()
+    xp = vals.rolling(5, min_periods=min_periods,
+                      center=True, step=step).mean()
     rs = vals.rolling(
         5, win_type="boxcar", min_periods=min_periods, center=True, step=step
     ).mean()
@@ -336,7 +342,8 @@ def test_cmov_window_na_min_periods(step, min_periods):
 def test_cmov_window_regular(win_types, step):
     # GH 8238
     pytest.importorskip("scipy")
-    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81, 13.49, 16.68, 9.48, 10.63, 14.48])
+    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81,
+                    13.49, 16.68, 9.48, 10.63, 14.48])
     xps = {
         "hamming": [
             np.nan,
@@ -437,7 +444,8 @@ def test_cmov_window_regular(win_types, step):
     }
 
     xp = Series(xps[win_types])[::step]
-    rs = Series(vals).rolling(5, win_type=win_types, center=True, step=step).mean()
+    rs = Series(vals).rolling(5, win_type=win_types,
+                              center=True, step=step).mean()
     tm.assert_series_equal(xp, rs)
 
 
@@ -450,7 +458,8 @@ def test_cmov_window_regular_linear_range(win_types, step):
     xp[-2:] = np.nan
     xp = Series(xp)[::step]
 
-    rs = Series(vals).rolling(5, win_type=win_types, center=True, step=step).mean()
+    rs = Series(vals).rolling(5, win_type=win_types,
+                              center=True, step=step).mean()
     tm.assert_series_equal(xp, rs)
 
 
@@ -560,7 +569,8 @@ def test_cmov_window_regular_missing_data(win_types, step):
     }
 
     xp = Series(xps[win_types])[::step]
-    rs = Series(vals).rolling(5, win_type=win_types, min_periods=3, step=step).mean()
+    rs = Series(vals).rolling(5, win_type=win_types,
+                              min_periods=3, step=step).mean()
     tm.assert_series_equal(xp, rs)
 
 
@@ -574,7 +584,8 @@ def test_cmov_window_special(win_types_special, step):
         "exponential": {"tau": 10},
     }
 
-    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81, 13.49, 16.68, 9.48, 10.63, 14.48])
+    vals = np.array([6.95, 15.21, 4.72, 9.12, 13.81,
+                    13.49, 16.68, 9.48, 10.63, 14.48])
 
     xps = {
         "gaussian": [
@@ -674,15 +685,18 @@ def test_weighted_var_big_window_no_segfault(win_types, center):
 def test_rolling_center_axis_1():
     pytest.importorskip("scipy")
     df = DataFrame(
-        {"a": [1, 1, 0, 0, 0, 1], "b": [1, 0, 0, 1, 0, 0], "c": [1, 0, 0, 1, 0, 1]}
+        {"a": [1, 1, 0, 0, 0, 1], "b": [
+            1, 0, 0, 1, 0, 0], "c": [1, 0, 0, 1, 0, 1]}
     )
 
     msg = "Support for axis=1 in DataFrame.rolling is deprecated"
     with tm.assert_produces_warning(FutureWarning, match=msg):
-        result = df.rolling(window=3, axis=1, win_type="boxcar", center=True).sum()
+        result = df.rolling(
+            window=3, axis=1, win_type="boxcar", center=True).sum()
 
     expected = DataFrame(
-        {"a": [np.nan] * 6, "b": [3.0, 1.0, 0.0, 2.0, 0.0, 2.0], "c": [np.nan] * 6}
+        {"a": [np.nan] * 6, "b": [3.0, 1.0, 0.0,
+                                  2.0, 0.0, 2.0], "c": [np.nan] * 6}
     )
 
     tm.assert_frame_equal(result, expected, check_dtype=True)

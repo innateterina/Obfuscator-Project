@@ -31,7 +31,8 @@ def test_format():
     # GH-34740
     assert format(NA) == "<NA>"
     assert format(NA, ">10") == "      <NA>"
-    assert format(NA, "xxx") == "<NA>"  # NA is flexible, accept any format spec
+    # NA is flexible, accept any format spec
+    assert format(NA, "xxx") == "<NA>"
 
     assert f"{NA}" == "<NA>"
     assert f"{NA:>10}" == "      <NA>"

@@ -74,7 +74,8 @@ class TestSorting:
         exp_index, _ = right.index.sortlevel(0)
         tm.assert_index_equal(right.index, exp_index)
 
-        tups = list(map(tuple, df[["A", "B", "C", "D", "E", "F", "G", "H"]].values))
+        tups = list(
+            map(tuple, df[["A", "B", "C", "D", "E", "F", "G", "H"]].values))
         tups = com.asarray_tuplesafe(tups)
 
         expected = df.groupby(tups).sum()["values"]
@@ -87,7 +88,8 @@ class TestSorting:
     def test_int64_overflow_groupby_large_range(self):
         # GH9096
         values = range(55109)
-        data = DataFrame.from_dict({"a": values, "b": values, "c": values, "d": values})
+        data = DataFrame.from_dict(
+            {"a": values, "b": values, "c": values, "d": values})
         grouped = data.groupby(["a", "b", "c", "d"])
         assert len(grouped) == len(values)
 
@@ -109,7 +111,8 @@ class TestSorting:
         assert is_int64_overflow_possible(gr._grouper.shape)
 
         mi = MultiIndex.from_arrays(
-            [ar.ravel() for ar in np.array_split(np.unique(arr, axis=0), 5, axis=1)],
+            [ar.ravel() for ar in np.array_split(
+                np.unique(arr, axis=0), 5, axis=1)],
             names=list("abcde"),
         )
 
@@ -135,12 +138,14 @@ class TestSorting:
             [
                 False,
                 "last",
-                list(range(104, 4, -1)) + list(range(5)) + list(range(105, 110)),
+                list(range(104, 4, -1)) +
+                list(range(5)) + list(range(105, 110)),
             ],
             [
                 False,
                 "first",
-                list(range(5)) + list(range(105, 110)) + list(range(104, 4, -1)),
+                list(range(5)) + list(range(105, 110)) +
+                list(range(104, 4, -1)),
             ],
         ],
     )
@@ -165,18 +170,21 @@ class TestSorting:
             [
                 False,
                 "last",
-                list(range(104, 4, -1)) + list(range(5)) + list(range(105, 110)),
+                list(range(104, 4, -1)) +
+                list(range(5)) + list(range(105, 110)),
             ],
             [
                 False,
                 "first",
-                list(range(5)) + list(range(105, 110)) + list(range(104, 4, -1)),
+                list(range(5)) + list(range(105, 110)) +
+                list(range(104, 4, -1)),
             ],
         ],
     )
     def test_nargsort(self, ascending, na_position, exp):
         # list places NaNs last, np.array(..., dtype="O") may not place NaNs first
-        items = np.array([np.nan] * 5 + list(range(100)) + [np.nan] * 5, dtype="O")
+        items = np.array([np.nan] * 5 + list(range(100)) +
+                         [np.nan] * 5, dtype="O")
 
         # mergesort is the most difficult to get right because we want it to be
         # stable.
@@ -245,7 +253,8 @@ class TestMerge:
         # one-2-many/none match
         low, high, n = -1 << 10, 1 << 10, 1 << 11
         left = DataFrame(
-            np.random.default_rng(2).integers(low, high, (n, 7)).astype("int64"),
+            np.random.default_rng(2).integers(
+                low, high, (n, 7)).astype("int64"),
             columns=list("ABCDEFG"),
         )
 
@@ -257,7 +266,8 @@ class TestMerge:
         left = concat([left, left], ignore_index=True)
 
         right = DataFrame(
-            np.random.default_rng(3).integers(low, high, (n // 2, 7)).astype("int64"),
+            np.random.default_rng(3).integers(
+                low, high, (n // 2, 7)).astype("int64"),
             columns=list("ABCDEFG"),
         )
 
@@ -332,7 +342,8 @@ class TestMerge:
         if sort:
             kcols = list("ABCDEFG")
             tm.assert_frame_equal(
-                res[kcols].copy(), res[kcols].sort_values(kcols, kind="mergesort")
+                res[kcols].copy(), res[kcols].sort_values(
+                    kcols, kind="mergesort")
             )
 
         # as in GH9092 dtypes break with outer/right join
@@ -441,8 +452,10 @@ class TestSafeSort:
         "arg, codes, err, msg",
         [
             [1, None, TypeError, "Only np.ndarray, ExtensionArray, and Index"],
-            [np.array([0, 1, 2]), 1, TypeError, "Only list-like objects or None"],
-            [np.array([0, 1, 2, 1]), [0, 1], ValueError, "values should be unique"],
+            [np.array([0, 1, 2]), 1, TypeError,
+             "Only list-like objects or None"],
+            [np.array([0, 1, 2, 1]), [0, 1], ValueError,
+             "values should be unique"],
         ],
     )
     def test_exceptions(self, arg, codes, err, msg):
@@ -450,7 +463,8 @@ class TestSafeSort:
             safe_sort(values=arg, codes=codes)
 
     @pytest.mark.parametrize(
-        "arg, exp", [[[1, 3, 2], [1, 2, 3]], [[1, 3, np.nan, 2], [1, 2, 3, np.nan]]]
+        "arg, exp", [[[1, 3, 2], [1, 2, 3]], [
+            [1, 3, np.nan, 2], [1, 2, 3, np.nan]]]
     )
     def test_extension_array(self, arg, exp):
         a = array(arg, dtype="Int64")
@@ -461,7 +475,8 @@ class TestSafeSort:
     @pytest.mark.parametrize("verify", [True, False])
     def test_extension_array_codes(self, verify):
         a = array([1, 3, 2], dtype="Int64")
-        result, codes = safe_sort(a, [0, 1, -1, 2], use_na_sentinel=True, verify=verify)
+        result, codes = safe_sort(
+            a, [0, 1, -1, 2], use_na_sentinel=True, verify=verify)
         expected_values = array([1, 2, 3], dtype="Int64")
         expected_codes = np.array([0, 2, -1, 1], dtype=np.intp)
         tm.assert_extension_array_equal(result, expected_values)

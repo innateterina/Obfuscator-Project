@@ -34,6 +34,8 @@ __all__ = [
 #
 # Helper functions to convert inputs to 1-D arrays
 #
+
+
 def trimseq(seq):
     """Remove small Poly series coefficients.
 
@@ -191,6 +193,7 @@ def trimcoef(c, tol=0):
     else:
         return c[:ind[-1] + 1].copy()
 
+
 def getdomain(x):
     """
     Return a domain suitable for given abscissae.
@@ -238,6 +241,7 @@ def getdomain(x):
     else:
         return np.array((x.min(), x.max()))
 
+
 def mapparms(old, new):
     """
     Linear map parameters between domains.
@@ -284,6 +288,7 @@ def mapparms(old, new):
     off = (old[1]*new[0] - old[0]*new[1])/oldlen
     scl = newlen/oldlen
     return off, scl
+
 
 def mapdomain(x, old, new):
     """
@@ -414,7 +419,8 @@ def _vander_nd(vander_fs, points, degrees):
         raise ValueError(
             f"Expected {n_dims} dimensions of degrees, got {len(degrees)}")
     if n_dims == 0:
-        raise ValueError("Unable to guess a dtype or shape when no points are given")
+        raise ValueError(
+            "Unable to guess a dtype or shape when no points are given")
 
     # convert to the same shape and type
     points = tuple(np.asarray(tuple(points)) + 0.0)
@@ -745,7 +751,7 @@ def format_float(x, parens=False):
 
     if exp_format:
         s = dragon4_scientific(x, precision=opts['precision'],
-                               unique=unique, trim=trim, 
+                               unique=unique, trim=trim,
                                sign=opts['sign'] == '+')
         if parens:
             s = '(' + s + ')'

@@ -2452,7 +2452,8 @@ def test_array_from_pylist_offset_overflow():
     ([1, None], [pa.scalar(1.0, type=pa.int32()), None], pa.int32()),
     (
         ["aaa", "bbb"],
-        [pa.scalar("aaa", type=pa.binary(3)), pa.scalar("bbb", type=pa.binary(3))],
+        [pa.scalar("aaa", type=pa.binary(3)),
+         pa.scalar("bbb", type=pa.binary(3))],
         pa.binary(3)),
     ([b"a"], [pa.scalar("a", type=pa.large_binary())], pa.large_binary()),
     (["a"], [pa.scalar("a", type=pa.large_string())], pa.large_string()),

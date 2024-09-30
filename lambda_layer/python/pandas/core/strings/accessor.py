@@ -70,7 +70,8 @@ _cpython_optimized_encoders = (
     "mbcs",
     "ascii",
 )
-_cpython_optimized_decoders = _cpython_optimized_encoders + ("utf-16", "utf-32")
+_cpython_optimized_decoders = _cpython_optimized_encoders + \
+    ("utf-16", "utf-32")
 
 
 def forbid_nonstring_types(
@@ -242,7 +243,8 @@ class StringMethods(NoNewAttributesMixin):
         inferred_dtype = lib.infer_dtype(values, skipna=True)
 
         if inferred_dtype not in allowed_types:
-            raise AttributeError("Can only use .str accessor with string values!")
+            raise AttributeError(
+                "Can only use .str accessor with string values!")
         return inferred_dtype
 
     def __getitem__(self, key):
@@ -311,7 +313,8 @@ class StringMethods(NoNewAttributesMixin):
                             )
                         )
                     else:
-                        all_null = np.full(max_len, fill_value=None, dtype=object)
+                        all_null = np.full(
+                            max_len, fill_value=None, dtype=object)
                         values = result.to_numpy()
                         new_values = []
                         for row in values:
@@ -320,7 +323,8 @@ class StringMethods(NoNewAttributesMixin):
                                 row = np.append(row, nulls)
                             new_values.append(row)
                         pa_type = result._pa_array.type
-                        result = ArrowExtensionArray(pa.array(new_values, type=pa_type))
+                        result = ArrowExtensionArray(
+                            pa.array(new_values, type=pa_type))
                 if name is not None:
                     labels = name
                 else:
@@ -433,7 +437,8 @@ class StringMethods(NoNewAttributesMixin):
         )
 
         # self._orig is either Series or Index
-        idx = self._orig if isinstance(self._orig, ABCIndex) else self._orig.index
+        idx = self._orig if isinstance(
+            self._orig, ABCIndex) else self._orig.index
 
         # Generally speaking, all objects without an index inherit the index
         # `idx` of the calling Series/Index - i.e. must have matching length.
@@ -449,7 +454,8 @@ class StringMethods(NoNewAttributesMixin):
             return [others[x] for x in others]
         elif is_list_like(others, allow_sets=False):
             try:
-                others = list(others)  # ensure iterators do not get read twice etc
+                # ensure iterators do not get read twice etc
+                others = list(others)
             except TypeError:
                 # e.g. ser.str, raise below
                 pass
@@ -677,7 +683,8 @@ class StringMethods(NoNewAttributesMixin):
             np.putmask(result, union_mask, np.nan)
 
             not_masked = ~union_mask
-            result[not_masked] = cat_safe([x[not_masked] for x in all_cols], sep)
+            result[not_masked] = cat_safe(
+                [x[not_masked] for x in all_cols], sep)
         elif na_rep is not None and union_mask.any():
             # fill NaNs with na_rep in case there are actually any NaNs
             all_cols = [
@@ -1373,7 +1380,8 @@ class StringMethods(NoNewAttributesMixin):
         2   False
         dtype: bool
         """
-        result = self._data.array._str_match(pat, case=case, flags=flags, na=na)
+        result = self._data.array._str_match(
+            pat, case=case, flags=flags, na=na)
         return self._wrap_result(result, fill_value=na, returns_string=False)
 
     @forbid_nonstring_types(["bytes"])
@@ -1413,7 +1421,8 @@ class StringMethods(NoNewAttributesMixin):
         2    True
         dtype: bool
         """
-        result = self._data.array._str_fullmatch(pat, case=case, flags=flags, na=na)
+        result = self._data.array._str_fullmatch(
+            pat, case=case, flags=flags, na=na)
         return self._wrap_result(result, fill_value=na, returns_string=False)
 
     @forbid_nonstring_types(["bytes"])
@@ -1559,7 +1568,8 @@ class StringMethods(NoNewAttributesMixin):
                 "Cannot use a compiled regex as replacement pattern with regex=False"
             )
         elif callable(repl):
-            raise ValueError("Cannot use a callable replacement when regex=False")
+            raise ValueError(
+                "Cannot use a callable replacement when regex=False")
 
         if case is None:
             case = True
@@ -1814,7 +1824,8 @@ class StringMethods(NoNewAttributesMixin):
         if not is_integer(width):
             msg = f"width must be of integer type, not {type(width).__name__}"
             raise TypeError(msg)
-        f = lambda x: x.zfill(width)
+
+        def f(x): return x.zfill(width)
         result = self._data.array._str_map(f)
         return self._wrap_result(result)
 
@@ -1999,10 +2010,10 @@ class StringMethods(NoNewAttributesMixin):
         # TODO: Add a similar _bytes interface.
         if encoding in _cpython_optimized_decoders:
             # CPython optimized implementation
-            f = lambda x: x.decode(encoding, errors)
+            def f(x): return x.decode(encoding, errors)
         else:
             decoder = codecs.getdecoder(encoding)
-            f = lambda x: decoder(x, errors)[0]
+            def f(x): return decoder(x, errors)[0]
         arr = self._data.array
         # assert isinstance(arr, (StringArray,))
         result = arr._str_map(f)
@@ -2192,7 +2203,8 @@ class StringMethods(NoNewAttributesMixin):
     """
 
     @Appender(
-        _shared_docs["str_removefix"] % {"side": "prefix", "other_side": "suffix"}
+        _shared_docs["str_removefix"] % {
+            "side": "prefix", "other_side": "suffix"}
     )
     @forbid_nonstring_types(["bytes"])
     def removeprefix(self, prefix: str):
@@ -2200,7 +2212,8 @@ class StringMethods(NoNewAttributesMixin):
         return self._wrap_result(result)
 
     @Appender(
-        _shared_docs["str_removefix"] % {"side": "suffix", "other_side": "prefix"}
+        _shared_docs["str_removefix"] % {
+            "side": "suffix", "other_side": "prefix"}
     )
     @forbid_nonstring_types(["bytes"])
     def removesuffix(self, suffix: str):
@@ -2771,7 +2784,8 @@ class StringMethods(NoNewAttributesMixin):
 
         else:
             name = _get_single_group_name(regex)
-            result = self._data.array._str_extract(pat, flags=flags, expand=returns_df)
+            result = self._data.array._str_extract(
+                pat, flags=flags, expand=returns_df)
         return self._wrap_result(result, name=name, dtype=result_dtype)
 
     @forbid_nonstring_types(["bytes"])
@@ -3169,9 +3183,12 @@ class StringMethods(NoNewAttributesMixin):
     #     isalpha, isnumeric isalnum isdigit isdecimal isspace islower isupper istitle
     # _doc_args holds dict of strings to use in substituting casemethod docs
     _doc_args: dict[str, dict[str, str]] = {}
-    _doc_args["lower"] = {"type": "lowercase", "method": "lower", "version": ""}
-    _doc_args["upper"] = {"type": "uppercase", "method": "upper", "version": ""}
-    _doc_args["title"] = {"type": "titlecase", "method": "title", "version": ""}
+    _doc_args["lower"] = {"type": "lowercase",
+                          "method": "lower", "version": ""}
+    _doc_args["upper"] = {"type": "uppercase",
+                          "method": "upper", "version": ""}
+    _doc_args["title"] = {"type": "titlecase",
+                          "method": "title", "version": ""}
     _doc_args["capitalize"] = {
         "type": "be capitalized",
         "method": "capitalize",
@@ -3527,14 +3544,16 @@ def str_extractall(arr, pat, flags: int = 0) -> DataFrame:
             for match_i, match_tuple in enumerate(regex.findall(subject)):
                 if isinstance(match_tuple, str):
                     match_tuple = (match_tuple,)
-                na_tuple = [np.nan if group == "" else group for group in match_tuple]
+                na_tuple = [np.nan if group ==
+                            "" else group for group in match_tuple]
                 match_list.append(na_tuple)
                 result_key = tuple(subject_key + (match_i,))
                 index_list.append(result_key)
 
     from pandas import MultiIndex
 
-    index = MultiIndex.from_tuples(index_list, names=arr.index.names + ["match"])
+    index = MultiIndex.from_tuples(
+        index_list, names=arr.index.names + ["match"])
     dtype = _result_dtype(arr)
 
     result = arr._constructor_expanddim(

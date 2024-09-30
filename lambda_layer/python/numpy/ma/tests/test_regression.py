@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.testing import (
     assert_, assert_array_equal, assert_allclose, suppress_warnings
-    )
+)
 
 
 class TestRegression:
@@ -87,11 +87,11 @@ class TestRegression:
         assert_array_equal(ma[[]], ma[:0])
 
     def test_masked_array_tobytes_fortran(self):
-        ma = np.ma.arange(4).reshape((2,2))
+        ma = np.ma.arange(4).reshape((2, 2))
         assert_array_equal(ma.tobytes(order='F'), ma.T.tobytes())
 
     def test_structured_array(self):
         # see gh-22041
         np.ma.array((1, (b"", b"")),
                     dtype=[("x", np.int_),
-                          ("y", [("i", np.void), ("j", np.void)])])
+                           ("y", [("i", np.void), ("j", np.void)])])

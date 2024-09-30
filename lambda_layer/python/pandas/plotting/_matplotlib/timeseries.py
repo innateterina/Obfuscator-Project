@@ -153,7 +153,8 @@ def _replot_ax(ax: Axes, freq: BaseOffset):
             idx = series.index.asfreq(freq, how="S")
             series.index = idx
             # TODO #54485
-            ax._plot_data.append((series, plotf, kwds))  # type: ignore[attr-defined]
+            # type: ignore[attr-defined]
+            ax._plot_data.append((series, plotf, kwds))
 
             # for tsplot
             if isinstance(plotf, str):
@@ -161,7 +162,8 @@ def _replot_ax(ax: Axes, freq: BaseOffset):
 
                 plotf = PLOT_CLASSES[plotf]._plot
 
-            lines.append(plotf(ax, series.index._mpl_repr(), series.values, **kwds)[0])
+            lines.append(plotf(ax, series.index._mpl_repr(),
+                         series.values, **kwds)[0])
             labels.append(pprint_thing(series.name))
 
     return lines, labels

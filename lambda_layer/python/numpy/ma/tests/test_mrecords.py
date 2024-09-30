@@ -13,15 +13,15 @@ from numpy.ma import masked, nomask
 from numpy.testing import temppath
 from numpy._core.records import (
     recarray, fromrecords as recfromrecords, fromarrays as recfromarrays
-    )
+)
 from numpy.ma.mrecords import (
     MaskedRecords, mrecarray, fromarrays, fromtextfile, fromrecords,
     addfield
-    )
+)
 from numpy.ma.testutils import (
     assert_, assert_equal,
     assert_equal_records,
-    )
+)
 
 
 class TestMRecords:
@@ -411,14 +411,14 @@ class TestMRecordsImport:
     def test_fromrecords(self):
         # Test construction from records.
         (mrec, nrec, ddtype) = self.data
-        #......
+        # ......
         palist = [(1, 'abc', 3.7000002861022949, 0),
                   (2, 'xy', 6.6999998092651367, 1),
                   (0, ' ', 0.40000000596046448, 0)]
         pa = recfromrecords(palist, names='c1, c2, c3, c4')
         mpa = fromrecords(palist, names='c1, c2, c3, c4')
         assert_equal_records(pa, mpa)
-        #.....
+        # .....
         _mrec = fromrecords(nrec)
         assert_equal(_mrec.dtype, mrec.dtype)
         for field in _mrec.dtype.names:
@@ -458,7 +458,7 @@ class TestMRecordsImport:
     def test_fromtextfile(self):
         # Tests reading from a text file.
         fcontent = (
-"""#
+            """#
 'One (S)','Two (I)','Three (F)','Four (M)','Five (-)','Six (C)'
 'strings',1,1.0,'mixed column',,1
 'with embedded "double quotes"',2,2.0,1.0,,1

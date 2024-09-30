@@ -91,7 +91,8 @@ def compute_expected(df_left, df_right, on=None, left_on=None, right_on=None, ho
     right_levels = [n for n in df_right.index.names if n is not None]
 
     # Compute output named index levels
-    output_levels = [i for i in left_on if i in right_levels and i in left_levels]
+    output_levels = [
+        i for i in left_on if i in right_levels and i in left_levels]
 
     # Drop index levels that aren't involved in the merge
     drop_left = [n for n in left_levels if n not in left_on]
@@ -112,7 +113,8 @@ def compute_expected(df_left, df_right, on=None, left_on=None, right_on=None, ho
         df_right = df_right.reset_index(level=reset_right)
 
     # Perform merge
-    expected = df_left.merge(df_right, left_on=left_on, right_on=right_on, how=how)
+    expected = df_left.merge(df_right, left_on=left_on,
+                             right_on=right_on, how=how)
 
     # Restore index levels
     if output_levels:
@@ -157,7 +159,8 @@ def test_merge_indexes_and_columns_lefton_righton(
     )
 
     # Perform merge
-    result = left_df.merge(right_df, left_on=left_on, right_on=right_on, how=how)
+    result = left_df.merge(right_df, left_on=left_on,
+                           right_on=right_on, how=how)
     tm.assert_frame_equal(result, expected, check_like=True)
 
 

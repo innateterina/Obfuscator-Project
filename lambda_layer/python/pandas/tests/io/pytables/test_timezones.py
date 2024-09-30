@@ -38,8 +38,8 @@ def _compare_with_tz(a, b):
 
 # use maybe_get_tz instead of dateutil.tz.gettz to handle the windows
 # filename issues.
-gettz_dateutil = lambda x: maybe_get_tz("dateutil/" + x)
-gettz_pytz = lambda x: x
+def gettz_dateutil(x): return maybe_get_tz("dateutil/" + x)
+def gettz_pytz(x): return x
 
 
 @pytest.mark.parametrize("gettz", [gettz_dateutil, gettz_pytz])
@@ -50,7 +50,8 @@ def test_append_with_timezones(setup_path, gettz):
     df_est = DataFrame(
         {
             "A": [
-                Timestamp("20130102 2:00:00", tz=gettz("US/Eastern")).as_unit("ns")
+                Timestamp("20130102 2:00:00", tz=gettz(
+                    "US/Eastern")).as_unit("ns")
                 + timedelta(hours=1) * i
                 for i in range(5)
             ]
@@ -369,7 +370,8 @@ def test_py2_created_with_datetimez(datapath):
     # Python 3.
     #
     # GH26443
-    index = DatetimeIndex(["2019-01-01T18:00"], dtype="M8[ns, America/New_York]")
+    index = DatetimeIndex(["2019-01-01T18:00"],
+                          dtype="M8[ns, America/New_York]")
     expected = DataFrame({"data": 123}, index=index)
     with ensure_clean_store(
         datapath("io", "data", "legacy_hdf", "gh26443.h5"), mode="r"

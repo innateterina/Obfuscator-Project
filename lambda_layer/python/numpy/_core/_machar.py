@@ -14,6 +14,8 @@ from .._utils import set_module
 # Need to speed this up...especially for longdouble
 
 # Deprecated 2021-10-20, NumPy 1.22
+
+
 class MachAr:
     """
     Diagnosing machine parameters.
@@ -101,9 +103,9 @@ class MachAr:
 
     """
 
-    def __init__(self, float_conv=float,int_conv=int,
+    def __init__(self, float_conv=float, int_conv=int,
                  float_to_float=float,
-                 float_to_str=lambda v:'%24.16e' % v,
+                 float_to_str=lambda v: '%24.16e' % v,
                  title='Python floating point number'):
         """
 
@@ -117,7 +119,8 @@ class MachAr:
         # We ignore all errors here because we are purposely triggering
         # underflow to detect the properties of the runninng arch.
         with errstate(under='ignore'):
-            self._do_init(float_conv, int_conv, float_to_float, float_to_str, title)
+            self._do_init(float_conv, int_conv,
+                          float_to_float, float_to_str, title)
 
     def _do_init(self, float_conv, int_conv, float_to_float, float_to_str, title):
         max_iterN = 10000
@@ -338,17 +341,17 @@ class MachAr:
 
     def __str__(self):
         fmt = (
-           'Machine parameters for %(title)s\n'
-           '---------------------------------------------------------------------\n'
-           'ibeta=%(ibeta)s it=%(it)s iexp=%(iexp)s ngrd=%(ngrd)s irnd=%(irnd)s\n'
-           'machep=%(machep)s     eps=%(_str_eps)s (beta**machep == epsilon)\n'
-           'negep =%(negep)s  epsneg=%(_str_epsneg)s (beta**epsneg)\n'
-           'minexp=%(minexp)s   xmin=%(_str_xmin)s (beta**minexp == tiny)\n'
-           'maxexp=%(maxexp)s    xmax=%(_str_xmax)s ((1-epsneg)*beta**maxexp == huge)\n'
-           'smallest_normal=%(smallest_normal)s    '
-           'smallest_subnormal=%(smallest_subnormal)s\n'
-           '---------------------------------------------------------------------\n'
-           )
+            'Machine parameters for %(title)s\n'
+            '---------------------------------------------------------------------\n'
+            'ibeta=%(ibeta)s it=%(it)s iexp=%(iexp)s ngrd=%(ngrd)s irnd=%(irnd)s\n'
+            'machep=%(machep)s     eps=%(_str_eps)s (beta**machep == epsilon)\n'
+            'negep =%(negep)s  epsneg=%(_str_epsneg)s (beta**epsneg)\n'
+            'minexp=%(minexp)s   xmin=%(_str_xmin)s (beta**minexp == tiny)\n'
+            'maxexp=%(maxexp)s    xmax=%(_str_xmax)s ((1-epsneg)*beta**maxexp == huge)\n'
+            'smallest_normal=%(smallest_normal)s    '
+            'smallest_subnormal=%(smallest_subnormal)s\n'
+            '---------------------------------------------------------------------\n'
+        )
         return fmt % self.__dict__
 
 

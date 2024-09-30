@@ -20,6 +20,7 @@ MAX = np.iinfo(np.int64).max
 
 IS_PYPY_LT_7_3_16 = IS_PYPY and sys.implementation.version < (7, 3, 16)
 
+
 @pytest.mark.parametrize(["op", "ufunc", "sym"], COMPARISONS)
 def test_mixed_string_comparison_ufuncs_fail(op, ufunc, sym):
     arr_string = np.array(["a", "b"], dtype="S")
@@ -30,6 +31,7 @@ def test_mixed_string_comparison_ufuncs_fail(op, ufunc, sym):
 
     with pytest.raises(TypeError, match="did not contain a loop"):
         ufunc(arr_unicode, arr_string)
+
 
 @pytest.mark.parametrize(["op", "ufunc", "sym"], COMPARISONS)
 def test_mixed_string_comparisons_ufuncs_with_cast(op, ufunc, sym):
@@ -47,9 +49,9 @@ def test_mixed_string_comparisons_ufuncs_with_cast(op, ufunc, sym):
 
 @pytest.mark.parametrize(["op", "ufunc", "sym"], COMPARISONS)
 @pytest.mark.parametrize("dtypes", [
-        ("S2", "S2"), ("S2", "S10"),
-        ("<U1", "<U1"), ("<U1", ">U1"), (">U1", ">U1"),
-        ("<U1", "<U10"), ("<U1", ">U10")])
+    ("S2", "S2"), ("S2", "S10"),
+    ("<U1", "<U1"), ("<U1", ">U1"), (">U1", ">U1"),
+    ("<U1", "<U10"), ("<U1", ">U10")])
 @pytest.mark.parametrize("aligned", [True, False])
 def test_string_comparisons(op, ufunc, sym, dtypes, aligned):
     # ensure native byte-order for the first view to stay within unicode range
@@ -82,7 +84,7 @@ def test_string_comparisons(op, ufunc, sym, dtypes, aligned):
 
 @pytest.mark.parametrize(["op", "ufunc", "sym"], COMPARISONS)
 @pytest.mark.parametrize("dtypes", [
-        ("S2", "S2"), ("S2", "S10"), ("<U1", "<U1"), ("<U1", ">U10")])
+    ("S2", "S2"), ("S2", "S10"), ("<U1", "<U1"), ("<U1", ">U10")])
 def test_string_comparisons_empty(op, ufunc, sym, dtypes):
     arr = np.empty((1, 0, 1, 5), dtype=dtypes[0])
     arr2 = np.empty((100, 1, 0, 1), dtype=dtypes[1])
@@ -1084,7 +1086,7 @@ class TestMethodsWithUnicode:
             ("λ" * 5 + "A" + "μ" * 2, "μλ"),
             ("λμ" * 5, "μ"),
             ("λμ" * 5, "λ"),
-    ])
+        ])
     def test_strip_functions_unicode(self, source, strip, method, dt):
         src_array = np.array([source], dtype=dt)
 
@@ -1166,6 +1168,7 @@ def check_itemsize(n_elem, dt):
         return n_elem
     if dt == "U":
         return n_elem * 4
+
 
 @pytest.mark.parametrize("dt", ["S", "U", "T"])
 class TestReplaceOnArrays:

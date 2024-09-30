@@ -5,7 +5,7 @@ import numpy as np
 import numpy.polynomial.polyutils as pu
 from numpy.testing import (
     assert_almost_equal, assert_raises, assert_equal, assert_,
-    )
+)
 
 
 class TestMisc:
@@ -59,6 +59,7 @@ class TestMisc:
     def test_pow_too_large(self):
         # power > maxpower
         assert_raises(ValueError, pu._pow, (), [1, 2, 3], 5, 4)
+
 
 class TestDomain:
 

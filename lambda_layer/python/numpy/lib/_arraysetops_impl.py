@@ -288,7 +288,7 @@ def unique(ar, return_index=False, return_inverse=False,
     """
     ar = np.asanyarray(ar)
     if axis is None:
-        ret = _unique1d(ar, return_index, return_inverse, return_counts, 
+        ret = _unique1d(ar, return_index, return_inverse, return_counts,
                         equal_nan=equal_nan, inverse_shape=ar.shape, axis=None)
         return _unpack_tuple(ret)
 
@@ -908,11 +908,11 @@ def _in1d(ar1, ar2, assume_unique=False, invert=False, *, kind=None):
         # However, here we set the requirement that by default
         # the intermediate array can only be 6x
         # the combined memory allocation of the original
-        # arrays. See discussion on 
+        # arrays. See discussion on
         # https://github.com/numpy/numpy/pull/12065.
 
         if (
-            range_safe_from_overflow and 
+            range_safe_from_overflow and
             (below_memory_constraint or kind == 'table')
         ):
 
@@ -948,8 +948,8 @@ def _in1d(ar1, ar2, assume_unique=False, invert=False, *, kind=None):
 
             out = np.empty_like(in_range_ar1, dtype=np.intp)
             outgoing_array[basic_mask] = isin_helper_ar[
-                    np.subtract(in_range_ar1, ar2_min, dtype=dtype,
-                                out=out, casting="unsafe")]
+                np.subtract(in_range_ar1, ar2_min, dtype=dtype,
+                            out=out, casting="unsafe")]
 
             return outgoing_array
         elif kind == 'table':  # not range_safe_from_overflow
@@ -965,7 +965,6 @@ def _in1d(ar1, ar2, assume_unique=False, invert=False, *, kind=None):
             "supported for boolean or integer arrays. "
             "Please select 'sort' or None for kind."
         )
-
 
     # Check if one of the arrays may contain arbitrary objects
     contains_object = ar1.dtype.hasobject or ar2.dtype.hasobject

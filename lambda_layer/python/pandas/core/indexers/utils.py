@@ -548,6 +548,7 @@ def check_array_indexer(array: AnyArrayLike, indexer: Any) -> Any:
                 "Cannot index with an integer indexer containing NA values"
             ) from err
     else:
-        raise IndexError("arrays used as indices must be of integer or boolean type")
+        raise IndexError(
+            "arrays used as indices must be of integer or boolean type")
 
     return indexer

@@ -67,7 +67,8 @@ class TestJoin:
             "C": ["foo1", "foo2", "foo3", "foo4", "foo5"],
             "D": bdate_range("1/1/2009", periods=5),
         }
-        target = DataFrame(data, index=Index(["a", "b", "c", "d", "e"], dtype=object))
+        target = DataFrame(data, index=Index(
+            ["a", "b", "c", "d", "e"], dtype=object))
 
         # Join on string value
 
@@ -122,14 +123,17 @@ class TestJoin:
         assert "key2.bar" in joined
 
     @pytest.mark.parametrize(
-        "infer_string", [False, pytest.param(True, marks=td.skip_if_no("pyarrow"))]
+        "infer_string", [False, pytest.param(
+            True, marks=td.skip_if_no("pyarrow"))]
     )
     def test_join_on(self, target_source, infer_string):
         target, source = target_source
 
         merged = target.join(source, on="C")
-        tm.assert_series_equal(merged["MergedA"], target["A"], check_names=False)
-        tm.assert_series_equal(merged["MergedD"], target["D"], check_names=False)
+        tm.assert_series_equal(
+            merged["MergedA"], target["A"], check_names=False)
+        tm.assert_series_equal(
+            merged["MergedD"], target["D"], check_names=False)
 
         # join with duplicates (fix regression from DataFrame/Matrix merge)
         df = DataFrame({"key": ["a", "a", "b", "b", "c"]})
@@ -141,7 +145,8 @@ class TestJoin:
         tm.assert_frame_equal(joined, expected)
 
         # Test when some are missing
-        df_a = DataFrame([[1], [2], [3]], index=["a", "b", "c"], columns=["one"])
+        df_a = DataFrame([[1], [2], [3]], index=[
+                         "a", "b", "c"], columns=["one"])
         df_b = DataFrame([["foo"], ["bar"]], index=[1, 2], columns=["two"])
         df_c = DataFrame([[1], [2]], index=[1, 2], columns=["three"])
         joined = df_a.join(df_b, on="one")
@@ -264,7 +269,8 @@ class TestJoin:
         expected = df.join(df2, on="key")
         expected = expected[expected["value"].notna()]
         tm.assert_series_equal(joined["key"], expected["key"])
-        tm.assert_series_equal(joined["value"], expected["value"], check_dtype=False)
+        tm.assert_series_equal(
+            joined["value"], expected["value"], check_dtype=False)
         tm.assert_index_equal(joined.index, expected.index)
 
     def test_join_on_singlekey_list(self):
@@ -353,7 +359,8 @@ class TestJoin:
         )
         c = Series(np.random.default_rng(2).standard_normal(30))
         a["c"] = c
-        d = DataFrame(np.random.default_rng(2).standard_normal((30, 1)), columns=["q"])
+        d = DataFrame(np.random.default_rng(
+            2).standard_normal((30, 1)), columns=["q"])
 
         # it works!
         a.join(d)
@@ -403,7 +410,8 @@ class TestJoin:
         assert joined.index.names == index1.names
 
     def test_join_inner_multiindex(self, lexsorted_two_level_string_multiindex):
-        key1 = ["bar", "bar", "bar", "foo", "foo", "baz", "baz", "qux", "qux", "snap"]
+        key1 = ["bar", "bar", "bar", "foo", "foo",
+                "baz", "baz", "qux", "qux", "snap"]
         key2 = [
             "two",
             "one",
@@ -531,7 +539,8 @@ class TestJoin:
 
         df1 = DataFrame({"a": [1, 1, 1], "b": [1, 1, 1], "c": [10, 20, 30]})
         df2 = DataFrame({"a": [1, 1, 1], "b": [1, 1, 2], "d": [100, 200, 300]})
-        df3 = DataFrame({"a": [1, 1, 1], "b": [1, 1, 2], "e": [1000, 2000, 3000]})
+        df3 = DataFrame(
+            {"a": [1, 1, 1], "b": [1, 1, 2], "e": [1000, 2000, 3000]})
         idf1 = df1.set_index(["a", "b"])
         idf2 = df2.set_index(["a", "b"])
         idf3 = df3.set_index(["a", "b"])
@@ -565,14 +574,16 @@ class TestJoin:
         tm.assert_frame_equal(inner, right)
 
     @pytest.mark.parametrize(
-        "infer_string", [False, pytest.param(True, marks=td.skip_if_no("pyarrow"))]
+        "infer_string", [False, pytest.param(
+            True, marks=td.skip_if_no("pyarrow"))]
     )
     def test_join_sort(self, infer_string):
         with option_context("future.infer_string", infer_string):
             left = DataFrame(
                 {"key": ["foo", "bar", "baz", "foo"], "value": [1, 2, 3, 4]}
             )
-            right = DataFrame({"value2": ["a", "b", "c"]}, index=["bar", "baz", "foo"])
+            right = DataFrame({"value2": ["a", "b", "c"]}, index=[
+                              "bar", "baz", "foo"])
 
             joined = left.join(right, on="key", sort=True)
             expected = DataFrame(
@@ -649,7 +660,8 @@ class TestJoin:
         joined = df_list[0].join(df_list[1:])
         tm.assert_frame_equal(joined, df)
 
-        df_list = [df[["a", "b"]][:-2], df[["c", "d"]][2:], df[["e", "f"]][1:9]]
+        df_list = [df[["a", "b"]][:-2],
+                   df[["c", "d"]][2:], df[["e", "f"]][1:9]]
 
         def _check_diff_index(df_list, result, exp_index):
             reindexed = [x.reindex(exp_index) for x in df_list]
@@ -692,7 +704,8 @@ class TestJoin:
                     columns=["A", "A", "B", "B"],
                 ),
                 DataFrame(
-                    np.random.default_rng(2).integers(0, 10, size=20).reshape(10, 2),
+                    np.random.default_rng(2).integers(
+                        0, 10, size=20).reshape(10, 2),
                     columns=["A", "C"],
                 ),
             ],
@@ -738,7 +751,8 @@ class TestJoin:
         rightindex = MultiIndex.from_product(
             [list("abc"), list("xy")], names=["abc", "xy"]
         )
-        right = DataFrame({"v2": [100 * i for i in range(1, 7)]}, index=rightindex)
+        right = DataFrame(
+            {"v2": [100 * i for i in range(1, 7)]}, index=rightindex)
 
         result = left.join(right, on=["abc", "xy"], how=join_type)
         expected = (
@@ -922,7 +936,8 @@ def test_join_inner_multiindex_deterministic_order():
     result = left.join(right, how="inner")
     expected = DataFrame(
         {"e": [5], "f": [6]},
-        index=MultiIndex.from_tuples([(1, 2, 4, 3)], names=("a", "b", "d", "c")),
+        index=MultiIndex.from_tuples(
+            [(1, 2, 4, 3)], names=("a", "b", "d", "c")),
     )
     tm.assert_frame_equal(result, expected)
 
@@ -935,7 +950,8 @@ def test_join_cross(input_col, output_cols):
     left = DataFrame({"a": [1, 3]})
     right = DataFrame({input_col: [3, 4]})
     result = left.join(right, how="cross", lsuffix="_x", rsuffix="_y")
-    expected = DataFrame({output_cols[0]: [1, 1, 3, 3], output_cols[1]: [3, 4, 3, 4]})
+    expected = DataFrame(
+        {output_cols[0]: [1, 1, 3, 3], output_cols[1]: [3, 4, 3, 4]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -944,7 +960,8 @@ def test_join_multiindex_one_level(join_type):
     left = DataFrame(
         data={"c": 3}, index=MultiIndex.from_tuples([(1, 2)], names=("a", "b"))
     )
-    right = DataFrame(data={"d": 4}, index=MultiIndex.from_tuples([(2,)], names=("b",)))
+    right = DataFrame(
+        data={"d": 4}, index=MultiIndex.from_tuples([(2,)], names=("b",)))
     result = left.join(right, how=join_type)
     if join_type == "right":
         expected = DataFrame(
@@ -967,7 +984,8 @@ def test_join_multiindex_one_level(join_type):
         ([2.5, 1.5], [2.5, 1.5, 1.5]),
         (
             [Timestamp("2020-12-31"), Timestamp("2019-12-31")],
-            [Timestamp("2020-12-31"), Timestamp("2019-12-31"), Timestamp("2019-12-31")],
+            [Timestamp("2020-12-31"), Timestamp("2019-12-31"),
+             Timestamp("2019-12-31")],
         ),
     ],
 )

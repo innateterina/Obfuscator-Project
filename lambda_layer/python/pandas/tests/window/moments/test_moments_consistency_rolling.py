@@ -30,7 +30,8 @@ def test_rolling_apply_consistency_sum(
             all_na(all_data) and not all_data.empty and min_periods > 0
         ):
             request.applymarker(
-                pytest.mark.xfail(reason="np.sum has different behavior with NaNs")
+                pytest.mark.xfail(
+                    reason="np.sum has different behavior with NaNs")
             )
     rolling_f_result = all_data.rolling(
         window=window, min_periods=min_periods, center=center

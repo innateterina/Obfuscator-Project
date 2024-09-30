@@ -311,19 +311,25 @@ class TestSparseArrayArithmetics:
         values = np.array([True, False, True, True], dtype=np.bool_)
         rvalues = np.array([True, False, True, True], dtype=np.bool_)
 
-        a = SparseArray(values, kind=kind, dtype=np.bool_, fill_value=fill_value)
-        b = SparseArray(rvalues, kind=kind, dtype=np.bool_, fill_value=fill_value)
+        a = SparseArray(values, kind=kind, dtype=np.bool_,
+                        fill_value=fill_value)
+        b = SparseArray(rvalues, kind=kind, dtype=np.bool_,
+                        fill_value=fill_value)
         self._check_logical_ops(a, b, values, rvalues)
 
     @pytest.mark.parametrize("fill_value", [True, False, np.nan])
     def test_bool_array_logical(self, kind, fill_value):
         # GH 14000
         # when sp_index are the same
-        values = np.array([True, False, True, False, True, True], dtype=np.bool_)
-        rvalues = np.array([True, False, False, True, False, True], dtype=np.bool_)
+        values = np.array(
+            [True, False, True, False, True, True], dtype=np.bool_)
+        rvalues = np.array(
+            [True, False, False, True, False, True], dtype=np.bool_)
 
-        a = SparseArray(values, kind=kind, dtype=np.bool_, fill_value=fill_value)
-        b = SparseArray(rvalues, kind=kind, dtype=np.bool_, fill_value=fill_value)
+        a = SparseArray(values, kind=kind, dtype=np.bool_,
+                        fill_value=fill_value)
+        b = SparseArray(rvalues, kind=kind, dtype=np.bool_,
+                        fill_value=fill_value)
         self._check_logical_ops(a, b, values, rvalues)
 
     def test_mixed_array_float_int(self, kind, mix, all_arithmetic_functions, request):
@@ -387,7 +393,8 @@ class TestSparseArrayArithmetics:
         s = SparseArray([True, True, False, False])
         t = SparseArray([True, False, True, False])
         result = s ^ t
-        sp_index = pd.core.arrays.sparse.IntIndex(4, np.array([0, 1, 2], dtype="int32"))
+        sp_index = pd.core.arrays.sparse.IntIndex(
+            4, np.array([0, 1, 2], dtype="int32"))
         expected = SparseArray([False, True, True], sparse_index=sp_index)
         tm.assert_sp_array_equal(result, expected)
 

@@ -558,12 +558,12 @@ def _format_labels(
         # error: Argument 1 to "dtype_to_unit" has incompatible type
         # "dtype[Any] | ExtensionDtype"; expected "DatetimeTZDtype | dtype[Any]"
         unit = dtype_to_unit(bins.dtype)  # type: ignore[arg-type]
-        formatter = lambda x: x
-        adjust = lambda x: x - Timedelta(1, unit=unit).as_unit(unit)
+        def formatter(x): return x
+        def adjust(x): return x - Timedelta(1, unit=unit).as_unit(unit)
     else:
         precision = _infer_precision(precision, bins)
-        formatter = lambda x: _round_frac(x, precision)
-        adjust = lambda x: x - 10 ** (-precision)
+        def formatter(x): return _round_frac(x, precision)
+        def adjust(x): return x - 10 ** (-precision)
 
     breaks = [formatter(b) for b in bins]
     if right and include_lowest:
@@ -601,7 +601,8 @@ def _postprocess_for_cut(fac, bins, retbins: bool, original):
     datatype was a series
     """
     if isinstance(original, ABCSeries):
-        fac = original._constructor(fac, index=original.index, name=original.name)
+        fac = original._constructor(
+            fac, index=original.index, name=original.name)
 
     if not retbins:
         return fac

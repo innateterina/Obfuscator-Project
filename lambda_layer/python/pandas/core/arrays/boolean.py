@@ -108,7 +108,8 @@ class BooleanDtype(BaseMaskedDtype):
         import pyarrow
 
         if array.type != pyarrow.bool_() and not pyarrow.types.is_null(array.type):
-            raise TypeError(f"Expected array of boolean type, got {array.type} instead")
+            raise TypeError(
+                f"Expected array of boolean type, got {array.type} instead")
 
         if isinstance(array, pyarrow.Array):
             chunks = [array]
@@ -186,7 +187,8 @@ def coerce_to_array(
         values_bool[~mask_values] = values[~mask_values].astype(bool)
 
         if not np.all(
-            values_bool[~mask_values].astype(values.dtype) == values[~mask_values]
+            values_bool[~mask_values].astype(
+                values.dtype) == values[~mask_values]
         ):
             raise TypeError("Need to pass bool-like values")
 
@@ -365,7 +367,8 @@ class BooleanArray(BaseMaskedArray):
         elif is_list_like(other):
             other = np.asarray(other, dtype="bool")
             if other.ndim > 1:
-                raise NotImplementedError("can only perform ops with 1-d structures")
+                raise NotImplementedError(
+                    "can only perform ops with 1-d structures")
             other, mask = coerce_to_array(other, copy=False)
         elif isinstance(other, np.bool_):
             other = other.item()

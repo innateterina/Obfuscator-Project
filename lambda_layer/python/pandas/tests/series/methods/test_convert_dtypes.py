@@ -127,37 +127,43 @@ import pandas._testing as tm
         ),
         (["a", "b"], pd.CategoricalDtype(), pd.CategoricalDtype(), {}),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("s"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("s"),
             pd.DatetimeTZDtype(tz="UTC"),
             pd.DatetimeTZDtype(tz="UTC"),
             {},
         ),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ms"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ms"),
             pd.DatetimeTZDtype(tz="UTC"),
             pd.DatetimeTZDtype(tz="UTC"),
             {},
         ),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("us"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("us"),
             pd.DatetimeTZDtype(tz="UTC"),
             pd.DatetimeTZDtype(tz="UTC"),
             {},
         ),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
             pd.DatetimeTZDtype(tz="UTC"),
             pd.DatetimeTZDtype(tz="UTC"),
             {},
         ),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
             "datetime64[ns]",
             np.dtype("datetime64[ns]"),
             {},
         ),
         (
-            pd.to_datetime(["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
+            pd.to_datetime(
+                ["2020-01-14 10:00", "2020-01-15 11:11"]).as_unit("ns"),
             object,
             np.dtype("datetime64[ns]"),
             {("infer_objects", False): np.dtype("object")},

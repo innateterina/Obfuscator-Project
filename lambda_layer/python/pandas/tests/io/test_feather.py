@@ -99,7 +99,8 @@ class TestFeather:
     def test_duplicate_columns(self):
         # https://github.com/wesm/feather/issues/53
         # not currently able to handle duplicate columns
-        df = pd.DataFrame(np.arange(12).reshape(4, 3), columns=list("aaa")).copy()
+        df = pd.DataFrame(np.arange(12).reshape(4, 3),
+                          columns=list("aaa")).copy()
         self.check_external_error_on_write(df)
 
     def test_read_columns(self):
@@ -183,8 +184,10 @@ class TestFeather:
         )
 
         if string_storage == "python":
-            string_array = StringArray(np.array(["a", "b", "c"], dtype=np.object_))
-            string_array_na = StringArray(np.array(["a", "b", pd.NA], dtype=np.object_))
+            string_array = StringArray(
+                np.array(["a", "b", "c"], dtype=np.object_))
+            string_array_na = StringArray(
+                np.array(["a", "b", pd.NA], dtype=np.object_))
 
         elif dtype_backend == "pyarrow":
             from pandas.arrays import ArrowExtensionArray
@@ -219,7 +222,8 @@ class TestFeather:
 
             expected = pd.DataFrame(
                 {
-                    col: ArrowExtensionArray(pa.array(expected[col], from_pandas=True))
+                    col: ArrowExtensionArray(
+                        pa.array(expected[col], from_pandas=True))
                     for col in expected.columns
                 }
             )
@@ -227,7 +231,8 @@ class TestFeather:
         tm.assert_frame_equal(result, expected)
 
     def test_int_columns_and_index(self):
-        df = pd.DataFrame({"a": [1, 2, 3]}, index=pd.Index([3, 4, 5], name="test"))
+        df = pd.DataFrame({"a": [1, 2, 3]},
+                          index=pd.Index([3, 4, 5], name="test"))
         self.check_round_trip(df)
 
     def test_invalid_dtype_backend(self):
@@ -248,5 +253,6 @@ class TestFeather:
         df.to_feather(path)
         with pd.option_context("future.infer_string", True):
             result = read_feather(path)
-        expected = pd.DataFrame(data={"a": ["x", "y"]}, dtype="string[pyarrow_numpy]")
+        expected = pd.DataFrame(
+            data={"a": ["x", "y"]}, dtype="string[pyarrow_numpy]")
         tm.assert_frame_equal(result, expected)

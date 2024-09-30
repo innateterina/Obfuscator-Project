@@ -18,12 +18,12 @@ from numpy.testing import assert_array_equal, HAS_REFCOUNT, IS_PYPY
 def test_scientific_notation():
     """Test that both 'e' and 'E' are parsed correctly."""
     data = StringIO(
-        
-            "1.0e-1,2.0E1,3.0\n"
-            "4.0e-2,5.0E-1,6.0\n"
-            "7.0e-3,8.0E1,9.0\n"
-            "0.0e-4,1.0E-1,2.0"
-        
+
+        "1.0e-1,2.0E1,3.0\n"
+        "4.0e-2,5.0E-1,6.0\n"
+        "7.0e-3,8.0E1,9.0\n"
+        "0.0e-4,1.0E-1,2.0"
+
     )
     expected = np.array(
         [[0.1, 20., 3.0], [0.04, 0.5, 6], [0.007, 80., 9], [0, 0.1, 2]]
@@ -46,14 +46,14 @@ def mixed_types_structured():
     with the associated structured array.
     """
     data = StringIO(
-        
-            "1000;2.4;alpha;-34\n"
-            "2000;3.1;beta;29\n"
-            "3500;9.9;gamma;120\n"
-            "4090;8.1;delta;0\n"
-            "5001;4.4;epsilon;-99\n"
-            "6543;7.8;omega;-1\n"
-        
+
+        "1000;2.4;alpha;-34\n"
+        "2000;3.1;beta;29\n"
+        "3500;9.9;gamma;120\n"
+        "4090;8.1;delta;0\n"
+        "5001;4.4;epsilon;-99\n"
+        "6543;7.8;omega;-1\n"
+
     )
     dtype = np.dtype(
         [('f0', np.uint16), ('f1', np.float64), ('f2', 'S7'), ('f3', np.int8)]
@@ -166,11 +166,11 @@ def test_bad_ndmin(badval):
 @pytest.mark.parametrize(
     "ws",
     (
-            " ",  # space
-            "\t",  # tab
-            "\u2003",  # em
-            "\u00A0",  # non-break
-            "\u3000",  # ideographic space
+        " ",  # space
+        "\t",  # tab
+        "\u2003",  # em
+        "\u00A0",  # non-break
+        "\u3000",  # ideographic space
     )
 )
 def test_blank_lines_spaces_delimit(ws):
@@ -245,7 +245,7 @@ def test_converters_negative_indices_with_usecols():
 def test_ragged_error():
     rows = ["1,2,3", "1,2,3", "4,3,2,1"]
     with pytest.raises(ValueError,
-            match="the number of columns changed from 3 to 4 at row 3"):
+                       match="the number of columns changed from 3 to 4 at row 3"):
         np.loadtxt(rows, delimiter=",")
 
 
@@ -258,7 +258,7 @@ def test_ragged_usecols():
 
     txt = StringIO("0,0,XXX\n0\n0,XXX,XXX,0,XXX\n")
     with pytest.raises(ValueError,
-                match="invalid column index -2 at row 2 with 1 columns"):
+                       match="invalid column index -2 at row 2 with 1 columns"):
         # There is no -2 column in the second row:
         np.loadtxt(txt, dtype=float, delimiter=",", usecols=[0, -2])
 
@@ -320,8 +320,8 @@ def test_converter_with_unicode_dtype():
     txt = StringIO('abc,def\nrst,xyz')
     conv = bytes.upper
     res = np.loadtxt(
-            txt, dtype=np.dtype("U3"), converters=conv, delimiter=",",
-            encoding="bytes")
+        txt, dtype=np.dtype("U3"), converters=conv, delimiter=",",
+        encoding="bytes")
     expected = np.array([['ABC', 'DEF'], ['RST', 'XYZ']])
     assert_equal(res, expected)
 
@@ -420,6 +420,7 @@ def test_implicit_cast_float_to_int_fails(dtype):
     txt = StringIO("1.0, 2.1, 3.7\n4, 5, 6")
     with pytest.raises(ValueError):
         np.loadtxt(txt, dtype=dtype, delimiter=",")
+
 
 @pytest.mark.parametrize("dtype", (np.complex64, np.complex128))
 @pytest.mark.parametrize("with_parens", (False, True))
@@ -521,7 +522,7 @@ def test_converters_dict_raises_non_col_key(bad_col_ind):
 
 def test_converters_dict_raises_val_not_callable():
     with pytest.raises(TypeError,
-                match="values of the converters dictionary must be callable"):
+                       match="values of the converters dictionary must be callable"):
         np.loadtxt(StringIO("1 2\n3 4"), converters={0: 1})
 
 
@@ -559,7 +560,7 @@ def test_quote_support_default():
     dtype = np.dtype([('f0', 'U24'), ('f1', np.float64), ('f2', np.float64)])
 
     with pytest.raises(ValueError,
-            match="the dtype passed requires 3 columns but 4 were"):
+                       match="the dtype passed requires 3 columns but 4 were"):
         np.loadtxt(txt, dtype=dtype, delimiter=",")
 
     # Enable quoting support with non-None value for quotechar param
@@ -597,14 +598,14 @@ def test_comment_multichar_error_with_quote():
 
 def test_structured_dtype_with_quotes():
     data = StringIO(
-        
-            "1000;2.4;'alpha';-34\n"
-            "2000;3.1;'beta';29\n"
-            "3500;9.9;'gamma';120\n"
-            "4090;8.1;'delta';0\n"
-            "5001;4.4;'epsilon';-99\n"
-            "6543;7.8;'omega';-1\n"
-        
+
+        "1000;2.4;'alpha';-34\n"
+        "2000;3.1;'beta';29\n"
+        "3500;9.9;'gamma';120\n"
+        "4090;8.1;'delta';0\n"
+        "5001;4.4;'epsilon';-99\n"
+        "6543;7.8;'omega';-1\n"
+
     )
     dtype = np.dtype(
         [('f0', np.uint16), ('f1', np.float64), ('f2', 'S7'), ('f3', np.int8)]
@@ -630,6 +631,7 @@ def test_quoted_field_is_not_empty():
     res = np.loadtxt(txt, delimiter=",", dtype="U1", quotechar='"')
     assert_equal(res, expected)
 
+
 def test_quoted_field_is_not_empty_nonstrict():
     # Same as test_quoted_field_is_not_empty but check that we are not strict
     # about missing closing quote (this is the `csv.reader` default also)
@@ -637,6 +639,7 @@ def test_quoted_field_is_not_empty_nonstrict():
     expected = np.array(["1", "4", ""], dtype="U1")
     res = np.loadtxt(txt, delimiter=",", dtype="U1", quotechar='"')
     assert_equal(res, expected)
+
 
 def test_consecutive_quotechar_escaped():
     txt = StringIO('"Hello, my name is ""Monty""!"')
@@ -669,6 +672,7 @@ def test_warn_on_no_data(data, ndmin, usecols):
             res = np.loadtxt(txt, ndmin=ndmin, usecols=usecols)
         assert res.shape == expected_shape
 
+
 @pytest.mark.parametrize("skiprows", (2, 3))
 def test_warn_on_skipped_data(skiprows):
     data = "1 2 3\n4 5 6"
@@ -678,22 +682,22 @@ def test_warn_on_skipped_data(skiprows):
 
 
 @pytest.mark.parametrize(["dtype", "value"], [
-        ("i2", 0x0001), ("u2", 0x0001),
-        ("i4", 0x00010203), ("u4", 0x00010203),
-        ("i8", 0x0001020304050607), ("u8", 0x0001020304050607),
-        # The following values are constructed to lead to unique bytes:
-        ("float16", 3.07e-05),
-        ("float32", 9.2557e-41), ("complex64", 9.2557e-41+2.8622554e-29j),
-        ("float64", -1.758571353180402e-24),
-        # Here and below, the repr side-steps a small loss of precision in
-        # complex `str` in PyPy (which is probably fine, as repr works):
-        ("complex128", repr(5.406409232372729e-29-1.758571353180402e-24j)),
-        # Use integer values that fit into double.  Everything else leads to
-        # problems due to longdoubles going via double and decimal strings
-        # causing rounding errors.
-        ("longdouble", 0x01020304050607),
-        ("clongdouble", repr(0x01020304050607 + (0x00121314151617 * 1j))),
-        ("U2", "\U00010203\U000a0b0c")])
+    ("i2", 0x0001), ("u2", 0x0001),
+    ("i4", 0x00010203), ("u4", 0x00010203),
+    ("i8", 0x0001020304050607), ("u8", 0x0001020304050607),
+    # The following values are constructed to lead to unique bytes:
+    ("float16", 3.07e-05),
+    ("float32", 9.2557e-41), ("complex64", 9.2557e-41+2.8622554e-29j),
+    ("float64", -1.758571353180402e-24),
+    # Here and below, the repr side-steps a small loss of precision in
+    # complex `str` in PyPy (which is probably fine, as repr works):
+    ("complex128", repr(5.406409232372729e-29-1.758571353180402e-24j)),
+    # Use integer values that fit into double.  Everything else leads to
+    # problems due to longdoubles going via double and decimal strings
+    # causing rounding errors.
+    ("longdouble", 0x01020304050607),
+    ("clongdouble", repr(0x01020304050607 + (0x00121314151617 * 1j))),
+    ("U2", "\U00010203\U000a0b0c")])
 @pytest.mark.parametrize("swap", [True, False])
 def test_byteswapping_and_unaligned(dtype, value, swap):
     # Try to create "interesting" values within the valid unicode range:
@@ -710,7 +714,7 @@ def test_byteswapping_and_unaligned(dtype, value, swap):
 
 
 @pytest.mark.parametrize("dtype",
-        np.typecodes["AllInteger"] + "efdFD" + "?")
+                         np.typecodes["AllInteger"] + "efdFD" + "?")
 def test_unicode_whitespace_stripping(dtype):
     # Test that all numeric types (and bool) strip whitespace correctly
     # \u202F is a narrow no-break space, `\n` is just a whitespace if quoted.
@@ -735,7 +739,7 @@ def test_unicode_whitespace_stripping_complex(dtype):
                     reason="PyPy bug in error formatting")
 @pytest.mark.parametrize("dtype", "FD")
 @pytest.mark.parametrize("field",
-        ["1 +2j", "1+ 2j", "1+2 j", "1+-+3", "(1j", "(1", "(1+2j", "1+2j)"])
+                         ["1 +2j", "1+ 2j", "1+2 j", "1+-+3", "(1j", "(1", "(1+2j", "1+2j)"])
 def test_bad_complex(dtype, field):
     with pytest.raises(ValueError):
         np.loadtxt([field + "\n"], dtype=dtype, delimiter=",")
@@ -744,7 +748,7 @@ def test_bad_complex(dtype, field):
 @pytest.mark.skipif(IS_PYPY and sys.implementation.version <= (7, 3, 8),
                     reason="PyPy bug in error formatting")
 @pytest.mark.parametrize("dtype",
-            np.typecodes["AllInteger"] + "efgdFDG" + "?")
+                         np.typecodes["AllInteger"] + "efgdFDG" + "?")
 def test_nul_character_error(dtype):
     # Test that a \0 character is correctly recognized as an error even if
     # what comes before is valid (not everything gets parsed internally).
@@ -757,7 +761,7 @@ def test_nul_character_error(dtype):
 @pytest.mark.skipif(IS_PYPY and sys.implementation.version <= (7, 3, 8),
                     reason="PyPy bug in error formatting")
 @pytest.mark.parametrize("dtype",
-        np.typecodes["AllInteger"] + "efgdFDG" + "?")
+                         np.typecodes["AllInteger"] + "efgdFDG" + "?")
 def test_no_thousands_support(dtype):
     # Mainly to document behaviour, Python supports thousands like 1_1.
     # (e and G may end up using different conversion and support it, this is
@@ -869,13 +873,13 @@ class TestCReaderUnitTests:
                 return 1234  # not a string!
 
         with pytest.raises(TypeError,
-                    match="non-string returned while reading data"):
+                           match="non-string returned while reading data"):
             np._core._multiarray_umath._load_from_filelike(
                 BadFileLike(), dtype=np.dtype("i"), filelike=True)
 
     def test_not_an_iter(self):
         with pytest.raises(TypeError,
-                    match="error reading from object, expected an iterable"):
+                           match="error reading from object, expected an iterable"):
             np._core._multiarray_umath._load_from_filelike(
                 object(), dtype=np.dtype("i"), filelike=False)
 
@@ -1004,7 +1008,7 @@ def test_str_dtype_unit_discovery_with_converter():
     expected = np.array(
         ["spam-a-lot"] * 60000 + ["tis_but_a_scratch"], dtype="U17"
     )
-    conv = lambda s: s.removeprefix("XXX")
+    def conv(s): return s.removeprefix("XXX")
 
     # file-like path
     txt = StringIO("\n".join(data))
@@ -1052,6 +1056,7 @@ def test_field_growing_cases():
     for i in range(1, 1024):
         res = np.loadtxt(["," * i], delimiter=",", dtype=bytes, max_rows=10)
         assert len(res) == i+1
+
 
 @pytest.mark.parametrize("nmax", (10000, 50000, 55000, 60000))
 def test_maxrows_exceeding_chunksize(nmax):

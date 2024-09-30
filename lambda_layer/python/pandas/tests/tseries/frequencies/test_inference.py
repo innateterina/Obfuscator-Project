@@ -144,7 +144,8 @@ def test_fifth_week_of_month_infer():
 def test_week_of_month_fake():
     # All of these dates are on same day
     # of week and are 4 or 5 weeks apart.
-    index = DatetimeIndex(["2013-08-27", "2013-10-01", "2013-10-29", "2013-11-26"])
+    index = DatetimeIndex(
+        ["2013-08-27", "2013-10-01", "2013-10-29", "2013-11-26"])
     assert frequencies.infer_freq(index) != "WOM-4TUE"
 
 
@@ -203,7 +204,8 @@ def test_infer_freq_custom(base_delta_code_pair, constructor):
 
 
 @pytest.mark.parametrize(
-    "freq,expected", [("Q", "QE-DEC"), ("Q-NOV", "QE-NOV"), ("Q-OCT", "QE-OCT")]
+    "freq,expected", [("Q", "QE-DEC"), ("Q-NOV", "QE-NOV"),
+                      ("Q-OCT", "QE-OCT")]
 )
 def test_infer_freq_index(freq, expected):
     rng = period_range("1959Q2", "2009Q3", freq=freq)

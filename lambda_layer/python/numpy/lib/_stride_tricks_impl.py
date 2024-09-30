@@ -559,5 +559,5 @@ def broadcast_arrays(*args, subok=False):
 
     result = [array if array.shape == shape
               else _broadcast_to(array, shape, subok=subok, readonly=False)
-                              for array in args]
+              for array in args]
     return tuple(result)

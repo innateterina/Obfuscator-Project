@@ -22,7 +22,7 @@ def test_get_callable_name():
     def fn(x):
         return x
 
-    lambda_ = lambda x: x
+    def lambda_(x): return x
     part1 = partial(fn)
     part2 = partial(part1)
 
@@ -58,7 +58,8 @@ def test_random_state():
 
     # Check with random state object
     state2 = np.random.RandomState(10)
-    assert com.random_state(state2).uniform() == np.random.RandomState(10).uniform()
+    assert com.random_state(state2).uniform(
+    ) == np.random.RandomState(10).uniform()
 
     # check with no arg random state
     assert com.random_state() is np.random

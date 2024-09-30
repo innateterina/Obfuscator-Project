@@ -5,6 +5,7 @@ import textwrap
 
 # We put them here since they could be easily reused outside numpy.distutils
 
+
 def check_inline(cmd):
     """Return the inline identifier (may be empty)."""
     cmd._check_compiler()
@@ -109,7 +110,7 @@ def check_gcc_function_attribute(cmd, attribute, name):
 
 
 def check_gcc_function_attribute_with_intrinsics(cmd, attribute, name, code,
-                                                include):
+                                                 include):
     """Return True if the given function attribute is supported with
     intrinsics."""
     cmd._check_compiler()

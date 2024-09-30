@@ -77,17 +77,21 @@ _all_methods = [
     (pd.DataFrame, frame_data, operator.methodcaller("transpose")),
     (pd.DataFrame, frame_data, operator.methodcaller("__getitem__", "A")),
     (pd.DataFrame, frame_data, operator.methodcaller("__getitem__", ["A"])),
-    (pd.DataFrame, frame_data, operator.methodcaller("__getitem__", np.array([True]))),
-    (pd.DataFrame, ({("A", "a"): [1]},), operator.methodcaller("__getitem__", ["A"])),
+    (pd.DataFrame, frame_data, operator.methodcaller(
+        "__getitem__", np.array([True]))),
+    (pd.DataFrame, ({("A", "a"): [1]},),
+     operator.methodcaller("__getitem__", ["A"])),
     (pd.DataFrame, frame_data, operator.methodcaller("query", "A == 1")),
-    (pd.DataFrame, frame_data, operator.methodcaller("eval", "A + 1", engine="python")),
+    (pd.DataFrame, frame_data, operator.methodcaller(
+        "eval", "A + 1", engine="python")),
     (pd.DataFrame, frame_data, operator.methodcaller("select_dtypes", include="int")),
     (pd.DataFrame, frame_data, operator.methodcaller("assign", b=1)),
     (pd.DataFrame, frame_data, operator.methodcaller("set_axis", ["A"])),
     (pd.DataFrame, frame_data, operator.methodcaller("reindex", [0, 1])),
     (pd.DataFrame, frame_data, operator.methodcaller("drop", columns=["A"])),
     (pd.DataFrame, frame_data, operator.methodcaller("drop", index=[0])),
-    (pd.DataFrame, frame_data, operator.methodcaller("rename", columns={"A": "a"})),
+    (pd.DataFrame, frame_data, operator.methodcaller(
+        "rename", columns={"A": "a"})),
     (pd.DataFrame, frame_data, operator.methodcaller("rename", index=lambda x: x)),
     (pd.DataFrame, frame_data, operator.methodcaller("fillna", "A")),
     (pd.DataFrame, frame_data, operator.methodcaller("fillna", method="ffill")),
@@ -114,7 +118,8 @@ _all_methods = [
     (
         pd.DataFrame,
         frame_data,
-        operator.methodcaller("combine", pd.DataFrame(*frame_data), operator.add),
+        operator.methodcaller(
+            "combine", pd.DataFrame(*frame_data), operator.add),
     ),
     (
         pd.DataFrame,
@@ -138,7 +143,8 @@ _all_methods = [
     (
         pd.DataFrame,
         ({"A": [1], "B": [1]},),
-        operator.methodcaller("pivot_table", columns="A", aggfunc=["mean", "sum"]),
+        operator.methodcaller("pivot_table", columns="A",
+                              aggfunc=["mean", "sum"]),
     ),
     (pd.DataFrame, frame_data, operator.methodcaller("stack")),
     (pd.DataFrame, frame_data, operator.methodcaller("explode", "A")),
@@ -208,7 +214,8 @@ _all_methods = [
         operator.methodcaller("to_period", freq="D"),
     ),
     (pd.DataFrame, frame_mi_data, operator.methodcaller("isin", [1])),
-    (pd.DataFrame, frame_mi_data, operator.methodcaller("isin", pd.Series([1]))),
+    (pd.DataFrame, frame_mi_data,
+     operator.methodcaller("isin", pd.Series([1]))),
     (
         pd.DataFrame,
         frame_mi_data,
@@ -261,7 +268,8 @@ _all_methods = [
     (pd.DataFrame, frame_data, operator.methodcaller("astype", float)),
     (pd.Series, ([1, 2],), operator.methodcaller("copy")),
     (pd.DataFrame, frame_data, operator.methodcaller("copy")),
-    (pd.Series, ([1, 2], None, object), operator.methodcaller("infer_objects")),
+    (pd.Series, ([1, 2], None, object),
+     operator.methodcaller("infer_objects")),
     (
         pd.DataFrame,
         ({"A": np.array([1, 2], dtype=object)},),
@@ -270,7 +278,8 @@ _all_methods = [
     (pd.Series, ([1, 2],), operator.methodcaller("convert_dtypes")),
     (pd.DataFrame, frame_data, operator.methodcaller("convert_dtypes")),
     (pd.Series, ([1, None, 3],), operator.methodcaller("interpolate")),
-    (pd.DataFrame, ({"A": [1, None, 3]},), operator.methodcaller("interpolate")),
+    (pd.DataFrame, ({"A": [1, None, 3]},),
+     operator.methodcaller("interpolate")),
     (pd.Series, ([1, 2],), operator.methodcaller("clip", lower=1)),
     (pd.DataFrame, frame_data, operator.methodcaller("clip", lower=1)),
     (
@@ -315,10 +324,14 @@ _all_methods = [
     ),
     (pd.Series, ([1, 2],), operator.methodcaller("rank")),
     (pd.DataFrame, frame_data, operator.methodcaller("rank")),
-    (pd.Series, ([1, 2],), operator.methodcaller("where", np.array([True, False]))),
-    (pd.DataFrame, frame_data, operator.methodcaller("where", np.array([[True]]))),
-    (pd.Series, ([1, 2],), operator.methodcaller("mask", np.array([True, False]))),
-    (pd.DataFrame, frame_data, operator.methodcaller("mask", np.array([[True]]))),
+    (pd.Series, ([1, 2],), operator.methodcaller(
+        "where", np.array([True, False]))),
+    (pd.DataFrame, frame_data, operator.methodcaller(
+        "where", np.array([[True]]))),
+    (pd.Series, ([1, 2],), operator.methodcaller(
+        "mask", np.array([True, False]))),
+    (pd.DataFrame, frame_data, operator.methodcaller(
+        "mask", np.array([[True]]))),
     (pd.Series, ([1, 2],), operator.methodcaller("truncate", before=0)),
     (pd.DataFrame, frame_data, operator.methodcaller("truncate", before=0)),
     (
@@ -345,7 +358,8 @@ _all_methods = [
     (pd.DataFrame, frame_data, operator.methodcaller("describe")),
     (pd.Series, ([1, 2],), operator.methodcaller("pct_change")),
     (pd.DataFrame, frame_data, operator.methodcaller("pct_change")),
-    (pd.Series, ([1],), operator.methodcaller("transform", lambda x: x - x.min())),
+    (pd.Series, ([1],), operator.methodcaller(
+        "transform", lambda x: x - x.min())),
     (
         pd.DataFrame,
         frame_mi_data,

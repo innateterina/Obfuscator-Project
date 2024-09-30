@@ -8,7 +8,7 @@ g77_version_strings = [
     ('GNU Fortran (GCC) 3.3.3 20040110 (prerelease) (Debian)', '3.3.3'),
     ('GNU Fortran (GCC) 3.3.3 (Debian 20040401)', '3.3.3'),
     ('GNU Fortran (GCC 3.2.2 20030222 (Red Hat Linux 3.2.2-5)) 3.2.2'
-       ' 20030222 (Red Hat Linux 3.2.2-5)', '3.2.2'),
+     ' 20030222 (Red Hat Linux 3.2.2-5)', '3.2.2'),
 ]
 
 gfortran_version_strings = [
@@ -28,6 +28,7 @@ gfortran_version_strings = [
     ('GNU Fortran (crosstool-NG 8a21ab48) 7.2.0', '7.2.0')
 ]
 
+
 class TestG77Versions:
     def test_g77_version(self):
         fc = numpy.distutils.fcompiler.new_fcompiler(compiler='gnu')
@@ -40,6 +41,7 @@ class TestG77Versions:
         for vs, _ in gfortran_version_strings:
             v = fc.version_match(vs)
             assert_(v is None, (vs, v))
+
 
 class TestGFortranVersions:
     def test_gfortran_version(self):

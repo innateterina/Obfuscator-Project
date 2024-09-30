@@ -97,7 +97,8 @@ class NumericDtype(BaseMaskedDtype):
             else:
                 array = array.combine_chunks()
 
-        data, mask = pyarrow_array_to_numpy_and_mask(array, dtype=self.numpy_dtype)
+        data, mask = pyarrow_array_to_numpy_and_mask(
+            array, dtype=self.numpy_dtype)
         return array_class(data.copy(), ~mask, copy=False)
 
     @classmethod
@@ -245,7 +246,8 @@ class NumericArray(BaseMaskedArray):
         if not (isinstance(values, np.ndarray) and checker(values.dtype)):
             descr = (
                 "floating"
-                if self._dtype_cls.kind == "f"  # type: ignore[comparison-overlap]
+                # type: ignore[comparison-overlap]
+                if self._dtype_cls.kind == "f"
                 else "integer"
             )
             raise TypeError(
@@ -280,7 +282,8 @@ class NumericArray(BaseMaskedArray):
     ) -> Self:
         from pandas.core.tools.numeric import to_numeric
 
-        scalars = to_numeric(strings, errors="raise", dtype_backend="numpy_nullable")
+        scalars = to_numeric(strings, errors="raise",
+                             dtype_backend="numpy_nullable")
         return cls._from_sequence(scalars, dtype=dtype, copy=copy)
 
     _HANDLED_TYPES = (np.ndarray, numbers.Number)

@@ -147,7 +147,8 @@ class TestSparseArray(base.ExtensionTests):
             and data.dtype.kind == "f"
             and not skipna
         ):
-            mark = pytest.mark.xfail(reason="ExtensionArray NA mask are different")
+            mark = pytest.mark.xfail(
+                reason="ExtensionArray NA mask are different")
             request.node.add_marker(mark)
 
         super().test_reduce_frame(data, all_numeric_reductions, skipna)
@@ -225,15 +226,18 @@ class TestSparseArray(base.ExtensionTests):
 
     def test_isna(self, data_missing):
         sarr = SparseArray(data_missing)
-        expected_dtype = SparseDtype(bool, pd.isna(data_missing.dtype.fill_value))
+        expected_dtype = SparseDtype(
+            bool, pd.isna(data_missing.dtype.fill_value))
         expected = SparseArray([True, False], dtype=expected_dtype)
         result = sarr.isna()
         tm.assert_sp_array_equal(result, expected)
 
         # test isna for arr without na
         sarr = sarr.fillna(0)
-        expected_dtype = SparseDtype(bool, pd.isna(data_missing.dtype.fill_value))
-        expected = SparseArray([False, False], fill_value=False, dtype=expected_dtype)
+        expected_dtype = SparseDtype(
+            bool, pd.isna(data_missing.dtype.fill_value))
+        expected = SparseArray(
+            [False, False], fill_value=False, dtype=expected_dtype)
         tm.assert_equal(sarr.isna(), expected)
 
     def test_fillna_limit_backfill(self, data_missing):
@@ -244,7 +248,8 @@ class TestSparseArray(base.ExtensionTests):
     def test_fillna_no_op_returns_copy(self, data, request):
         if np.isnan(data.fill_value):
             request.applymarker(
-                pytest.mark.xfail(reason="returns array with different fill value")
+                pytest.mark.xfail(
+                    reason="returns array with different fill value")
             )
         super().test_fillna_no_op_returns_copy(data)
 
@@ -259,7 +264,8 @@ class TestSparseArray(base.ExtensionTests):
         # Have to override to specify that fill_value will change.
         fill_value = data_missing[1]
 
-        result = pd.DataFrame({"A": data_missing, "B": [1, 2]}).fillna(fill_value)
+        result = pd.DataFrame(
+            {"A": data_missing, "B": [1, 2]}).fillna(fill_value)
 
         if pd.isna(data_missing.fill_value):
             dtype = SparseDtype(data_missing.dtype, fill_value)
@@ -328,7 +334,8 @@ class TestSparseArray(base.ExtensionTests):
         other = cls._from_sequence([a, b, a, b], dtype=data.dtype)
         cond = np.array([True, False, True, True])
         result = ser.where(cond, other)
-        expected = pd.Series(cls._from_sequence([a, b, b, b], dtype=data.dtype))
+        expected = pd.Series(cls._from_sequence(
+            [a, b, b, b], dtype=data.dtype))
         tm.assert_series_equal(result, expected)
 
     def test_searchsorted(self, data_for_sorting, as_series):
@@ -396,7 +403,8 @@ class TestSparseArray(base.ExtensionTests):
             # arith ops call on dtype.fill_value so that the sparsity
             # is maintained. Combine can't be called on a dtype in
             # general, so we can't make the expected. This is tested elsewhere
-            pytest.skip("Incorrected expected from Series.combine and tested elsewhere")
+            pytest.skip(
+                "Incorrected expected from Series.combine and tested elsewhere")
 
     def test_arith_series_with_scalar(self, data, all_arithmetic_operators):
         self._skip_if_different_combine(data)
@@ -436,7 +444,8 @@ class TestSparseArray(base.ExtensionTests):
         assert result.dtype.subtype == np.bool_
 
         if isinstance(other, pd.Series):
-            fill_value = op(data_for_compare.fill_value, other._values.fill_value)
+            fill_value = op(data_for_compare.fill_value,
+                            other._values.fill_value)
             expected = SparseArray(
                 op(data_for_compare.to_dense(), np.asarray(other)),
                 fill_value=fill_value,

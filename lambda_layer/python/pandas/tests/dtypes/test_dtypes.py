@@ -150,7 +150,8 @@ class TestCategoricalDtype(Base):
     def test_from_values_or_dtype_raises(self, values, categories, ordered, dtype):
         msg = "Cannot specify `categories` or `ordered` together with `dtype`."
         with pytest.raises(ValueError, match=msg):
-            CategoricalDtype._from_values_or_dtype(values, categories, ordered, dtype)
+            CategoricalDtype._from_values_or_dtype(
+                values, categories, ordered, dtype)
 
     def test_from_values_or_dtype_invalid_dtype(self):
         msg = "Cannot not construct CategoricalDtype from <class 'object'>"
@@ -221,7 +222,8 @@ class TestCategoricalDtype(Base):
 
     def test_update_dtype(self):
         # GH 27338
-        result = CategoricalDtype(["a"]).update_dtype(Categorical(["b"], ordered=True))
+        result = CategoricalDtype(["a"]).update_dtype(
+            Categorical(["b"], ordered=True))
         expected = CategoricalDtype(["b"], ordered=True)
         assert result == expected
 
@@ -303,7 +305,8 @@ class TestDatetimeTZDtype(Base):
         assert not is_datetime64_dtype("datetime64[ns, US/Eastern]")
 
     def test_construction_from_string(self, dtype):
-        result = DatetimeTZDtype.construct_from_string("datetime64[ns, US/Eastern]")
+        result = DatetimeTZDtype.construct_from_string(
+            "datetime64[ns, US/Eastern]")
         assert is_dtype_equal(dtype, result)
 
     @pytest.mark.parametrize(
@@ -343,7 +346,8 @@ class TestDatetimeTZDtype(Base):
         assert not is_dtype_equal(dtype, "foo")
         assert not is_dtype_equal(dtype, DatetimeTZDtype("ns", "CET"))
         assert not is_dtype_equal(
-            DatetimeTZDtype("ns", "US/Eastern"), DatetimeTZDtype("ns", "US/Pacific")
+            DatetimeTZDtype(
+                "ns", "US/Eastern"), DatetimeTZDtype("ns", "US/Pacific")
         )
 
         # numpy compat
@@ -469,7 +473,8 @@ class TestPeriodDtype(Base):
         assert PeriodDtype("period[3D]") is not PeriodDtype("period[3D]")
 
         assert PeriodDtype("period[1s1us]") == PeriodDtype("period[1000001us]")
-        assert PeriodDtype("period[1s1us]") is not PeriodDtype("period[1000001us]")
+        assert PeriodDtype("period[1s1us]") is not PeriodDtype(
+            "period[1000001us]")
 
     def test_compat(self, dtype):
         assert not is_datetime64_ns_dtype(dtype)
@@ -613,7 +618,8 @@ class TestIntervalDtype(Base):
         assert hash(dtype2) == hash(dtype3)
 
     @pytest.mark.parametrize(
-        "subtype", ["interval[int64]", "Interval[int64]", "int64", np.dtype("int64")]
+        "subtype", ["interval[int64]", "Interval[int64]",
+                    "int64", np.dtype("int64")]
     )
     def test_construction(self, subtype):
         i = IntervalDtype(subtype, closed="right")
@@ -623,7 +629,8 @@ class TestIntervalDtype(Base):
             assert is_interval_dtype(i)
 
     @pytest.mark.parametrize(
-        "subtype", ["interval[int64]", "Interval[int64]", "int64", np.dtype("int64")]
+        "subtype", ["interval[int64]", "Interval[int64]",
+                    "int64", np.dtype("int64")]
     )
     def test_construction_allows_closed_none(self, subtype):
         # GH#38394
@@ -752,7 +759,8 @@ class TestIntervalDtype(Base):
 
         assert not is_dtype_equal(dtype, "int64")
         assert not is_dtype_equal(
-            IntervalDtype("int64", "neither"), IntervalDtype("float64", "right")
+            IntervalDtype("int64", "neither"), IntervalDtype(
+                "float64", "right")
         )
         assert not is_dtype_equal(
             IntervalDtype("int64", "both"), IntervalDtype("int64", "left")
@@ -1038,7 +1046,8 @@ class TestCategoricalDtypeParametrized:
     def test_from_categorical_dtype_categories(self):
         c1 = Categorical([1, 2], categories=[1, 2, 3], ordered=True)
         # override categories
-        result = CategoricalDtype._from_categorical_dtype(c1, categories=[2, 3])
+        result = CategoricalDtype._from_categorical_dtype(
+            c1, categories=[2, 3])
         assert result == CategoricalDtype([2, 3], ordered=True)
 
     def test_from_categorical_dtype_ordered(self):
@@ -1118,7 +1127,8 @@ def test_registry(dtype):
         ("int64", None),
         ("interval", IntervalDtype()),
         ("interval[int64, neither]", IntervalDtype()),
-        ("interval[datetime64[ns], left]", IntervalDtype("datetime64[ns]", "left")),
+        ("interval[datetime64[ns], left]",
+         IntervalDtype("datetime64[ns]", "left")),
         ("period[D]", PeriodDtype("D")),
         ("category", CategoricalDtype()),
         ("datetime64[ns, US/Eastern]", DatetimeTZDtype("ns", "US/Eastern")),

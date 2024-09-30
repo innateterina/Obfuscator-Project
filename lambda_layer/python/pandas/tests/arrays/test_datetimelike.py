@@ -53,7 +53,8 @@ def period_index(freqstr):
             "ignore", message="Period with BDay freq", category=FutureWarning
         )
         freqstr = freq_to_period_freqstr(1, freqstr)
-        pi = pd.period_range(start=Timestamp("2000-01-01"), periods=100, freq=freqstr)
+        pi = pd.period_range(start=Timestamp(
+            "2000-01-01"), periods=100, freq=freqstr)
     return pi
 
 
@@ -67,7 +68,8 @@ def datetime_index(freqstr):
     the DatetimeIndex behavior.
     """
     # TODO: non-monotone indexes; NaTs, different start dates, timezones
-    dti = pd.date_range(start=Timestamp("2000-01-01"), periods=100, freq=freqstr)
+    dti = pd.date_range(start=Timestamp("2000-01-01"),
+                        periods=100, freq=freqstr)
     return dti
 
 
@@ -203,7 +205,8 @@ class SharedTests:
     )
     def test_take_fill_str(self, arr1d):
         # Cast str fill_value matching other fill_value-taking methods
-        result = arr1d.take([-1, 1], allow_fill=True, fill_value=str(arr1d[-1]))
+        result = arr1d.take([-1, 1], allow_fill=True,
+                            fill_value=str(arr1d[-1]))
         expected = arr1d[[-1, 1]]
         tm.assert_equal(result, expected)
 
@@ -362,7 +365,8 @@ class SharedTests:
 
         # Lookup on a 2D array
         arr2d = expected
-        expected = type(arr2d)._simple_new(arr2d._ndarray[:3, 0], dtype=arr2d.dtype)
+        expected = type(arr2d)._simple_new(
+            arr2d._ndarray[:3, 0], dtype=arr2d.dtype)
         result = arr2d[:3, 0]
         tm.assert_equal(result, expected)
 
@@ -559,7 +563,7 @@ class SharedTests:
 
         arr[len(arr) // 2] = NaT
         if not isinstance(expected, Period):
-            expected = arr[len(arr) // 2 - 1 : len(arr) // 2 + 2].mean()
+            expected = arr[len(arr) // 2 - 1: len(arr) // 2 + 2].mean()
 
         assert arr.median(skipna=False) is NaT
 
@@ -600,8 +604,10 @@ class SharedTests:
             expected = self.array_cls(arr, dtype=self.example_dtype)
             result = self.array_cls(data, dtype=self.example_dtype)
         else:
-            expected = self.array_cls._from_sequence(arr, dtype=self.example_dtype)
-            result = self.array_cls._from_sequence(data, dtype=self.example_dtype)
+            expected = self.array_cls._from_sequence(
+                arr, dtype=self.example_dtype)
+            result = self.array_cls._from_sequence(
+                data, dtype=self.example_dtype)
 
         tm.assert_extension_array_equal(result, expected)
 
@@ -619,7 +625,8 @@ class TestDatetimeArray(SharedTests):
         timezones
         """
         tz = tz_naive_fixture
-        dti = pd.date_range("2016-01-01 01:01:00", periods=5, freq=freqstr, tz=tz)
+        dti = pd.date_range("2016-01-01 01:01:00",
+                            periods=5, freq=freqstr, tz=tz)
         dta = dti._data
         return dta
 
@@ -867,8 +874,10 @@ class TestDatetimeArray(SharedTests):
 
     def test_concat_same_type_different_freq(self, unit):
         # we *can* concatenate DTI with different freqs.
-        a = pd.date_range("2000", periods=2, freq="D", tz="US/Central", unit=unit)._data
-        b = pd.date_range("2000", periods=2, freq="h", tz="US/Central", unit=unit)._data
+        a = pd.date_range("2000", periods=2, freq="D",
+                          tz="US/Central", unit=unit)._data
+        b = pd.date_range("2000", periods=2, freq="h",
+                          tz="US/Central", unit=unit)._data
         result = DatetimeArray._concat_same_type([a, b])
         expected = (
             pd.to_datetime(
@@ -1295,7 +1304,8 @@ def test_searchsorted_datetimelike_with_listlike(values, klass, as_index):
     ],
 )
 @pytest.mark.parametrize(
-    "arg", [[1, 2], ["a", "b"], [Timestamp("2020-01-01", tz="Europe/London")] * 2]
+    "arg", [[1, 2], ["a", "b"], [
+        Timestamp("2020-01-01", tz="Europe/London")] * 2]
 )
 def test_searchsorted_datetimelike_with_listlike_invalid_dtype(values, arg):
     # https://github.com/pandas-dev/pandas/issues/32762

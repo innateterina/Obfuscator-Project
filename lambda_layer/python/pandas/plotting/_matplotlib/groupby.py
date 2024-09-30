@@ -122,7 +122,8 @@ def reconstruct_data_with_by(
     for key, group in grouped:
         # error: List item 1 has incompatible type "Union[Hashable,
         # Sequence[Hashable]]"; expected "Iterable[Hashable]"
-        columns = MultiIndex.from_product([[key], cols])  # type: ignore[list-item]
+        columns = MultiIndex.from_product(
+            [[key], cols])  # type: ignore[list-item]
         sub_group = group[cols]
         sub_group.columns = columns
         data_list.append(sub_group)

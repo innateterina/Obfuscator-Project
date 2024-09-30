@@ -56,7 +56,8 @@ def test_to_boolean_array():
     tm.assert_extension_array_equal(result, expected)
     result = pd.array(np.array([True, False, True]), dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
-    result = pd.array(np.array([True, False, True], dtype=object), dtype="boolean")
+    result = pd.array(np.array([True, False, True],
+                      dtype=object), dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
 
     # with missing values
@@ -66,16 +67,19 @@ def test_to_boolean_array():
 
     result = pd.array([True, False, None], dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
-    result = pd.array(np.array([True, False, None], dtype=object), dtype="boolean")
+    result = pd.array(np.array([True, False, None],
+                      dtype=object), dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
 
 
 def test_to_boolean_array_all_none():
-    expected = BooleanArray(np.array([True, True, True]), np.array([True, True, True]))
+    expected = BooleanArray(
+        np.array([True, True, True]), np.array([True, True, True]))
 
     result = pd.array([None, None, None], dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
-    result = pd.array(np.array([None, None, None], dtype=object), dtype="boolean")
+    result = pd.array(np.array([None, None, None],
+                      dtype=object), dtype="boolean")
     tm.assert_extension_array_equal(result, expected)
 
 
@@ -171,10 +175,12 @@ def test_coerce_to_array():
     mask = np.array([False, False, False, True], dtype="bool")
     result = BooleanArray(*coerce_to_array(values, mask=mask))
     expected = BooleanArray(
-        np.array([True, False, True, True]), np.array([False, False, True, True])
+        np.array([True, False, True, True]), np.array(
+            [False, False, True, True])
     )
     tm.assert_extension_array_equal(result, expected)
-    result = BooleanArray(*coerce_to_array(np.array(values, dtype=object), mask=mask))
+    result = BooleanArray(
+        *coerce_to_array(np.array(values, dtype=object), mask=mask))
     tm.assert_extension_array_equal(result, expected)
     result = BooleanArray(*coerce_to_array(values, mask=mask.tolist()))
     tm.assert_extension_array_equal(result, expected)
@@ -242,7 +248,8 @@ def test_coerce_to_numpy_array():
 
 def test_to_boolean_array_from_strings():
     result = BooleanArray._from_sequence_of_strings(
-        np.array(["True", "False", "1", "1.0", "0", "0.0", np.nan], dtype=object),
+        np.array(["True", "False", "1", "1.0", "0",
+                 "0.0", np.nan], dtype=object),
         dtype="boolean",
     )
     expected = BooleanArray(
@@ -322,4 +329,5 @@ def test_to_numpy_copy():
     arr = pd.array([True, False, True], dtype="boolean")
     result = arr.to_numpy(dtype=bool, copy=True)
     result[0] = False
-    tm.assert_extension_array_equal(arr, pd.array([True, False, True], dtype="boolean"))
+    tm.assert_extension_array_equal(
+        arr, pd.array([True, False, True], dtype="boolean"))

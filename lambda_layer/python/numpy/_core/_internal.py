@@ -25,6 +25,7 @@ if sys.byteorder == 'little':
 else:
     _nbo = '>'
 
+
 def _makenames_list(adict, align):
     allfields = []
 
@@ -55,6 +56,8 @@ def _makenames_list(adict, align):
 # Called in PyArray_DescrConverter function when
 #  a dictionary without "names" and "formats"
 #  fields is used as a data-type descriptor.
+
+
 def _usefields(adict, align):
     try:
         names = adict[-1]
@@ -148,6 +151,7 @@ space_re = re.compile(r'\s+$')
 
 _convorder = {'=': _nbo}
 
+
 def _commastring(astr):
     startindex = 0
     result = []
@@ -159,7 +163,7 @@ def _commastring(astr):
         except (TypeError, AttributeError):
             raise ValueError(
                 f'format number {len(result)+1} of "{astr}" is not recognized'
-                ) from None
+            ) from None
         startindex = mo.end()
         # Separator or ending padding
         if startindex < len(astr):
@@ -207,6 +211,7 @@ def _commastring(astr):
 
     return result if islist else result[0]
 
+
 class dummy_ctype:
 
     def __init__(self, cls):
@@ -223,6 +228,7 @@ class dummy_ctype:
 
     def __ne__(self, other):
         return self._cls != other._cls
+
 
 def _getintp_ctype():
     val = _getintp_ctype.cache
@@ -248,6 +254,7 @@ def _getintp_ctype():
 _getintp_ctype.cache = None
 
 # Used for .ctypes attribute of ndarray
+
 
 class _missing_ctypes:
     def cast(self, num, obj):
@@ -428,6 +435,7 @@ def _newnames(datatype, order):
         return tuple(list(order) + nameslist)
     raise ValueError(f"unsupported order value: {order}")
 
+
 def _copy_fields(ary):
     """Return copy of structured array with padding between fields removed.
 
@@ -445,6 +453,7 @@ def _copy_fields(ary):
     copy_dtype = {'names': dt.names,
                   'formats': [dt.fields[name][0] for name in dt.names]}
     return array(ary, dtype=copy_dtype, copy=True)
+
 
 def _promote_fields(dt1, dt2):
     """ Perform type promotion for two structured dtypes.
@@ -469,7 +478,7 @@ def _promote_fields(dt1, dt2):
     # Both must be structured and have the same names in the same order
     if (dt1.names is None or dt2.names is None) or dt1.names != dt2.names:
         raise DTypePromotionError(
-                f"field names `{dt1.names}` and `{dt2.names}` mismatch.")
+            f"field names `{dt1.names}` and `{dt2.names}` mismatch.")
 
     # if both are identical, we can (maybe!) just return the same dtype.
     identical = dt1 is dt2
@@ -483,7 +492,7 @@ def _promote_fields(dt1, dt2):
         # Check that the titles match (if given):
         if field1[2:] != field2[2:]:
             raise DTypePromotionError(
-                    f"field titles of field '{name}' mismatch")
+                f"field titles of field '{name}' mismatch")
         if len(field1) == 2:
             new_fields.append((name, new_descr))
         else:
@@ -534,6 +543,7 @@ def _getfield_is_safe(oldtype, newtype, offset):
                     return
         raise TypeError("Cannot get/set field of an object array")
     return
+
 
 def _view_is_safe(oldtype, newtype):
     """ Checks safety of a view involving object arrays, for example when
@@ -627,6 +637,7 @@ _pep3118_unsupported_map = {
     'X': 'function pointers',
 }
 
+
 class _Stream:
     def __init__(self, s):
         self.s = s
@@ -667,6 +678,7 @@ def _dtype_from_pep3118(spec):
     stream = _Stream(spec)
     dtype, align = __dtype_from_pep3118(stream, is_subdtype=False)
     return dtype
+
 
 def __dtype_from_pep3118(stream, is_subdtype):
     field_spec = dict(
@@ -816,6 +828,7 @@ def __dtype_from_pep3118(stream, is_subdtype):
     # Finished
     return ret, common_alignment
 
+
 def _fix_names(field_spec):
     """ Replace names which are None with the next unused f%d name """
     names = field_spec['names']
@@ -830,6 +843,7 @@ def _fix_names(field_spec):
                 break
             j = j + 1
         names[i] = name
+
 
 def _add_trailing_padding(value, padding):
     """Inject the specified number of padding bytes at the end of a dtype"""
@@ -853,11 +867,13 @@ def _add_trailing_padding(value, padding):
     field_spec['itemsize'] += padding
     return dtype(field_spec)
 
+
 def _prod(a):
     p = 1
     for x in a:
         p *= x
     return p
+
 
 def _gcd(a, b):
     """Calculate the greatest common divisor of a and b"""
@@ -868,8 +884,10 @@ def _gcd(a, b):
         a, b = b, a % b
     return a
 
+
 def _lcm(a, b):
     return a // _gcd(a, b) * b
+
 
 def array_ufunc_errmsg_formatter(dummy, ufunc, method, *inputs, **kwargs):
     """ Format the error message for when __array_ufunc__ gives up. """
@@ -957,6 +975,8 @@ def npy_ctypes_check(cls):
 
 # used to handle the _NoValue default argument for na_object
 # in the C implementation of the __reduce__ method for stringdtype
+
+
 def _convert_to_stringdtype_kwargs(coerce, na_object=_NoValue):
     if na_object is _NoValue:
         return StringDType(coerce=coerce)

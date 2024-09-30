@@ -114,7 +114,8 @@ class TestDataFramePlotsSubplots:
     def test_subplots_timeseries_rot(self, kind):
         idx = date_range(start="2014-07-01", freq="ME", periods=10)
         df = DataFrame(np.random.default_rng(2).random((10, 3)), index=idx)
-        axes = df.plot(kind=kind, subplots=True, sharex=False, rot=45, fontsize=7)
+        axes = df.plot(kind=kind, subplots=True,
+                       sharex=False, rot=45, fontsize=7)
         for ax in axes:
             _check_visible(ax.xaxis)
             _check_visible(ax.get_xticklabels())
@@ -210,7 +211,8 @@ class TestDataFramePlotsSubplots:
             ax_categorical.get_lines()[0].get_data()[1]
             == testdata["categorical"].values
         ).all()
-        ax_datetime_mixed_tz = testdata.plot(x="numeric", y="datetime_mixed_tz")
+        ax_datetime_mixed_tz = testdata.plot(
+            x="numeric", y="datetime_mixed_tz")
         assert (
             ax_datetime_mixed_tz.get_lines()[0].get_data()[1]
             == testdata["datetime_mixed_tz"].values
@@ -281,7 +283,8 @@ class TestDataFramePlotsSubplots:
     def test_subplots_warnings(self, idx):
         # GH 9464
         with tm.assert_produces_warning(None):
-            df = DataFrame(np.random.default_rng(2).standard_normal((5, 4)), index=idx)
+            df = DataFrame(np.random.default_rng(
+                2).standard_normal((5, 4)), index=idx)
             df.plot(subplots=True, layout=(3, 2))
 
     def test_subplots_multiple_axes(self):
@@ -292,12 +295,14 @@ class TestDataFramePlotsSubplots:
             index=list(string.ascii_letters[:10]),
         )
 
-        returned = df.plot(subplots=True, ax=axes[0], sharex=False, sharey=False)
+        returned = df.plot(
+            subplots=True, ax=axes[0], sharex=False, sharey=False)
         _check_axes_shape(returned, axes_num=3, layout=(1, 3))
         assert returned.shape == (3,)
         assert returned[0].figure is fig
         # draw on second row
-        returned = df.plot(subplots=True, ax=axes[1], sharex=False, sharey=False)
+        returned = df.plot(
+            subplots=True, ax=axes[1], sharex=False, sharey=False)
         _check_axes_shape(returned, axes_num=3, layout=(1, 3))
         assert returned.shape == (3,)
         assert returned[0].figure is fig
@@ -358,7 +363,8 @@ class TestDataFramePlotsSubplots:
     def test_subplots_ts_share_axes(self):
         # GH 3964
         _, axes = mpl.pyplot.subplots(3, 3, sharex=True, sharey=True)
-        mpl.pyplot.subplots_adjust(left=0.05, right=0.95, hspace=0.3, wspace=0.3)
+        mpl.pyplot.subplots_adjust(
+            left=0.05, right=0.95, hspace=0.3, wspace=0.3)
         df = DataFrame(
             np.random.default_rng(2).standard_normal((10, 9)),
             index=date_range(start="2014-07-01", freq="ME", periods=10),
@@ -386,7 +392,8 @@ class TestDataFramePlotsSubplots:
 
     def test_subplots_sharex_axes_existing_axes(self):
         # GH 9158
-        d = {"A": [1.0, 2.0, 3.0, 4.0], "B": [4.0, 3.0, 2.0, 1.0], "C": [5, 1, 3, 4]}
+        d = {"A": [1.0, 2.0, 3.0, 4.0], "B": [
+            4.0, 3.0, 2.0, 1.0], "C": [5, 1, 3, 4]}
         df = DataFrame(d, index=date_range("2014 10 11", "2014 10 14"))
 
         axes = df[["A", "B"]].plot(subplots=True)
@@ -399,7 +406,8 @@ class TestDataFramePlotsSubplots:
 
     def test_subplots_dup_columns(self):
         # GH 10962
-        df = DataFrame(np.random.default_rng(2).random((5, 5)), columns=list("aaaaa"))
+        df = DataFrame(np.random.default_rng(
+            2).random((5, 5)), columns=list("aaaaa"))
         axes = df.plot(subplots=True)
         for ax in axes:
             _check_legend_labels(ax, labels=["a"])
@@ -407,7 +415,8 @@ class TestDataFramePlotsSubplots:
 
     def test_subplots_dup_columns_secondary_y(self):
         # GH 10962
-        df = DataFrame(np.random.default_rng(2).random((5, 5)), columns=list("aaaaa"))
+        df = DataFrame(np.random.default_rng(
+            2).random((5, 5)), columns=list("aaaaa"))
         axes = df.plot(subplots=True, secondary_y="a")
         for ax in axes:
             # (right) is only attached when subplots=False
@@ -416,7 +425,8 @@ class TestDataFramePlotsSubplots:
 
     def test_subplots_dup_columns_secondary_y_no_subplot(self):
         # GH 10962
-        df = DataFrame(np.random.default_rng(2).random((5, 5)), columns=list("aaaaa"))
+        df = DataFrame(np.random.default_rng(
+            2).random((5, 5)), columns=list("aaaaa"))
         ax = df.plot(secondary_y="a")
         _check_legend_labels(ax, labels=["a (right)"] * 5)
         assert len(ax.lines) == 0
@@ -581,7 +591,8 @@ class TestDataFramePlotsSubplots:
         assert all(ax.get_xlabel() == old_label for ax in axes)
 
         # old xlabel will be overridden and assigned ylabel will be used as ylabel
-        axes = df.plot(kind=kind, ylabel=new_label, xlabel=new_label, subplots=True)
+        axes = df.plot(kind=kind, ylabel=new_label,
+                       xlabel=new_label, subplots=True)
         assert all(ax.get_ylabel() == str(new_label) for ax in axes)
         assert all(ax.get_xlabel() == str(new_label) for ax in axes)
 

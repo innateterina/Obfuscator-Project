@@ -123,6 +123,7 @@ class TestSelectkindConverter(StringConverterTestCase):
 class TestSearchsideConverter(StringConverterTestCase):
     """ Tests of PyArray_SearchsideConverter """
     conv = mt.run_searchside_converter
+
     def test_valid(self):
         self._check('left', 'NPY_SEARCHLEFT')
         self._check('right', 'NPY_SEARCHRIGHT')
@@ -151,6 +152,7 @@ class TestOrderConverter(StringConverterTestCase):
 class TestClipmodeConverter(StringConverterTestCase):
     """ Tests of PyArray_ClipmodeConverter """
     conv = mt.run_clipmode_converter
+
     def test_valid(self):
         self._check('clip', 'NPY_CLIP')
         self._check('wrap', 'NPY_WRAP')
@@ -192,7 +194,7 @@ class TestIntpConverter:
             assert self.conv(None) == ()
 
     @pytest.mark.skipif(IS_PYPY and sys.implementation.version <= (7, 3, 8),
-            reason="PyPy bug in error formatting")
+                        reason="PyPy bug in error formatting")
     def test_float(self):
         with pytest.raises(TypeError):
             self.conv(1.0)

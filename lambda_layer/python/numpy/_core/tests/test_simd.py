@@ -1,18 +1,21 @@
 # NOTE: Please avoid the use of numpy.testing since NPYV intrinsics
 # may be involved in their functionality.
-import pytest, math, re
+import pytest
+import math
+import re
 import itertools
 import operator
 from numpy._core._simd import targets, clear_floatstatus, get_floatstatus
 from numpy._core._multiarray_umath import __cpu_baseline__
 
+
 def check_floatstatus(divbyzero=False, overflow=False,
                       underflow=False, invalid=False,
                       all=False):
-    #define NPY_FPE_DIVIDEBYZERO  1
-    #define NPY_FPE_OVERFLOW      2
-    #define NPY_FPE_UNDERFLOW     4
-    #define NPY_FPE_INVALID       8
+    # define NPY_FPE_DIVIDEBYZERO  1
+    # define NPY_FPE_OVERFLOW      2
+    # define NPY_FPE_UNDERFLOW     4
+    # define NPY_FPE_INVALID       8
     err = get_floatstatus()
     ret = (all or divbyzero) and (err & 1) != 0
     ret |= (all or overflow) and (err & 2) != 0
@@ -20,11 +23,12 @@ def check_floatstatus(divbyzero=False, overflow=False,
     ret |= (all or invalid) and (err & 8) != 0
     return ret
 
+
 class _Test_Utility:
     # submodule of the desired SIMD extension, e.g. targets["AVX512F"]
     npyv = None
     # the current data type suffix e.g. 's8'
-    sfx  = None
+    sfx = None
     # target name can be 'baseline' or one or more of CPU features
     target_name = None
 
@@ -116,13 +120,15 @@ class _Test_Utility:
         if target == "baseline":
             target = __cpu_baseline__
         else:
-            target = target.split('__') # multi-target separator
+            target = target.split('__')  # multi-target separator
         return ' '.join(target)
+
 
 class _SIMD_BOOL(_Test_Utility):
     """
     To test all boolean vector types at once
     """
+
     def _nlanes(self):
         return getattr(self.npyv, "nlanes_u" + self.sfx[1:])
 
@@ -183,7 +189,8 @@ class _SIMD_BOOL(_Test_Utility):
         assert data_xnor == vxnor
 
     def test_tobits(self):
-        data2bits = lambda data: sum([int(x != 0) << i for i, x in enumerate(data, 0)])
+        def data2bits(data): return sum(
+            [int(x != 0) << i for i, x in enumerate(data, 0)])
         for data in (self._data(), self._data(reverse=True)):
             vdata = self._load_b(data)
             data_bits = data2bits(data)
@@ -219,7 +226,7 @@ class _SIMD_BOOL(_Test_Utility):
         elif self.sfx == "b64":
             spack = [(i & 0xFF) for i in (4*list(rdata) + 4*list(data))]
             vpack = pack_simd(vrdata, vrdata, vrdata, vrdata,
-                               vdata,  vdata,  vdata,  vdata)
+                              vdata,  vdata,  vdata,  vdata)
         assert vpack == spack
 
     @pytest.mark.parametrize("intrin", ["any", "all"])
@@ -242,10 +249,12 @@ class _SIMD_BOOL(_Test_Utility):
         simd = intrin(data_a)
         assert not not simd == desired
 
+
 class _SIMD_INT(_Test_Utility):
     """
     To test all integer vector types at once
     """
+
     def test_operators_shift(self):
         if self.sfx in ("u8", "s8"):
             return
@@ -324,6 +333,7 @@ class _SIMD_FP32(_Test_Utility):
     """
     To only test single precision
     """
+
     def test_conversions(self):
         """
         Round to nearest even integer, assume CPU control register is set to rounding.
@@ -334,7 +344,7 @@ class _SIMD_FP32(_Test_Utility):
         if not self.npyv.simd_f64 and re.match(r".*(NEON|ASIMD)", features):
             # very costly to emulate nearest even on Armv7
             # instead we round halves to up. e.g. 0.5 -> 1, -0.5 -> -1
-            _round = lambda v: int(v + (0.5 if v >= 0 else -0.5))
+            def _round(v): return int(v + (0.5 if v >= 0 else -0.5))
         else:
             _round = round
         vdata_a = self.load(self._data())
@@ -343,10 +353,12 @@ class _SIMD_FP32(_Test_Utility):
         vround = self.round_s32(vdata_a)
         assert vround == data_round
 
+
 class _SIMD_FP64(_Test_Utility):
     """
     To only test double precision
     """
+
     def test_conversions(self):
         """
         Round to nearest even integer, assume CPU control register is set to rounding.
@@ -360,15 +372,18 @@ class _SIMD_FP64(_Test_Utility):
         vround = self.round_s32(vdata_a, vdata_b)
         assert vround == data_round
 
+
 class _SIMD_FP(_Test_Utility):
     """
     To test all float vector types at once
     """
+
     def test_arithmetic_fused(self):
         vdata_a, vdata_b, vdata_c = [self.load(self._data())]*3
         vdata_cx2 = self.add(vdata_c, vdata_c)
         # multiply and add, a*b + c
-        data_fma = self.load([a * b + c for a, b, c in zip(vdata_a, vdata_b, vdata_c)])
+        data_fma = self.load(
+            [a * b + c for a, b, c in zip(vdata_a, vdata_b, vdata_c)])
         fma = self.muladd(vdata_a, vdata_b, vdata_c)
         assert fma == data_fma
         # multiply and subtract, a*b - c
@@ -408,13 +423,15 @@ class _SIMD_FP(_Test_Utility):
         data = self._data()
         vdata = self.load(self._data())
 
-        sqrt_cases = ((-0.0, -0.0), (0.0, 0.0), (-1.0, nan), (ninf, nan), (pinf, pinf))
+        sqrt_cases = ((-0.0, -0.0), (0.0, 0.0), (-1.0, nan),
+                      (ninf, nan), (pinf, pinf))
         for case, desired in sqrt_cases:
             data_sqrt = [desired]*self.nlanes
-            sqrt  = self.sqrt(self.setall(case))
+            sqrt = self.sqrt(self.setall(case))
             assert sqrt == pytest.approx(data_sqrt, nan_ok=True)
 
-        data_sqrt = self.load([math.sqrt(x) for x in data]) # load to truncate precision
+        data_sqrt = self.load([math.sqrt(x)
+                              for x in data])  # load to truncate precision
         sqrt = self.sqrt(vdata)
         assert sqrt == data_sqrt
 
@@ -426,7 +443,7 @@ class _SIMD_FP(_Test_Utility):
         square_cases = ((nan, nan), (pinf, pinf), (ninf, pinf))
         for case, desired in square_cases:
             data_square = [desired]*self.nlanes
-            square  = self.square(self.setall(case))
+            square = self.square(self.setall(case))
             assert square == pytest.approx(data_square, nan_ok=True)
 
         data_square = [x*x for x in data]
@@ -434,7 +451,7 @@ class _SIMD_FP(_Test_Utility):
         assert square == data_square
 
     @pytest.mark.parametrize("intrin, func", [("ceil", math.ceil),
-    ("trunc", math.trunc), ("floor", math.floor), ("rint", round)])
+                                              ("trunc", math.trunc), ("floor", math.floor), ("rint", round)])
     def test_rounding(self, intrin, func):
         """
         Test intrinsics:
@@ -528,11 +545,11 @@ class _SIMD_FP(_Test_Utility):
         if not chk_nan:
             return
         if chk_nan == 1:
-            test_nan = lambda a, b: (
+            def test_nan(a, b): return (
                 b if math.isnan(a) else a if math.isnan(b) else b
             )
         else:
-            test_nan = lambda a, b: (
+            def test_nan(a, b): return (
                 nan if math.isnan(a) or math.isnan(b) else b
             )
         cases = (
@@ -558,13 +575,15 @@ class _SIMD_FP(_Test_Utility):
         data = self._data()
         vdata = self.load(self._data())
 
-        recip_cases = ((nan, nan), (pinf, 0.0), (ninf, -0.0), (0.0, pinf), (-0.0, ninf))
+        recip_cases = ((nan, nan), (pinf, 0.0), (ninf, -0.0),
+                       (0.0, pinf), (-0.0, ninf))
         for case, desired in recip_cases:
             data_recip = [desired]*self.nlanes
             recip = self.recip(self.setall(case))
             assert recip == pytest.approx(data_recip, nan_ok=True)
 
-        data_recip = self.load([1/x for x in data]) # load to truncate precision
+        # load to truncate precision
+        data_recip = self.load([1/x for x in data])
         recip = self.recip(vdata)
         assert recip == data_recip
 
@@ -638,10 +657,12 @@ class _SIMD_FP(_Test_Utility):
         simd = intrin(data_a)
         assert not not simd == desired
 
+
 class _SIMD_ALL(_Test_Utility):
     """
     To test all vector types at once
     """
+
     def test_memory_load(self):
         data = self._data()
         # unaligned load
@@ -658,7 +679,7 @@ class _SIMD_ALL(_Test_Utility):
         loadl_half = list(loadl)[:self.nlanes//2]
         data_half = data[:self.nlanes//2]
         assert loadl_half == data_half
-        assert loadl != data # detect overflow
+        assert loadl != data  # detect overflow
 
     def test_memory_store(self):
         data = self._data()
@@ -679,7 +700,7 @@ class _SIMD_ALL(_Test_Utility):
         store_l = [0] * self.nlanes
         self.storel(store_l, vdata)
         assert store_l[:self.nlanes//2] == data[:self.nlanes//2]
-        assert store_l != vdata # detect overflow
+        assert store_l != vdata  # detect overflow
         # store higher part
         store_h = [0] * self.nlanes
         self.storeh(store_h, vdata)
@@ -696,7 +717,7 @@ class _SIMD_ALL(_Test_Utility):
         npyv_load_tillz, npyv_load_till = eval(intrin)
         data = self._data()
         lanes = list(range(1, self.nlanes + 1))
-        lanes += [self.nlanes**2, self.nlanes**4] # test out of range
+        lanes += [self.nlanes**2, self.nlanes**4]  # test out of range
         for n in lanes:
             load_till = npyv_load_till(data, n, *fill)
             load_tillz = npyv_load_tillz(data, n)
@@ -928,9 +949,11 @@ class _SIMD_ALL(_Test_Utility):
             assert vec_name == "npyv_" + sfx
 
         # select & mask operations
-        select_a = self.select(self.cmpeq(self.zero(), self.zero()), vdata_a, vdata_b)
+        select_a = self.select(self.cmpeq(
+            self.zero(), self.zero()), vdata_a, vdata_b)
         assert select_a == data_a
-        select_b = self.select(self.cmpneq(self.zero(), self.zero()), vdata_a, vdata_b)
+        select_b = self.select(self.cmpneq(
+            self.zero(), self.zero()), vdata_a, vdata_b)
         assert select_b == data_b
 
         # test extract elements
@@ -942,7 +965,7 @@ class _SIMD_ALL(_Test_Utility):
         self.npyv.cleanup()
 
     def test_reorder(self):
-        data_a, data_b  = self._data(), self._data(reverse=True)
+        data_a, data_b = self._data(), self._data(reverse=True)
         vdata_a, vdata_b = self.load(data_a), self.load(data_b)
         # lower half part
         data_a_lo = data_a[:self.nlanes//2]
@@ -986,7 +1009,7 @@ class _SIMD_ALL(_Test_Utility):
             return
         data_rev64 = [
             y for x in range(0, self.nlanes, 64//ssize)
-              for y in reversed(range(x, x + 64//ssize))
+            for y in reversed(range(x, x + 64//ssize))
         ]
         rev64 = self.rev64(self.load(range(self.nlanes)))
         assert rev64 == data_rev64
@@ -1030,6 +1053,7 @@ class _SIMD_ALL(_Test_Utility):
         intrin = getattr(self, intrin)
 
         mask_true = self._true_mask()
+
         def to_bool(vector):
             return [lane == mask_true for lane in vector]
 
@@ -1057,8 +1081,8 @@ class _SIMD_ALL(_Test_Utility):
         vxor = cast(self.xor(vdata_a, vdata_b))
         assert vxor == data_xor
 
-        data_or  = cast_data([a | b for a, b in zip(data_cast_a, data_cast_b)])
-        vor  = cast(getattr(self, "or")(vdata_a, vdata_b))
+        data_or = cast_data([a | b for a, b in zip(data_cast_a, data_cast_b)])
+        vor = cast(getattr(self, "or")(vdata_a, vdata_b))
         assert vor == data_or
 
         data_and = cast_data([a & b for a, b in zip(data_cast_a, data_cast_b)])
@@ -1105,7 +1129,7 @@ class _SIMD_ALL(_Test_Utility):
         from_boolean = getattr(self.npyv, "cvt_%s_%s" % (self.sfx, bsfx))
 
         false_vb = to_boolean(self.setall(0))
-        true_vb  = self.cmpeq(self.setall(0), self.setall(0))
+        true_vb = self.cmpeq(self.setall(0), self.setall(0))
         assert false_vb != true_vb
 
         false_vsfx = from_boolean(false_vb)
@@ -1123,7 +1147,7 @@ class _SIMD_ALL(_Test_Utility):
         totype = self.sfx[0]+str(int(self.sfx[1:])*2)
         expand = getattr(self.npyv, f"expand_{totype}_{self.sfx}")
         # close enough from the edge to detect any deviation
-        data  = self._data(self._int_max() - self.nlanes)
+        data = self._data(self._int_max() - self.nlanes)
         vdata = self.load(data)
         edata = expand(vdata)
         # lower half part
@@ -1141,11 +1165,12 @@ class _SIMD_ALL(_Test_Utility):
         vdata_a, vdata_b = self.load(data_a), self.load(data_b)
 
         # non-saturated
-        data_add = self.load([a + b for a, b in zip(data_a, data_b)]) # load to cast
-        add  = self.add(vdata_a, vdata_b)
+        data_add = self.load(
+            [a + b for a, b in zip(data_a, data_b)])  # load to cast
+        add = self.add(vdata_a, vdata_b)
         assert add == data_add
-        data_sub  = self.load([a - b for a, b in zip(data_a, data_b)])
-        sub  = self.sub(vdata_a, vdata_b)
+        data_sub = self.load([a - b for a, b in zip(data_a, data_b)])
+        sub = self.sub(vdata_a, vdata_b)
         assert sub == data_sub
 
     def test_arithmetic_mul(self):
@@ -1185,6 +1210,7 @@ class _SIMD_ALL(_Test_Utility):
             return
 
         int_min = self._int_min()
+
         def trunc_div(a, d):
             """
             Divide towards zero works with large integers > 2^53,
@@ -1260,7 +1286,7 @@ class _SIMD_ALL(_Test_Utility):
         """
         vdata_a = self.load(self._data())
         vdata_b = self.load(self._data(reverse=True))
-        true_mask  = self.cmpeq(self.zero(), self.zero())
+        true_mask = self.cmpeq(self.zero(), self.zero())
         false_mask = self.cmpneq(self.zero(), self.zero())
 
         data_sub = self.sub(vdata_b, vdata_a)
@@ -1287,21 +1313,22 @@ class _SIMD_ALL(_Test_Utility):
         ifdivz = self.ifdivz(false_mask, vdata_a, vdata_b)
         assert ifdivz == self.zero()
 
+
 bool_sfx = ("b8", "b16", "b32", "b64")
 int_sfx = ("u8", "s8", "u16", "s16", "u32", "s32", "u64", "s64")
-fp_sfx  = ("f32", "f64")
+fp_sfx = ("f32", "f64")
 all_sfx = int_sfx + fp_sfx
 tests_registry = {
     bool_sfx: _SIMD_BOOL,
-    int_sfx : _SIMD_INT,
-    fp_sfx  : _SIMD_FP,
+    int_sfx: _SIMD_INT,
+    fp_sfx: _SIMD_FP,
     ("f32",): _SIMD_FP32,
     ("f64",): _SIMD_FP64,
-    all_sfx : _SIMD_ALL
+    all_sfx: _SIMD_ALL
 }
 for target_name, npyv in targets.items():
     simd_width = npyv.simd if npyv else ''
-    pretty_name = target_name.split('__') # multi-target separator
+    pretty_name = target_name.split('__')  # multi-target separator
     if len(pretty_name) > 1:
         # multi-target
         pretty_name = f"({' '.join(pretty_name)})"
@@ -1317,17 +1344,19 @@ for target_name, npyv in targets.items():
     else:
         if not npyv.simd_f32:
             skip_sfx["f32"] = f"target '{pretty_name}' "\
-                               "doesn't support single-precision"
+                "doesn't support single-precision"
         if not npyv.simd_f64:
             skip_sfx["f64"] = f"target '{pretty_name}' doesn't"\
-                               "support double-precision"
+                "support double-precision"
 
     for sfxes, cls in tests_registry.items():
         for sfx in sfxes:
             skip_m = skip_sfx.get(sfx, skip)
             inhr = (cls,)
-            attr = dict(npyv=targets[target_name], sfx=sfx, target_name=target_name)
-            tcls = type(f"Test{cls.__name__}_{simd_width}_{target_name}_{sfx}", inhr, attr)
+            attr = dict(npyv=targets[target_name],
+                        sfx=sfx, target_name=target_name)
+            tcls = type(
+                f"Test{cls.__name__}_{simd_width}_{target_name}_{sfx}", inhr, attr)
             if skip_m:
                 pytest.mark.skip(reason=skip_m)(tcls)
             globals()[tcls.__name__] = tcls

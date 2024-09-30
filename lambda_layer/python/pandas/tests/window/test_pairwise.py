@@ -22,7 +22,8 @@ from pandas.core.algorithms import safe_sort
         DataFrame([[2, 4], [1, 2], [5, 2], [8, 1]], columns=[1.0, 0]),
         DataFrame([[2, 4], [1, 2], [5, 2], [8, 1]], columns=[0.0, 1]),
         DataFrame([[2, 4], [1, 2], [5, 2], [8, 1]], columns=["C", 1]),
-        DataFrame([[2.0, 4.0], [1.0, 2.0], [5.0, 2.0], [8.0, 1.0]], columns=[1, 0.0]),
+        DataFrame([[2.0, 4.0], [1.0, 2.0], [5.0, 2.0],
+                  [8.0, 1.0]], columns=[1, 0.0]),
         DataFrame([[2, 4.0], [1, 2.0], [5, 2.0], [8, 1.0]], columns=[0, 1.0]),
         DataFrame([[2, 4], [1, 2], [5, 2], [8, 1.0]], columns=[1.0, "X"]),
     ]
@@ -60,7 +61,8 @@ def test_rolling_corr(series):
     B = A + np.random.default_rng(2).standard_normal(len(A))
 
     result = A.rolling(window=50, min_periods=25).corr(B)
-    tm.assert_almost_equal(result.iloc[-1], np.corrcoef(A[-50:], B[-50:])[0, 1])
+    tm.assert_almost_equal(
+        result.iloc[-1], np.corrcoef(A[-50:], B[-50:])[0, 1])
 
 
 def test_rolling_corr_bias_correction():
@@ -81,7 +83,8 @@ def test_rolling_pairwise_cov_corr(func, frame):
     result = getattr(frame.rolling(window=10, min_periods=5), func)()
     result = result.loc[(slice(None), 1), 5]
     result.index = result.index.droplevel(1)
-    expected = getattr(frame[1].rolling(window=10, min_periods=5), func)(frame[5])
+    expected = getattr(frame[1].rolling(
+        window=10, min_periods=5), func)(frame[5])
     tm.assert_series_equal(result, expected, check_names=False)
 
 
@@ -105,7 +108,8 @@ def test_flex_binary_frame(method, frame):
 
     res3 = getattr(frame.rolling(window=10), method)(frame2)
     exp = DataFrame(
-        {k: getattr(frame[k].rolling(window=10), method)(frame2[k]) for k in frame}
+        {k: getattr(frame[k].rolling(window=10), method)(frame2[k])
+         for k in frame}
     )
     tm.assert_frame_equal(res3, exp)
 
@@ -184,7 +188,8 @@ def test_rolling_functions_window_non_shrinkage_binary(f):
     )
     df_expected = DataFrame(
         columns=Index(["A", "B"], name="foo"),
-        index=MultiIndex.from_product([df.index, df.columns], names=["bar", "foo"]),
+        index=MultiIndex.from_product(
+            [df.index, df.columns], names=["bar", "foo"]),
         dtype="float64",
     )
     df_result = f(df)
@@ -200,12 +205,15 @@ def test_rolling_functions_window_non_shrinkage_binary(f):
 )
 def test_moment_functions_zero_length_pairwise(f):
     df1 = DataFrame()
-    df2 = DataFrame(columns=Index(["a"], name="foo"), index=Index([], name="bar"))
+    df2 = DataFrame(columns=Index(
+        ["a"], name="foo"), index=Index([], name="bar"))
     df2["a"] = df2["a"].astype("float64")
 
-    df1_expected = DataFrame(index=MultiIndex.from_product([df1.index, df1.columns]))
+    df1_expected = DataFrame(
+        index=MultiIndex.from_product([df1.index, df1.columns]))
     df2_expected = DataFrame(
-        index=MultiIndex.from_product([df2.index, df2.columns], names=["bar", "foo"]),
+        index=MultiIndex.from_product(
+            [df2.index, df2.columns], names=["bar", "foo"]),
         columns=Index(["a"], name="foo"),
         dtype="float64",
     )
@@ -348,7 +356,8 @@ class TestPairwise:
         )
         if result is not None:
             # we can have int and str columns
-            expected_index = pairwise_frames.index.union(pairwise_other_frame.index)
+            expected_index = pairwise_frames.index.union(
+                pairwise_other_frame.index)
             expected_columns = pairwise_frames.columns.union(
                 pairwise_other_frame.columns
             )
@@ -405,11 +414,13 @@ class TestPairwise:
 
         columns = MultiIndex.from_product([list("ab"), list("xy"), list("AB")])
         index = range(3)
-        df = DataFrame(np.arange(24).reshape(3, 8), index=index, columns=columns)
+        df = DataFrame(np.arange(24).reshape(3, 8),
+                       index=index, columns=columns)
 
         result = df.ewm(alpha=0.1).cov()
 
-        index = MultiIndex.from_product([range(3), list("ab"), list("xy"), list("AB")])
+        index = MultiIndex.from_product(
+            [range(3), list("ab"), list("xy"), list("AB")])
         columns = MultiIndex.from_product([list("ab"), list("xy"), list("AB")])
         expected = DataFrame(
             np.vstack(
@@ -427,7 +438,8 @@ class TestPairwise:
 
     def test_multindex_columns_pairwise_func(self):
         # GH 21157
-        columns = MultiIndex.from_arrays([["M", "N"], ["P", "Q"]], names=["a", "b"])
+        columns = MultiIndex.from_arrays(
+            [["M", "N"], ["P", "Q"]], names=["a", "b"])
         df = DataFrame(np.ones((5, 2)), columns=columns)
         result = df.rolling(3).corr()
         expected = DataFrame(

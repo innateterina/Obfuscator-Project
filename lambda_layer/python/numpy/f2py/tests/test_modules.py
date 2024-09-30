@@ -38,7 +38,8 @@ class TestModuleWithoutPublicEntities(util.F2PyTest):
 
 @pytest.mark.slow
 class TestModuleDocString(util.F2PyTest):
-    sources = [util.getpath("tests", "src", "modules", "module_data_docstring.f90")]
+    sources = [util.getpath("tests", "src", "modules",
+                            "module_data_docstring.f90")]
 
     @pytest.mark.xfail(IS_PYPY, reason="PyPy cannot modify tp_doc after PyType_Ready")
     def test_module_docstring(self):

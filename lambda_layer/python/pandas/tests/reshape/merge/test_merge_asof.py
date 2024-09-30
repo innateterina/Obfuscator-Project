@@ -348,7 +348,8 @@ class TestAsOfMerge:
                     "51.95",
                 ],
             ],
-            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(","),
+            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(
+                ","),
         )
         df["price"] = df["price"].astype("float64")
         df["quantity"] = df["quantity"].astype("int64")
@@ -604,7 +605,8 @@ class TestAsOfMerge:
                     "51.95",
                 ],
             ],
-            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(","),
+            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(
+                ","),
         )
         df["price"] = df["price"].astype("float64")
         df["quantity"] = df["quantity"].astype("int64")
@@ -760,8 +762,10 @@ class TestAsOfMerge:
                     np.nan,
                     np.nan,
                 ],
-                ["20160525 13:30:00.075", "AAPL", "98.55", "6", "ARCA", np.nan, np.nan],
-                ["20160525 13:30:00.075", "AAPL", "98.55", "6", "ARCA", np.nan, np.nan],
+                ["20160525 13:30:00.075", "AAPL",
+                    "98.55", "6", "ARCA", np.nan, np.nan],
+                ["20160525 13:30:00.075", "AAPL",
+                    "98.55", "6", "ARCA", np.nan, np.nan],
                 [
                     "20160525 13:30:00.076",
                     "AAPL",
@@ -844,7 +848,8 @@ class TestAsOfMerge:
                     "51.95",
                 ],
             ],
-            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(","),
+            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(
+                ","),
         )
         df["price"] = df["price"].astype("float64")
         df["quantity"] = df["quantity"].astype("int64")
@@ -1000,8 +1005,10 @@ class TestAsOfMerge:
                     np.nan,
                     np.nan,
                 ],
-                ["20160525 13:30:00.075", "AAPL", "98.55", "6", "ARCA", np.nan, np.nan],
-                ["20160525 13:30:00.075", "AAPL", "98.55", "6", "ARCA", np.nan, np.nan],
+                ["20160525 13:30:00.075", "AAPL",
+                    "98.55", "6", "ARCA", np.nan, np.nan],
+                ["20160525 13:30:00.075", "AAPL",
+                    "98.55", "6", "ARCA", np.nan, np.nan],
                 [
                     "20160525 13:30:00.076",
                     "AAPL",
@@ -1084,7 +1091,8 @@ class TestAsOfMerge:
                     "51.95",
                 ],
             ],
-            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(","),
+            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(
+                ","),
         )
         df["price"] = df["price"].astype("float64")
         df["quantity"] = df["quantity"].astype("int64")
@@ -1095,10 +1103,12 @@ class TestAsOfMerge:
     def test_examples1(self):
         """doc-string examples"""
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [1, 3, 7]}
+            {"a": [1, 5, 10], "left_val": [
+                "a", "b", "c"], "right_val": [1, 3, 7]}
         )
 
         result = merge_asof(left, right, on="a")
@@ -1161,7 +1171,8 @@ class TestAsOfMerge:
 
         merge_asof(trades, quotes, on="time", by="ticker")
 
-        merge_asof(trades, quotes, on="time", by="ticker", tolerance=Timedelta("2ms"))
+        merge_asof(trades, quotes, on="time", by="ticker",
+                   tolerance=Timedelta("2ms"))
 
         expected = pd.DataFrame(
             {
@@ -1198,10 +1209,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [1, 6, np.nan]}
+            {"a": [1, 5, 10], "left_val": ["a", "b", "c"],
+                "right_val": [1, 6, np.nan]}
         )
 
         result = merge_asof(left, right, on="a", direction="forward")
@@ -1212,10 +1225,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 6, 7], "right_val": [1, 2, 3, 6, 7]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [1, 6, 7]}
+            {"a": [1, 5, 10], "left_val": [
+                "a", "b", "c"], "right_val": [1, 6, 7]}
         )
 
         result = merge_asof(left, right, on="a", direction="nearest")
@@ -1378,7 +1393,8 @@ class TestAsOfMerge:
                 "bid": [np.nan, 51.95, 720.50, 720.51, np.nan],
                 "ask": [np.nan, 51.96, 720.93, 720.92, np.nan],
             },
-            columns=["time", "ticker", "exch", "price", "quantity", "bid", "ask"],
+            columns=["time", "ticker", "exch",
+                     "price", "quantity", "bid", "ask"],
         )
 
         result = merge_asof(trades, quotes, on="time", by=["ticker", "exch"])
@@ -1446,7 +1462,8 @@ class TestAsOfMerge:
                 "bid": [np.nan, 51.95, 720.50, 720.51, np.nan],
                 "ask": [np.nan, 51.96, 720.93, 720.92, np.nan],
             },
-            columns=["time", "ticker", "exch", "price", "quantity", "bid", "ask"],
+            columns=["time", "ticker", "exch",
+                     "price", "quantity", "bid", "ask"],
         )
         expected = expected.astype({"ticker": dtype, "exch": dtype})
 
@@ -1479,7 +1496,8 @@ class TestAsOfMerge:
 
         msg = "incompatible merge keys"
         with pytest.raises(MergeError, match=msg):
-            merge_asof(left, right, left_index=True, right_index=True, by=["k1", "k2"])
+            merge_asof(left, right, left_index=True,
+                       right_index=True, by=["k1", "k2"])
 
     def test_multiby_indexed(self):
         # GH15676
@@ -2228,7 +2246,8 @@ class TestAsOfMerge:
                     "98.63",
                 ],
             ],
-            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(","),
+            columns="time,ticker,price,quantity,marketCenter,bid,ask".split(
+                ","),
         )
         expected["price"] = expected["price"].astype("float64")
         expected["quantity"] = expected["quantity"].astype("int64")
@@ -2409,7 +2428,8 @@ class TestAsOfMerge:
         msg = r"incompatible merge keys \[1\] .* must be the same type"
 
         with pytest.raises(MergeError, match=msg):
-            merge_asof(trades, quotes, left_on="time", right_on="bid", by="ticker")
+            merge_asof(trades, quotes, left_on="time",
+                       right_on="bid", by="ticker")
 
         with pytest.raises(MergeError, match="can only asof on a key for left"):
             merge_asof(trades, quotes, on=["time", "ticker"], by="ticker")
@@ -2446,7 +2466,8 @@ class TestAsOfMerge:
 
     def test_valid_tolerance(self, trades, quotes):
         # dti
-        merge_asof(trades, quotes, on="time", by="ticker", tolerance=Timedelta("1s"))
+        merge_asof(trades, quotes, on="time",
+                   by="ticker", tolerance=Timedelta("1s"))
 
         # integer
         merge_asof(
@@ -2529,26 +2550,32 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [1, np.nan, 11]}
+            {"a": [1, 5, 10], "left_val": ["a", "b", "c"],
+                "right_val": [1, np.nan, 11]}
         )
 
-        result = merge_asof(left, right, on="a", direction="forward", tolerance=1)
+        result = merge_asof(left, right, on="a",
+                            direction="forward", tolerance=1)
         tm.assert_frame_equal(result, expected)
 
     def test_tolerance_nearest(self):
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [1, np.nan, 11]}
+            {"a": [1, 5, 10], "left_val": ["a", "b", "c"],
+                "right_val": [1, np.nan, 11]}
         )
 
-        result = merge_asof(left, right, on="a", direction="nearest", tolerance=1)
+        result = merge_asof(left, right, on="a",
+                            direction="nearest", tolerance=1)
         tm.assert_frame_equal(result, expected)
 
     def test_tolerance_tz(self, unit):
@@ -2577,7 +2604,8 @@ class TestAsOfMerge:
                 "value2": list("ABCDE"),
             }
         )
-        result = merge_asof(left, right, on="date", tolerance=Timedelta("1 day"))
+        result = merge_asof(left, right, on="date",
+                            tolerance=Timedelta("1 day"))
 
         expected = pd.DataFrame(
             {
@@ -2596,9 +2624,11 @@ class TestAsOfMerge:
 
     def test_tolerance_float(self):
         # GH22981
-        left = pd.DataFrame({"a": [1.1, 3.5, 10.9], "left_val": ["a", "b", "c"]})
+        left = pd.DataFrame(
+            {"a": [1.1, 3.5, 10.9], "left_val": ["a", "b", "c"]})
         right = pd.DataFrame(
-            {"a": [1.0, 2.5, 3.3, 7.5, 11.5], "right_val": [1.0, 2.5, 3.3, 7.5, 11.5]}
+            {"a": [1.0, 2.5, 3.3, 7.5, 11.5],
+                "right_val": [1.0, 2.5, 3.3, 7.5, 11.5]}
         )
 
         expected = pd.DataFrame(
@@ -2609,7 +2639,8 @@ class TestAsOfMerge:
             }
         )
 
-        result = merge_asof(left, right, on="a", direction="nearest", tolerance=0.5)
+        result = merge_asof(left, right, on="a",
+                            direction="nearest", tolerance=0.5)
         tm.assert_frame_equal(result, expected)
 
     def test_index_tolerance(self, trades, quotes, tolerance):
@@ -2639,10 +2670,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [2, 7, 11]}
+            {"a": [1, 5, 10], "left_val": [
+                "a", "b", "c"], "right_val": [2, 7, 11]}
         )
 
         result = merge_asof(
@@ -2654,10 +2687,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 2, 3, 7, 11], "right_val": [1, 2, 3, 7, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [2, 3, 11]}
+            {"a": [1, 5, 10], "left_val": [
+                "a", "b", "c"], "right_val": [2, 3, 11]}
         )
 
         result = merge_asof(
@@ -2682,7 +2717,8 @@ class TestAsOfMerge:
     def test_allow_exact_matches_and_tolerance2(self):
         # GH 13695
         df1 = pd.DataFrame(
-            {"time": to_datetime(["2016-07-15 13:30:00.030"]), "username": ["bob"]}
+            {"time": to_datetime(["2016-07-15 13:30:00.030"]),
+             "username": ["bob"]}
         )
         df2 = pd.DataFrame(
             {
@@ -2770,10 +2806,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 3, 4, 6, 11], "right_val": [1, 3, 4, 6, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 3, 4, 6, 11], "right_val": [1, 3, 4, 6, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [np.nan, 6, 11]}
+            {"a": [1, 5, 10], "left_val": ["a", "b", "c"],
+                "right_val": [np.nan, 6, 11]}
         )
 
         result = merge_asof(
@@ -2790,10 +2828,12 @@ class TestAsOfMerge:
         # GH14887
 
         left = pd.DataFrame({"a": [1, 5, 10], "left_val": ["a", "b", "c"]})
-        right = pd.DataFrame({"a": [1, 3, 4, 6, 11], "right_val": [1, 3, 4, 7, 11]})
+        right = pd.DataFrame(
+            {"a": [1, 3, 4, 6, 11], "right_val": [1, 3, 4, 7, 11]})
 
         expected = pd.DataFrame(
-            {"a": [1, 5, 10], "left_val": ["a", "b", "c"], "right_val": [np.nan, 4, 11]}
+            {"a": [1, 5, 10], "left_val": ["a", "b", "c"],
+                "right_val": [np.nan, 4, 11]}
         )
 
         result = merge_asof(
@@ -3003,7 +3043,8 @@ class TestAsOfMerge:
         df1.value = dtype(df1.value)
 
         df2 = pd.DataFrame(
-            {"value": [0, 80, 120, 125], "key": [1, 2, 2, 3], "result": list("xyzw")},
+            {"value": [0, 80, 120, 125], "key": [
+                1, 2, 2, 3], "result": list("xyzw")},
             columns=["value", "key", "result"],
         )
         df2.value = dtype(df2.value)
@@ -3088,7 +3129,8 @@ class TestAsOfMerge:
             msg = r"Incompatible merge dtype, .*, both sides must have numeric dtype"
 
         left = pd.DataFrame({"left_val": [1, 5, 10], "a": ["a", "b", "c"]})
-        right = pd.DataFrame({"right_val": [1, 2, 3, 6, 7], "a": [1, 2, 3, 6, 7]})
+        right = pd.DataFrame(
+            {"right_val": [1, 2, 3, 6, 7], "a": [1, 2, 3, 6, 7]})
 
         with pytest.raises(MergeError, match=msg):
             merge_asof(left, right, on="a")
@@ -3169,7 +3211,8 @@ class TestAsOfMerge:
             }
         )
 
-        result = merge_asof(left, right, by=["by_col1", "by_col2"], on="on_col")
+        result = merge_asof(
+            left, right, by=["by_col1", "by_col2"], on="on_col")
         expected = pd.DataFrame(
             {
                 "by_col1": arr,
@@ -3180,7 +3223,8 @@ class TestAsOfMerge:
         )
         expected["value_y"] = np.array([np.nan, np.nan, np.nan], dtype=object)
         if using_infer_string:
-            expected["value_y"] = expected["value_y"].astype("string[pyarrow_numpy]")
+            expected["value_y"] = expected["value_y"].astype(
+                "string[pyarrow_numpy]")
         tm.assert_frame_equal(result, expected)
 
     def test_merge_by_col_tz_aware(self):
@@ -3224,14 +3268,16 @@ class TestAsOfMerge:
                 "value": ["b"],
             }
         )
-        result = merge_asof(left, right, by=["by_col1", "by_col2"], on="on_col")
+        result = merge_asof(
+            left, right, by=["by_col1", "by_col2"], on="on_col")
         expected = pd.DataFrame(
             [[pd.Timestamp("2018-01-01", tz="UTC"), "HELLO", 2, "a"]],
             columns=["by_col1", "by_col2", "on_col", "value_x"],
         )
         expected["value_y"] = np.array([np.nan], dtype=object)
         if using_infer_string:
-            expected["value_y"] = expected["value_y"].astype("string[pyarrow_numpy]")
+            expected["value_y"] = expected["value_y"].astype(
+                "string[pyarrow_numpy]")
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize("dtype", ["float64", "int16", "m8[ns]", "M8[us]"])
@@ -3275,14 +3321,16 @@ class TestAsOfMerge:
             columns=["time", "left"],
         )
 
-        left["time"] = pd.to_timedelta(left["time"], "ms").astype(f"m8[{unit}]")
+        left["time"] = pd.to_timedelta(
+            left["time"], "ms").astype(f"m8[{unit}]")
 
         right = pd.DataFrame(
             list(zip([0, 3, 9, 12, 15, 18], [0, 1, 2, 3, 4, 5])),
             columns=["time", "right"],
         )
 
-        right["time"] = pd.to_timedelta(right["time"], "ms").astype(f"m8[{unit}]")
+        right["time"] = pd.to_timedelta(
+            right["time"], "ms").astype(f"m8[{unit}]")
 
         expected = pd.DataFrame(
             list(
@@ -3295,7 +3343,8 @@ class TestAsOfMerge:
             columns=["time", "left", "right"],
         )
 
-        expected["time"] = pd.to_timedelta(expected["time"], "ms").astype(f"m8[{unit}]")
+        expected["time"] = pd.to_timedelta(
+            expected["time"], "ms").astype(f"m8[{unit}]")
 
         result = merge_asof(
             left, right, on="time", tolerance=Timedelta("1ms"), direction="nearest"
@@ -3312,7 +3361,8 @@ class TestAsOfMerge:
         right["a"] = right["a"].astype(any_int_dtype)
 
         expected = pd.DataFrame(
-            {"a": [0, 10, 20], "left_val": [1, 2, 3], "right_val": [np.nan, 1.0, 2.0]}
+            {"a": [0, 10, 20], "left_val": [1, 2, 3],
+                "right_val": [np.nan, 1.0, 2.0]}
         )
         expected["a"] = expected["a"].astype(any_int_dtype)
 
@@ -3322,7 +3372,8 @@ class TestAsOfMerge:
     def test_merge_index_column_tz(self):
         # GH 29864
         index = pd.date_range("2019-10-01", freq="30min", periods=5, tz="UTC")
-        left = pd.DataFrame([0.9, 0.8, 0.7, 0.6], columns=["xyz"], index=index[1:])
+        left = pd.DataFrame([0.9, 0.8, 0.7, 0.6], columns=[
+                            "xyz"], index=index[1:])
         right = pd.DataFrame({"from_date": index, "abc": [2.46] * 4 + [2.19]})
         result = merge_asof(
             left=left, right=right, left_index=True, right_on=["from_date"]
@@ -3404,7 +3455,8 @@ def test_merge_asof_non_numerical_dtype(kwargs, data, infer_string):
 
 def test_merge_asof_non_numerical_dtype_object():
     # GH#29130
-    left = pd.DataFrame({"a": ["12", "13", "15"], "left_val1": ["a", "b", "c"]})
+    left = pd.DataFrame(
+        {"a": ["12", "13", "15"], "left_val1": ["a", "b", "c"]})
     right = pd.DataFrame({"a": ["a", "b", "c"], "left_val": ["d", "e", "f"]})
     with pytest.raises(
         MergeError,
@@ -3431,7 +3483,8 @@ def test_merge_asof_non_numerical_dtype_object():
 def test_merge_asof_index_behavior(kwargs):
     # GH 33463
     index = Index([1, 5, 10], name="test")
-    left = pd.DataFrame({"left": ["a", "b", "c"], "left_time": [1, 4, 10]}, index=index)
+    left = pd.DataFrame(
+        {"left": ["a", "b", "c"], "left_time": [1, 4, 10]}, index=index)
     right = pd.DataFrame({"right": [1, 2, 3, 6, 7]}, index=[1, 2, 3, 6, 7])
     result = merge_asof(left, right, **kwargs)
 
@@ -3448,7 +3501,8 @@ def test_merge_asof_numeric_column_in_index():
     right = pd.DataFrame({"c": [20, 21, 22]}, index=Index([0, 2, 3], name="a"))
 
     result = merge_asof(left, right, left_on="a", right_on="a")
-    expected = pd.DataFrame({"a": [1, 2, 3], "b": [10, 11, 12], "c": [20, 21, 22]})
+    expected = pd.DataFrame(
+        {"a": [1, 2, 3], "b": [10, 11, 12], "c": [20, 21, 22]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -3456,22 +3510,27 @@ def test_merge_asof_numeric_column_in_multiindex():
     # GH#34488
     left = pd.DataFrame(
         {"b": [10, 11, 12]},
-        index=pd.MultiIndex.from_arrays([[1, 2, 3], ["a", "b", "c"]], names=["a", "z"]),
+        index=pd.MultiIndex.from_arrays(
+            [[1, 2, 3], ["a", "b", "c"]], names=["a", "z"]),
     )
     right = pd.DataFrame(
         {"c": [20, 21, 22]},
-        index=pd.MultiIndex.from_arrays([[1, 2, 3], ["x", "y", "z"]], names=["a", "y"]),
+        index=pd.MultiIndex.from_arrays(
+            [[1, 2, 3], ["x", "y", "z"]], names=["a", "y"]),
     )
 
     result = merge_asof(left, right, left_on="a", right_on="a")
-    expected = pd.DataFrame({"a": [1, 2, 3], "b": [10, 11, 12], "c": [20, 21, 22]})
+    expected = pd.DataFrame(
+        {"a": [1, 2, 3], "b": [10, 11, 12], "c": [20, 21, 22]})
     tm.assert_frame_equal(result, expected)
 
 
 def test_merge_asof_numeri_column_in_index_object_dtype():
     # GH#34488
-    left = pd.DataFrame({"b": [10, 11, 12]}, index=Index(["1", "2", "3"], name="a"))
-    right = pd.DataFrame({"c": [20, 21, 22]}, index=Index(["m", "n", "o"], name="a"))
+    left = pd.DataFrame({"b": [10, 11, 12]},
+                        index=Index(["1", "2", "3"], name="a"))
+    right = pd.DataFrame({"c": [20, 21, 22]},
+                         index=Index(["m", "n", "o"], name="a"))
 
     with pytest.raises(
         MergeError,
@@ -3512,7 +3571,8 @@ def test_merge_asof_array_as_on(unit):
         allow_exact_matches=False,
         direction="backward",
     )
-    expected = pd.DataFrame({"b": [4, 8, 7], "a": [np.nan, 2, 6], "ts": ts_merge})
+    expected = pd.DataFrame(
+        {"b": [4, 8, 7], "a": [np.nan, 2, 6], "ts": ts_merge})
     tm.assert_frame_equal(result, expected)
 
     result = merge_asof(

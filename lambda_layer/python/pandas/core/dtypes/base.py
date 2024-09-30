@@ -288,7 +288,8 @@ class ExtensionDtype:
         #  operand type: "Callable[[ExtensionDtype], str]")  [comparison-overlap]
         assert isinstance(cls.name, str), (cls, type(cls.name))
         if string != cls.name:
-            raise TypeError(f"Cannot construct a '{cls.__name__}' from '{string}'")
+            raise TypeError(
+                f"Cannot construct a '{cls.__name__}' from '{string}'")
         return cls()
 
     @classmethod

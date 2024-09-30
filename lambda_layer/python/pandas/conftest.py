@@ -551,9 +551,11 @@ def multiindex_year_month_day_dataframe_random_data():
         columns=Index(list("ABCD"), dtype=object),
         index=date_range("2000-01-01", periods=100, freq="B"),
     )
-    ymd = tdf.groupby([lambda x: x.year, lambda x: x.month, lambda x: x.day]).sum()
+    ymd = tdf.groupby(
+        [lambda x: x.year, lambda x: x.month, lambda x: x.day]).sum()
     # use int64 Index, to make sure things work
-    ymd.index = ymd.index.set_levels([lev.astype("i8") for lev in ymd.index.levels])
+    ymd.index = ymd.index.set_levels(
+        [lev.astype("i8") for lev in ymd.index.levels])
     ymd.index.set_names(["year", "month", "day"], inplace=True)
     return ymd
 
@@ -609,7 +611,8 @@ def _create_mi_with_dt64tz_level():
     """
     # GH#8367 round trip with pickle
     return MultiIndex.from_product(
-        [[1, 2], ["a", "b"], date_range("20130101", periods=3, tz="US/Eastern")],
+        [[1, 2], ["a", "b"], date_range(
+            "20130101", periods=3, tz="US/Eastern")],
         names=["one", "two", "three"],
     )
 
@@ -634,10 +637,12 @@ indices_dict = {
     "bool-object": Index([True, False] * 5, dtype=object),
     "bool-dtype": Index([True, False] * 5, dtype=bool),
     "complex64": Index(
-        np.arange(100, dtype="complex64") + 1.0j * np.arange(100, dtype="complex64")
+        np.arange(100, dtype="complex64") + 1.0j *
+        np.arange(100, dtype="complex64")
     ),
     "complex128": Index(
-        np.arange(100, dtype="complex128") + 1.0j * np.arange(100, dtype="complex128")
+        np.arange(100, dtype="complex128") + 1.0j *
+        np.arange(100, dtype="complex128")
     ),
     "categorical": CategoricalIndex(list("abcd") * 25),
     "interval": IntervalIndex.from_breaks(np.linspace(0, 100, num=101)),
@@ -655,7 +660,8 @@ indices_dict = {
     ),
 }
 if has_pyarrow:
-    idx = Index(pd.array([f"pandas_{i}" for i in range(100)], dtype="string[pyarrow]"))
+    idx = Index(
+        pd.array([f"pandas_{i}" for i in range(100)], dtype="string[pyarrow]"))
     indices_dict["string-pyarrow"] = idx
 
 
@@ -1727,7 +1733,8 @@ def any_numeric_dtype(request):
 _any_skipna_inferred_dtype = [
     ("string", ["a", np.nan, "c"]),
     ("string", ["a", pd.NA, "c"]),
-    ("mixed", ["a", pd.NaT, "c"]),  # pd.NaT not considered valid by is_string_array
+    # pd.NaT not considered valid by is_string_array
+    ("mixed", ["a", pd.NaT, "c"]),
     ("bytes", [b"a", np.nan, b"c"]),
     ("empty", [np.nan, np.nan, np.nan]),
     ("empty", []),
@@ -1739,7 +1746,8 @@ _any_skipna_inferred_dtype = [
     ("decimal", [Decimal(1), np.nan, Decimal(2)]),
     ("boolean", [True, np.nan, False]),
     ("boolean", [True, pd.NA, False]),
-    ("datetime64", [np.datetime64("2013-01-01"), np.nan, np.datetime64("2018-01-01")]),
+    ("datetime64", [np.datetime64("2013-01-01"),
+     np.nan, np.datetime64("2018-01-01")]),
     ("datetime", [Timestamp("20130101"), np.nan, Timestamp("20180101")]),
     ("date", [date(2013, 1, 1), np.nan, date(2018, 1, 1)]),
     ("complex", [1 + 1j, np.nan, 2 + 2j]),
@@ -1964,7 +1972,8 @@ def using_infer_string() -> bool:
 
 warsaws = ["Europe/Warsaw", "dateutil/Europe/Warsaw"]
 if zoneinfo is not None:
-    warsaws.append(zoneinfo.ZoneInfo("Europe/Warsaw"))  # type: ignore[arg-type]
+    # type: ignore[arg-type]
+    warsaws.append(zoneinfo.ZoneInfo("Europe/Warsaw"))
 
 
 @pytest.fixture(params=warsaws)

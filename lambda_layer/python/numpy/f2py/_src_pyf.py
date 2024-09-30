@@ -47,9 +47,12 @@ process_file(filename)
   <ctypereal=float,double,\\0,\\1>
 """
 
-routine_start_re = re.compile(r'(\n|\A)((     (\$|\*))|)\s*(subroutine|function)\b', re.I)
-routine_end_re = re.compile(r'\n\s*end\s*(subroutine|function)\b.*(\n|\Z)', re.I)
+routine_start_re = re.compile(
+    r'(\n|\A)((     (\$|\*))|)\s*(subroutine|function)\b', re.I)
+routine_end_re = re.compile(
+    r'\n\s*end\s*(subroutine|function)\b.*(\n|\Z)', re.I)
 function_start_re = re.compile(r'\n     (\$|\*)\s*function\b', re.I)
+
 
 def parse_structure(astr):
     """ Return a list of tuples for each function or subroutine each
@@ -67,10 +70,10 @@ def parse_structure(astr):
         if function_start_re.match(astr, start, m.end()):
             while True:
                 i = astr.rfind('\n', ind, start)
-                if i==-1:
+                if i == -1:
                     break
                 start = i
-                if astr[i:i+7]!='\n     $':
+                if astr[i:i+7] != '\n     $':
                     break
         start += 1
         m = routine_end_re.search(astr, m.end())
@@ -78,9 +81,11 @@ def parse_structure(astr):
         spanlist.append((start, end))
     return spanlist
 
+
 template_re = re.compile(r"<\s*(\w[\w\d]*)\s*>")
 named_re = re.compile(r"<\s*(\w[\w\d]*)\s*=\s*(.*?)\s*>")
 list_re = re.compile(r"<\s*((.*?))\s*>")
+
 
 def find_repl_patterns(astr):
     reps = named_re.findall(astr)
@@ -92,12 +97,16 @@ def find_repl_patterns(astr):
         names[name] = thelist
     return names
 
+
 def find_and_remove_repl_patterns(astr):
     names = find_repl_patterns(astr)
     astr = re.subn(named_re, '', astr)[0]
     return astr, names
 
+
 item_re = re.compile(r"\A\\(?P<index>\d+)\Z")
+
+
 def conv(astr):
     b = astr.split(',')
     l = [x.strip() for x in b]
@@ -107,6 +116,7 @@ def conv(astr):
             j = int(m.group('index'))
             l[i] = l[j]
     return ','.join(l)
+
 
 def unique_key(adict):
     """ Obtain a unique key given a dictionary."""
@@ -123,6 +133,8 @@ def unique_key(adict):
 
 
 template_name_re = re.compile(r'\A\s*(\w[\w\d]*)\s*\Z')
+
+
 def expand_sub(substr, names):
     substr = substr.replace(r'\>', '@rightarrow@')
     substr = substr.replace(r'\<', '@leftarrow@')
@@ -142,8 +154,9 @@ def expand_sub(substr, names):
             lnames[name] = thelist
         return "<%s>" % name
 
-    substr = list_re.sub(listrepl, substr) # convert all lists to named templates
-                                           # newnames are constructed as needed
+    # convert all lists to named templates
+    substr = list_re.sub(listrepl, substr)
+    # newnames are constructed as needed
 
     numsubs = None
     base_rule = None
@@ -182,6 +195,7 @@ def expand_sub(substr, names):
     newstr = newstr.replace('@leftarrow@', '<')
     return newstr
 
+
 def process_str(allstr):
     newstr = allstr
     writestr = ''
@@ -196,12 +210,15 @@ def process_str(allstr):
         writestr += cleanedstr
         names.update(defs)
         writestr += expand_sub(newstr[sub[0]:sub[1]], names)
-        oldend =  sub[1]
+        oldend = sub[1]
     writestr += newstr[oldend:]
 
     return writestr
 
-include_src_re = re.compile(r"(\n|\A)\s*include\s*['\"](?P<name>[\w\d./\\]+\.src)['\"]", re.I)
+
+include_src_re = re.compile(
+    r"(\n|\A)\s*include\s*['\"](?P<name>[\w\d./\\]+\.src)['\"]", re.I)
+
 
 def resolve_includes(source):
     d = os.path.dirname(source)
@@ -221,9 +238,11 @@ def resolve_includes(source):
                 lines.append(line)
     return lines
 
+
 def process_file(source):
     lines = resolve_includes(source)
     return process_str(''.join(lines))
+
 
 _special_names = find_repl_patterns('''
 <_c=s,d,c,z>

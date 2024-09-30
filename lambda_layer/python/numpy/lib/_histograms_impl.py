@@ -192,7 +192,7 @@ def _hist_bin_doane(x, range):
             np.power(temp, 3, temp)
             g1 = np.mean(temp)
             return _ptp(x) / (1.0 + np.log2(x.size) +
-                                    np.log2(1.0 + np.absolute(g1) / sg1))
+                              np.log2(1.0 + np.absolute(g1) / sg1))
     return 0.0
 
 
@@ -268,6 +268,7 @@ def _hist_bin_auto(x, range):
     else:
         # limited variance, so we return a len dependent bw estimator
         return sturges_bw
+
 
 # Private dict initialized at module load time
 _hist_bin_selectors = {'stone': _hist_bin_stone,
@@ -412,7 +413,8 @@ def _get_bin_edges(a, bins, range, weights):
             if width:
                 if np.issubdtype(a.dtype, np.integer) and width < 1:
                     width = 1
-                n_equal_bins = int(np.ceil(_unsigned_subtract(last_edge, first_edge) / width))
+                n_equal_bins = int(
+                    np.ceil(_unsigned_subtract(last_edge, first_edge) / width))
             else:
                 # Width can be zero for some estimators, e.g. FD when
                 # the IQR of the data is zero.
@@ -1019,13 +1021,13 @@ def histogramdd(sample, bins=10, range=None, density=None, weights=None):
             if bins[i] < 1:
                 raise ValueError(
                     '`bins[{}]` must be positive, when an integer'.format(i))
-            smin, smax = _get_outer_edges(sample[:,i], range[i])
+            smin, smax = _get_outer_edges(sample[:, i], range[i])
             try:
                 n = operator.index(bins[i])
 
             except TypeError as e:
                 raise TypeError(
-                	"`bins[{}]` must be an integer, when a scalar".format(i)
+                    "`bins[{}]` must be an integer, when a scalar".format(i)
                 ) from e
 
             edges[i] = np.linspace(smin, smax, n + 1)

@@ -11,11 +11,11 @@ valid_filemodes = ["r", "c", "r+", "w+"]
 writeable_filemodes = ["r+", "w+"]
 
 mode_equivalents = {
-    "readonly":"r",
-    "copyonwrite":"c",
-    "readwrite":"r+",
-    "write":"w+"
-    }
+    "readonly": "r",
+    "copyonwrite": "c",
+    "readwrite": "r+",
+    "write": "w+"
+}
 
 
 @set_module('numpy')
@@ -84,7 +84,7 @@ class memmap(ndarray):
         .. versionchanged:: 2.0
          The shape parameter can now be any integer sequence type, previously
          types were limited to tuple and int.
-    
+
     order : {'C', 'F'}, optional
         Specify the order of the ndarray memory layout:
         :term:`row-major`, C-style or :term:`column-major`,
@@ -246,7 +246,7 @@ class memmap(ndarray):
                 bytes = flen - offset
                 if bytes % _dbytes:
                     raise ValueError("Size of available data is not a "
-                            "multiple of the data-type size.")
+                                     "multiple of the data-type size.")
                 size = bytes // _dbytes
                 shape = (size,)
             else:
@@ -256,7 +256,8 @@ class memmap(ndarray):
                     except TypeError:
                         pass
                 shape = tuple(shape)
-                size = np.intp(1)  # avoid default choice of np.int_, which might overflow
+                # avoid default choice of np.int_, which might overflow
+                size = np.intp(1)
                 for k in shape:
                     size *= k
 

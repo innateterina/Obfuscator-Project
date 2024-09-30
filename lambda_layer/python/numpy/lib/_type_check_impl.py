@@ -358,7 +358,8 @@ def isrealobj(x):
     """
     return not iscomplexobj(x)
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def _getmaxmin(t):
     from numpy._core import getlimits
@@ -490,7 +491,8 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
         _nx.copyto(d, minf, where=idx_neginf)
     return x[()] if isscalar else x
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def _real_if_close_dispatcher(a, tol=None):
     return (a,)
@@ -555,7 +557,7 @@ def real_if_close(a, tol=100):
     return a
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 _namefromtype = {'S1': 'character',
                  '?': 'bool',
@@ -580,6 +582,7 @@ _namefromtype = {'S1': 'character',
                  'V': 'void',
                  'O': 'object'
                  }
+
 
 @set_module('numpy')
 def typename(char):
@@ -634,10 +637,10 @@ def typename(char):
     """
     return _namefromtype[char]
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
-#determine the "minimum common type" for a group of arrays.
+# determine the "minimum common type" for a group of arrays.
 array_type = [[_nx.float16, _nx.float32, _nx.float64, _nx.longdouble],
               [None, _nx.complex64, _nx.complex128, _nx.clongdouble]]
 array_precision = {_nx.float16: 0,

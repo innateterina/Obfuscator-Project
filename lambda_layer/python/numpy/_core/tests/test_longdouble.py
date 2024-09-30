@@ -6,7 +6,7 @@ import numpy as np
 from numpy.testing import (
     assert_, assert_equal, assert_raises, assert_warns, assert_array_equal,
     temppath, IS_MUSL
-    )
+)
 from numpy._core.tests._locales import CommaDecimalPointLocale
 
 
@@ -178,7 +178,8 @@ class TestFileBased:
                     f.write("1+1j,2-2j, -3+3j,  -4e1+4j\n")
 
                 res = np.fromfile(path, dtype=ctype, sep=",")
-            assert_equal(res, np.array([1. + 1.j, 2. - 2.j, - 3. + 3.j, - 40. + 4j]))
+            assert_equal(res, np.array(
+                [1. + 1.j, 2. - 2.j, - 3. + 3.j, - 40. + 4j]))
 
             # Spaces at wrong places
             with temppath() as path:
@@ -233,8 +234,6 @@ class TestFileBased:
                 with assert_warns(DeprecationWarning):
                     res = np.fromfile(path, dtype=ctype, sep=",")
             assert_equal(res, np.array([1.j]))
-
-
 
     @pytest.mark.skipif(string_to_longdouble_inaccurate,
                         reason="Need strtold_l")
@@ -312,6 +311,7 @@ def test_array_repr():
 # Locale tests: scalar types formatting should be independent of the locale
 #
 
+
 class TestCommaDecimalPointLocale(CommaDecimalPointLocale):
 
     def test_str_roundtrip_foreign(self):
@@ -368,6 +368,7 @@ def test_longdouble_from_int(int_val):
         if np.allclose(np.finfo(np.longdouble).max,
                        np.finfo(np.double).max) and w:
             assert w[0].category is RuntimeWarning
+
 
 @pytest.mark.parametrize("bool_val", [
     True, False])

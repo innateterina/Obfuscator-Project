@@ -107,7 +107,8 @@ class BaseInterfaceTests:
         result = data.copy()
 
         if data.dtype._is_immutable:
-            pytest.skip(f"test_copy assumes mutability and {data.dtype} is immutable")
+            pytest.skip(
+                f"test_copy assumes mutability and {data.dtype} is immutable")
 
         data[1] = data[0]
         assert result[1] != result[0]
@@ -122,7 +123,8 @@ class BaseInterfaceTests:
         assert type(result) == type(data)
 
         if data.dtype._is_immutable:
-            pytest.skip(f"test_view assumes mutability and {data.dtype} is immutable")
+            pytest.skip(
+                f"test_view assumes mutability and {data.dtype} is immutable")
 
         result[1] = result[0]
         assert data[1] == data[0]

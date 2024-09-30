@@ -80,7 +80,8 @@ def deprecate(
     if alternative.__doc__:
         if alternative.__doc__.count("\n") < 3:
             raise AssertionError(doc_error_msg)
-        empty1, summary, empty2, doc_string = alternative.__doc__.split("\n", 3)
+        empty1, summary, empty2, doc_string = alternative.__doc__.split(
+            "\n", 3)
         if empty1 or empty2 and not summary:
             raise AssertionError(doc_error_msg)
         wrapper.__doc__ = dedent(
@@ -189,7 +190,8 @@ def deprecate_kwarg(
                     if callable(mapping):
                         new_arg_value = mapping(old_arg_value)
                     else:
-                        new_arg_value = mapping.get(old_arg_value, old_arg_value)
+                        new_arg_value = mapping.get(
+                            old_arg_value, old_arg_value)
                     msg = (
                         f"the {old_arg_name}={repr(old_arg_value)} keyword is "
                         "deprecated, use "
@@ -371,7 +373,8 @@ def doc(*docstrings: None | str | Callable, **params) -> Callable[[F], F]:
                 continue
             if hasattr(docstring, "_docstring_components"):
                 docstring_components.extend(
-                    docstring._docstring_components  # pyright: ignore[reportGeneralTypeIssues]
+                    # pyright: ignore[reportGeneralTypeIssues]
+                    docstring._docstring_components
                 )
             elif isinstance(docstring, str) or docstring.__doc__:
                 docstring_components.append(docstring)

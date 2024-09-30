@@ -52,7 +52,8 @@ class TestDatetimeIndexIteration:
     def test_iteration_preserves_tz3(self):
         # GH#9100
         index = DatetimeIndex(
-            ["2014-12-01 03:32:39.987000-08:00", "2014-12-01 04:12:34.987000-08:00"]
+            ["2014-12-01 03:32:39.987000-08:00",
+                "2014-12-01 04:12:34.987000-08:00"]
         )
         for i, ts in enumerate(index):
             result = ts

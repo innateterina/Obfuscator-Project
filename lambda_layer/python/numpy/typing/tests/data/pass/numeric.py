@@ -10,8 +10,10 @@ from __future__ import annotations
 import numpy as np
 import numpy.typing as npt
 
+
 class SubClass(npt.NDArray[np.float64]):
     ...
+
 
 i8 = np.int64(1)
 

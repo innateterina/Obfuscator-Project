@@ -474,7 +474,8 @@ class ExtensionArray:
         #   __init__ method coerces that value, then so should __setitem__
         # Note, also, that Series/DataFrame.where internally use __setitem__
         # on a copy of the data.
-        raise NotImplementedError(f"{type(self)} does not implement __setitem__.")
+        raise NotImplementedError(
+            f"{type(self)} does not implement __setitem__.")
 
     def __len__(self) -> int:
         """
@@ -1043,7 +1044,8 @@ class ExtensionArray:
                 return self.take(indexer, allow_fill=True)
             else:
                 # i.e. meth == "backfill"
-                indexer = libalgos.get_fill_indexer(npmask[::-1], limit=limit)[::-1]
+                indexer = libalgos.get_fill_indexer(
+                    npmask[::-1], limit=limit)[::-1]
                 return self[::-1].take(indexer, allow_fill=True)
 
         else:
@@ -1134,7 +1136,8 @@ class ExtensionArray:
                     return self.take(indexer, allow_fill=True)
                 else:
                     # i.e. meth == "backfill"
-                    indexer = libalgos.get_fill_indexer(npmask[::-1], limit=limit)[::-1]
+                    indexer = libalgos.get_fill_indexer(
+                        npmask[::-1], limit=limit)[::-1]
                     return self[::-1].take(indexer, allow_fill=True)
             else:
                 # fill with value
@@ -1248,7 +1251,7 @@ class ExtensionArray:
             a = empty
             b = self[:-periods]
         else:
-            a = self[abs(periods) :]
+            a = self[abs(periods):]
             b = empty
         return self._concat_same_type([a, b])
 
@@ -1907,7 +1910,8 @@ class ExtensionArray:
         [1, 3, 6]
         Length: 3, dtype: Int64
         """
-        raise NotImplementedError(f"cannot perform {name} with type {self.dtype}")
+        raise NotImplementedError(
+            f"cannot perform {name} with type {self.dtype}")
 
     def _reduce(
         self, name: str, *, skipna: bool = True, keepdims: bool = False, **kwargs
@@ -2250,7 +2254,8 @@ class ExtensionArray:
         arr = np.asarray(self)
         fill_value = np.nan
 
-        res_values = quantile_with_mask(arr, mask, fill_value, qs, interpolation)
+        res_values = quantile_with_mask(
+            arr, mask, fill_value, qs, interpolation)
         return type(self)._from_sequence(res_values)
 
     def _mode(self, dropna: bool = True) -> Self:
@@ -2371,7 +2376,8 @@ class ExtensionArray:
             # StringArray
             if op.how not in ["any", "all"]:
                 # Fail early to avoid conversion to object
-                op._get_cython_function(op.kind, op.how, np.dtype(object), False)
+                op._get_cython_function(
+                    op.kind, op.how, np.dtype(object), False)
             npvalues = self.to_numpy(object, na_value=np.nan)
         else:
             raise NotImplementedError(
@@ -2436,14 +2442,19 @@ class ExtensionOpsMixin:
         setattr(cls, "__rpow__", cls._create_arithmetic_method(roperator.rpow))
         setattr(cls, "__mod__", cls._create_arithmetic_method(operator.mod))
         setattr(cls, "__rmod__", cls._create_arithmetic_method(roperator.rmod))
-        setattr(cls, "__floordiv__", cls._create_arithmetic_method(operator.floordiv))
+        setattr(cls, "__floordiv__",
+                cls._create_arithmetic_method(operator.floordiv))
         setattr(
-            cls, "__rfloordiv__", cls._create_arithmetic_method(roperator.rfloordiv)
+            cls, "__rfloordiv__", cls._create_arithmetic_method(
+                roperator.rfloordiv)
         )
-        setattr(cls, "__truediv__", cls._create_arithmetic_method(operator.truediv))
-        setattr(cls, "__rtruediv__", cls._create_arithmetic_method(roperator.rtruediv))
+        setattr(cls, "__truediv__",
+                cls._create_arithmetic_method(operator.truediv))
+        setattr(cls, "__rtruediv__",
+                cls._create_arithmetic_method(roperator.rtruediv))
         setattr(cls, "__divmod__", cls._create_arithmetic_method(divmod))
-        setattr(cls, "__rdivmod__", cls._create_arithmetic_method(roperator.rdivmod))
+        setattr(cls, "__rdivmod__",
+                cls._create_arithmetic_method(roperator.rdivmod))
 
     @classmethod
     def _create_comparison_method(cls, op):
@@ -2562,7 +2573,8 @@ class ExtensionScalarOpsMixin(ExtensionOpsMixin):
                     # https://github.com/pandas-dev/pandas/issues/22850
                     # We catch all regular exceptions here, and fall back
                     # to an ndarray.
-                    res = maybe_cast_pointwise_result(arr, self.dtype, same_dtype=False)
+                    res = maybe_cast_pointwise_result(
+                        arr, self.dtype, same_dtype=False)
                     if not isinstance(res, type(self)):
                         # exception raised in _from_sequence; ensure we have ndarray
                         res = np.asarray(arr)

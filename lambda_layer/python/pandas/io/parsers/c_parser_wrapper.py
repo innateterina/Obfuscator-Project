@@ -158,7 +158,8 @@ class CParserWrapper(ParserBase):
                 )
 
         # error: Cannot determine type of 'names'
-        self._validate_parse_dates_presence(self.names)  # type: ignore[has-type]
+        self._validate_parse_dates_presence(
+            self.names)  # type: ignore[has-type]
         self._set_noconvert_columns()
 
         # error: Cannot determine type of 'names'
@@ -210,7 +211,8 @@ class CParserWrapper(ParserBase):
 
         # much faster than using orig_names.index(x) xref GH#44106
         names_dict = {x: i for i, x in enumerate(self.orig_names)}
-        col_indices = [names_dict[x] for x in self.names]  # type: ignore[has-type]
+        col_indices = [names_dict[x]
+                       for x in self.names]  # type: ignore[has-type]
         # error: Cannot determine type of 'names'
         noconvert_columns = self._set_noconvert_dtype_columns(
             col_indices,
@@ -248,7 +250,8 @@ class CParserWrapper(ParserBase):
                     names,
                     dtype=self.dtype,
                 )
-                columns = self._maybe_make_multi_index_columns(columns, self.col_names)
+                columns = self._maybe_make_multi_index_columns(
+                    columns, self.col_names)
 
                 if self.usecols is not None:
                     columns = self._filter_usecols(columns)
@@ -287,7 +290,8 @@ class CParserWrapper(ParserBase):
                 else:
                     values = data.pop(self.index_col[i])
 
-                values = self._maybe_parse_dates(values, i, try_parse_dates=True)
+                values = self._maybe_parse_dates(
+                    values, i, try_parse_dates=True)
                 arrays.append(values)
 
             index = ensure_index_from_sequences(arrays)
@@ -295,7 +299,8 @@ class CParserWrapper(ParserBase):
             if self.usecols is not None:
                 names = self._filter_usecols(names)
 
-            names = dedup_names(names, is_potential_multi_index(names, self.index_col))
+            names = dedup_names(
+                names, is_potential_multi_index(names, self.index_col))
 
             # rename dict keys
             data_tups = sorted(data.items())
@@ -317,7 +322,8 @@ class CParserWrapper(ParserBase):
             # assert for mypy, orig_names is List or None, None would error in list(...)
             assert self.orig_names is not None
             names = list(self.orig_names)
-            names = dedup_names(names, is_potential_multi_index(names, self.index_col))
+            names = dedup_names(
+                names, is_potential_multi_index(names, self.index_col))
 
             if self.usecols is not None:
                 names = self._filter_usecols(names)
@@ -367,7 +373,8 @@ def _concatenate_chunks(chunks: list[dict[int, ArrayLike]]) -> dict:
         arrs = [chunk.pop(name) for chunk in chunks]
         # Check each arr for consistent types.
         dtypes = {a.dtype for a in arrs}
-        non_cat_dtypes = {x for x in dtypes if not isinstance(x, CategoricalDtype)}
+        non_cat_dtypes = {
+            x for x in dtypes if not isinstance(x, CategoricalDtype)}
 
         dtype = dtypes.pop()
         if isinstance(dtype, CategoricalDtype):
@@ -385,7 +392,8 @@ def _concatenate_chunks(chunks: list[dict[int, ArrayLike]]) -> dict:
                 f"Specify dtype option on import or set low_memory=False."
             ]
         )
-        warnings.warn(warning_message, DtypeWarning, stacklevel=find_stack_level())
+        warnings.warn(warning_message, DtypeWarning,
+                      stacklevel=find_stack_level())
     return result
 
 
@@ -398,7 +406,8 @@ def ensure_dtype_objs(
     """
     if isinstance(dtype, defaultdict):
         # "None" not callable  [misc]
-        default_dtype = pandas_dtype(dtype.default_factory())  # type: ignore[misc]
+        default_dtype = pandas_dtype(
+            dtype.default_factory())  # type: ignore[misc]
         dtype_converted: defaultdict = defaultdict(lambda: default_dtype)
         for key in dtype.keys():
             dtype_converted[key] = pandas_dtype(dtype[key])

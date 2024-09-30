@@ -16,6 +16,7 @@ from . import polyutils as pu
 
 __all__ = ['ABCPolyBase']
 
+
 class ABCPolyBase(abc.ABC):
     """An abstract base class for immutable series classes.
 
@@ -464,7 +465,7 @@ class ABCPolyBase(abc.ABC):
             )
             needs_parens = True
         return term, needs_parens
-    
+
     def _repr_latex_(self):
         # get the scaled argument string to the basis functions
         off, scale = self.mapparms()
@@ -504,8 +505,6 @@ class ABCPolyBase(abc.ABC):
             body = '0'
 
         return rf"${self.symbol} \mapsto {body}$"
-
-
 
     # Pickle and copy
 
@@ -968,7 +967,7 @@ class ABCPolyBase(abc.ABC):
 
     @classmethod
     def fit(cls, x, y, deg, domain=None, rcond=None, full=False, w=None,
-        window=None, symbol='x'):
+            window=None, symbol='x'):
         """Least squares fit to data.
 
         Return a series instance that is the least squares fit to the data
@@ -1043,7 +1042,7 @@ class ABCPolyBase(abc.ABC):
             domain = pu.getdomain(x)
             if domain[0] == domain[1]:
                 domain[0] -= 1
-                domain[1] += 1   
+                domain[1] += 1
         elif type(domain) is list and len(domain) == 0:
             domain = cls.domain
 

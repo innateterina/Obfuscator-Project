@@ -17,7 +17,8 @@ def test_is_monotonic_increasing_lexsorted(lexsorted_two_level_string_multiindex
 
 
 def test_is_monotonic_increasing():
-    i = MultiIndex.from_product([np.arange(10), np.arange(10)], names=["one", "two"])
+    i = MultiIndex.from_product(
+        [np.arange(10), np.arange(10)], names=["one", "two"])
     assert i.is_monotonic_increasing is True
     assert i._is_strictly_monotonic_increasing is True
     assert Index(i.values).is_monotonic_increasing is True

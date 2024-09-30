@@ -175,4 +175,4 @@ class TestRegression:
             mismatches = (~np.isclose(result, expected)).sum()
             if mismatches != 0:
                 assert False, ("unexpected result from matmul, "
-                    "probably due to OpenBLAS threading issues")
+                               "probably due to OpenBLAS threading issues")

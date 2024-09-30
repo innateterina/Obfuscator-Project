@@ -82,7 +82,8 @@ class TestDataFrameDescribe:
         tm.assert_frame_equal(result, expected)
 
         df = DataFrame(
-            {"bool_data": [False, False, True, True], "str_data": ["a", "b", "c", "a"]}
+            {"bool_data": [False, False, True, True],
+                "str_data": ["a", "b", "c", "a"]}
         )
         result = df.describe()
         expected = DataFrame(
@@ -92,7 +93,8 @@ class TestDataFrameDescribe:
         tm.assert_frame_equal(result, expected)
 
     def test_describe_categorical(self):
-        df = DataFrame({"value": np.random.default_rng(2).integers(0, 10000, 100)})
+        df = DataFrame(
+            {"value": np.random.default_rng(2).integers(0, 10000, 100)})
         labels = [f"{i} - {i + 499}" for i in range(0, 10000, 500)]
         cat_labels = Categorical(labels, labels)
 
@@ -114,7 +116,8 @@ class TestDataFrameDescribe:
         )
         s = Series(cat)
         result = s.describe()
-        expected = Series([4, 2, "b", 3], index=["count", "unique", "top", "freq"])
+        expected = Series([4, 2, "b", 3], index=[
+                          "count", "unique", "top", "freq"])
         tm.assert_series_equal(result, expected)
 
         cat = Series(Categorical(["a", "b", "c", "c"]))
@@ -140,7 +143,8 @@ class TestDataFrameDescribe:
 
     def test_describe_categorical_columns(self):
         # GH#11558
-        columns = pd.CategoricalIndex(["int1", "int2", "obj"], ordered=True, name="XXX")
+        columns = pd.CategoricalIndex(
+            ["int1", "int2", "obj"], ordered=True, name="XXX")
         df = DataFrame(
             {
                 "int1": [10, 20, 30, 40, 50],
@@ -167,7 +171,8 @@ class TestDataFrameDescribe:
         )
 
         tm.assert_frame_equal(result, expected)
-        tm.assert_categorical_equal(result.columns.values, expected.columns.values)
+        tm.assert_categorical_equal(
+            result.columns.values, expected.columns.values)
 
     def test_describe_datetime_columns(self):
         columns = pd.DatetimeIndex(
@@ -387,7 +392,8 @@ class TestDataFrameDescribe:
     def test_ea_with_na(self, any_numeric_ea_dtype):
         # GH#48778
 
-        df = DataFrame({"a": [1, pd.NA, pd.NA], "b": pd.NA}, dtype=any_numeric_ea_dtype)
+        df = DataFrame({"a": [1, pd.NA, pd.NA], "b": pd.NA},
+                       dtype=any_numeric_ea_dtype)
         result = df.describe()
         expected = DataFrame(
             {"a": [1.0, 1.0, pd.NA] + [1.0] * 5, "b": [0.0] + [pd.NA] * 7},

@@ -493,7 +493,8 @@ def isnumeric(dtype) -> bool:
 
 
 UNARY_OPS_SYMS = ("+", "-", "~", "not")
-_unary_ops_funcs = (operator.pos, operator.neg, operator.invert, operator.invert)
+_unary_ops_funcs = (operator.pos, operator.neg,
+                    operator.invert, operator.invert)
 _unary_ops_dict = dict(zip(UNARY_OPS_SYMS, _unary_ops_funcs))
 
 

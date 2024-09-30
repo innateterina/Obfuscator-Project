@@ -175,7 +175,8 @@ def test_to_html_escaped(kwargs, string, expected, datapath):
     a = "str<ing1 &amp;"
     b = "stri>ng2 &amp;"
 
-    test_dict = {"co<l1": {a: string, b: string}, "co>l2": {a: string, b: string}}
+    test_dict = {"co<l1": {a: string, b: string},
+                 "co>l2": {a: string, b: string}}
     result = DataFrame(test_dict).to_html(**kwargs)
     expected = expected_html(datapath, expected)
     assert result == expected
@@ -205,7 +206,8 @@ def test_to_html_multiindex_index_false(index_is_named, datapath):
     ],
 )
 def test_to_html_multiindex_sparsify(multi_sparse, expected, datapath):
-    index = MultiIndex.from_arrays([[0, 0, 1, 1], [0, 1, 0, 1]], names=["foo", None])
+    index = MultiIndex.from_arrays(
+        [[0, 0, 1, 1], [0, 1, 0, 1]], names=["foo", None])
     df = DataFrame([[0, 1], [2, 3], [4, 5], [6, 7]], index=index)
     if expected.endswith("2"):
         df.columns = index[::2]
@@ -247,7 +249,8 @@ def test_to_html_multiindex_odd_even_truncate(max_rows, expected, datapath):
             "index_formatter",
         ),
         (
-            DataFrame({"months": [datetime(2016, 1, 1), datetime(2016, 2, 2)]}),
+            DataFrame(
+                {"months": [datetime(2016, 1, 1), datetime(2016, 2, 2)]}),
             {"months": lambda x: x.strftime("%Y-%m")},
             "datetime64_monthformatter",
         ),
@@ -326,7 +329,7 @@ def test_to_html_truncate_formatter(datapath):
     ]
 
     df = DataFrame(data)
-    fmt = lambda x: str(x) + "_mod"
+    def fmt(x): return str(x) + "_mod"
     formatters = [fmt, fmt, None, None]
     result = df.to_html(formatters=formatters, max_cols=3)
     expected = expected_html(datapath, "truncate_formatter")
@@ -467,7 +470,8 @@ class TestHTMLIndex:
     def df(self):
         index = ["foo", "bar", "baz"]
         df = DataFrame(
-            {"A": [1, 2, 3], "B": [1.2, 3.4, 5.6], "C": ["one", "two", np.nan]},
+            {"A": [1, 2, 3], "B": [1.2, 3.4, 5.6],
+                "C": ["one", "two", np.nan]},
             columns=["A", "B", "C"],
             index=index,
         )
@@ -557,7 +561,8 @@ def test_to_html_multiindex_max_cols(datapath):
 def test_to_html_multi_indexes_index_false(datapath):
     # GH 22579
     df = DataFrame(
-        {"a": range(10), "b": range(10, 20), "c": range(10, 20), "d": range(10, 20)}
+        {"a": range(10), "b": range(10, 20),
+         "c": range(10, 20), "d": range(10, 20)}
     )
     df.columns = MultiIndex.from_product([["a", "b"], ["c", "d"]])
     df.index = MultiIndex.from_product([["a", "b"], ["c", "d", "e", "f", "g"]])
@@ -601,7 +606,8 @@ def test_to_html_basic_alignment(
     datapath, row_index, row_type, column_index, column_type, index, header, index_names
 ):
     # GH 22747, GH 22579
-    df = DataFrame(np.zeros((2, 2), dtype=int), index=row_index, columns=column_index)
+    df = DataFrame(np.zeros((2, 2), dtype=int),
+                   index=row_index, columns=column_index)
     result = df.to_html(index=index, header=header, index_names=index_names)
 
     if not index:
@@ -660,7 +666,8 @@ def test_to_html_alignment_with_truncation(
     datapath, row_index, row_type, column_index, column_type, index, header, index_names
 ):
     # GH 22747, GH 22579
-    df = DataFrame(np.arange(64).reshape(8, 8), index=row_index, columns=column_index)
+    df = DataFrame(np.arange(64).reshape(8, 8),
+                   index=row_index, columns=column_index)
     result = df.to_html(
         max_rows=4, max_cols=4, index=index, header=header, index_names=index_names
     )
@@ -782,7 +789,8 @@ def test_to_html_render_links(render_links, expected, datapath):
     "method,expected",
     [
         ("to_html", lambda x: lorem_ipsum),
-        ("_repr_html_", lambda x: lorem_ipsum[: x - 4] + "..."),  # regression case
+        # regression case
+        ("_repr_html_", lambda x: lorem_ipsum[: x - 4] + "..."),
     ],
 )
 @pytest.mark.parametrize("max_colwidth", [10, 20, 50, 100])
@@ -836,13 +844,15 @@ class TestReprHTML:
         # default setting no truncation even if above min_rows
         df = DataFrame({"a": range(20)})
         result = df._repr_html_()
-        expected = expected_html(datapath, "html_repr_min_rows_default_no_truncation")
+        expected = expected_html(
+            datapath, "html_repr_min_rows_default_no_truncation")
         assert result == expected
 
         # default of max_rows 60 triggers truncation if above
         df = DataFrame({"a": range(61)})
         result = df._repr_html_()
-        expected = expected_html(datapath, "html_repr_min_rows_default_truncated")
+        expected = expected_html(
+            datapath, "html_repr_min_rows_default_truncated")
         assert result == expected
 
     @pytest.mark.parametrize(
@@ -969,13 +979,15 @@ class TestReprHTML:
         with option_context("display.max_rows", 60):
             max_rows = get_option("display.max_rows")
             h = max_rows - 1
-            df = DataFrame({"A": np.arange(1, 1 + h), "B": np.arange(41, 41 + h)})
+            df = DataFrame({"A": np.arange(1, 1 + h),
+                           "B": np.arange(41, 41 + h)})
             reg_repr = df._repr_html_()
             assert ".." not in reg_repr
             assert str(41 + max_rows // 2) in reg_repr
 
             h = max_rows + 1
-            df = DataFrame({"A": np.arange(1, 1 + h), "B": np.arange(41, 41 + h)})
+            df = DataFrame({"A": np.arange(1, 1 + h),
+                           "B": np.arange(41, 41 + h)})
             long_repr = df._repr_html_()
             assert ".." in long_repr
             assert str(41 + max_rows // 2) not in long_repr

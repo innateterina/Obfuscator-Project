@@ -8,15 +8,14 @@ terms of the NumPy License
 
 NO WARRANTY IS EXPRESSED OR IMPLIED.  USE AT YOUR OWN RISK.
 """
-from . import __version__
-f2py_version = __version__.version
-
+from .crackfortran import rmbadname
+from . import func2subr
+from . import capi_maps
 from .auxfuncs import (
     hasbody, hascommon, hasnote, isintent_hide, outmess, getuseblocks
 )
-from . import capi_maps
-from . import func2subr
-from .crackfortran import rmbadname
+from . import __version__
+f2py_version = __version__.version
 
 
 def findcommonblocks(block, top=1):

@@ -177,7 +177,8 @@ def test_str_cat_mixed_inputs(index_or_series):
     d = concat([t, Series(s, index=s)], axis=1)
 
     expected = Index(["aAa", "bBb", "cCc", "dDd"])
-    expected = expected if box == Index else Series(expected.values, index=s.values)
+    expected = expected if box == Index else Series(
+        expected.values, index=s.values)
 
     # Series/Index with DataFrame
     result = s.str.cat(d)
@@ -198,7 +199,8 @@ def test_str_cat_mixed_inputs(index_or_series):
     # Series/Index with list of Series; different indexes
     t.index = ["b", "c", "d", "a"]
     expected = box(["aDa", "bAb", "cBc", "dCd"])
-    expected = expected if box == Index else Series(expected.values, index=s.values)
+    expected = expected if box == Index else Series(
+        expected.values, index=s.values)
     result = s.str.cat([t, s])
     tm.assert_equal(result, expected)
 
@@ -209,7 +211,8 @@ def test_str_cat_mixed_inputs(index_or_series):
     # Series/Index with DataFrame; different indexes
     d.index = ["b", "c", "d", "a"]
     expected = box(["aDd", "bAa", "cBb", "dCc"])
-    expected = expected if box == Index else Series(expected.values, index=s.values)
+    expected = expected if box == Index else Series(
+        expected.values, index=s.values)
     result = s.str.cat(d)
     tm.assert_equal(result, expected)
 

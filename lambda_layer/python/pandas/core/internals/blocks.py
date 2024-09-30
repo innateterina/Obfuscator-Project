@@ -420,7 +420,7 @@ class Block(PandasObject, libinternals.Block):
             nbs = []
             for i, loc in enumerate(self._mgr_locs):
                 if not is_1d_only_ea_dtype(result.dtype):
-                    vals = result[i : i + 1]
+                    vals = result[i: i + 1]
                 else:
                     vals = result[i]
 
@@ -500,7 +500,8 @@ class Block(PandasObject, libinternals.Block):
             and isna(other)
             and other is not NaT
             and not (
-                isinstance(other, (np.datetime64, np.timedelta64)) and np.isnat(other)
+                isinstance(other, (np.datetime64, np.timedelta64)
+                           ) and np.isnat(other)
             )
         ):
             warn_on_upcast = False
@@ -552,7 +553,8 @@ class Block(PandasObject, libinternals.Block):
                 return blocks
 
             nbs = extend_blocks(
-                [blk.convert(using_cow=using_cow, copy=not using_cow) for blk in blocks]
+                [blk.convert(using_cow=using_cow, copy=not using_cow)
+                 for blk in blocks]
             )
             if caller == "fillna":
                 if len(nbs) != len(blocks) or not all(
@@ -577,7 +579,8 @@ class Block(PandasObject, libinternals.Block):
         elif caller == "where" and get_option("future.no_silent_downcasting") is True:
             return blocks
         else:
-            nbs = extend_blocks([b._downcast_2d(downcast, using_cow) for b in blocks])
+            nbs = extend_blocks(
+                [b._downcast_2d(downcast, using_cow) for b in blocks])
 
         # When _maybe_downcast is called with caller="where", it is either
         #  a) with downcast=False, which is a no-op (the desired future behavior)
@@ -690,7 +693,8 @@ class Block(PandasObject, libinternals.Block):
         rbs = []
         for blk in blks:
             # Determine dtype column by column
-            sub_blks = [blk] if blk.ndim == 1 or self.shape[0] == 1 else blk._split()
+            sub_blks = [
+                blk] if blk.ndim == 1 or self.shape[0] == 1 else blk._split()
             dtypes = [
                 convert_dtypes(
                     b.values,
@@ -709,7 +713,8 @@ class Block(PandasObject, libinternals.Block):
                 continue
 
             for dtype, b in zip(dtypes, sub_blks):
-                rbs.append(b.astype(dtype=dtype, copy=copy, squeeze=b.ndim != 1))
+                rbs.append(
+                    b.astype(dtype=dtype, copy=copy, squeeze=b.ndim != 1))
         return rbs
 
     # ---------------------------------------------------------------------
@@ -939,7 +944,7 @@ class Block(PandasObject, libinternals.Block):
                         to_replace=to_replace,
                         value=value,
                         inplace=True,
-                        mask=mask[i : i + 1],
+                        mask=mask[i: i + 1],
                         using_cow=using_cow,
                     )
                 )
@@ -1111,7 +1116,7 @@ class Block(PandasObject, libinternals.Block):
                 else:
                     mib = mask
                     assert not isinstance(mib, bool)
-                    m = mib[blk_num : blk_num + 1]
+                    m = mib[blk_num: blk_num + 1]
 
                 # error: Argument "mask" to "_replace_coerce" of "Block" has
                 # incompatible type "Union[ExtensionArray, ndarray[Any, Any], bool]";
@@ -1209,7 +1214,8 @@ class Block(PandasObject, libinternals.Block):
                 # gh-45601, gh-45836, gh-46634
                 if mask.any():
                     has_ref = self.refs.has_reference()
-                    nb = self.astype(np.dtype(object), copy=False, using_cow=using_cow)
+                    nb = self.astype(np.dtype(object),
+                                     copy=False, using_cow=using_cow)
                     if (nb is self or using_cow) and not inplace:
                         nb = nb.copy()
                     elif inplace and has_ref and nb.refs.has_reference() and using_cow:
@@ -1418,7 +1424,8 @@ class Block(PandasObject, libinternals.Block):
                 if lib.is_list_like(vi):
                     # checking lib.is_scalar here fails on
                     #  test_iloc_setitem_custom_object
-                    casted = setitem_datetimelike_compat(values, len(vi), casted)
+                    casted = setitem_datetimelike_compat(
+                        values, len(vi), casted)
 
             self = self._maybe_copy(using_cow, inplace=True)
             values = cast(np.ndarray, self.values.T)
@@ -1502,7 +1509,8 @@ class Block(PandasObject, libinternals.Block):
                     ).putmask(mask, new)
                 else:
                     indexer = mask.nonzero()[0]
-                    nb = self.setitem(indexer, new[indexer], using_cow=using_cow)
+                    nb = self.setitem(
+                        indexer, new[indexer], using_cow=using_cow)
                     return [nb]
 
             else:
@@ -1514,9 +1522,9 @@ class Block(PandasObject, libinternals.Block):
                     n = new
                     if is_array:
                         # we have a different value per-column
-                        n = new[:, i : i + 1]
+                        n = new[:, i: i + 1]
 
-                    submask = orig_mask[:, i : i + 1]
+                    submask = orig_mask[:, i: i + 1]
                     rbs = nb.putmask(submask, n, using_cow=using_cow)
                     res_blocks.extend(rbs)
                 return res_blocks
@@ -1592,9 +1600,9 @@ class Block(PandasObject, libinternals.Block):
                     oth = other
                     if is_array:
                         # we have a different value per-column
-                        oth = other[:, i : i + 1]
+                        oth = other[:, i: i + 1]
 
-                    submask = cond[:, i : i + 1]
+                    submask = cond[:, i: i + 1]
                     rbs = nb.where(
                         oth, submask, _downcast=_downcast, using_cow=using_cow
                     )
@@ -1888,7 +1896,8 @@ class Block(PandasObject, libinternals.Block):
         assert self.ndim == 2
         assert is_list_like(qs)  # caller is responsible for this
 
-        result = quantile_compat(self.values, np.asarray(qs._values), interpolation)
+        result = quantile_compat(
+            self.values, np.asarray(qs._values), interpolation)
         # ensure_block_shape needed for cases where we start with EA and result
         #  is ndarray, e.g. IntegerArray, SparseArray
         result = ensure_block_shape(result, ndim=2)
@@ -1969,8 +1978,9 @@ class Block(PandasObject, libinternals.Block):
             else:
                 # No overload variant of "__getitem__" of "ExtensionArray" matches
                 # argument type "Tuple[slice, slice]"
-                values = self.values[previous_loc + 1 : idx, :]  # type: ignore[call-overload]
-                locs = mgr_locs_arr[previous_loc + 1 : idx]
+                # type: ignore[call-overload]
+                values = self.values[previous_loc + 1: idx, :]
+                locs = mgr_locs_arr[previous_loc + 1: idx]
                 nb = type(self)(
                     values, placement=BlockPlacement(locs), ndim=self.ndim, refs=refs
                 )
@@ -2017,7 +2027,8 @@ class EABackedBlock(Block):
         """
         # Transpose since EA.shift is always along axis=0, while we want to shift
         #  along rows.
-        new_values = self.values.T.shift(periods=periods, fill_value=fill_value).T
+        new_values = self.values.T.shift(
+            periods=periods, fill_value=fill_value).T
         return [self.make_block_same_class(new_values)]
 
     @final
@@ -2064,11 +2075,13 @@ class EABackedBlock(Block):
         except (ValueError, TypeError):
             if isinstance(self.dtype, IntervalDtype):
                 # see TestSetitemFloatIntervalWithIntIntervalValues
-                nb = self.coerce_to_target_dtype(orig_value, warn_on_upcast=True)
+                nb = self.coerce_to_target_dtype(
+                    orig_value, warn_on_upcast=True)
                 return nb.setitem(orig_indexer, orig_value)
 
             elif isinstance(self, NDArrayBackedExtensionBlock):
-                nb = self.coerce_to_target_dtype(orig_value, warn_on_upcast=True)
+                nb = self.coerce_to_target_dtype(
+                    orig_value, warn_on_upcast=True)
                 return nb.setitem(orig_indexer, orig_value)
 
             else:
@@ -2136,9 +2149,9 @@ class EABackedBlock(Block):
                     n = orig_other
                     if is_array:
                         # we have a different value per-column
-                        n = orig_other[:, i : i + 1]
+                        n = orig_other[:, i: i + 1]
 
-                    submask = orig_cond[:, i : i + 1]
+                    submask = orig_cond[:, i: i + 1]
                     rbs = nb.where(n, submask, using_cow=using_cow)
                     res_blocks.extend(rbs)
                 return res_blocks
@@ -2193,13 +2206,15 @@ class EABackedBlock(Block):
                 if isinstance(self.dtype, IntervalDtype):
                     # Discussion about what we want to support in the general
                     #  case GH#39584
-                    blk = self.coerce_to_target_dtype(orig_new, warn_on_upcast=True)
+                    blk = self.coerce_to_target_dtype(
+                        orig_new, warn_on_upcast=True)
                     return blk.putmask(orig_mask, orig_new)
 
                 elif isinstance(self, NDArrayBackedExtensionBlock):
                     # NB: not (yet) the same as
                     #  isinstance(values, NDArrayBackedExtensionArray)
-                    blk = self.coerce_to_target_dtype(orig_new, warn_on_upcast=True)
+                    blk = self.coerce_to_target_dtype(
+                        orig_new, warn_on_upcast=True)
                     return blk.putmask(orig_mask, orig_new)
 
                 else:
@@ -2215,9 +2230,9 @@ class EABackedBlock(Block):
                     n = orig_new
                     if is_array:
                         # we have a different value per-column
-                        n = orig_new[:, i : i + 1]
+                        n = orig_new[:, i: i + 1]
 
-                    submask = orig_mask[:, i : i + 1]
+                    submask = orig_mask[:, i: i + 1]
                     rbs = nb.putmask(submask, n)
                     res_blocks.extend(rbs)
                 return res_blocks
@@ -2331,7 +2346,8 @@ class ExtensionBlock(EABackedBlock):
             except TypeError:
                 # 3rd party EA that has not implemented copy keyword yet
                 refs = None
-                new_values = self.values.fillna(value=value, method=None, limit=limit)
+                new_values = self.values.fillna(
+                    value=value, method=None, limit=limit)
                 # issue the warning *after* retrying, in case the TypeError
                 #  was caused by an invalid fill_value
                 warnings.warn(
@@ -2390,7 +2406,7 @@ class ExtensionBlock(EABackedBlock):
                     loc += len(self.values)
                 # Note: loc:loc+1 vs [[loc]] makes a difference when called
                 #  from fast_xs because we want to get a view back.
-                return self.values[loc : loc + 1]
+                return self.values[loc: loc + 1]
             return self.values[loc]
         else:
             if i != 0:
@@ -2443,7 +2459,8 @@ class ExtensionBlock(EABackedBlock):
                 # GH#44703 went through indexing.maybe_convert_ix
                 first, second = indexer
                 if not (
-                    second.size == 1 and (second == 0).all() and first.shape[1] == 1
+                    second.size == 1 and (
+                        second == 0).all() and first.shape[1] == 1
                 ):
                     raise NotImplementedError(
                         "This should not be reached. Please report a bug at "
@@ -2818,7 +2835,8 @@ def ensure_block_shape(values: ArrayLike, ndim: int = 1) -> ArrayLike:
             # TODO(EA2D): https://github.com/pandas-dev/pandas/issues/23023
             # block.shape is incorrect for "2D" ExtensionArrays
             # We can't, and don't need to, reshape.
-            values = cast("np.ndarray | DatetimeArray | TimedeltaArray", values)
+            values = cast(
+                "np.ndarray | DatetimeArray | TimedeltaArray", values)
             values = values.reshape(1, -1)
 
     return values

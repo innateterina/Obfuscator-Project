@@ -91,7 +91,8 @@ def melt(
             if len(frame.columns.names) == len(set(frame.columns.names)):
                 var_name = frame.columns.names
             else:
-                var_name = [f"variable_{i}" for i in range(len(frame.columns.names))]
+                var_name = [f"variable_{i}" for i in range(
+                    len(frame.columns.names))]
         else:
             var_name = [
                 frame.columns.name if frame.columns.name is not None else "variable"
@@ -110,10 +111,12 @@ def melt(
         if not isinstance(id_data.dtype, np.dtype):
             # i.e. ExtensionDtype
             if num_cols_adjusted > 0:
-                mdata[col] = concat([id_data] * num_cols_adjusted, ignore_index=True)
+                mdata[col] = concat(
+                    [id_data] * num_cols_adjusted, ignore_index=True)
             else:
                 # We can't concat empty list. (GH 46044)
-                mdata[col] = type(id_data)([], name=id_data.name, dtype=id_data.dtype)
+                mdata[col] = type(id_data)(
+                    [], name=id_data.name, dtype=id_data.dtype)
         else:
             mdata[col] = np.tile(id_data._values, num_cols_adjusted)
 

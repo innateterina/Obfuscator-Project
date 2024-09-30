@@ -356,7 +356,8 @@ class TestFloatIndexers:
     )
     def test_slice_integer_frame_getitem(self, index):
         # similar to above, but on the getitem dim (of a DataFrame)
-        s = DataFrame(np.random.default_rng(2).standard_normal((5, 2)), index=index)
+        s = DataFrame(np.random.default_rng(
+            2).standard_normal((5, 2)), index=index)
 
         # getitem
         for idx in [slice(0.0, 1), slice(0, 1.0), slice(0.0, 1.0)]:
@@ -411,7 +412,8 @@ class TestFloatIndexers:
     )
     def test_float_slice_getitem_with_integer_index_raises(self, idx, index):
         # similar to above, but on the getitem dim (of a DataFrame)
-        s = DataFrame(np.random.default_rng(2).standard_normal((5, 2)), index=index)
+        s = DataFrame(np.random.default_rng(
+            2).standard_normal((5, 2)), index=index)
 
         # setitem
         sc = s.copy()

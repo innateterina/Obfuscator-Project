@@ -661,7 +661,8 @@ class RangeIndex(Index):
 
         # calculate parameters for the RangeIndex describing the
         # intersection disregarding the lower bounds
-        tmp_start = first.start + (second.start - first.start) * first.step // gcd * s
+        tmp_start = first.start + \
+            (second.start - first.start) * first.step // gcd * s
         new_step = first.step * second.step // gcd
         new_range = range(tmp_start, int_high, new_step)
         new_index = self._simple_new(new_range)
@@ -734,7 +735,8 @@ class RangeIndex(Index):
         """
         if isinstance(other, RangeIndex):
             if sort in (None, True) or (
-                sort is False and self.step > 0 and self._range_in_self(other._range)
+                sort is False and self.step > 0 and self._range_in_self(
+                    other._range)
             ):
                 # GH 47557: Can still return a RangeIndex
                 # if other range in self and sort=False
@@ -833,7 +835,8 @@ class RangeIndex(Index):
         if overlap.step == first.step:
             if overlap[0] == first.start:
                 # The difference is everything after the intersection
-                new_rng = range(overlap[-1] + first.step, first.stop, first.step)
+                new_rng = range(overlap[-1] + first.step,
+                                first.stop, first.step)
             elif overlap[-1] == first[-1]:
                 # The difference is everything before the intersection
                 new_rng = range(first.start, overlap[0], first.step)
@@ -904,7 +907,8 @@ class RangeIndex(Index):
                 return self[::2]
 
         elif lib.is_list_like(loc):
-            slc = lib.maybe_indices_to_slice(np.asarray(loc, dtype=np.intp), len(self))
+            slc = lib.maybe_indices_to_slice(
+                np.asarray(loc, dtype=np.intp), len(self))
 
             if isinstance(slc, slice):
                 # defer to RangeIndex._difference, which is optimized to return

@@ -21,7 +21,8 @@ def equal_contents(arr1, arr2) -> bool:
 
 class TestIndexSetOps:
     @pytest.mark.parametrize(
-        "method", ["union", "intersection", "difference", "symmetric_difference"]
+        "method", ["union", "intersection",
+                   "difference", "symmetric_difference"]
     )
     def test_setops_sort_validation(self, method):
         idx1 = Index(["a", "b"])

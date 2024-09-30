@@ -43,7 +43,8 @@ def test_bins(func):
     expected = Categorical(intervals, ordered=True)
 
     tm.assert_categorical_equal(result, expected)
-    tm.assert_almost_equal(bins, np.array([0.1905, 3.36666667, 6.53333333, 9.7]))
+    tm.assert_almost_equal(bins, np.array(
+        [0.1905, 3.36666667, 6.53333333, 9.7]))
 
 
 def test_right():
@@ -92,7 +93,8 @@ def test_bins_from_interval_index_doc_example():
 
     result = cut([25, 20, 50], bins=c.categories)
     tm.assert_index_equal(result.categories, expected)
-    tm.assert_numpy_array_equal(result.codes, np.array([1, 1, 2], dtype="int8"))
+    tm.assert_numpy_array_equal(
+        result.codes, np.array([1, 1, 2], dtype="int8"))
 
 
 def test_bins_not_overlapping_from_interval_index():
@@ -304,7 +306,8 @@ def test_cut_out_of_bounds():
         ),
         (
             lambda labels: Categorical.from_codes([0, 1, 2], labels),
-            lambda labels: Categorical.from_codes([1] + 4 * [0] + [1, 2], labels),
+            lambda labels: Categorical.from_codes(
+                [1] + 4 * [0] + [1, 2], labels),
         ),
     ],
 )
@@ -323,7 +326,8 @@ def test_cut_pass_labels_compat():
     labels = ["Good", "Medium", "Bad"]
 
     result = cut(arr, 3, labels=labels)
-    exp = cut(arr, 3, labels=Categorical(labels, categories=labels, ordered=True))
+    exp = cut(arr, 3, labels=Categorical(
+        labels, categories=labels, ordered=True))
     tm.assert_categorical_equal(result, exp)
 
 
@@ -409,7 +413,8 @@ def test_single_bin(data, length):
 
 
 @pytest.mark.parametrize(
-    "array_1_writeable,array_2_writeable", [(True, True), (True, False), (False, False)]
+    "array_1_writeable,array_2_writeable", [
+        (True, True), (True, False), (False, False)]
 )
 def test_cut_read_only(array_1_writeable, array_2_writeable):
     # issue 18773
@@ -457,7 +462,8 @@ def test_datetime_cut(unit, box):
     # see gh-14714
     #
     # Testing time data when it comes in various collection types.
-    data = to_datetime(["2013-01-01", "2013-01-02", "2013-01-03"]).astype(f"M8[{unit}]")
+    data = to_datetime(["2013-01-01", "2013-01-02",
+                       "2013-01-03"]).astype(f"M8[{unit}]")
     data = box(data)
     result, _ = cut(data, 3, retbins=True)
 
@@ -514,10 +520,14 @@ def test_datetime_tz_cut_mismatched_tzawareness(box):
     [
         3,
         [
-            Timestamp("2013-01-01 04:57:07.200000", tz="UTC").tz_convert("US/Eastern"),
-            Timestamp("2013-01-01 21:00:00", tz="UTC").tz_convert("US/Eastern"),
-            Timestamp("2013-01-02 13:00:00", tz="UTC").tz_convert("US/Eastern"),
-            Timestamp("2013-01-03 05:00:00", tz="UTC").tz_convert("US/Eastern"),
+            Timestamp("2013-01-01 04:57:07.200000",
+                      tz="UTC").tz_convert("US/Eastern"),
+            Timestamp("2013-01-01 21:00:00",
+                      tz="UTC").tz_convert("US/Eastern"),
+            Timestamp("2013-01-02 13:00:00",
+                      tz="UTC").tz_convert("US/Eastern"),
+            Timestamp("2013-01-03 05:00:00",
+                      tz="UTC").tz_convert("US/Eastern"),
         ],
     ],
 )
@@ -568,7 +578,8 @@ def test_datetime_nan_mask():
     tm.assert_numpy_array_equal(mask, np.array([False]))
 
     mask = result.isna()
-    tm.assert_numpy_array_equal(mask, np.array([False, True, True, True, True]))
+    tm.assert_numpy_array_equal(
+        mask, np.array([False, True, True, True, True]))
 
 
 @pytest.mark.parametrize("tz", [None, "UTC", "US/Pacific"])
@@ -676,7 +687,8 @@ def test_cut_non_unique_labels(data, bins, labels, expected_codes, expected_labe
 @pytest.mark.parametrize(
     "data, bins, labels, expected_codes, expected_labels",
     [
-        ([15, 17, 19], [14, 16, 18, 20], ["C", "B", "A"], [0, 1, 2], ["C", "B", "A"]),
+        ([15, 17, 19], [14, 16, 18, 20], [
+         "C", "B", "A"], [0, 1, 2], ["C", "B", "A"]),
         ([1, 3, 5], [0, 2, 4, 6, 8], [3, 0, 1, 2], [0, 1, 2], [3, 0, 1, 2]),
     ],
 )
@@ -710,14 +722,16 @@ def test_cut_no_warnings():
     df = DataFrame({"value": np.random.default_rng(2).integers(0, 100, 20)})
     labels = [f"{i} - {i + 9}" for i in range(0, 100, 10)]
     with tm.assert_produces_warning(False):
-        df["group"] = cut(df.value, range(0, 105, 10), right=False, labels=labels)
+        df["group"] = cut(df.value, range(0, 105, 10),
+                          right=False, labels=labels)
 
 
 def test_cut_with_duplicated_index_lowest_included():
     # GH 42185
     expected = Series(
         [Interval(-0.001, 2, closed="right")] * 3
-        + [Interval(2, 4, closed="right"), Interval(-0.001, 2, closed="right")],
+        + [Interval(2, 4, closed="right"),
+           Interval(-0.001, 2, closed="right")],
         index=[0, 1, 2, 3, 0],
         dtype="category",
     ).cat.as_ordered()
@@ -769,7 +783,8 @@ def test_cut_with_timestamp_tuple_labels():
 
 def test_cut_bins_datetime_intervalindex():
     # https://github.com/pandas-dev/pandas/issues/46218
-    bins = interval_range(Timestamp("2022-02-25"), Timestamp("2022-02-27"), freq="1D")
+    bins = interval_range(Timestamp("2022-02-25"),
+                          Timestamp("2022-02-27"), freq="1D")
     # passing Series instead of list is important to trigger bug
     result = cut(Series([Timestamp("2022-02-26")]).astype("M8[ns]"), bins=bins)
     expected = Categorical.from_codes([0], bins, ordered=True)
@@ -783,7 +798,8 @@ def test_cut_with_nullable_int64():
     intervals = IntervalIndex.from_breaks(bins)
 
     expected = Series(
-        Categorical.from_codes([-1, 0, 0, 1, 1, -1, 2, 3], intervals, ordered=True)
+        Categorical.from_codes(
+            [-1, 0, 0, 1, 1, -1, 2, 3], intervals, ordered=True)
     )
 
     result = cut(series, bins=bins)

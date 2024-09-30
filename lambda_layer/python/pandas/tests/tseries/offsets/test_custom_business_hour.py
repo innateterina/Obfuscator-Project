@@ -84,7 +84,8 @@ class TestCustomBusinessHour:
 
         assert CustomBusinessHour() != CustomBusinessHour(-1)
         assert CustomBusinessHour(start="09:00") == CustomBusinessHour()
-        assert CustomBusinessHour(start="09:00") != CustomBusinessHour(start="09:01")
+        assert CustomBusinessHour(
+            start="09:00") != CustomBusinessHour(start="09:01")
         assert CustomBusinessHour(start="09:00", end="17:00") != CustomBusinessHour(
             start="17:00", end="09:01"
         )
@@ -211,7 +212,8 @@ class TestCustomBusinessHour:
         ],
     )
     def test_is_on_offset(self, dt, expected):
-        offset = CustomBusinessHour(start="10:00", end="15:00", holidays=holidays)
+        offset = CustomBusinessHour(
+            start="10:00", end="15:00", holidays=holidays)
         assert offset.is_on_offset(dt) == expected
 
     apply_cases = [

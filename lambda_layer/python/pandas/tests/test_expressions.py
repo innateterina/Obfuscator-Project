@@ -105,7 +105,7 @@ class TestExpressions:
     @staticmethod
     def call_op(df, other, flex: bool, opname: str):
         if flex:
-            op = lambda x, y: getattr(x, opname)(y)
+            def op(x, y): return getattr(x, opname)(y)
             op.__name__ = opname
         else:
             op = getattr(operator, opname)
@@ -195,24 +195,29 @@ class TestExpressions:
         array2 = np.random.default_rng(2).standard_normal(100)
 
         # no op
-        result = expr._can_use_numexpr(operator.add, None, array, array, "evaluate")
+        result = expr._can_use_numexpr(
+            operator.add, None, array, array, "evaluate")
         assert not result
 
         # min elements
-        result = expr._can_use_numexpr(operator.add, "+", array2, array2, "evaluate")
+        result = expr._can_use_numexpr(
+            operator.add, "+", array2, array2, "evaluate")
         assert not result
 
         # ok, we only check on first part of expression
-        result = expr._can_use_numexpr(operator.add, "+", array, array2, "evaluate")
+        result = expr._can_use_numexpr(
+            operator.add, "+", array, array2, "evaluate")
         assert result
 
     @pytest.mark.filterwarnings("ignore:invalid value encountered in:RuntimeWarning")
     @pytest.mark.parametrize(
         "opname,op_str",
-        [("add", "+"), ("sub", "-"), ("mul", "*"), ("truediv", "/"), ("pow", "**")],
+        [("add", "+"), ("sub", "-"), ("mul", "*"),
+         ("truediv", "/"), ("pow", "**")],
     )
     @pytest.mark.parametrize(
-        "left_fix,right_fix", [("_array", "_array2"), ("_array_mixed", "_array_mixed2")]
+        "left_fix,right_fix", [("_array", "_array2"),
+                               ("_array_mixed", "_array_mixed2")]
     )
     def test_binary_ops(self, request, opname, op_str, left_fix, right_fix):
         left = request.getfixturevalue(left_fix)
@@ -229,7 +234,8 @@ class TestExpressions:
             expected = expr.evaluate(op, left, left, use_numexpr=False)
             tm.assert_numpy_array_equal(result, expected)
 
-            result = expr._can_use_numexpr(op, op_str, right, right, "evaluate")
+            result = expr._can_use_numexpr(
+                op, op_str, right, right, "evaluate")
             assert not result
 
         with option_context("compute.use_numexpr", False):
@@ -241,7 +247,8 @@ class TestExpressions:
         testit(left, right, opname, op_str)
 
     @pytest.mark.parametrize(
-        "left_fix,right_fix", [("_array", "_array2"), ("_array_mixed", "_array_mixed2")]
+        "left_fix,right_fix", [("_array", "_array2"),
+                               ("_array_mixed", "_array_mixed2")]
     )
     def test_comparison_ops(self, request, comparison_op, left_fix, right_fix):
         left = request.getfixturevalue(left_fix)
@@ -381,7 +388,8 @@ class TestExpressions:
                 DataFrame(
                     [[0, 1, 2, "aa"], [0, 1, 2, "aa"]], columns=["a", "b", "c", "dtype"]
                 ),
-                DataFrame([[False, False], [False, False]], columns=["a", "dtype"]),
+                DataFrame([[False, False], [False, False]],
+                          columns=["a", "dtype"]),
             ),
             (
                 DataFrame(
@@ -397,7 +405,8 @@ class TestExpressions:
     )
     def test_bool_ops_column_name_dtype(self, test_input, expected):
         # GH 22383 - .ne fails if columns containing column name 'dtype'
-        result = test_input.loc[:, ["a", "dtype"]].ne(test_input.loc[:, ["a", "dtype"]])
+        result = test_input.loc[:, ["a", "dtype"]].ne(
+            test_input.loc[:, ["a", "dtype"]])
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize(

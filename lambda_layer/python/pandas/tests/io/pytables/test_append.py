@@ -104,7 +104,8 @@ def test_append(setup_path):
 def test_append_series(setup_path):
     with ensure_clean_store(setup_path) as store:
         # basic
-        ss = Series(range(20), dtype=np.float64, index=[f"i_{i}" for i in range(20)])
+        ss = Series(range(20), dtype=np.float64, index=[
+                    f"i_{i}" for i in range(20)])
         ts = Series(
             np.arange(10, dtype=np.float64), index=date_range("2020-01-01", periods=10)
         )
@@ -137,7 +138,8 @@ def test_append_series(setup_path):
         tm.assert_series_equal(result, expected, check_index_type=True)
 
         # multi-index
-        mi = DataFrame(np.random.default_rng(2).standard_normal((5, 1)), columns=["A"])
+        mi = DataFrame(np.random.default_rng(
+            2).standard_normal((5, 1)), columns=["A"])
         mi["B"] = np.arange(len(mi))
         mi["C"] = "foo"
         mi.loc[3:5, "C"] = "bar"
@@ -372,7 +374,8 @@ def test_append_with_strings(setup_path):
 
         def check_col(key, name, size):
             assert (
-                getattr(store.get_storer(key).table.description, name).itemsize == size
+                getattr(store.get_storer(key).table.description,
+                        name).itemsize == size
             )
 
         # avoid truncation on elements
@@ -396,7 +399,8 @@ def test_append_with_strings(setup_path):
 
         # bigger string on next append
         store.append("df_new", df)
-        df_new = DataFrame([[124, "abcdefqhij"], [346, "abcdefghijklmnopqrtsuvwxyz"]])
+        df_new = DataFrame(
+            [[124, "abcdefqhij"], [346, "abcdefghijklmnopqrtsuvwxyz"]])
         msg = (
             r"Trying to store a string with len \[26\] in "
             r"\[values_block_1\] column but\n"
@@ -420,7 +424,8 @@ def test_append_with_strings(setup_path):
         tm.assert_series_equal(store.select("ss"), df["B"])
 
         # same as above, with data_columns=True
-        store.append("ss2", df["B"], data_columns=True, min_itemsize={"index": 4})
+        store.append("ss2", df["B"], data_columns=True,
+                     min_itemsize={"index": 4})
         tm.assert_series_equal(store.select("ss2"), df["B"])
 
         # min_itemsize in index without appending (GH 10381)
@@ -433,7 +438,8 @@ def test_append_with_strings(setup_path):
         # same as above, with a Series
         store.put("ss4", df["B"], format="table", min_itemsize={"index": 6})
         store.append("ss4", df2["B"])
-        tm.assert_series_equal(store.select("ss4"), concat([df["B"], df2["B"]]))
+        tm.assert_series_equal(store.select(
+            "ss4"), concat([df["B"], df2["B"]]))
 
         # with nans
         _maybe_remove(store, "df")
@@ -469,7 +475,8 @@ def test_append_with_strings(setup_path):
 
         # a min_itemsize that creates a data_column2
         _maybe_remove(store, "df")
-        store.append("df", df, data_columns=["B"], min_itemsize={"values": 200})
+        store.append("df", df, data_columns=[
+                     "B"], min_itemsize={"values": 200})
         check_col("df", "B", 200)
         check_col("df", "values_block_0", 200)
         assert store.get_storer("df").data_columns == ["B"]
@@ -481,7 +488,8 @@ def test_append_with_strings(setup_path):
         tm.assert_frame_equal(store["df"], df)
 
         # invalid min_itemsize keys
-        df = DataFrame(["foo", "foo", "foo", "barh", "barh", "barh"], columns=["A"])
+        df = DataFrame(["foo", "foo", "foo", "barh",
+                       "barh", "barh"], columns=["A"])
         _maybe_remove(store, "df")
         msg = re.escape(
             "min_itemsize has the key [foo] which is not an axis or data_column"
@@ -541,18 +549,21 @@ def test_append_with_data_columns(setup_path):
         # using min_itemsize and a data column
         def check_col(key, name, size):
             assert (
-                getattr(store.get_storer(key).table.description, name).itemsize == size
+                getattr(store.get_storer(key).table.description,
+                        name).itemsize == size
             )
 
     with ensure_clean_store(setup_path) as store:
         _maybe_remove(store, "df")
-        store.append("df", df_new, data_columns=["string"], min_itemsize={"string": 30})
+        store.append("df", df_new, data_columns=[
+                     "string"], min_itemsize={"string": 30})
         check_col("df", "string", 30)
         _maybe_remove(store, "df")
         store.append("df", df_new, data_columns=["string"], min_itemsize=30)
         check_col("df", "string", 30)
         _maybe_remove(store, "df")
-        store.append("df", df_new, data_columns=["string"], min_itemsize={"values": 30})
+        store.append("df", df_new, data_columns=[
+                     "string"], min_itemsize={"values": 30})
         check_col("df", "string", 30)
 
     with ensure_clean_store(setup_path) as store:
@@ -586,8 +597,10 @@ def test_append_with_data_columns(setup_path):
         df_new.iloc[2:5, sl] = np.nan
         df_new.iloc[7:8, sl] = "bar"
         _maybe_remove(store, "df")
-        store.append("df", df_new, data_columns=["A", "B", "string", "string2"])
-        result = store.select("df", "string='foo' and string2='foo' and A>0 and B<0")
+        store.append("df", df_new, data_columns=[
+                     "A", "B", "string", "string2"])
+        result = store.select(
+            "df", "string='foo' and string2='foo' and A>0 and B<0")
         expected = df_new[
             (df_new.string == "foo")
             & (df_new.string2 == "foo")
@@ -599,7 +612,8 @@ def test_append_with_data_columns(setup_path):
 
         # yield an empty frame
         result = store.select("df", "string='foo' and string2='cool'")
-        expected = df_new[(df_new.string == "foo") & (df_new.string2 == "cool")]
+        expected = df_new[(df_new.string == "foo") &
+                          (df_new.string2 == "cool")]
         tm.assert_frame_equal(result, expected)
 
     with ensure_clean_store(setup_path) as store:
@@ -622,7 +636,8 @@ def test_append_with_data_columns(setup_path):
         tm.assert_frame_equal(result, expected)
 
         result = store.select("df_dc", ["B > 0", "C > 0", "string == foo"])
-        expected = df_dc[(df_dc.B > 0) & (df_dc.C > 0) & (df_dc.string == "foo")]
+        expected = df_dc[(df_dc.B > 0) & (df_dc.C > 0)
+                         & (df_dc.string == "foo")]
         tm.assert_frame_equal(result, expected, check_freq=False)
         # FIXME: 2020-12-07 intermittent build failures here with freq of
         #  None instead of BDay(4)
@@ -643,14 +658,16 @@ def test_append_with_data_columns(setup_path):
         df_dc["string2"] = "cool"
 
         # on-disk operations
-        store.append("df_dc", df_dc, data_columns=["B", "C", "string", "string2"])
+        store.append("df_dc", df_dc, data_columns=[
+                     "B", "C", "string", "string2"])
 
         result = store.select("df_dc", "B>0")
         expected = df_dc[df_dc.B > 0]
         tm.assert_frame_equal(result, expected)
 
         result = store.select("df_dc", ["B > 0", "C > 0", 'string == "foo"'])
-        expected = df_dc[(df_dc.B > 0) & (df_dc.C > 0) & (df_dc.string == "foo")]
+        expected = df_dc[(df_dc.B > 0) & (df_dc.C > 0)
+                         & (df_dc.string == "foo")]
         tm.assert_frame_equal(result, expected)
 
 
@@ -721,7 +738,8 @@ def test_append_misc_empty_frame(setup_path):
             store.select("df")
 
         # repeated append of 0/non-zero frames
-        df = DataFrame(np.random.default_rng(2).random((10, 3)), columns=list("ABC"))
+        df = DataFrame(np.random.default_rng(
+            2).random((10, 3)), columns=list("ABC"))
         store.append("df", df)
         tm.assert_frame_equal(store.select("df"), df)
         store.append("df", df_empty)
@@ -890,7 +908,8 @@ def test_append_to_multiple(setup_path):
             )
 
         with pytest.raises(ValueError, match=msg):
-            store.append_to_multiple({"df1": None, "df2": None}, df, selector="df3")
+            store.append_to_multiple(
+                {"df1": None, "df2": None}, df, selector="df3")
 
         msg = (
             "append_to_multiple must have a dictionary specified as the way to "
@@ -900,7 +919,8 @@ def test_append_to_multiple(setup_path):
             store.append_to_multiple("df1", df, "df1")
 
         # regular operation
-        store.append_to_multiple({"df1": ["A", "B"], "df2": None}, df, selector="df1")
+        store.append_to_multiple(
+            {"df1": ["A", "B"], "df2": None}, df, selector="df1")
         result = store.select_as_multiple(
             ["df1", "df2"], where=["A>0", "B>0"], selector="df1"
         )
@@ -930,7 +950,8 @@ def test_append_to_multiple_dropna(setup_path):
         result = store.select_as_multiple(["df1", "df2"])
         expected = df.dropna()
         tm.assert_frame_equal(result, expected, check_index_type=True)
-        tm.assert_index_equal(store.select("df1").index, store.select("df2").index)
+        tm.assert_index_equal(store.select("df1").index,
+                              store.select("df2").index)
 
 
 def test_append_to_multiple_dropna_false(setup_path):
@@ -955,7 +976,8 @@ def test_append_to_multiple_dropna_false(setup_path):
         with pytest.raises(ValueError, match=msg):
             store.select_as_multiple(["df1a", "df2a"])
 
-        assert not store.select("df1a").index.equals(store.select("df2a").index)
+        assert not store.select("df1a").index.equals(
+            store.select("df2a").index)
 
 
 def test_append_to_multiple_min_itemsize(setup_path):

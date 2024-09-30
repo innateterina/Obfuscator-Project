@@ -113,8 +113,10 @@ class TestUpdate:
                 CategoricalDtype(categories=["a", "b"]),
             ),
             (
-                [Timestamp(year=2020, month=1, day=1, tz="Europe/London"), NaT],
-                [NaT, Timestamp(year=2020, month=1, day=1, tz="Europe/London")],
+                [Timestamp(year=2020, month=1, day=1,
+                           tz="Europe/London"), NaT],
+                [NaT, Timestamp(year=2020, month=1, day=1,
+                                tz="Europe/London")],
                 [Timestamp(year=2020, month=1, day=1, tz="Europe/London")] * 2,
                 "datetime64[ns, Europe/London]",
             ),

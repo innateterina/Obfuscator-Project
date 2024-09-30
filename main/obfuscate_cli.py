@@ -4,15 +4,17 @@ from helpers import (
     replace_pii_json_data
 )
 import argparse
-import os
 import json
 import csv
 from io import StringIO
 
 
-def obfuscate_upload(input_file_path: str, output_file_path: str, pii_fields: list):
+def obfuscate_upload(input_file_path: str,
+                     output_file_path: str,
+                     pii_fields: list):
     """
-    Reads a local file, obfuscates the PII fields, and saves it back to a new location.
+    Reads a local file, obfuscates the PII fields,
+    and saves it back to a new location.
     """
     if input_file_path.endswith(".csv"):
         result = obfuscate_csv(input_file_path, pii_fields)
@@ -30,7 +32,8 @@ def obfuscate_upload(input_file_path: str, output_file_path: str, pii_fields: li
 
 def obfuscate_csv(file_path: str, pii_fields: list):
     """
-    Reads a CSV file, obfuscates specified PII fields, and returns the obfuscated CSV content.
+    Reads a CSV file, obfuscates specified PII fields,
+    and returns the obfuscated CSV content.
     """
     with open(file_path, newline='') as csv_file:
         reader = csv.DictReader(csv_file)
@@ -47,7 +50,8 @@ def obfuscate_csv(file_path: str, pii_fields: list):
 
 def obfuscate_json(file_path: str, pii_fields: list):
     """
-    Reads a JSON file, obfuscates specified PII fields, and returns the obfuscated JSON content.
+    Reads a JSON file, obfuscates specified PII fields,
+    and returns the obfuscated JSON content.
     """
     with open(file_path, 'r') as f:
         data = json.load(f)
@@ -74,7 +78,14 @@ if __name__ == "__main__":
         args.output_file_path,
         args.pii_fields,
     )
-# python main/obfuscate_cli.py --input_file_path "main/input.csv" --output_file_path "main/output.csv" --pii_fields name email
-# python main/obfuscate_cli.py --input_file_path "main/input.json" --output_file_path "main/output.json" --pii_fields name email age id
+# python main/obfuscate_cli.py --input_file_path "main/input.csv"
+# --output_file_path "main/output.csv"
+# --pii_fields name email
+
+
+# python main/obfuscate_cli.py --input_file_path "main/input.json"
+# --output_file_path "main/output.json"
+# --pii_fields name email age id
+
 end_time = time.time()
 print(f"Runtime: {end_time - start_time} seconds")

@@ -4,11 +4,11 @@ import numpy as np
 from numpy.testing import (
     assert_, assert_equal, assert_array_equal, assert_almost_equal,
     assert_array_almost_equal, assert_raises, assert_raises_regex,
-    )
+)
 from numpy.lib._index_tricks_impl import (
     mgrid, ogrid, ndenumerate, fill_diagonal, diag_indices, diag_indices_from,
     index_exp, ndindex, c_, r_, s_, ix_
-    )
+)
 
 
 class TestRavelUnravelIndex:
@@ -18,7 +18,7 @@ class TestRavelUnravelIndex:
         # test that new shape argument works properly
         assert_equal(np.unravel_index(indices=2,
                                       shape=(2, 2)),
-                                      (1, 0))
+                     (1, 0))
 
         # test that an invalid second keyword argument
         # is properly handled, including the old name `dims`.
@@ -74,16 +74,16 @@ class TestRavelUnravelIndex:
         assert_raises_regex(TypeError, msg1, np.unravel_index, (), (10, 3, 5))
         assert_raises_regex(TypeError, msg2, np.unravel_index, np.array([]),
                             (10, 3, 5))
-        assert_equal(np.unravel_index(np.array([],dtype=int), (10, 3, 5)),
+        assert_equal(np.unravel_index(np.array([], dtype=int), (10, 3, 5)),
                      [[], [], []])
         assert_raises_regex(TypeError, msg1, np.ravel_multi_index, ([], []),
                             (10, 3))
         assert_raises_regex(TypeError, msg1, np.ravel_multi_index, ([], ['abc']),
                             (10, 3))
         assert_raises_regex(TypeError, msg2, np.ravel_multi_index,
-                    (np.array([]), np.array([])), (5, 3))
+                            (np.array([]), np.array([])), (5, 3))
         assert_equal(np.ravel_multi_index(
-                (np.array([], dtype=int), np.array([], dtype=int)), (5, 3)), [])
+            (np.array([], dtype=int), np.array([], dtype=int)), (5, 3)), [])
         assert_equal(np.ravel_multi_index(np.array([[], []], dtype=int),
                      (5, 3)), [])
 
@@ -100,16 +100,16 @@ class TestRavelUnravelIndex:
         assert_raises(ValueError, np.unravel_index, 1, (2**32-1, 2**31+1))
 
         # test overflow checking for too big array (issue #7546)
-        dummy_arr = ([0],[0])
+        dummy_arr = ([0], [0])
         half_max = np.iinfo(np.intp).max // 2
         assert_equal(
             np.ravel_multi_index(dummy_arr, (half_max, 2)), [0])
         assert_raises(ValueError,
-            np.ravel_multi_index, dummy_arr, (half_max+1, 2))
+                      np.ravel_multi_index, dummy_arr, (half_max+1, 2))
         assert_equal(
             np.ravel_multi_index(dummy_arr, (half_max, 2), order='F'), [0])
         assert_raises(ValueError,
-            np.ravel_multi_index, dummy_arr, (half_max+1, 2), order='F')
+                      np.ravel_multi_index, dummy_arr, (half_max+1, 2), order='F')
 
     def test_dtypes(self):
         # Test with different data types
@@ -168,21 +168,22 @@ class TestRavelUnravelIndex:
     @pytest.mark.parametrize("mode", ["clip", "wrap", "raise"])
     def test_empty_array_ravel(self, mode):
         res = np.ravel_multi_index(
-                    np.zeros((3, 0), dtype=np.intp), (2, 1, 0), mode=mode)
-        assert(res.shape == (0,))
+            np.zeros((3, 0), dtype=np.intp), (2, 1, 0), mode=mode)
+        assert (res.shape == (0,))
 
         with assert_raises(ValueError):
             np.ravel_multi_index(
-                    np.zeros((3, 1), dtype=np.intp), (2, 1, 0), mode=mode)
+                np.zeros((3, 1), dtype=np.intp), (2, 1, 0), mode=mode)
 
     def test_empty_array_unravel(self):
         res = np.unravel_index(np.zeros(0, dtype=np.intp), (2, 1, 0))
         # res is a tuple of three empty arrays
-        assert(len(res) == 3)
-        assert(all(a.shape == (0,) for a in res))
+        assert (len(res) == 3)
+        assert (all(a.shape == (0,) for a in res))
 
         with assert_raises(ValueError):
             np.unravel_index([1], (2, 1, 0))
+
 
 class TestGrid:
     def test_basic(self):
@@ -217,7 +218,7 @@ class TestGrid:
                                   0.2*np.ones(20, 'd'), 11)
 
     def test_sparse(self):
-        grid_full   = mgrid[-1:1:10j, -2:2:10j]
+        grid_full = mgrid[-1:1:10j, -2:2:10j]
         grid_sparse = ogrid[-1:1:10j, -2:2:10j]
 
         # sparse grids can be made dense by broadcasting
@@ -228,7 +229,7 @@ class TestGrid:
     @pytest.mark.parametrize("start, stop, step, expected", [
         (None, 10, 10j, (200, 10)),
         (-10, 20, None, (1800, 30)),
-        ])
+    ])
     def test_mgrid_size_none_handling(self, start, stop, step, expected):
         # regression test None value handling for
         # start and step values used by mgrid;
@@ -419,7 +420,7 @@ class TestFillDiagonal:
             a, np.array([[5, 0, 0],
                          [0, 5, 0],
                          [0, 0, 5]])
-            )
+        )
 
     def test_tall_matrix(self):
         a = np.zeros((10, 3), int)
@@ -435,7 +436,7 @@ class TestFillDiagonal:
                          [0, 0, 0],
                          [0, 0, 0],
                          [0, 0, 0]])
-            )
+        )
 
     def test_tall_matrix_wrap(self):
         a = np.zeros((10, 3), int)
@@ -451,7 +452,7 @@ class TestFillDiagonal:
                          [0, 0, 0],
                          [5, 0, 0],
                          [0, 5, 0]])
-            )
+        )
 
     def test_wide_matrix(self):
         a = np.zeros((3, 10), int)
@@ -460,7 +461,7 @@ class TestFillDiagonal:
             a, np.array([[5, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 5, 0, 0, 0, 0, 0, 0, 0, 0],
                          [0, 0, 5, 0, 0, 0, 0, 0, 0, 0]])
-            )
+        )
 
     def test_operate_4d_array(self):
         a = np.zeros((3, 3, 3, 3), int)
@@ -477,7 +478,7 @@ class TestFillDiagonal:
     def test_hetero_shape_handling(self):
         # raise error with high dimensionality and
         # shape mismatch
-        a = np.zeros((3,3,7,3), int)
+        a = np.zeros((3, 3, 7, 3), int)
         with assert_raises_regex(ValueError, "equal length"):
             fill_diagonal(a, 2)
 
@@ -494,7 +495,7 @@ def test_diag_indices():
                      [5, 100, 7, 8],
                      [9, 10, 100, 12],
                      [13, 14, 15, 100]])
-        )
+    )
 
     # Now, we create indices to manipulate a 3-d array:
     d3 = diag_indices(2, 3)
@@ -507,7 +508,7 @@ def test_diag_indices():
                       [0, 0]],
                      [[0, 0],
                       [0, 1]]])
-        )
+    )
 
 
 class TestDiagIndicesFrom:

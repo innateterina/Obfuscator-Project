@@ -68,7 +68,8 @@ def test_converters_no_implicit_conv(all_parsers):
             parser.read_csv(StringIO(data), header=None, converters=converters)
         return
 
-    result = parser.read_csv(StringIO(data), header=None, converters=converters)
+    result = parser.read_csv(
+        StringIO(data), header=None, converters=converters)
 
     # Column 0 should not be casted to numeric and should remain as object.
     expected = DataFrame([["000102", 1.2, "A"], ["001245", 2, "B"]])
@@ -202,7 +203,8 @@ def test_converter_index_col_bug(all_parsers, conv_f):
         StringIO(data), sep=";", index_col="A", converters={"A": conv_f}
     )
 
-    xp = DataFrame({"B": [2, 4]}, index=Index(["1", "3"], name="A", dtype="object"))
+    xp = DataFrame({"B": [2, 4]}, index=Index(
+        ["1", "3"], name="A", dtype="object"))
     tm.assert_frame_equal(rs, xp)
 
 

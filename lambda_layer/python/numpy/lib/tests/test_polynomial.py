@@ -2,7 +2,7 @@ import numpy as np
 from numpy.testing import (
     assert_, assert_equal, assert_array_equal, assert_almost_equal,
     assert_array_almost_equal, assert_raises, assert_allclose
-    )
+)
 
 import pytest
 
@@ -55,7 +55,8 @@ class TestPolynomial:
         assert_equal(p * q, np.poly1d([3., 8., 14., 8., 3.]))
         assert_equal(p + q, np.poly1d([4., 4., 4.]))
         assert_equal(p - q, np.poly1d([-2., 0., 2.]))
-        assert_equal(p ** 4, np.poly1d([1., 8., 36., 104., 214., 312., 324., 216., 81.]))
+        assert_equal(
+            p ** 4, np.poly1d([1., 8., 36., 104., 214., 312., 324., 216., 81.]))
         assert_equal(p(q), np.poly1d([9., 12., 16., 8., 6.]))
         assert_equal(q(p), np.poly1d([3., 12., 32., 40., 34.]))
         assert_equal(p.deriv(), np.poly1d([2., 2.]))
@@ -150,23 +151,23 @@ class TestPolynomial:
         m, cov = np.polyfit(x, y+err, 2, cov=True)
         est = [3.8571, 0.2857, 1.619]
         assert_almost_equal(est, m, decimal=4)
-        val0 = [[ 1.4694, -2.9388,  0.8163],
+        val0 = [[1.4694, -2.9388,  0.8163],
                 [-2.9388,  6.3673, -2.1224],
-                [ 0.8163, -2.1224,  1.161 ]]
+                [0.8163, -2.1224,  1.161]]
         assert_almost_equal(val0, cov, decimal=4)
 
         m2, cov2 = np.polyfit(x, y+err, 2, w=weights, cov=True)
         assert_almost_equal([4.8927, -1.0177, 1.7768], m2, decimal=4)
-        val = [[ 4.3964, -5.0052,  0.4878],
+        val = [[4.3964, -5.0052,  0.4878],
                [-5.0052,  6.8067, -0.9089],
-               [ 0.4878, -0.9089,  0.3337]]
+               [0.4878, -0.9089,  0.3337]]
         assert_almost_equal(val, cov2, decimal=4)
 
         m3, cov3 = np.polyfit(x, y+err, 2, w=weights, cov="unscaled")
         assert_almost_equal([4.8927, -1.0177, 1.7768], m3, decimal=4)
-        val = [[ 0.1473, -0.1677,  0.0163],
-               [-0.1677,  0.228 , -0.0304],
-               [ 0.0163, -0.0304,  0.0112]]
+        val = [[0.1473, -0.1677,  0.0163],
+               [-0.1677,  0.228, -0.0304],
+               [0.0163, -0.0304,  0.0112]]
         assert_almost_equal(val, cov3, decimal=4)
 
         # check 2D (n,1) case
@@ -203,7 +204,8 @@ class TestPolynomial:
         assert_allclose(np.sqrt(cov.mean()), 0.5, atol=0.01)
         # But if we do not scale, our estimate for the error in the mean will
         # differ.
-        mean, cov = np.polyfit(np.zeros(y.shape[0]), y, w=w, deg=0, cov="unscaled")
+        mean, cov = np.polyfit(
+            np.zeros(y.shape[0]), y, w=w, deg=0, cov="unscaled")
         assert_allclose(mean.std(), 0.5, atol=0.01)
         assert_almost_equal(np.sqrt(cov.mean()), 0.25)
 

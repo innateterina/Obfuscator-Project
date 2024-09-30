@@ -91,7 +91,8 @@ def _inherit_from_data(
         # VarArg(Any), KwArg(Any)], Any]", original type "property")
         def method(self, *args, **kwargs):  # type: ignore[misc]
             if "inplace" in kwargs:
-                raise ValueError(f"cannot use inplace with {type(self).__name__}")
+                raise ValueError(
+                    f"cannot use inplace with {type(self).__name__}")
             result = attr(self._data, *args, **kwargs)
             if wrap:
                 if isinstance(result, type(self._data)):

@@ -51,8 +51,8 @@ else:
     reason='Editable install cannot find .pxd headers'
 )
 @pytest.mark.skipif(
-        sys.platform == "win32" and sys.maxsize < 2**32,
-        reason="Failing in 32-bit Windows wheel build job, skip for now"
+    sys.platform == "win32" and sys.maxsize < 2**32,
+    reason="Failing in 32-bit Windows wheel build job, skip for now"
 )
 @pytest.mark.skipif(IS_WASM, reason="Can't start subprocess")
 @pytest.mark.skipif(cython is None, reason="requires cython")
@@ -67,7 +67,7 @@ def test_cython(tmp_path):
     os.makedirs(target_dir, exist_ok=True)
     if sys.platform == "win32":
         subprocess.check_call(["meson", "setup",
-                               "--buildtype=release", 
+                               "--buildtype=release",
                                "--vsenv", str(build_dir)],
                               cwd=target_dir,
                               )
@@ -109,10 +109,12 @@ def test_cython(tmp_path):
     assert values.shape == (10,)
     assert values.dtype == np.float64
 
+
 @pytest.mark.skipif(numba is None or cffi is None,
                     reason="requires numba and cffi")
 def test_numba():
     from numpy.random._examples.numba import extending  # noqa: F401
+
 
 @pytest.mark.skipif(cffi is None, reason="requires cffi")
 def test_cffi():

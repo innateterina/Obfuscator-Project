@@ -158,7 +158,8 @@ class BaseMethodsTests:
     def test_argmin_argmax_all_na(self, method, data, na_value):
         # all missing with skipna=True is the same as empty
         err_msg = "attempt to get"
-        data_na = type(data)._from_sequence([na_value, na_value], dtype=data.dtype)
+        data_na = type(data)._from_sequence(
+            [na_value, na_value], dtype=data.dtype)
         with pytest.raises(ValueError, match=err_msg):
             getattr(data_na, method)()
 
@@ -263,7 +264,8 @@ class BaseMethodsTests:
     @pytest.mark.parametrize("box", [pd.Series, lambda x: x])
     @pytest.mark.parametrize("method", [lambda x: x.unique(), pd.unique])
     def test_unique(self, data, box, method):
-        duplicated = box(data._from_sequence([data[0], data[0]], dtype=data.dtype))
+        duplicated = box(data._from_sequence(
+            [data[0], data[0]], dtype=data.dtype))
 
         result = method(duplicated)
 
@@ -277,17 +279,20 @@ class BaseMethodsTests:
         is_bool = data_for_grouping.dtype._is_boolean
         if is_bool:
             # only 2 unique values
-            expected_codes = np.array([0, 0, -1, -1, 1, 1, 0, 0], dtype=np.intp)
+            expected_codes = np.array(
+                [0, 0, -1, -1, 1, 1, 0, 0], dtype=np.intp)
             expected_uniques = data_for_grouping.take([0, 4])
         else:
-            expected_codes = np.array([0, 0, -1, -1, 1, 1, 0, 2], dtype=np.intp)
+            expected_codes = np.array(
+                [0, 0, -1, -1, 1, 1, 0, 2], dtype=np.intp)
             expected_uniques = data_for_grouping.take([0, 4, 7])
 
         tm.assert_numpy_array_equal(codes, expected_codes)
         tm.assert_extension_array_equal(uniques, expected_uniques)
 
     def test_factorize_equivalence(self, data_for_grouping):
-        codes_1, uniques_1 = pd.factorize(data_for_grouping, use_na_sentinel=True)
+        codes_1, uniques_1 = pd.factorize(
+            data_for_grouping, use_na_sentinel=True)
         codes_2, uniques_2 = data_for_grouping.factorize(use_na_sentinel=True)
 
         tm.assert_numpy_array_equal(codes_1, codes_2)
@@ -371,7 +376,8 @@ class BaseMethodsTests:
             with np.errstate(over="ignore"):
                 expected = pd.Series(
                     orig_data1._from_sequence(
-                        [a + b for (a, b) in zip(list(orig_data1), list(orig_data2))]
+                        [a + b for (a, b) in zip(list(orig_data1),
+                                                 list(orig_data2))]
                     )
                 )
         except TypeError:
@@ -595,7 +601,8 @@ class BaseMethodsTests:
             other = pd.DataFrame({"a": other})
             cond = pd.DataFrame({"a": cond})
         result = ser.where(cond, other)
-        expected = pd.Series(cls._from_sequence([a, b, b, b], dtype=data.dtype))
+        expected = pd.Series(cls._from_sequence(
+            [a, b, b, b], dtype=data.dtype))
         if as_frame:
             expected = expected.to_frame(name="a")
         tm.assert_equal(result, expected)
@@ -688,8 +695,10 @@ class BaseMethodsTests:
 
     @pytest.mark.parametrize("box", [pd.array, pd.Series, pd.DataFrame])
     def test_equals(self, data, na_value, as_series, box):
-        data2 = type(data)._from_sequence([data[0]] * len(data), dtype=data.dtype)
-        data_na = type(data)._from_sequence([na_value] * len(data), dtype=data.dtype)
+        data2 = type(data)._from_sequence(
+            [data[0]] * len(data), dtype=data.dtype)
+        data_na = type(data)._from_sequence(
+            [na_value] * len(data), dtype=data.dtype)
 
         data = tm.box_expected(data, box, transpose=False)
         data2 = tm.box_expected(data2, box, transpose=False)

@@ -205,11 +205,15 @@ class TestFloatNumericIndex:
 
         idx = index_cls([1.0, np.nan])
         tm.assert_numpy_array_equal(idx.isin([1.0]), np.array([True, False]))
-        tm.assert_numpy_array_equal(idx.isin([2.0, np.pi]), np.array([False, False]))
-        tm.assert_numpy_array_equal(idx.isin([np.nan]), np.array([False, True]))
-        tm.assert_numpy_array_equal(idx.isin([1.0, np.nan]), np.array([True, True]))
+        tm.assert_numpy_array_equal(
+            idx.isin([2.0, np.pi]), np.array([False, False]))
+        tm.assert_numpy_array_equal(
+            idx.isin([np.nan]), np.array([False, True]))
+        tm.assert_numpy_array_equal(
+            idx.isin([1.0, np.nan]), np.array([True, True]))
         idx = index_cls([1.0, 2.0])
-        tm.assert_numpy_array_equal(idx.isin([np.nan]), np.array([False, False]))
+        tm.assert_numpy_array_equal(
+            idx.isin([np.nan]), np.array([False, False]))
 
     def test_fillna_float64(self):
         index_cls = Index
@@ -306,7 +310,8 @@ class TestNumericInt:
         assert not idx.identical(index)
         assert Index(same_values, name="foo", dtype=object).identical(idx)
 
-        assert not index.astype(dtype=object).identical(index.astype(dtype=dtype))
+        assert not index.astype(dtype=object).identical(
+            index.astype(dtype=dtype))
 
     def test_cant_or_shouldnt_cast(self, dtype):
         msg = r"invalid literal for int\(\) with base 10: 'foo'"
@@ -480,7 +485,8 @@ class TestFloat16Index:
 
 @pytest.mark.parametrize(
     "box",
-    [list, lambda x: np.array(x, dtype=object), lambda x: Index(x, dtype=object)],
+    [list, lambda x: np.array(x, dtype=object),
+     lambda x: Index(x, dtype=object)],
 )
 def test_uint_index_does_not_convert_to_float64(box):
     # https://github.com/pandas-dev/pandas/issues/28279

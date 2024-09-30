@@ -50,7 +50,8 @@ class TestDataFramePlots:
             index=np.arange(0, n),
         )
         ax = df.plot(kind="bar", stacked=True)
-        assert [int(x.get_text()) for x in ax.get_xticklabels()] == df.index.to_list()
+        assert [int(x.get_text())
+                for x in ax.get_xticklabels()] == df.index.to_list()
         ax.set_xticks(np.arange(0, 80, 10))
         plt.draw()  # Update changes
         assert [int(x.get_text()) for x in ax.get_xticklabels()] == list(
@@ -220,7 +221,8 @@ class TestDataFramePlots:
 
     def test_fontsize(self):
         df = DataFrame({"a": [1, 2, 3, 4, 5, 6]})
-        _check_ticks_props(df.boxplot("a", fontsize=16), xlabelsize=16, ylabelsize=16)
+        _check_ticks_props(df.boxplot("a", fontsize=16),
+                           xlabelsize=16, ylabelsize=16)
 
     def test_boxplot_numeric_data(self):
         # GH 22799
@@ -333,8 +335,10 @@ class TestDataFramePlots:
     def test_plot_box(self, vert):
         # GH 54941
         rng = np.random.default_rng(2)
-        df1 = DataFrame(rng.integers(0, 100, size=(100, 4)), columns=list("ABCD"))
-        df2 = DataFrame(rng.integers(0, 100, size=(100, 4)), columns=list("ABCD"))
+        df1 = DataFrame(rng.integers(0, 100, size=(100, 4)),
+                        columns=list("ABCD"))
+        df2 = DataFrame(rng.integers(0, 100, size=(100, 4)),
+                        columns=list("ABCD"))
 
         xlabel, ylabel = "x", "y"
         _, axs = plt.subplots(ncols=2, figsize=(10, 7), sharey=True)
@@ -400,7 +404,8 @@ class TestDataFrameGroupByPlots:
 
     def test_boxplot_legacy1_return_type(self, hist_df):
         grouped = hist_df.groupby(by="gender")
-        axes = _check_plot_works(grouped.boxplot, subplots=False, return_type="axes")
+        axes = _check_plot_works(
+            grouped.boxplot, subplots=False, return_type="axes")
         _check_axes_shape(axes, axes_num=1, layout=(1, 1))
 
     @pytest.mark.slow
@@ -423,7 +428,8 @@ class TestDataFrameGroupByPlots:
             index=MultiIndex.from_tuples(tuples),
         )
         grouped = df.groupby(level=1)
-        axes = _check_plot_works(grouped.boxplot, subplots=False, return_type="axes")
+        axes = _check_plot_works(
+            grouped.boxplot, subplots=False, return_type="axes")
         _check_axes_shape(axes, axes_num=1, layout=(1, 1))
 
     @pytest.mark.parametrize(
@@ -487,7 +493,8 @@ class TestDataFrameGroupByPlots:
         df = hist_df
         # now for groupby
         result = df.groupby("gender").boxplot(return_type="dict")
-        _check_box_return_type(result, "dict", expected_keys=["Male", "Female"])
+        _check_box_return_type(
+            result, "dict", expected_keys=["Male", "Female"])
 
     @pytest.mark.slow
     @pytest.mark.parametrize("return_type", ["dict", "axes", "both"])
@@ -495,11 +502,13 @@ class TestDataFrameGroupByPlots:
         df = hist_df
 
         returned = df.groupby("classroom").boxplot(return_type=return_type)
-        _check_box_return_type(returned, return_type, expected_keys=["A", "B", "C"])
+        _check_box_return_type(returned, return_type,
+                               expected_keys=["A", "B", "C"])
 
         returned = df.boxplot(by="classroom", return_type=return_type)
         _check_box_return_type(
-            returned, return_type, expected_keys=["height", "weight", "category"]
+            returned, return_type, expected_keys=[
+                "height", "weight", "category"]
         )
 
     @pytest.mark.slow
@@ -513,7 +522,8 @@ class TestDataFrameGroupByPlots:
         df2["category"] = categories2 * 3
 
         returned = df2.groupby("category").boxplot(return_type=return_type)
-        _check_box_return_type(returned, return_type, expected_keys=categories2)
+        _check_box_return_type(returned, return_type,
+                               expected_keys=categories2)
 
         returned = df2.boxplot(by="category", return_type=return_type)
         _check_box_return_type(returned, return_type, expected_keys=columns2)
@@ -524,7 +534,8 @@ class TestDataFrameGroupByPlots:
 
         msg = "Layout of 1x1 must be larger than required size 2"
         with pytest.raises(ValueError, match=msg):
-            df.boxplot(column=["weight", "height"], by=df.gender, layout=(1, 1))
+            df.boxplot(column=["weight", "height"],
+                       by=df.gender, layout=(1, 1))
 
     @pytest.mark.slow
     def test_grouped_box_layout_needs_by(self, hist_df):
@@ -542,7 +553,8 @@ class TestDataFrameGroupByPlots:
         df = hist_df
         msg = "At least one dimension of layout must be positive"
         with pytest.raises(ValueError, match=msg):
-            df.boxplot(column=["weight", "height"], by=df.gender, layout=(-1, -1))
+            df.boxplot(column=["weight", "height"],
+                       by=df.gender, layout=(-1, -1))
 
     @pytest.mark.slow
     @pytest.mark.parametrize(
@@ -558,11 +570,13 @@ class TestDataFrameGroupByPlots:
             _check_plot_works(
                 df.groupby(gb_key).boxplot, column="height", return_type="dict"
             )
-        _check_axes_shape(mpl.pyplot.gcf().axes, axes_num=axes_num, layout=(rows, 2))
+        _check_axes_shape(mpl.pyplot.gcf().axes,
+                          axes_num=axes_num, layout=(rows, 2))
 
     @pytest.mark.slow
     @pytest.mark.parametrize(
-        "col, visible", [["height", False], ["weight", True], ["category", True]]
+        "col, visible", [["height", False], [
+            "weight", True], ["category", True]]
     )
     def test_grouped_box_layout_visible(self, hist_df, col, visible):
         df = hist_df
@@ -628,7 +642,8 @@ class TestDataFrameGroupByPlots:
         # which has earlier alphabetical order
         with tm.assert_produces_warning(UserWarning):
             _, axes = mpl.pyplot.subplots(2, 2)
-            df.groupby("category").boxplot(column="height", return_type="axes", ax=axes)
+            df.groupby("category").boxplot(
+                column="height", return_type="axes", ax=axes)
             _check_axes_shape(mpl.pyplot.gcf().axes, axes_num=4, layout=(2, 2))
 
     @pytest.mark.slow

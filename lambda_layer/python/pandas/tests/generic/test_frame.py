@@ -98,11 +98,13 @@ class TestDataFrame:
             for name in self._metadata:
                 if method == "merge":
                     left, right = other.left, other.right
-                    value = getattr(left, name, "") + "|" + getattr(right, name, "")
+                    value = getattr(left, name, "") + "|" + \
+                        getattr(right, name, "")
                     object.__setattr__(self, name, value)
                 elif method == "concat":
                     value = "+".join(
-                        [getattr(o, name) for o in other.objs if getattr(o, name, None)]
+                        [getattr(o, name)
+                         for o in other.objs if getattr(o, name, None)]
                     )
                     object.__setattr__(self, name, value)
                 else:
@@ -166,7 +168,8 @@ class TestDataFrame2:
 
         msg = 'For argument "inplace" expected type bool, received type'
         with pytest.raises(ValueError, match=msg):
-            df.copy().rename_axis(mapper={"a": "x", "b": "y"}, axis=1, inplace=value)
+            df.copy().rename_axis(
+                mapper={"a": "x", "b": "y"}, axis=1, inplace=value)
 
         with pytest.raises(ValueError, match=msg):
             df.copy().drop("a", axis=1, inplace=value)

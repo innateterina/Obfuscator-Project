@@ -135,7 +135,8 @@ def _check_for_invalid_keys(fname, kwargs, compat_args) -> None:
 
     if diff:
         bad_arg = next(iter(diff))
-        raise TypeError(f"{fname}() got an unexpected keyword argument '{bad_arg}'")
+        raise TypeError(
+            f"{fname}() got an unexpected keyword argument '{bad_arg}'")
 
 
 def validate_kwargs(fname, kwargs, compat_args) -> None:
@@ -438,12 +439,14 @@ def validate_insert_loc(loc: int, length: int) -> int:
     The exceptions we raise on failure match np.insert.
     """
     if not is_integer(loc):
-        raise TypeError(f"loc must be an integer between -{length} and {length}")
+        raise TypeError(
+            f"loc must be an integer between -{length} and {length}")
 
     if loc < 0:
         loc += length
     if not 0 <= loc <= length:
-        raise IndexError(f"loc must be an integer between -{length} and {length}")
+        raise IndexError(
+            f"loc must be an integer between -{length} and {length}")
     return loc  # pyright: ignore[reportGeneralTypeIssues]
 
 

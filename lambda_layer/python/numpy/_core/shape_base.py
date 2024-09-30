@@ -464,8 +464,10 @@ def stack(arrays, axis=0, out=None, *, dtype=None, casting="same_kind"):
     return _nx.concatenate(expanded_arrays, axis=axis, out=out,
                            dtype=dtype, casting=casting)
 
+
 def _unstack_dispatcher(x, /, *, axis=None):
     return (x,)
+
 
 @array_function_dispatch(_unstack_dispatcher)
 def unstack(x, /, *, axis=0):
@@ -534,6 +536,7 @@ def unstack(x, /, *, axis=0):
     if x.ndim == 0:
         raise ValueError("Input array must be at least 1-d.")
     return tuple(_nx.moveaxis(x, axis, 0))
+
 
 # Internal functions to eliminate the overhead of repeated dispatch in one of
 # the two possible paths inside np.block.

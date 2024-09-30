@@ -118,7 +118,8 @@ def _pprint_seq(
     s = iter(seq)
     # handle sets, no slicing
     r = [
-        pprint_thing(next(s), _nest_lvl + 1, max_seq_items=max_seq_items, **kwds)
+        pprint_thing(next(s), _nest_lvl + 1,
+                     max_seq_items=max_seq_items, **kwds)
         for i in range(min(nitems, len(seq)))
     ]
     body = ", ".join(r)
@@ -151,8 +152,10 @@ def _pprint_dict(
     for k, v in list(seq.items())[:nitems]:
         pairs.append(
             pfmt.format(
-                key=pprint_thing(k, _nest_lvl + 1, max_seq_items=max_seq_items, **kwds),
-                val=pprint_thing(v, _nest_lvl + 1, max_seq_items=max_seq_items, **kwds),
+                key=pprint_thing(k, _nest_lvl + 1,
+                                 max_seq_items=max_seq_items, **kwds),
+                val=pprint_thing(v, _nest_lvl + 1,
+                                 max_seq_items=max_seq_items, **kwds),
             )
         )
 
@@ -424,7 +427,8 @@ def format_object_summary(
 
         for head_value in head:
             word = head_value + sep + " "
-            summary, line = _extend_line(summary, line, word, display_width, space2)
+            summary, line = _extend_line(
+                summary, line, word, display_width, space2)
 
         if is_truncated:
             # remove trailing space of last line
@@ -433,10 +437,12 @@ def format_object_summary(
 
         for tail_item in tail[:-1]:
             word = tail_item + sep + " "
-            summary, line = _extend_line(summary, line, word, display_width, space2)
+            summary, line = _extend_line(
+                summary, line, word, display_width, space2)
 
         # last value: no sep added + 1 space of width used for trailing ','
-        summary, line = _extend_line(summary, line, tail[-1], display_width - 2, space2)
+        summary, line = _extend_line(
+            summary, line, tail[-1], display_width - 2, space2)
         summary += line
 
         # right now close is either '' or ', '
@@ -450,7 +456,7 @@ def format_object_summary(
             summary += " "
 
         # remove initial space
-        summary = "[" + summary[len(space2) :]
+        summary = "[" + summary[len(space2):]
 
     return summary
 

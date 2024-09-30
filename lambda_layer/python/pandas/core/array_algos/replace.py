@@ -83,7 +83,7 @@ def compare_or_regex_search(
 
     if not regex or not should_use_regex(regex, b):
         # TODO: should use missing.mask_missing?
-        op = lambda x: operator.eq(x, b)
+        def op(x): return operator.eq(x, b)
     else:
         op = np.vectorize(
             lambda x: bool(re.search(b, x))

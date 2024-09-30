@@ -132,7 +132,8 @@ def test_joins(jointype, expected, use_threads, coalesce_keys, use_datasets):
         elif jointype == "right outer":
             expected = expected.drop(["colA"])
         elif jointype == "full outer":
-            expected = expected.drop(["colB"]).set_column(0, "colA", [[1, 2, 6, 99]])
+            expected = expected.drop(["colB"]).set_column(
+                0, "colA", [[1, 2, 6, 99]])
     assert r == expected
 
 

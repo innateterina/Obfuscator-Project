@@ -274,10 +274,12 @@ class TestGetIndexer:
             idx.get_indexer(target, "pad"), np.array([-1, 0, 1], dtype=np.intp)
         )
         tm.assert_numpy_array_equal(
-            idx.get_indexer(target, "backfill"), np.array([0, 1, 2], dtype=np.intp)
+            idx.get_indexer(target, "backfill"), np.array(
+                [0, 1, 2], dtype=np.intp)
         )
         tm.assert_numpy_array_equal(
-            idx.get_indexer(target, "nearest"), np.array([0, 1, 1], dtype=np.intp)
+            idx.get_indexer(target, "nearest"), np.array(
+                [0, 1, 1], dtype=np.intp)
         )
 
     def test_get_indexer_nan(self):
@@ -337,7 +339,8 @@ class TestGetIndexer:
 
         idx = Index([1, 2, NA, NA], dtype=any_numeric_ea_and_arrow_dtype)
         result = idx.get_loc(NA)
-        tm.assert_numpy_array_equal(result, np.array([False, False, True, True]))
+        tm.assert_numpy_array_equal(
+            result, np.array([False, False, True, True]))
 
         idx = Index([1, 2, 3], dtype=any_numeric_ea_and_arrow_dtype)
         with pytest.raises(KeyError, match="NA"):
@@ -356,7 +359,8 @@ class TestGetIndexer:
         assert result == 3
 
         idx = Index(
-            FloatingArray(np.array([1, 2, 1.0]), mask=np.array([False, False, True]))
+            FloatingArray(np.array([1, 2, 1.0]),
+                          mask=np.array([False, False, True]))
         )
         result = idx.get_loc(NA)
         assert result == 2
@@ -428,7 +432,8 @@ class TestWhere:
         result = index.where(listlike_box(cond))
 
         cond = [False] + [True] * (len(index) - 1)
-        expected = Index([index._na_value] + index[1:].tolist(), dtype=np.float64)
+        expected = Index([index._na_value] +
+                         index[1:].tolist(), dtype=np.float64)
         result = index.where(listlike_box(cond))
         tm.assert_index_equal(result, expected)
 
@@ -477,7 +482,8 @@ class TestTake:
         tm.assert_index_equal(result, expected)
 
         # allow_fill=False
-        result = idx.take(np.array([1, 0, -1]), allow_fill=False, fill_value=True)
+        result = idx.take(np.array([1, 0, -1]),
+                          allow_fill=False, fill_value=True)
         expected = Index([2.0, 1.0, 3.0], dtype=np.float64, name="xxx")
         tm.assert_index_equal(result, expected)
 
@@ -510,7 +516,8 @@ class TestTake:
             idx.take(np.array([1, 0, -1]), fill_value=True)
 
         # allow_fill=False
-        result = idx.take(np.array([1, 0, -1]), allow_fill=False, fill_value=True)
+        result = idx.take(np.array([1, 0, -1]),
+                          allow_fill=False, fill_value=True)
         expected = Index([2, 1, 3], dtype=dtype, name="xxx")
         tm.assert_index_equal(result, expected)
 

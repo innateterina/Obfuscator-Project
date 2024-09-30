@@ -147,7 +147,8 @@ class TestTZConvert:
     def test_dti_tz_convert_trans_pos_plus_1__bug(self, freq, n):
         # Regression test for tslib.tz_convert(vals, tz1, tz2).
         # See GH#4496 for details.
-        idx = date_range(datetime(2011, 3, 26, 23), datetime(2011, 3, 27, 1), freq=freq)
+        idx = date_range(datetime(2011, 3, 26, 23),
+                         datetime(2011, 3, 27, 1), freq=freq)
         idx = idx.tz_localize("UTC")
         idx = idx.tz_convert("Europe/Moscow")
 
@@ -200,7 +201,8 @@ class TestTZConvert:
 
         # daily
         # Start DST
-        idx = date_range("2014-03-08 00:00", "2014-03-09 00:00", freq="D", tz="UTC")
+        idx = date_range("2014-03-08 00:00",
+                         "2014-03-09 00:00", freq="D", tz="UTC")
         idx = idx.tz_convert("US/Eastern")
         tm.assert_index_equal(idx.hour, Index([19, 19], dtype=np.int32))
 
@@ -211,7 +213,8 @@ class TestTZConvert:
         tm.assert_index_equal(idx.hour, Index([5, 5], dtype=np.int32))
 
         # End DST
-        idx = date_range("2014-11-01 00:00", "2014-11-02 00:00", freq="D", tz="UTC")
+        idx = date_range("2014-11-01 00:00",
+                         "2014-11-02 00:00", freq="D", tz="UTC")
         idx = idx.tz_convert("US/Eastern")
         tm.assert_index_equal(idx.hour, Index([20, 20], dtype=np.int32))
 
@@ -223,16 +226,20 @@ class TestTZConvert:
 
     def test_tz_convert_roundtrip(self, tz_aware_fixture):
         tz = tz_aware_fixture
-        idx1 = date_range(start="2014-01-01", end="2014-12-31", freq="ME", tz="UTC")
+        idx1 = date_range(start="2014-01-01",
+                          end="2014-12-31", freq="ME", tz="UTC")
         exp1 = date_range(start="2014-01-01", end="2014-12-31", freq="ME")
 
-        idx2 = date_range(start="2014-01-01", end="2014-12-31", freq="D", tz="UTC")
+        idx2 = date_range(start="2014-01-01",
+                          end="2014-12-31", freq="D", tz="UTC")
         exp2 = date_range(start="2014-01-01", end="2014-12-31", freq="D")
 
-        idx3 = date_range(start="2014-01-01", end="2014-03-01", freq="h", tz="UTC")
+        idx3 = date_range(start="2014-01-01",
+                          end="2014-03-01", freq="h", tz="UTC")
         exp3 = date_range(start="2014-01-01", end="2014-03-01", freq="h")
 
-        idx4 = date_range(start="2014-08-01", end="2014-10-31", freq="min", tz="UTC")
+        idx4 = date_range(start="2014-08-01",
+                          end="2014-10-31", freq="min", tz="UTC")
         exp4 = date_range(start="2014-08-01", end="2014-10-31", freq="min")
 
         for idx, expected in [(idx1, exp1), (idx2, exp2), (idx3, exp3), (idx4, exp4)]:
@@ -251,7 +258,8 @@ class TestTZConvert:
         dti2 = dti.tz_convert(dateutil.tz.tzlocal())
         tm.assert_numpy_array_equal(dti2.asi8, dti.asi8)
 
-        dti = date_range(start="2001-01-01", end="2001-03-01", tz=dateutil.tz.tzlocal())
+        dti = date_range(start="2001-01-01", end="2001-03-01",
+                         tz=dateutil.tz.tzlocal())
         dti2 = dti.tz_convert(None)
         tm.assert_numpy_array_equal(dti2.asi8, dti.asi8)
 

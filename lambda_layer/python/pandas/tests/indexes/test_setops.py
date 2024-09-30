@@ -104,9 +104,11 @@ def test_union_different_types(index_flat, index_flat2, request):
         # complex objects non-sortable
         warn = RuntimeWarning
     elif (
-        isinstance(idx1.dtype, PeriodDtype) and isinstance(idx2.dtype, CategoricalDtype)
+        isinstance(idx1.dtype, PeriodDtype) and isinstance(
+            idx2.dtype, CategoricalDtype)
     ) or (
-        isinstance(idx2.dtype, PeriodDtype) and isinstance(idx1.dtype, CategoricalDtype)
+        isinstance(idx2.dtype, PeriodDtype) and isinstance(
+            idx1.dtype, CategoricalDtype)
     ):
         warn = FutureWarning
         msg = r"PeriodDtype\[B\] is deprecated"
@@ -142,9 +144,11 @@ def test_union_different_types(index_flat, index_flat2, request):
     "idx1,idx2",
     [
         (Index(np.arange(5), dtype=np.int64), RangeIndex(5)),
-        (Index(np.arange(5), dtype=np.float64), Index(np.arange(5), dtype=np.int64)),
+        (Index(np.arange(5), dtype=np.float64),
+         Index(np.arange(5), dtype=np.int64)),
         (Index(np.arange(5), dtype=np.float64), RangeIndex(5)),
-        (Index(np.arange(5), dtype=np.float64), Index(np.arange(5), dtype=np.uint64)),
+        (Index(np.arange(5), dtype=np.float64),
+         Index(np.arange(5), dtype=np.uint64)),
     ],
 )
 def test_compatible_inconsistent_pairs(idx1, idx2):
@@ -206,7 +210,8 @@ class TestSetOps:
     # Set operation tests shared by all indexes in the `index` fixture
     @pytest.mark.parametrize("case", [0.5, "xxx"])
     @pytest.mark.parametrize(
-        "method", ["intersection", "union", "difference", "symmetric_difference"]
+        "method", ["intersection", "union",
+                   "difference", "symmetric_difference"]
     )
     def test_set_ops_error_cases(self, case, method, index):
         # non-iterable input
@@ -554,7 +559,8 @@ def test_intersection_duplicates_all_indexes(index):
     idx = index
     idx_non_unique = idx[[0, 0, 1, 2]]
 
-    assert idx.intersection(idx_non_unique).equals(idx_non_unique.intersection(idx))
+    assert idx.intersection(idx_non_unique).equals(
+        idx_non_unique.intersection(idx))
     assert idx.intersection(idx_non_unique).is_unique
 
 
@@ -707,7 +713,8 @@ class TestSetOpsUnsorted:
         second = index[:10]
         intersect = first.intersection(second, sort=sort)
         if sort in (None, False):
-            tm.assert_index_equal(intersect.sort_values(), second.sort_values())
+            tm.assert_index_equal(intersect.sort_values(),
+                                  second.sort_values())
         else:
             tm.assert_index_equal(intersect, second)
 
@@ -773,7 +780,8 @@ class TestSetOpsUnsorted:
 
         union = first.union(second, sort=sort)
         if sort in (None, False):
-            tm.assert_index_equal(union.sort_values(), everything.sort_values())
+            tm.assert_index_equal(union.sort_values(),
+                                  everything.sort_values())
         else:
             tm.assert_index_equal(union, everything)
 
@@ -788,7 +796,8 @@ class TestSetOpsUnsorted:
         case = klass(second.values)
         result = first.union(case, sort=sort)
         if sort in (None, False):
-            tm.assert_index_equal(result.sort_values(), everything.sort_values())
+            tm.assert_index_equal(result.sort_values(),
+                                  everything.sort_values())
         else:
             tm.assert_index_equal(result, everything)
 
@@ -935,7 +944,8 @@ class TestSetOpsUnsorted:
             tm.assert_index_equal(result.sort_values(), expected)
         assert result.name == "index1"
 
-        result = index1.symmetric_difference(index2, result_name="new_name", sort=sort)
+        result = index1.symmetric_difference(
+            index2, result_name="new_name", sort=sort)
         expected.name = "new_name"
         if sort in (None, True):
             tm.assert_index_equal(result, expected)

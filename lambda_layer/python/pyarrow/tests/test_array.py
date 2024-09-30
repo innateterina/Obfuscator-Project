@@ -645,7 +645,8 @@ def test_list_from_buffers(list_type_factory):
         pa.Array.from_buffers(ty, 4, buffers[:ty.num_buffers])
 
     child = pa.Array.from_buffers(pa.int16(), 6, buffers[ty.num_buffers:])
-    copied = pa.Array.from_buffers(ty, 4, buffers[:ty.num_buffers], children=[child])
+    copied = pa.Array.from_buffers(
+        ty, 4, buffers[:ty.num_buffers], children=[child])
     assert copied.equals(array)
 
     with pytest.raises(ValueError):
@@ -2161,7 +2162,8 @@ def test_array_pickle_protocol5(data, typ, pickle_module):
 
     for proto in range(5, pickle_module.HIGHEST_PROTOCOL + 1):
         buffers = []
-        pickled = pickle_module.dumps(array, proto, buffer_callback=buffers.append)
+        pickled = pickle_module.dumps(
+            array, proto, buffer_callback=buffers.append)
         result = pickle_module.loads(pickled, buffers=buffers)
         assert array.equals(result)
 
@@ -3719,7 +3721,8 @@ def test_run_end_encoded_from_buffers():
     run_ends = [3, 5, 10, 19]
     values = [1, 2, 1, 3]
 
-    ree_type = pa.run_end_encoded(run_end_type=pa.int32(), value_type=pa.uint8())
+    ree_type = pa.run_end_encoded(
+        run_end_type=pa.int32(), value_type=pa.uint8())
     length = 19
     buffers = [None]
     null_count = 0
@@ -3806,7 +3809,8 @@ def test_run_end_encoded_to_numpy():
     ree_array = pa.array(arr, pa.run_end_encoded(pa.int32(), pa.int64()))
     expected = np.array(arr)
 
-    np.testing.assert_array_equal(ree_array.to_numpy(zero_copy_only=False), expected)
+    np.testing.assert_array_equal(
+        ree_array.to_numpy(zero_copy_only=False), expected)
 
     with pytest.raises(pa.ArrowInvalid):
         ree_array.to_numpy()
@@ -4013,7 +4017,8 @@ def test_list_view_slice(list_view_type):
     i = sliced_array.offsets[0].as_py()
     j = sliced_array.offsets[1].as_py()
 
-    assert sliced_array[0].as_py() == sliced_array.values[i:j].to_pylist() == [4]
+    assert sliced_array[0].as_py(
+    ) == sliced_array.values[i:j].to_pylist() == [4]
 
 
 @pytest.mark.parametrize('numpy_native_dtype', ['u2', 'i4', 'f8'])

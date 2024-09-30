@@ -3,11 +3,11 @@ from numpy._core._rational_tests import rational
 from numpy.testing import (
     assert_equal, assert_array_equal, assert_raises, assert_,
     assert_raises_regex, assert_warns,
-    )
+)
 from numpy.lib._stride_tricks_impl import (
     as_strided, broadcast_arrays, _broadcast_shape, broadcast_to,
     broadcast_shapes, sliding_window_view,
-    )
+)
 import pytest
 
 
@@ -58,6 +58,7 @@ def test_same():
     bx, by = broadcast_arrays(x, y)
     assert_array_equal(x, bx)
     assert_array_equal(y, by)
+
 
 def test_broadcast_kwargs():
     # ensure that a TypeError is appropriately raised when

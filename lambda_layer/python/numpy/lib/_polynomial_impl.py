@@ -14,7 +14,7 @@ from .._utils import set_module
 import numpy._core.numeric as NX
 
 from numpy._core import (isscalar, abs, finfo, atleast_1d, hstack, dot, array,
-                        ones)
+                         ones)
 from numpy._core import overrides
 from numpy.exceptions import RankWarning
 from numpy.lib._twodim_base_impl import diag, vander
@@ -243,7 +243,7 @@ def roots(p):
     if N > 1:
         # build companion matrix and find its eigenvalues (the roots)
         A = diag(NX.ones((N-2,), p.dtype), -1)
-        A[0,:] = -p[1:] / p[0]
+        A[0, :] = -p[1:] / p[0]
         roots = eigvals(A)
     else:
         roots = NX.array([])
@@ -343,7 +343,7 @@ def polyint(p, m=1, k=None):
         k = k[0]*NX.ones(m, float)
     if len(k) < m:
         raise ValueError(
-              "k must be a scalar or a rank-1 array of length 1 or >m.")
+            "k must be a scalar or a rank-1 array of length 1 or >m.")
 
     truepoly = isinstance(p, poly1d)
     p = NX.asarray(p)
@@ -690,7 +690,7 @@ def polyfit(x, y, deg, rcond=None, full=False, w=None, cov=False):
         if y.ndim == 1:
             return c, Vbase * fac
         else:
-            return c, Vbase[:,:, NX.newaxis] * fac
+            return c, Vbase[:, :, NX.newaxis] * fac
     else:
         return c
 
@@ -1049,7 +1049,10 @@ def polydiv(u, v):
         return poly1d(q), poly1d(r)
     return q, r
 
+
 _poly_mat = re.compile(r"\*\*([0-9]*)")
+
+
 def _raise_power(astr, wrap=70):
     n = 0
     line1 = ''
@@ -1220,6 +1223,7 @@ class poly1d:
     @property
     def _coeffs(self):
         return self.__dict__['coeffs']
+
     @_coeffs.setter
     def _coeffs(self, coeffs):
         self.__dict__['coeffs'] = coeffs
@@ -1404,7 +1408,6 @@ class poly1d:
             return NotImplemented
         return not self.__eq__(other)
 
-
     def __getitem__(self, val):
         ind = self.order - val
         if val > self.order:
@@ -1454,5 +1457,6 @@ class poly1d:
         return poly1d(polyder(self.coeffs, m=m))
 
 # Stuff to do on module import
+
 
 warnings.simplefilter('always', RankWarning)

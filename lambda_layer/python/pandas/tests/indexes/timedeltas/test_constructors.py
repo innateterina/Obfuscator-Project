@@ -132,11 +132,13 @@ class TestTimedeltaIndex:
     def test_construction_base_constructor(self):
         arr = [Timedelta("1 days"), pd.NaT, Timedelta("3 days")]
         tm.assert_index_equal(pd.Index(arr), TimedeltaIndex(arr))
-        tm.assert_index_equal(pd.Index(np.array(arr)), TimedeltaIndex(np.array(arr)))
+        tm.assert_index_equal(pd.Index(np.array(arr)),
+                              TimedeltaIndex(np.array(arr)))
 
         arr = [np.nan, pd.NaT, Timedelta("1 days")]
         tm.assert_index_equal(pd.Index(arr), TimedeltaIndex(arr))
-        tm.assert_index_equal(pd.Index(np.array(arr)), TimedeltaIndex(np.array(arr)))
+        tm.assert_index_equal(pd.Index(np.array(arr)),
+                              TimedeltaIndex(np.array(arr)))
 
     @pytest.mark.filterwarnings(
         "ignore:The 'unit' keyword in TimedeltaIndex construction:FutureWarning"

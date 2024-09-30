@@ -26,7 +26,7 @@ __all__ = [
     'rec_drop_fields', 'rec_join', 'recursive_fill_fields',
     'rename_fields', 'repack_fields', 'require_fields',
     'stack_arrays', 'structured_to_unstructured', 'unstructured_to_structured',
-    ]
+]
 
 
 def _recursive_fill_fields_dispatcher(input, output):
@@ -646,7 +646,7 @@ def rename_fields(base, namemapper):
             if current.names is not None:
                 newdtype.append(
                     (newname, _recursive_rename_fields(current, namemapper))
-                    )
+                )
             else:
                 newdtype.append((newname, current))
         return newdtype
@@ -859,6 +859,7 @@ def repack_fields(a, align=False, recurse=False):
     dt = np.dtype(fieldinfo, align=align)
     return np.dtype((a.type, dt))
 
+
 def _get_fields_and_offsets(dt, offset=0):
     """
     Returns a flat list of (dtype, count, offset) tuples of all the
@@ -893,8 +894,10 @@ def _get_fields_and_offsets(dt, offset=0):
                     # optimization: avoid list comprehension if no subarray
                     fields.extend(subfields)
                 else:
-                    fields.extend([(d, c, o + i*size) for d, c, o in subfields])
+                    fields.extend([(d, c, o + i*size)
+                                  for d, c, o in subfields])
     return fields
+
 
 def _common_stride(offsets, counts, itemsize):
     """
@@ -944,6 +947,7 @@ def _common_stride(offsets, counts, itemsize):
 def _structured_to_unstructured_dispatcher(arr, dtype=None, copy=None,
                                            casting=None):
     return (arr,)
+
 
 @array_function_dispatch(_structured_to_unstructured_dispatcher)
 def structured_to_unstructured(arr, dtype=None, copy=False, casting='unsafe'):
@@ -1080,6 +1084,7 @@ def _unstructured_to_structured_dispatcher(arr, dtype=None, names=None,
                                            align=None, copy=None, casting=None):
     return (arr,)
 
+
 @array_function_dispatch(_unstructured_to_structured_dispatcher)
 def unstructured_to_structured(arr, dtype=None, names=None, align=False,
                                copy=False, casting='unsafe'):
@@ -1188,8 +1193,10 @@ def unstructured_to_structured(arr, dtype=None, names=None, align=False,
     # finally view as the final nested dtype and remove the last axis
     return arr.view(out_dtype)[..., 0]
 
+
 def _apply_along_fields_dispatcher(func, arr):
     return (arr,)
+
 
 @array_function_dispatch(_apply_along_fields_dispatcher)
 def apply_along_fields(func, arr):
@@ -1233,10 +1240,12 @@ def apply_along_fields(func, arr):
     uarr = structured_to_unstructured(arr)
     return func(uarr, axis=-1)
     # works and avoids axis requirement, but very, very slow:
-    #return np.apply_along_axis(func, -1, uarr)
+    # return np.apply_along_axis(func, -1, uarr)
+
 
 def _assign_fields_by_name_dispatcher(dst, src, zero_unassigned=None):
     return dst, src
+
 
 @array_function_dispatch(_assign_fields_by_name_dispatcher)
 def assign_fields_by_name(dst, src, zero_unassigned=True):
@@ -1276,8 +1285,10 @@ def assign_fields_by_name(dst, src, zero_unassigned=True):
             assign_fields_by_name(dst[name], src[name],
                                   zero_unassigned)
 
+
 def _require_fields_dispatcher(array, required_dtype):
     return (array,)
+
 
 @array_function_dispatch(_require_fields_dispatcher)
 def require_fields(array, required_dtype):
@@ -1542,16 +1553,16 @@ def join_by(key, r1, r2, jointype='inner', r1postfix='1', r2postfix='2',
     # Check jointype
     if jointype not in ('inner', 'outer', 'leftouter'):
         raise ValueError(
-                "The 'jointype' argument should be in 'inner', "
-                "'outer' or 'leftouter' (got '%s' instead)" % jointype
-                )
+            "The 'jointype' argument should be in 'inner', "
+            "'outer' or 'leftouter' (got '%s' instead)" % jointype
+        )
     # If we have a single key, put it in a tuple
     if isinstance(key, str):
         key = (key,)
 
     # Check the keys
     if len(set(key)) != len(key):
-        dup = next(x for n,x in enumerate(key) if x in key[n+1:])
+        dup = next(x for n, x in enumerate(key) if x in key[n+1:])
         raise ValueError("duplicate join key %r" % dup)
     for name in key:
         if name not in r1.dtype.names:
@@ -1576,7 +1587,7 @@ def join_by(key, r1, r2, jointype='inner', r1postfix='1', r2postfix='2',
 
     # Make temporary arrays of just the keys
     #  (use order of keys in `r1` for back-compatibility)
-    key1 = [ n for n in r1names if n in key ]
+    key1 = [n for n in r1names if n in key]
     r1k = _keep_fields(r1, key1)
     r2k = _keep_fields(r2, key1)
 
@@ -1623,7 +1634,7 @@ def join_by(key, r1, r2, jointype='inner', r1postfix='1', r2postfix='2',
         try:
             nameidx = names.index(fname)
         except ValueError:
-            #... we haven't: just add the description to the current list
+            # ... we haven't: just add the description to the current list
             ndtype.append((fname, fdtype))
         else:
             # collision

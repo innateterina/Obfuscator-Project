@@ -50,7 +50,8 @@ class TestFancy:
         # invalid
         msg = "Must have equal len keys and value when setting with an iterable"
         with pytest.raises(ValueError, match=msg):
-            df.loc[df.index[2:5], "bar"] = np.array([2.33j, 1.23 + 0.1j, 2.2, 1.0])
+            df.loc[df.index[2:5], "bar"] = np.array(
+                [2.33j, 1.23 + 0.1j, 2.2, 1.0])
 
         # valid
         df.loc[df.index[2:6], "bar"] = np.array([2.33j, 1.23 + 0.1j, 2.2, 1.0])
@@ -87,11 +88,13 @@ class TestFancy:
 
         msgs = []
         if frame_or_series is Series and indexer_sli in [tm.setitem, tm.iloc]:
-            msgs.append(r"Wrong number of dimensions. values.ndim > ndim \[3 > 1\]")
+            msgs.append(
+                r"Wrong number of dimensions. values.ndim > ndim \[3 > 1\]")
             if using_array_manager:
                 msgs.append("Passed array should be 1-dimensional")
         if frame_or_series is Series or indexer_sli is tm.iloc:
-            msgs.append(r"Buffer has wrong number of dimensions \(expected 1, got 3\)")
+            msgs.append(
+                r"Buffer has wrong number of dimensions \(expected 1, got 3\)")
             if using_array_manager:
                 msgs.append("indexer should be 1-dimensional")
         if indexer_sli is tm.loc or (
@@ -191,7 +194,8 @@ class TestFancy:
         ):
             df.loc[0, "c"] = "foo"
         expected = DataFrame(
-            {"a": [1, 3], "b": [np.nan, 2], "c": Series(["foo", np.nan], dtype=object)}
+            {"a": [1, 3], "b": [np.nan, 2], "c": Series(
+                ["foo", np.nan], dtype=object)}
         )
         tm.assert_frame_equal(df, expected)
 
@@ -250,7 +254,8 @@ class TestFancy:
 
     def test_dups_fancy_indexing_across_dtypes(self):
         # across dtypes
-        df = DataFrame([[1, 2, 1.0, 2.0, 3.0, "foo", "bar"]], columns=list("aaaaaaa"))
+        df = DataFrame([[1, 2, 1.0, 2.0, 3.0, "foo", "bar"]],
+                       columns=list("aaaaaaa"))
         result = DataFrame([[1, 2, 1.0, 2.0, 3.0, "foo", "bar"]])
         result.columns = list("aaaaaaa")  # GH#3468
 
@@ -263,7 +268,8 @@ class TestFancy:
     def test_dups_fancy_indexing_not_in_order(self):
         # GH 3561, dups not in selected order
         df = DataFrame(
-            {"test": [5, 7, 9, 11], "test1": [4.0, 5, 6, 7], "other": list("abcd")},
+            {"test": [5, 7, 9, 11], "test1": [
+                4.0, 5, 6, 7], "other": list("abcd")},
             index=["A", "A", "B", "C"],
         )
         rows = ["C", "B"]
@@ -738,19 +744,22 @@ class TestMisc:
             run_tests(df, rhs, right_loc, right_iloc)
 
     @pytest.mark.parametrize(
-        "idx", [_mklbl("A", 20), np.arange(20) + 100, np.linspace(100, 150, 20)]
+        "idx", [_mklbl("A", 20), np.arange(20) + 100,
+                np.linspace(100, 150, 20)]
     )
     def test_str_label_slicing_with_negative_step(self, idx):
         SLC = pd.IndexSlice
 
         idx = Index(idx)
         ser = Series(np.arange(20), index=idx)
-        tm.assert_indexing_slices_equivalent(ser, SLC[idx[9] :: -1], SLC[9::-1])
-        tm.assert_indexing_slices_equivalent(ser, SLC[: idx[9] : -1], SLC[:8:-1])
+        tm.assert_indexing_slices_equivalent(ser, SLC[idx[9]:: -1], SLC[9::-1])
         tm.assert_indexing_slices_equivalent(
-            ser, SLC[idx[13] : idx[9] : -1], SLC[13:8:-1]
+            ser, SLC[: idx[9]: -1], SLC[:8:-1])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[idx[13]: idx[9]: -1], SLC[13:8:-1]
         )
-        tm.assert_indexing_slices_equivalent(ser, SLC[idx[9] : idx[13] : -1], SLC[:0])
+        tm.assert_indexing_slices_equivalent(
+            ser, SLC[idx[9]: idx[13]: -1], SLC[:0])
 
     def test_slice_with_zero_step_raises(self, index, indexer_sl, frame_or_series):
         obj = frame_or_series(np.arange(len(index)), index=index)
@@ -769,7 +778,8 @@ class TestMisc:
         # GH#38335 same thing, mixed dtypes
         df = DataFrame({"x": [1, 2, 6], "y": [2.0, 2.0, 8.0]}, index=index)
         df.loc[5] = rhs
-        expected = DataFrame({"x": [1, 2, 9], "y": [2.0, 2.0, 99.0]}, index=index)
+        expected = DataFrame(
+            {"x": [1, 2, 9], "y": [2.0, 2.0, 99.0]}, index=index)
         tm.assert_frame_equal(df, expected)
 
     def test_iloc_getitem_indexing_dtypes_on_empty(self):
@@ -855,7 +865,8 @@ class TestDataframeNoneCoercion:
         start_data, expected_result, warn = expected
 
         start_dataframe = DataFrame({"foo": start_data})
-        start_dataframe[start_dataframe["foo"] == start_dataframe["foo"][0]] = None
+        start_dataframe[start_dataframe["foo"]
+                        == start_dataframe["foo"][0]] = None
 
         expected_dataframe = DataFrame({"foo": expected_result})
         tm.assert_frame_equal(start_dataframe, expected_dataframe)
@@ -865,7 +876,8 @@ class TestDataframeNoneCoercion:
         start_data, expected_result, warn = expected
 
         start_dataframe = DataFrame({"foo": start_data})
-        start_dataframe.loc[start_dataframe["foo"] == start_dataframe["foo"][0]] = None
+        start_dataframe.loc[start_dataframe["foo"]
+                            == start_dataframe["foo"][0]] = None
 
         expected_dataframe = DataFrame({"foo": expected_result})
         tm.assert_frame_equal(start_dataframe, expected_dataframe)
@@ -984,7 +996,8 @@ def test_extension_array_cross_section():
         },
         index=["a", "b"],
     )
-    expected = Series(pd.array([1, 3], dtype="Int64"), index=["A", "B"], name="a")
+    expected = Series(pd.array([1, 3], dtype="Int64"),
+                      index=["A", "B"], name="a")
     result = df.loc["a"]
     tm.assert_series_equal(result, expected)
 
@@ -1066,7 +1079,8 @@ def test_scalar_setitem_with_nested_value(value):
 
     # TODO For object dtype this happens as well, but should we rather preserve
     # the nested data and set as such?
-    df = DataFrame({"A": [1, 2, 3], "B": np.array([1, "a", "b"], dtype=object)})
+    df = DataFrame(
+        {"A": [1, 2, 3], "B": np.array([1, "a", "b"], dtype=object)})
     with pytest.raises(ValueError, match="Must have equal len keys and value"):
         df.loc[0, "B"] = value
     # if isinstance(value, np.ndarray):
@@ -1106,7 +1120,8 @@ def test_scalar_setitem_with_nested_value_length1(value):
     tm.assert_frame_equal(df, expected)
 
     # but for object dtype we preserve the nested data
-    df = DataFrame({"A": [1, 2, 3], "B": np.array([1, "a", "b"], dtype=object)})
+    df = DataFrame(
+        {"A": [1, 2, 3], "B": np.array([1, "a", "b"], dtype=object)})
     df.loc[0, "B"] = value
     if isinstance(value, np.ndarray):
         assert (df.loc[0, "B"] == value).all()

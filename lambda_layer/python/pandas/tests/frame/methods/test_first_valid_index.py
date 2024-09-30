@@ -21,7 +21,8 @@ class TestFirstValidIndex:
         assert obj.iloc[:0].first_valid_index() is None
 
     @pytest.mark.parametrize(
-        "empty", [DataFrame(), Series(dtype=object), Series([], index=[], dtype=object)]
+        "empty", [DataFrame(), Series(dtype=object),
+                  Series([], index=[], dtype=object)]
     )
     def test_first_valid_index_empty(self, empty):
         # GH#12800
@@ -47,7 +48,8 @@ class TestFirstValidIndex:
 
     @pytest.mark.parametrize(
         "index",
-        [Index([str(i) for i in range(20)]), date_range("2020-01-01", periods=20)],
+        [Index([str(i) for i in range(20)]),
+         date_range("2020-01-01", periods=20)],
     )
     def test_first_last_valid(self, index):
         mat = np.random.default_rng(2).standard_normal(len(index))
@@ -64,7 +66,8 @@ class TestFirstValidIndex:
 
     @pytest.mark.parametrize(
         "index",
-        [Index([str(i) for i in range(10)]), date_range("2020-01-01", periods=10)],
+        [Index([str(i) for i in range(10)]),
+         date_range("2020-01-01", periods=10)],
     )
     def test_first_last_valid_all_nan(self, index):
         # GH#17400: no valid entries

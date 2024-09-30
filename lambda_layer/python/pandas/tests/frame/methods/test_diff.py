@@ -57,7 +57,8 @@ class TestDataFrameDiff:
         df = DataFrame(arr)
         result = df.diff(1, axis=0)
 
-        expected = DataFrame({0: df[0], 1: [pd.NaT, pd.Timedelta(2), pd.Timedelta(2)]})
+        expected = DataFrame(
+            {0: df[0], 1: [pd.NaT, pd.Timedelta(2), pd.Timedelta(2)]})
         tm.assert_equal(result, expected)
 
         result = df.diff(0)
@@ -72,7 +73,8 @@ class TestDataFrameDiff:
     @pytest.mark.parametrize("tz", [None, "UTC"])
     def test_diff_datetime_axis0_with_nat(self, tz, unit):
         # GH#32441
-        dti = pd.DatetimeIndex(["NaT", "2019-01-01", "2019-01-02"], tz=tz).as_unit(unit)
+        dti = pd.DatetimeIndex(
+            ["NaT", "2019-01-01", "2019-01-02"], tz=tz).as_unit(unit)
         ser = Series(dti)
 
         df = ser.to_frame()
@@ -198,7 +200,8 @@ class TestDataFrameDiff:
 
     def test_diff_axis1_mixed_dtypes(self):
         # GH#32995 operate column-wise when we have mixed dtypes and axis=1
-        df = DataFrame({"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
+        df = DataFrame(
+            {"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
 
         expected = DataFrame({"A": [np.nan, np.nan, np.nan], "B": df["B"] / 2})
 
@@ -207,7 +210,8 @@ class TestDataFrameDiff:
 
         # GH#21437 mixed-float-dtypes
         df = DataFrame(
-            {"a": np.arange(3, dtype="float32"), "b": np.arange(3, dtype="float64")}
+            {"a": np.arange(3, dtype="float32"),
+             "b": np.arange(3, dtype="float64")}
         )
         result = df.diff(axis=1)
         expected = DataFrame({"a": df["a"] * np.nan, "b": df["b"] * 0})
@@ -215,7 +219,8 @@ class TestDataFrameDiff:
 
     def test_diff_axis1_mixed_dtypes_large_periods(self):
         # GH#32995 operate column-wise when we have mixed dtypes and axis=1
-        df = DataFrame({"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
+        df = DataFrame(
+            {"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
 
         expected = df * np.nan
 
@@ -224,7 +229,8 @@ class TestDataFrameDiff:
 
     def test_diff_axis1_mixed_dtypes_negative_periods(self):
         # GH#32995 operate column-wise when we have mixed dtypes and axis=1
-        df = DataFrame({"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
+        df = DataFrame(
+            {"A": range(3), "B": 2 * np.arange(3, dtype=np.float64)})
 
         expected = DataFrame({"A": -1.0 * df["A"], "B": df["B"] * np.nan})
 
@@ -302,7 +308,9 @@ class TestDataFrameDiff:
         df = df.astype(any_int_numpy_dtype)
         result = df.diff()
         expected_dtype = (
-            "float32" if any_int_numpy_dtype in ("int8", "int16") else "float64"
+            "float32" if any_int_numpy_dtype in (
+                "int8", "int16") else "float64"
         )
-        expected = DataFrame([np.nan, 1.0, 1.0, 1.0, 1.0], dtype=expected_dtype)
+        expected = DataFrame([np.nan, 1.0, 1.0, 1.0, 1.0],
+                             dtype=expected_dtype)
         tm.assert_frame_equal(result, expected)

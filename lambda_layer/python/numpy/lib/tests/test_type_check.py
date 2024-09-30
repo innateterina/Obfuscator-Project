@@ -2,10 +2,10 @@ import numpy as np
 from numpy import (
     common_type, mintypecode, isreal, iscomplex, isposinf, isneginf,
     nan_to_num, isrealobj, iscomplexobj, real_if_close
-    )
+)
 from numpy.testing import (
     assert_, assert_equal, assert_array_equal, assert_raises
-    )
+)
 
 
 def assert_all(x):
@@ -50,11 +50,11 @@ class TestMintypecode:
         assert_equal(mintypecode('fD'), 'D')
         assert_equal(mintypecode('df'), 'd')
         assert_equal(mintypecode('dd'), 'd')
-        #assert_equal(mintypecode('dF',savespace=1),'F')
+        # assert_equal(mintypecode('dF',savespace=1),'F')
         assert_equal(mintypecode('dF'), 'D')
         assert_equal(mintypecode('dD'), 'D')
         assert_equal(mintypecode('Ff'), 'F')
-        #assert_equal(mintypecode('Fd',savespace=1),'F')
+        # assert_equal(mintypecode('Fd',savespace=1),'F')
         assert_equal(mintypecode('Fd'), 'D')
         assert_equal(mintypecode('FF'), 'F')
         assert_equal(mintypecode('FD'), 'D')
@@ -65,7 +65,7 @@ class TestMintypecode:
 
     def test_default_3(self):
         assert_equal(mintypecode('fdF'), 'D')
-        #assert_equal(mintypecode('fdF',savespace=1),'F')
+        # assert_equal(mintypecode('fdF',savespace=1),'F')
         assert_equal(mintypecode('fdD'), 'D')
         assert_equal(mintypecode('fFD'), 'D')
         assert_equal(mintypecode('dFD'), 'D')
@@ -74,7 +74,7 @@ class TestMintypecode:
         assert_equal(mintypecode('ifF'), 'F')
         assert_equal(mintypecode('ifD'), 'D')
         assert_equal(mintypecode('idF'), 'D')
-        #assert_equal(mintypecode('idF',savespace=1),'F')
+        # assert_equal(mintypecode('idF',savespace=1),'F')
         assert_equal(mintypecode('idD'), 'D')
 
 
@@ -205,6 +205,7 @@ class TestIscomplexobj:
         # (pandas.core.dtypes)
         class PdComplex(np.complex128):
             pass
+
         class PdDtype:
             name = 'category'
             names = None
@@ -212,6 +213,7 @@ class TestIscomplexobj:
             kind = 'c'
             str = '<c16'
             base = np.dtype('complex128')
+
         class DummyPd:
             @property
             def dtype(self):
@@ -356,10 +358,10 @@ class TestNanToNum:
         assert_(vals[1] == 0)
         assert_all(vals[2] > 1e10) and assert_all(np.isfinite(vals[2]))
         assert_equal(type(vals), np.ndarray)
-        
+
         # perform the same tests but with nan, posinf and neginf keywords
         with np.errstate(divide='ignore', invalid='ignore'):
-            vals = nan_to_num(np.array((-1., 0, 1))/0., 
+            vals = nan_to_num(np.array((-1., 0, 1))/0.,
                               nan=10, posinf=20, neginf=30)
         assert_equal(vals, [30, 10, 20])
         assert_all(np.isfinite(vals[[0, 2]]))
@@ -375,7 +377,7 @@ class TestNanToNum:
         assert_(vals[1] == 0)
         assert_all(vals[2] > 1e10) and assert_all(np.isfinite(vals[2]))
         assert_equal(type(vals), np.ndarray)
-        
+
         # perform the same test but in-place
         with np.errstate(divide='ignore', invalid='ignore'):
             vals = np.array((-1., 0, 1))/0.
@@ -435,14 +437,14 @@ class TestNanToNum:
         assert_all(np.isfinite(vals))
         assert_equal(type(vals), np.complex128)
         # Fixme
-        #assert_all(vals.imag > 1e10)  and assert_all(np.isfinite(vals))
+        # assert_all(vals.imag > 1e10)  and assert_all(np.isfinite(vals))
         # !! This is actually (unexpectedly) positive
         # !! inf.  Comment out for now, and see if it
         # !! changes
-        #assert_all(vals.real < -1e10) and assert_all(np.isfinite(vals))
-    
+        # assert_all(vals.real < -1e10) and assert_all(np.isfinite(vals))
+
     def test_do_not_rewrite_previous_keyword(self):
-        # This is done to test that when, for instance, nan=np.inf then these 
+        # This is done to test that when, for instance, nan=np.inf then these
         # values are not rewritten by posinf keyword to the posinf value.
         with np.errstate(divide='ignore', invalid='ignore'):
             vals = nan_to_num(np.array((-1., 0, 1))/0., nan=np.inf, posinf=999)

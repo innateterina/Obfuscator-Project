@@ -108,7 +108,8 @@ class TestDataFrameCorr:
         pytest.importorskip("scipy")
         float_frame.loc[float_frame.index[:5], "A"] = np.nan
         float_frame.loc[float_frame.index[5:10], "B"] = np.nan
-        float_frame.loc[float_frame.index[:10], "A"] = float_frame["A"][10:20].copy()
+        float_frame.loc[float_frame.index[:10],
+                        "A"] = float_frame["A"][10:20].copy()
 
         correls = float_frame.corr(method=method)
         expected = float_frame["A"].corr(float_frame["C"], method=method)
@@ -162,7 +163,8 @@ class TestDataFrameCorr:
         pytest.importorskip("scipy")
         df = DataFrame({"a": [True, False], "b": [1, 0]})
 
-        expected = DataFrame(np.ones((2, 2)), index=["a", "b"], columns=["a", "b"])
+        expected = DataFrame(np.ones((2, 2)), index=[
+                             "a", "b"], columns=["a", "b"])
         result = df.corr(meth)
         tm.assert_frame_equal(result, expected)
 
@@ -196,7 +198,8 @@ class TestDataFrameCorr:
     )
     @pytest.mark.parametrize(
         "other_column",
-        [pd.array([1, 2, 3]), np.array([1.0, 2.0, 3.0]), np.array([1.0, 2.0, np.nan])],
+        [pd.array([1, 2, 3]), np.array([1.0, 2.0, 3.0]),
+         np.array([1.0, 2.0, np.nan])],
     )
     @pytest.mark.parametrize("method", ["pearson", "spearman", "kendall"])
     def test_corr_nullable_integer(self, nullable_column, other_column, method):
@@ -204,7 +207,8 @@ class TestDataFrameCorr:
         pytest.importorskip("scipy")
         data = DataFrame({"a": nullable_column, "b": other_column})
         result = data.corr(method=method)
-        expected = DataFrame(np.ones((2, 2)), columns=["a", "b"], index=["a", "b"])
+        expected = DataFrame(np.ones((2, 2)), columns=[
+                             "a", "b"], index=["a", "b"])
         tm.assert_frame_equal(result, expected)
 
     def test_corr_item_cache(self, using_copy_on_write, warn_copy_on_write):
@@ -242,10 +246,12 @@ class TestDataFrameCorr:
     def test_calc_corr_small_numbers(self):
         # GH: 37452
         df = DataFrame(
-            {"A": [1.0e-20, 2.0e-20, 3.0e-20], "B": [1.0e-20, 2.0e-20, 3.0e-20]}
+            {"A": [1.0e-20, 2.0e-20, 3.0e-20],
+                "B": [1.0e-20, 2.0e-20, 3.0e-20]}
         )
         result = df.corr()
-        expected = DataFrame({"A": [1.0, 1.0], "B": [1.0, 1.0]}, index=["A", "B"])
+        expected = DataFrame(
+            {"A": [1.0, 1.0], "B": [1.0, 1.0]}, index=["A", "B"])
         tm.assert_frame_equal(result, expected)
 
     @pytest.mark.parametrize("method", ["pearson", "spearman", "kendall"])
@@ -266,7 +272,8 @@ class TestDataFrameCorr:
         # so it need to be properly handled
         pytest.importorskip("scipy")
         df = DataFrame({"a": [1, 0], "b": [1, 0], "c": ["x", "y"]})
-        expected = DataFrame(np.ones((2, 2)), index=["a", "b"], columns=["a", "b"])
+        expected = DataFrame(np.ones((2, 2)), index=[
+                             "a", "b"], columns=["a", "b"])
         if numeric_only:
             result = df.corr(meth, numeric_only=numeric_only)
             tm.assert_frame_equal(result, expected)
@@ -288,7 +295,8 @@ class TestDataFrameCorrWith:
         datetime_frame = datetime_frame.astype(dtype)
 
         a = datetime_frame
-        noise = Series(np.random.default_rng(2).standard_normal(len(a)), index=a.index)
+        noise = Series(np.random.default_rng(
+            2).standard_normal(len(a)), index=a.index)
 
         b = datetime_frame.add(noise, axis=0)
 
@@ -324,7 +332,8 @@ class TestDataFrameCorrWith:
         )
         correls = df1.corrwith(df2, axis=1)
         for row in index[:4]:
-            tm.assert_almost_equal(correls[row], df1.loc[row].corr(df2.loc[row]))
+            tm.assert_almost_equal(
+                correls[row], df1.loc[row].corr(df2.loc[row]))
 
     def test_corrwith_with_objects(self, using_infer_string):
         df1 = DataFrame(

@@ -42,7 +42,8 @@ class TestDataFrameToRecords:
 
     def test_to_records_dt64tz_column(self):
         # GH#32535 dont less tz in to_records
-        df = DataFrame({"A": date_range("2012-01-01", "2012-01-02", tz="US/Eastern")})
+        df = DataFrame(
+            {"A": date_range("2012-01-01", "2012-01-02", tz="US/Eastern")})
 
         result = df.to_records()
 
@@ -158,7 +159,8 @@ class TestDataFrameToRecords:
         # to be specified using dictionary instead of list of tuples.
         expected = np.rec.array(
             [(0, 1.0)],
-            dtype={"names": ["index", "accented_name_é"], "formats": ["=i8", "=f8"]},
+            dtype={"names": ["index", "accented_name_é"],
+                   "formats": ["=i8", "=f8"]},
         )
         tm.assert_almost_equal(result, expected)
 
@@ -336,7 +338,8 @@ class TestDataFrameToRecords:
             ),
             # Names / indices not in dtype mapping default to array dtype.
             (
-                {"column_dtypes": {"A": np.dtype("int8"), "B": np.dtype("float32")}},
+                {"column_dtypes": {"A": np.dtype(
+                    "int8"), "B": np.dtype("float32")}},
                 np.rec.array(
                     [("0", "1", "0.2", "a"), ("1", "2", "1.5", "bc")],
                     dtype=[

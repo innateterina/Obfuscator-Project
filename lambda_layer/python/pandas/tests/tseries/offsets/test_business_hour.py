@@ -157,8 +157,10 @@ class TestBusinessHour:
         assert repr(offset6) == "<BusinessHour: bh=20:00-05:00>"
         assert repr(offset7) == "<-2 * BusinessHours: bh=21:30-06:30>"
         assert repr(offset8) == "<BusinessHour: bh=09:00-12:00,13:00-17:00>"
-        assert repr(offset9) == "<3 * BusinessHours: bh=09:00-13:00,22:00-03:00>"
-        assert repr(offset10) == "<-1 * BusinessHour: bh=13:00-17:00,23:00-02:00>"
+        assert repr(
+            offset9) == "<3 * BusinessHours: bh=09:00-13:00,22:00-03:00>"
+        assert repr(
+            offset10) == "<-1 * BusinessHour: bh=13:00-17:00,23:00-02:00>"
 
     def test_with_offset(self, dt):
         expected = Timestamp("2014-07-01 13:00")
@@ -168,7 +170,8 @@ class TestBusinessHour:
 
     @pytest.mark.parametrize(
         "offset_name",
-        ["offset1", "offset2", "offset3", "offset4", "offset8", "offset9", "offset10"],
+        ["offset1", "offset2", "offset3", "offset4",
+            "offset8", "offset9", "offset10"],
     )
     def test_eq_attribute(self, offset_name, request):
         offset = request.getfixturevalue(offset_name)
@@ -207,7 +210,8 @@ class TestBusinessHour:
 
     @pytest.mark.parametrize(
         "offset_name",
-        ["offset1", "offset2", "offset3", "offset4", "offset8", "offset9", "offset10"],
+        ["offset1", "offset2", "offset3", "offset4",
+            "offset8", "offset9", "offset10"],
     )
     def test_hash(self, offset_name, request):
         offset = request.getfixturevalue(offset_name)
@@ -733,7 +737,8 @@ class TestBusinessHour:
             },
         ),
         (
-            BusinessHour(n=4, start=["09:00", "14:00"], end=["12:00", "18:00"]),
+            BusinessHour(n=4, start=["09:00", "14:00"],
+                         end=["12:00", "18:00"]),
             {
                 datetime(2014, 7, 1, 11): datetime(2014, 7, 1, 17),
                 datetime(2014, 7, 1, 13): datetime(2014, 7, 2, 9),
@@ -752,7 +757,8 @@ class TestBusinessHour:
             },
         ),
         (
-            BusinessHour(n=-4, start=["09:00", "14:00"], end=["12:00", "18:00"]),
+            BusinessHour(n=-4, start=["09:00", "14:00"],
+                         end=["12:00", "18:00"]),
             {
                 datetime(2014, 7, 1, 11): datetime(2014, 6, 30, 16),
                 datetime(2014, 7, 1, 13): datetime(2014, 6, 30, 17),
@@ -771,7 +777,8 @@ class TestBusinessHour:
             },
         ),
         (
-            BusinessHour(n=-1, start=["19:00", "03:00"], end=["01:00", "05:00"]),
+            BusinessHour(n=-1, start=["19:00", "03:00"],
+                         end=["01:00", "05:00"]),
             {
                 datetime(2014, 7, 1, 17): datetime(2014, 7, 1, 4),
                 datetime(2014, 7, 2, 14): datetime(2014, 7, 2, 4),
@@ -864,7 +871,8 @@ class TestBusinessHour:
         ),
         (
             # large n for multiple opening hours (3 days and 1 hour before)
-            BusinessHour(n=-25, start=["09:00", "14:00"], end=["12:00", "19:00"]),
+            BusinessHour(
+                n=-25, start=["09:00", "14:00"], end=["12:00", "19:00"]),
             {
                 datetime(2014, 7, 1, 11): datetime(2014, 6, 26, 10),
                 datetime(2014, 7, 1, 13): datetime(2014, 6, 26, 11),
@@ -1310,10 +1318,13 @@ class TestOpeningTimes:
         (
             [
                 BusinessHour(start=["11:15", "15:00"], end=["13:00", "20:00"]),
-                BusinessHour(n=3, start=["11:15", "15:00"], end=["12:00", "20:00"]),
+                BusinessHour(n=3, start=["11:15", "15:00"], end=[
+                             "12:00", "20:00"]),
                 BusinessHour(start=["11:15", "15:00"], end=["13:00", "17:00"]),
-                BusinessHour(n=2, start=["11:15", "15:00"], end=["12:00", "03:00"]),
-                BusinessHour(n=3, start=["11:15", "15:00"], end=["13:00", "16:00"]),
+                BusinessHour(n=2, start=["11:15", "15:00"], end=[
+                             "12:00", "03:00"]),
+                BusinessHour(n=3, start=["11:15", "15:00"], end=[
+                             "13:00", "16:00"]),
             ],
             {
                 datetime(2014, 7, 1, 11): (
@@ -1380,8 +1391,10 @@ class TestOpeningTimes:
         ),
         (
             [
-                BusinessHour(n=-1, start=["17:00", "08:00"], end=["05:00", "10:00"]),
-                BusinessHour(n=-2, start=["08:00", "17:00"], end=["10:00", "03:00"]),
+                BusinessHour(
+                    n=-1, start=["17:00", "08:00"], end=["05:00", "10:00"]),
+                BusinessHour(
+                    n=-2, start=["08:00", "17:00"], end=["10:00", "03:00"]),
             ],
             {
                 datetime(2014, 7, 1, 11): (

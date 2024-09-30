@@ -252,7 +252,8 @@ class CategoricalIndex(NDArrayBackedExtensionIndex):
 
         elif other._is_multi:
             # preempt raising NotImplementedError in isna call
-            raise TypeError("MultiIndex is not dtype-compatible with CategoricalIndex")
+            raise TypeError(
+                "MultiIndex is not dtype-compatible with CategoricalIndex")
         else:
             values = other
 

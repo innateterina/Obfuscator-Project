@@ -19,6 +19,7 @@ from .auxfuncs import (
 
 from ._isocbind import isoc_kindmap
 
+
 def var2fixfortran(vars, a, fa=None, f90mode=None):
     if fa is None:
         fa = a
@@ -67,6 +68,7 @@ def var2fixfortran(vars, a, fa=None, f90mode=None):
         vardef = '%s(%s)' % (vardef, ','.join(vars[a]['dimension']))
     return vardef
 
+
 def useiso_c_binding(rout):
     useisoc = False
     for key, value in rout['vars'].items():
@@ -74,6 +76,7 @@ def useiso_c_binding(rout):
         if kind_value in isoc_kindmap:
             return True
     return useisoc
+
 
 def createfuncwrapper(rout, signature=0):
     assert isfunction(rout)

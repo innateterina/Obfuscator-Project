@@ -53,11 +53,13 @@ class TestAssign:
         df = DataFrame([[1, 2], [3, 4]], columns=["A", "B"])
         result = df.assign(D=df.A + df.B, C=df.A - df.B)
 
-        expected = DataFrame([[1, 2, 3, -1], [3, 4, 7, -1]], columns=list("ABDC"))
+        expected = DataFrame(
+            [[1, 2, 3, -1], [3, 4, 7, -1]], columns=list("ABDC"))
         tm.assert_frame_equal(result, expected)
         result = df.assign(C=df.A - df.B, D=df.A + df.B)
 
-        expected = DataFrame([[1, 2, -1, 3], [3, 4, -1, 7]], columns=list("ABCD"))
+        expected = DataFrame(
+            [[1, 2, -1, 3], [3, 4, -1, 7]], columns=list("ABCD"))
 
         tm.assert_frame_equal(result, expected)
 
@@ -76,9 +78,11 @@ class TestAssign:
         df = DataFrame({"A": [1, 2], "B": [3, 4]})
 
         result = df.assign(C=df.A, D=lambda x: x["A"] + x["C"])
-        expected = DataFrame([[1, 3, 1, 2], [2, 4, 2, 4]], columns=list("ABCD"))
+        expected = DataFrame([[1, 3, 1, 2], [2, 4, 2, 4]],
+                             columns=list("ABCD"))
         tm.assert_frame_equal(result, expected)
 
         result = df.assign(C=lambda df: df.A, D=lambda df: df["A"] + df["C"])
-        expected = DataFrame([[1, 3, 1, 2], [2, 4, 2, 4]], columns=list("ABCD"))
+        expected = DataFrame([[1, 3, 1, 2], [2, 4, 2, 4]],
+                             columns=list("ABCD"))
         tm.assert_frame_equal(result, expected)

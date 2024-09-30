@@ -68,7 +68,8 @@ def test_declaration():
 
     # using explicit inputs
     table_source = Declaration("table_source", options=table_opts)
-    filtered = Declaration("filter", options=filter_opts, inputs=[table_source])
+    filtered = Declaration("filter", options=filter_opts,
+                           inputs=[table_source])
     result = filtered.to_table()
     assert result.equals(table.slice(1, 2))
 
@@ -81,7 +82,8 @@ def test_declaration_repr(table_source):
 
 def test_declaration_to_reader(table_source):
     with table_source.to_reader() as reader:
-        assert reader.schema == pa.schema([("a", pa.int64()), ("b", pa.int64())])
+        assert reader.schema == pa.schema(
+            [("a", pa.int64()), ("b", pa.int64())])
         result = reader.read_all()
     expected = pa.table({'a': [1, 2, 3], 'b': [4, 5, 6]})
     assert result.equals(expected)
@@ -119,7 +121,8 @@ def test_project(table_source):
     # default name from expression
     decl = Declaration.from_sequence([
         table_source,
-        Declaration("project", ProjectNodeOptions([pc.multiply(field("a"), 2)]))
+        Declaration("project", ProjectNodeOptions(
+            [pc.multiply(field("a"), 2)]))
     ])
     result = decl.to_table()
     assert result.schema.names == ["multiply(a, 2)"]
@@ -128,7 +131,8 @@ def test_project(table_source):
     # provide name
     decl = Declaration.from_sequence([
         table_source,
-        Declaration("project", ProjectNodeOptions([pc.multiply(field("a"), 2)], ["a2"]))
+        Declaration("project", ProjectNodeOptions(
+            [pc.multiply(field("a"), 2)], ["a2"]))
     ])
     result = decl.to_table()
     assert result.schema.names == ["a2"]
@@ -150,7 +154,8 @@ def test_project(table_source):
 def test_aggregate_scalar(table_source):
     decl = Declaration.from_sequence([
         table_source,
-        Declaration("aggregate", AggregateNodeOptions([("a", "sum", None, "a_sum")]))
+        Declaration("aggregate", AggregateNodeOptions(
+            [("a", "sum", None, "a_sum")]))
     ])
     result = decl.to_table()
     assert result.schema.names == ["a_sum"]
@@ -249,26 +254,31 @@ def test_order_by():
     table_source = Declaration("table_source", TableSourceNodeOptions(table))
 
     ord_opts = OrderByNodeOptions([("b", "ascending")])
-    decl = Declaration.from_sequence([table_source, Declaration("order_by", ord_opts)])
+    decl = Declaration.from_sequence(
+        [table_source, Declaration("order_by", ord_opts)])
     result = decl.to_table()
     expected = pa.table({"a": [1, 4, 2, 3], "b": [1, 2, 3, None]})
     assert result.equals(expected)
 
     ord_opts = OrderByNodeOptions([(field("b"), "descending")])
-    decl = Declaration.from_sequence([table_source, Declaration("order_by", ord_opts)])
+    decl = Declaration.from_sequence(
+        [table_source, Declaration("order_by", ord_opts)])
     result = decl.to_table()
     expected = pa.table({"a": [2, 4, 1, 3], "b": [3, 2, 1, None]})
     assert result.equals(expected)
 
-    ord_opts = OrderByNodeOptions([(1, "descending")], null_placement="at_start")
-    decl = Declaration.from_sequence([table_source, Declaration("order_by", ord_opts)])
+    ord_opts = OrderByNodeOptions(
+        [(1, "descending")], null_placement="at_start")
+    decl = Declaration.from_sequence(
+        [table_source, Declaration("order_by", ord_opts)])
     result = decl.to_table()
     expected = pa.table({"a": [3, 2, 4, 1], "b": [None, 3, 2, 1]})
     assert result.equals(expected)
 
     # empty ordering
     ord_opts = OrderByNodeOptions([])
-    decl = Declaration.from_sequence([table_source, Declaration("order_by", ord_opts)])
+    decl = Declaration.from_sequence(
+        [table_source, Declaration("order_by", ord_opts)])
     with pytest.raises(
         ValueError, match="`ordering` must be an explicit non-empty ordering"
     ):
@@ -283,9 +293,11 @@ def test_order_by():
 
 def test_hash_join():
     left = pa.table({'key': [1, 2, 3], 'a': [4, 5, 6]})
-    left_source = Declaration("table_source", options=TableSourceNodeOptions(left))
+    left_source = Declaration(
+        "table_source", options=TableSourceNodeOptions(left))
     right = pa.table({'key': [2, 3, 4], 'b': [4, 5, 6]})
-    right_source = Declaration("table_source", options=TableSourceNodeOptions(right))
+    right_source = Declaration(
+        "table_source", options=TableSourceNodeOptions(right))
 
     # inner join
     join_opts = HashJoinNodeOptions("inner", left_keys="key", right_keys="key")
@@ -298,7 +310,8 @@ def test_hash_join():
     assert result.equals(expected)
 
     for keys in [field("key"), ["key"], [field("key")]]:
-        join_opts = HashJoinNodeOptions("inner", left_keys=keys, right_keys=keys)
+        join_opts = HashJoinNodeOptions(
+            "inner", left_keys=keys, right_keys=keys)
         joined = Declaration(
             "hashjoin", options=join_opts, inputs=[left_source, right_source])
         result = joined.to_table()
@@ -345,9 +358,11 @@ def test_hash_join():
 
 def test_asof_join():
     left = pa.table({'key': [1, 2, 3], 'ts': [1, 1, 1], 'a': [4, 5, 6]})
-    left_source = Declaration("table_source", options=TableSourceNodeOptions(left))
+    left_source = Declaration(
+        "table_source", options=TableSourceNodeOptions(left))
     right = pa.table({'key': [2, 3, 4], 'ts': [2, 5, 2], 'b': [4, 5, 6]})
-    right_source = Declaration("table_source", options=TableSourceNodeOptions(right))
+    right_source = Declaration(
+        "table_source", options=TableSourceNodeOptions(right))
 
     # asof join
     join_opts = AsofJoinNodeOptions(
@@ -404,7 +419,8 @@ def test_scan(tempdir):
 
     # projection scan option
 
-    scan_opts = ScanNodeOptions(dataset, columns={"a2": pc.multiply(field("a"), 2)})
+    scan_opts = ScanNodeOptions(
+        dataset, columns={"a2": pc.multiply(field("a"), 2)})
     decl = Declaration("scan", scan_opts)
     result = decl.to_table()
     # "a" is included in the result (needed later on for the actual projection)

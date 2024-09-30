@@ -27,7 +27,8 @@ class TestDataFrameNonuniqueIndexes:
             [[1, 1, 1, 5], [1, 1, 2, 5], [2, 1, 3, 5]], columns=["a", "a", "a", "a"]
         )
         df.columns = idx
-        expected = DataFrame([[1, 1, 1, 5], [1, 1, 2, 5], [2, 1, 3, 5]], columns=idx)
+        expected = DataFrame(
+            [[1, 1, 1, 5], [1, 1, 2, 5], [2, 1, 3, 5]], columns=idx)
         tm.assert_frame_equal(df, expected)
 
     def test_insert_with_duplicate_columns(self):
@@ -132,7 +133,8 @@ class TestDataFrameNonuniqueIndexes:
         tm.assert_frame_equal(df, expected)
 
         result = df["foo"]
-        expected = DataFrame([[1, 1.0], [1, 2.0], [2, 3.0]], columns=["foo", "foo"])
+        expected = DataFrame(
+            [[1, 1.0], [1, 2.0], [2, 3.0]], columns=["foo", "foo"])
         tm.assert_frame_equal(result, expected)
 
         # multiple replacements
@@ -192,8 +194,10 @@ class TestDataFrameNonuniqueIndexes:
 
     def test_dup_columns_comparisons(self):
         # equality
-        df1 = DataFrame([[1, 2], [2, np.nan], [3, 4], [4, 4]], columns=["A", "B"])
-        df2 = DataFrame([[0, 1], [2, 4], [2, np.nan], [4, 5]], columns=["A", "A"])
+        df1 = DataFrame([[1, 2], [2, np.nan], [3, 4], [4, 4]],
+                        columns=["A", "B"])
+        df2 = DataFrame([[0, 1], [2, 4], [2, np.nan], [4, 5]],
+                        columns=["A", "A"])
 
         # not-comparing like-labelled
         msg = (
@@ -221,7 +225,8 @@ class TestDataFrameNonuniqueIndexes:
                 "three": Series([False, True, True, True], index=["a", "b", "c", "d"]),
             }
         )
-        expected = pd.concat([dfbool["one"], dfbool["three"], dfbool["one"]], axis=1)
+        expected = pd.concat(
+            [dfbool["one"], dfbool["three"], dfbool["one"]], axis=1)
         result = dfbool[["one", "three", "one"]]
         tm.assert_frame_equal(result, expected)
 
@@ -281,7 +286,8 @@ class TestDataFrameNonuniqueIndexes:
     def test_multi_dtype2(self):
         df = DataFrame([[1, 2, "foo", "bar"]], columns=["a", "a", "a", "a"])
         df.columns = ["a", "a.1", "a.2", "a.3"]
-        expected = DataFrame([[1, 2, "foo", "bar"]], columns=["a", "a.1", "a.2", "a.3"])
+        expected = DataFrame([[1, 2, "foo", "bar"]], columns=[
+                             "a", "a.1", "a.2", "a.3"])
         tm.assert_frame_equal(df, expected)
 
     def test_dups_across_blocks(self, using_array_manager):
@@ -292,8 +298,10 @@ class TestDataFrameNonuniqueIndexes:
         df_int = DataFrame(
             np.random.default_rng(2).standard_normal((10, 3)).astype("int64")
         )
-        df_bool = DataFrame(True, index=df_float.index, columns=df_float.columns)
-        df_object = DataFrame("foo", index=df_float.index, columns=df_float.columns)
+        df_bool = DataFrame(True, index=df_float.index,
+                            columns=df_float.columns)
+        df_object = DataFrame("foo", index=df_float.index,
+                              columns=df_float.columns)
         df_dt = DataFrame(
             pd.Timestamp("20010101"), index=df_float.index, columns=df_float.columns
         )

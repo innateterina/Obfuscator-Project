@@ -379,7 +379,8 @@ class TestSetitemBooleanMask:
         mask = [False] * 3 + [True] * 5 + [False] * 2
         ser[mask] = range(5)
         result = ser
-        expected = Series([None] * 3 + list(range(5)) + [None] * 2, dtype=object)
+        expected = Series([None] * 3 + list(range(5)) +
+                          [None] * 2, dtype=object)
         tm.assert_series_equal(result, expected)
 
     def test_setitem_nan_with_bool(self):
@@ -494,7 +495,7 @@ class TestSetitemCallable:
 
     def test_setitem_callable_other(self):
         # GH#13299
-        inc = lambda x: x + 1
+        def inc(x): return x + 1
 
         # set object dtype to avoid upcast when setting inc
         ser = Series([1, 2, -1, 4], dtype=object)
@@ -567,7 +568,8 @@ class TestSetitemWithExpansion:
         ser["a"] = Timestamp("2016-01-01")
         ser["b"] = 3.0
         ser["c"] = "foo"
-        expected = Series([Timestamp("2016-01-01"), 3.0, "foo"], index=["a", "b", "c"])
+        expected = Series([Timestamp("2016-01-01"), 3.0,
+                          "foo"], index=["a", "b", "c"])
         tm.assert_series_equal(ser, expected)
 
     def test_setitem_not_contained(self, string_series):
@@ -624,7 +626,8 @@ class TestSetitemWithExpansion:
             if using_infer_string and not isinstance(nulls_fixture, Decimal)
             else object
         )
-        expected = Series(["a", "b", nulls_fixture], index=[0, 1, 3], dtype=dtype)
+        expected = Series(["a", "b", nulls_fixture],
+                          index=[0, 1, 3], dtype=dtype)
         tm.assert_series_equal(ser, expected)
         if using_infer_string:
             ser[3] is np.nan
@@ -686,7 +689,8 @@ def test_setitem_categorical_assigning_ops():
     ser = orig.copy()
     ser.index = ["x", "y"]
     ser["y"] = "a"
-    exp = Series(Categorical(["b", "a"], categories=["a", "b"]), index=["x", "y"])
+    exp = Series(Categorical(["b", "a"], categories=[
+                 "a", "b"]), index=["x", "y"])
     tm.assert_series_equal(ser, exp)
 
 
@@ -777,7 +781,8 @@ class SetitemCastingEquivalents:
             pytest.skip("Not relevant for int key")
 
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, key, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, key, expected, val,
+                               indexer_sli, is_inplace)
 
         if indexer_sli is tm.loc:
             with tm.assert_produces_warning(warn, match="incompatible dtype"):
@@ -788,25 +793,30 @@ class SetitemCastingEquivalents:
 
         rng = range(key, key + 1)
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, rng, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, rng, expected, val,
+                               indexer_sli, is_inplace)
 
         if indexer_sli is not tm.loc:
             # Note: no .loc because that handles slice edges differently
             slc = slice(key, key + 1)
             with tm.assert_produces_warning(warn, match="incompatible dtype"):
-                self.check_indexer(obj, slc, expected, val, indexer_sli, is_inplace)
+                self.check_indexer(obj, slc, expected, val,
+                                   indexer_sli, is_inplace)
 
         ilkey = [key]
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, ilkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, ilkey, expected, val,
+                               indexer_sli, is_inplace)
 
         indkey = np.array(ilkey)
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, indkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, indkey, expected, val,
+                               indexer_sli, is_inplace)
 
         genkey = (x for x in [key])
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, genkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, genkey, expected, val,
+                               indexer_sli, is_inplace)
 
     def test_slice_key(self, obj, key, expected, warn, val, indexer_sli, is_inplace):
         if not isinstance(key, slice):
@@ -815,19 +825,23 @@ class SetitemCastingEquivalents:
         if indexer_sli is not tm.loc:
             # Note: no .loc because that handles slice edges differently
             with tm.assert_produces_warning(warn, match="incompatible dtype"):
-                self.check_indexer(obj, key, expected, val, indexer_sli, is_inplace)
+                self.check_indexer(obj, key, expected, val,
+                                   indexer_sli, is_inplace)
 
         ilkey = list(range(len(obj)))[key]
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, ilkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, ilkey, expected, val,
+                               indexer_sli, is_inplace)
 
         indkey = np.array(ilkey)
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, indkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, indkey, expected, val,
+                               indexer_sli, is_inplace)
 
         genkey = (x for x in indkey)
         with tm.assert_produces_warning(warn, match="incompatible dtype"):
-            self.check_indexer(obj, genkey, expected, val, indexer_sli, is_inplace)
+            self.check_indexer(obj, genkey, expected, val,
+                               indexer_sli, is_inplace)
 
     def test_mask_key(self, obj, key, expected, warn, val, indexer_sli):
         # setitem with boolean mask
@@ -1085,7 +1099,8 @@ class TestSetitemNADatetimeLikeDtype(SetitemCastingEquivalents):
     # GH#18586 for td64 and boolean mask case
 
     @pytest.fixture(
-        params=["m8[ns]", "M8[ns]", "datetime64[ns, UTC]", "datetime64[ns, US/Central]"]
+        params=["m8[ns]", "M8[ns]", "datetime64[ns, UTC]",
+                "datetime64[ns, US/Central]"]
     )
     def dtype(self, request):
         return request.param
@@ -1171,7 +1186,8 @@ class TestSetitemMismatchedTZCastsToObject(SetitemCastingEquivalents):
         (Series([1.0, 2.0, 3.0]), Series([np.nan, 2.0, 3.0]), None),
         # For datetime series, we should coerce to NaT.
         (
-            Series([datetime(2000, 1, 1), datetime(2000, 1, 2), datetime(2000, 1, 3)]),
+            Series([datetime(2000, 1, 1), datetime(
+                2000, 1, 2), datetime(2000, 1, 3)]),
             Series([NaT, datetime(2000, 1, 2), datetime(2000, 1, 3)]),
             None,
         ),
@@ -1505,9 +1521,11 @@ class TestCoercionDatetime64(CoercionTest):
 @pytest.mark.parametrize(
     "val,exp_dtype,warn",
     [
-        (Timestamp("2012-01-01", tz="US/Eastern"), "datetime64[ns, US/Eastern]", None),
+        (Timestamp("2012-01-01", tz="US/Eastern"),
+         "datetime64[ns, US/Eastern]", None),
         # pre-2.0, a mis-matched tz would end up casting to object
-        (Timestamp("2012-01-01", tz="US/Pacific"), "datetime64[ns, US/Eastern]", None),
+        (Timestamp("2012-01-01", tz="US/Pacific"),
+         "datetime64[ns, US/Eastern]", None),
         (Timestamp("2012-01-01"), object, FutureWarning),
         (1, object, FutureWarning),
     ],

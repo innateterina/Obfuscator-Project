@@ -31,20 +31,24 @@ basestring = str
 unicode = str
 bytes = bytes
 
+
 def asunicode(s):
     if isinstance(s, bytes):
         return s.decode('latin1')
     return str(s)
+
 
 def asbytes(s):
     if isinstance(s, bytes):
         return s
     return str(s).encode('latin1')
 
+
 def asstr(s):
     if isinstance(s, bytes):
         return s.decode('latin1')
     return str(s)
+
 
 def isfileobj(f):
     if not isinstance(f, (io.FileIO, io.BufferedReader, io.BufferedWriter)):
@@ -57,16 +61,21 @@ def isfileobj(f):
     except OSError:
         return False
 
+
 def open_latin1(filename, mode='r'):
     return open(filename, mode=mode, encoding='iso-8859-1')
+
 
 def sixu(s):
     return s
 
+
 strchar = 'U'
+
 
 def getexception():
     return sys.exc_info()[1]
+
 
 def asbytes_nested(x):
     if hasattr(x, '__iter__') and not isinstance(x, (bytes, unicode)):
@@ -74,11 +83,13 @@ def asbytes_nested(x):
     else:
         return asbytes(x)
 
+
 def asunicode_nested(x):
     if hasattr(x, '__iter__') and not isinstance(x, (bytes, unicode)):
         return [asunicode_nested(y) for y in x]
     else:
         return asunicode(x)
+
 
 def is_pathlib_path(obj):
     """
@@ -89,6 +100,8 @@ def is_pathlib_path(obj):
     return isinstance(obj, Path)
 
 # from Python 3.7
+
+
 class contextlib_nullcontext:
     """Context manager that does no additional processing.
 

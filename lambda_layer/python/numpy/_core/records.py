@@ -127,7 +127,7 @@ class format_parser:
         if isinstance(formats, list):
             dtype = sb.dtype(
                 [
-                    ('f{}'.format(i), format_) 
+                    ('f{}'.format(i), format_)
                     for i, format_ in enumerate(formats)
                 ],
                 aligned,
@@ -228,14 +228,14 @@ class record(nt.void):
             try:
                 dt = obj.dtype
             except AttributeError:
-                #happens if field is Object type
+                # happens if field is Object type
                 return obj
             if dt.names is not None:
                 return obj.view((self.__class__, obj.dtype))
             return obj
         else:
             raise AttributeError("'record' object has no "
-                    "attribute '%s'" % attr)
+                                 "attribute '%s'" % attr)
 
     def __setattr__(self, attr, val):
         if attr in ('setfield', 'getfield', 'dtype'):
@@ -249,7 +249,7 @@ class record(nt.void):
                 return nt.void.__setattr__(self, attr, val)
             else:
                 raise AttributeError("'record' object has no "
-                        "attribute '%s'" % attr)
+                                     "attribute '%s'" % attr)
 
     def __getitem__(self, indx):
         obj = nt.void.__getitem__(self, indx)
@@ -403,7 +403,7 @@ class recarray(ndarray):
             )
         else:
             self = ndarray.__new__(
-                subtype, shape, (record, descr), buffer=buf, 
+                subtype, shape, (record, descr), buffer=buf,
                 offset=offset, strides=strides, order=order
             )
         return self
@@ -453,8 +453,8 @@ class recarray(ndarray):
         # Automatically convert (void) structured types to records
         # (but not non-void structures, subarrays, or non-structured voids)
         if (
-            attr == 'dtype' and 
-            issubclass(val.type, nt.void) and 
+            attr == 'dtype' and
+            issubclass(val.type, nt.void) and
             val.names is not None
         ):
             val = sb.dtype((record, val))
@@ -506,7 +506,7 @@ class recarray(ndarray):
 
         repr_dtype = self.dtype
         if (
-            self.dtype.type is record or 
+            self.dtype.type is record or
             not issubclass(self.dtype.type, nt.void)
         ):
             # If this is a full record array (has numpy.record dtype),
@@ -641,7 +641,7 @@ def fromarrays(arrayList, dtype=None, shape=None, formats=None,
     # Determine shape from data-type.
     if len(descr) != len(arrayList):
         raise ValueError("mismatch between the number of fields "
-                "and the number of arrays")
+                         "and the number of arrays")
 
     d0 = descr[0].shape
     nn = len(d0)
@@ -827,6 +827,7 @@ def fromstring(datastring, dtype=None, shape=None, offset=0, formats=None,
     _array = recarray(shape, descr, buf=datastring, offset=offset)
     return _array
 
+
 def get_remaining_size(fd):
     pos = fd.tell()
     try:
@@ -928,9 +929,9 @@ def fromfile(fd, dtype=None, shape=None, offset=0, formats=None,
 
         if nbytes > size:
             raise ValueError(
-                    "Not enough bytes left in file for specified "
-                    "shape and type."
-                )
+                "Not enough bytes left in file for specified "
+                "shape and type."
+            )
 
         # create the array
         _array = recarray(shape, descr)
@@ -1028,7 +1029,7 @@ def array(obj, dtype=None, shape=None, offset=0, strides=None, formats=None,
     """
 
     if ((isinstance(obj, (type(None), str)) or hasattr(obj, 'readinto')) and
-           formats is None and dtype is None):
+            formats is None and dtype is None):
         raise ValueError("Must define formats (or dtype) if object is "
                          "None, string, or an open file")
 

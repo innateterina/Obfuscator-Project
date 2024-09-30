@@ -19,7 +19,8 @@ dtypes = [
 def test_unary_unary(dtype):
     # unary input, unary output
     values = np.array([[-1, -1], [1, 1]], dtype="int64")
-    df = pd.DataFrame(values, columns=["A", "B"], index=["a", "b"]).astype(dtype=dtype)
+    df = pd.DataFrame(values, columns=["A", "B"], index=[
+                      "a", "b"]).astype(dtype=dtype)
     result = np.positive(df)
     expected = pd.DataFrame(
         np.positive(values), index=df.index, columns=df.columns
@@ -38,7 +39,8 @@ def test_unary_binary(request, dtype):
         )
 
     values = np.array([[-1, -1], [1, 1]], dtype="int64")
-    df = pd.DataFrame(values, columns=["A", "B"], index=["a", "b"]).astype(dtype=dtype)
+    df = pd.DataFrame(values, columns=["A", "B"], index=[
+                      "a", "b"]).astype(dtype=dtype)
     result_pandas = np.modf(df)
     assert isinstance(result_pandas, tuple)
     assert len(result_pandas) == 2
@@ -53,7 +55,8 @@ def test_unary_binary(request, dtype):
 def test_binary_input_dispatch_binop(dtype):
     # binop ufuncs are dispatched to our dunder methods.
     values = np.array([[-1, -1], [1, 1]], dtype="int64")
-    df = pd.DataFrame(values, columns=["A", "B"], index=["a", "b"]).astype(dtype=dtype)
+    df = pd.DataFrame(values, columns=["A", "B"], index=[
+                      "a", "b"]).astype(dtype=dtype)
     result = np.add(df, df)
     expected = pd.DataFrame(
         np.add(values, values), index=df.index, columns=df.columns
@@ -73,7 +76,8 @@ def test_binary_input_dispatch_binop(dtype):
         (np.power, np.array([[1, 1], [2, 2]]), [1, 2, 9, 16]),
         (np.subtract, 2, [-1, 0, 1, 2]),
         (
-            partial(np.negative, where=np.array([[False, True], [True, False]])),
+            partial(np.negative, where=np.array(
+                [[False, True], [True, False]])),
             None,
             [0, -2, -3, 0],
         ),
@@ -140,15 +144,18 @@ def test_binary_input_aligns_index(request, dtype):
                 reason="Extension / mixed with multiple inputs not implemented."
             )
         )
-    df1 = pd.DataFrame({"A": [1, 2], "B": [3, 4]}, index=["a", "b"]).astype(dtype)
-    df2 = pd.DataFrame({"A": [1, 2], "B": [3, 4]}, index=["a", "c"]).astype(dtype)
+    df1 = pd.DataFrame({"A": [1, 2], "B": [3, 4]},
+                       index=["a", "b"]).astype(dtype)
+    df2 = pd.DataFrame({"A": [1, 2], "B": [3, 4]},
+                       index=["a", "c"]).astype(dtype)
     result = np.heaviside(df1, df2)
     expected = np.heaviside(
         np.array([[1, 3], [3, 4], [np.nan, np.nan]]),
         np.array([[1, 3], [np.nan, np.nan], [3, 4]]),
     )
     # TODO(FloatArray): this will be Float64Dtype.
-    expected = pd.DataFrame(expected, index=["a", "b", "c"], columns=["A", "B"])
+    expected = pd.DataFrame(
+        expected, index=["a", "b", "c"], columns=["A", "B"])
     tm.assert_frame_equal(result, expected)
 
     result = np.heaviside(df1, df2.values)
@@ -178,14 +185,16 @@ def test_unary_accumulate_axis():
     df = pd.DataFrame({"a": [1, 3, 2, 4], "b": [0.1, 4.0, 3.0, 2.0]})
     result = np.maximum.accumulate(df)
     # in theory could preserve int dtype for default axis=0
-    expected = pd.DataFrame({"a": [1.0, 3.0, 3.0, 4.0], "b": [0.1, 4.0, 4.0, 4.0]})
+    expected = pd.DataFrame(
+        {"a": [1.0, 3.0, 3.0, 4.0], "b": [0.1, 4.0, 4.0, 4.0]})
     tm.assert_frame_equal(result, expected)
 
     result = np.maximum.accumulate(df, axis=0)
     tm.assert_frame_equal(result, expected)
 
     result = np.maximum.accumulate(df, axis=1)
-    expected = pd.DataFrame({"a": [1.0, 3.0, 2.0, 4.0], "b": [1.0, 4.0, 3.0, 4.0]})
+    expected = pd.DataFrame(
+        {"a": [1.0, 3.0, 2.0, 4.0], "b": [1.0, 4.0, 3.0, 4.0]})
     tm.assert_frame_equal(result, expected)
 
 
@@ -216,7 +225,8 @@ def test_alignment_deprecation_enforced():
     tm.assert_frame_equal(result, expected)
 
     result = np.add(df1, df2)
-    expected = pd.DataFrame({"a": [np.nan] * 3, "b": [5, 7, 9], "c": [np.nan] * 3})
+    expected = pd.DataFrame(
+        {"a": [np.nan] * 3, "b": [5, 7, 9], "c": [np.nan] * 3})
     tm.assert_frame_equal(result, expected)
 
     result = np.add(df1.values, df2)
@@ -267,7 +277,8 @@ def test_alignment_deprecation_many_inputs_enforced():
     # all aligned -> no warning
     with tm.assert_produces_warning(None):
         result = my_ufunc(df1, df1, df1)
-    expected = pd.DataFrame([[3.0, 12.0], [6.0, 15.0], [9.0, 18.0]], columns=["a", "b"])
+    expected = pd.DataFrame(
+        [[3.0, 12.0], [6.0, 15.0], [9.0, 18.0]], columns=["a", "b"])
     tm.assert_frame_equal(result, expected)
 
     # mixed frame / arrays

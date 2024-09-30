@@ -236,7 +236,8 @@ def download_tzdata_on_windows():
     location expected by Arrow which is %USERPROFILE%\Downloads\tzdata.
     """
     if sys.platform != 'win32':
-        raise TypeError(f"Timezone database is already provided by {sys.platform}")
+        raise TypeError(
+            f"Timezone database is already provided by {sys.platform}")
 
     import tarfile
 

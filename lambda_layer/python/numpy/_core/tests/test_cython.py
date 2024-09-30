@@ -148,6 +148,7 @@ def test_abstract_scalars(install_temp):
     assert checks.is_integer(np.int8(1))
     assert checks.is_integer(np.uint64(1))
 
+
 def test_default_int(install_temp):
     import checks
 
@@ -296,7 +297,7 @@ def test_fillwithbytes(install_temp):
 
 def test_complex(install_temp):
     from checks import inc2_cfloat_struct
-    
+
     arr = np.array([0, 10+10j], dtype="F")
     inc2_cfloat_struct(arr)
     assert arr[1] == (12 + 12j)

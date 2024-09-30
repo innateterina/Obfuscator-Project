@@ -47,8 +47,10 @@ class TestIntervalIndex:
         assert index.shape == (10,)
 
         tm.assert_index_equal(index.left, Index(np.arange(10, dtype=np.int64)))
-        tm.assert_index_equal(index.right, Index(np.arange(1, 11, dtype=np.int64)))
-        tm.assert_index_equal(index.mid, Index(np.arange(0.5, 10.5, dtype=np.float64)))
+        tm.assert_index_equal(index.right, Index(
+            np.arange(1, 11, dtype=np.int64)))
+        tm.assert_index_equal(index.mid, Index(
+            np.arange(0.5, 10.5, dtype=np.float64)))
 
         assert index.closed == closed
 
@@ -243,7 +245,8 @@ class TestIntervalIndex:
         assert idx.is_unique is True
 
         # unique overlapping - shared endpoints
-        idx = IntervalIndex.from_tuples([(1, 2), (1, 3), (2, 3)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(1, 2), (1, 3), (2, 3)], closed=closed)
         assert idx.is_unique is True
 
         # unique nested
@@ -262,56 +265,64 @@ class TestIntervalIndex:
 
     def test_monotonic(self, closed):
         # increasing non-overlapping
-        idx = IntervalIndex.from_tuples([(0, 1), (2, 3), (4, 5)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(0, 1), (2, 3), (4, 5)], closed=closed)
         assert idx.is_monotonic_increasing is True
         assert idx._is_strictly_monotonic_increasing is True
         assert idx.is_monotonic_decreasing is False
         assert idx._is_strictly_monotonic_decreasing is False
 
         # decreasing non-overlapping
-        idx = IntervalIndex.from_tuples([(4, 5), (2, 3), (1, 2)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(4, 5), (2, 3), (1, 2)], closed=closed)
         assert idx.is_monotonic_increasing is False
         assert idx._is_strictly_monotonic_increasing is False
         assert idx.is_monotonic_decreasing is True
         assert idx._is_strictly_monotonic_decreasing is True
 
         # unordered non-overlapping
-        idx = IntervalIndex.from_tuples([(0, 1), (4, 5), (2, 3)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(0, 1), (4, 5), (2, 3)], closed=closed)
         assert idx.is_monotonic_increasing is False
         assert idx._is_strictly_monotonic_increasing is False
         assert idx.is_monotonic_decreasing is False
         assert idx._is_strictly_monotonic_decreasing is False
 
         # increasing overlapping
-        idx = IntervalIndex.from_tuples([(0, 2), (0.5, 2.5), (1, 3)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(0, 2), (0.5, 2.5), (1, 3)], closed=closed)
         assert idx.is_monotonic_increasing is True
         assert idx._is_strictly_monotonic_increasing is True
         assert idx.is_monotonic_decreasing is False
         assert idx._is_strictly_monotonic_decreasing is False
 
         # decreasing overlapping
-        idx = IntervalIndex.from_tuples([(1, 3), (0.5, 2.5), (0, 2)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(1, 3), (0.5, 2.5), (0, 2)], closed=closed)
         assert idx.is_monotonic_increasing is False
         assert idx._is_strictly_monotonic_increasing is False
         assert idx.is_monotonic_decreasing is True
         assert idx._is_strictly_monotonic_decreasing is True
 
         # unordered overlapping
-        idx = IntervalIndex.from_tuples([(0.5, 2.5), (0, 2), (1, 3)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(0.5, 2.5), (0, 2), (1, 3)], closed=closed)
         assert idx.is_monotonic_increasing is False
         assert idx._is_strictly_monotonic_increasing is False
         assert idx.is_monotonic_decreasing is False
         assert idx._is_strictly_monotonic_decreasing is False
 
         # increasing overlapping shared endpoints
-        idx = IntervalIndex.from_tuples([(1, 2), (1, 3), (2, 3)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(1, 2), (1, 3), (2, 3)], closed=closed)
         assert idx.is_monotonic_increasing is True
         assert idx._is_strictly_monotonic_increasing is True
         assert idx.is_monotonic_decreasing is False
         assert idx._is_strictly_monotonic_decreasing is False
 
         # decreasing overlapping shared endpoints
-        idx = IntervalIndex.from_tuples([(2, 3), (1, 3), (1, 2)], closed=closed)
+        idx = IntervalIndex.from_tuples(
+            [(2, 3), (1, 3), (1, 2)], closed=closed)
         assert idx.is_monotonic_increasing is False
         assert idx._is_strictly_monotonic_increasing is False
         assert idx.is_monotonic_decreasing is True
@@ -382,7 +393,8 @@ class TestIntervalIndex:
 
     @pytest.mark.parametrize(
         "breaks",
-        [date_range("2018-01-01", periods=5), timedelta_range("0 days", periods=5)],
+        [date_range("2018-01-01", periods=5),
+         timedelta_range("0 days", periods=5)],
     )
     def test_maybe_convert_i8_nat(self, breaks):
         # GH 20636
@@ -494,13 +506,15 @@ class TestIntervalIndex:
             i.contains(Interval(0, 1))
 
     def test_dropna(self, closed):
-        expected = IntervalIndex.from_tuples([(0.0, 1.0), (1.0, 2.0)], closed=closed)
+        expected = IntervalIndex.from_tuples(
+            [(0.0, 1.0), (1.0, 2.0)], closed=closed)
 
         ii = IntervalIndex.from_tuples([(0, 1), (1, 2), np.nan], closed=closed)
         result = ii.dropna()
         tm.assert_index_equal(result, expected)
 
-        ii = IntervalIndex.from_arrays([0, 1, np.nan], [1, 2, np.nan], closed=closed)
+        ii = IntervalIndex.from_arrays(
+            [0, 1, np.nan], [1, 2, np.nan], closed=closed)
         result = ii.dropna()
         tm.assert_index_equal(result, expected)
 
@@ -606,9 +620,11 @@ class TestIntervalIndex:
 
     def test_missing_values(self, closed):
         idx = Index(
-            [np.nan, Interval(0, 1, closed=closed), Interval(1, 2, closed=closed)]
+            [np.nan, Interval(0, 1, closed=closed),
+             Interval(1, 2, closed=closed)]
         )
-        idx2 = IntervalIndex.from_arrays([np.nan, 0, 1], [np.nan, 1, 2], closed=closed)
+        idx2 = IntervalIndex.from_arrays(
+            [np.nan, 0, 1], [np.nan, 1, 2], closed=closed)
         assert idx.equals(idx2)
 
         msg = (
@@ -689,7 +705,8 @@ class TestIntervalIndex:
         index2 = IntervalIndex.from_arrays([1, 2], [2, 3], closed=closed)
 
         result = index1.append(index2)
-        expected = IntervalIndex.from_arrays([0, 1, 1, 2], [1, 2, 2, 3], closed=closed)
+        expected = IntervalIndex.from_arrays(
+            [0, 1, 1, 2], [1, 2, 2, 3], closed=closed)
         tm.assert_index_equal(result, expected)
 
         result = index1.append([index1, index2])
@@ -703,7 +720,8 @@ class TestIntervalIndex:
                 [0, 1], [1, 2], closed=other_closed
             )
             result = index1.append(index_other_closed)
-            expected = index1.astype(object).append(index_other_closed.astype(object))
+            expected = index1.astype(object).append(
+                index_other_closed.astype(object))
             tm.assert_index_equal(result, expected)
 
     def test_is_non_overlapping_monotonic(self, closed):
@@ -752,7 +770,8 @@ class TestIntervalIndex:
         # see test_interval_tree.py for extensive tests; interface tests here
 
         # non-overlapping
-        tuples = [(start + n * shift, start + (n + 1) * shift) for n in (0, 2, 4)]
+        tuples = [(start + n * shift, start + (n + 1) * shift)
+                  for n in (0, 2, 4)]
         index = IntervalIndex.from_tuples(tuples, closed=closed)
         assert index.is_overlapping is False
 
@@ -762,7 +781,8 @@ class TestIntervalIndex:
         assert index.is_overlapping is False
 
         # overlapping
-        tuples = [(start + n * shift, start + (n + 2) * shift) for n in range(3)]
+        tuples = [(start + n * shift, start + (n + 2) * shift)
+                  for n in range(3)]
         index = IntervalIndex.from_tuples(tuples, closed=closed)
         assert index.is_overlapping is True
 
@@ -772,7 +792,8 @@ class TestIntervalIndex:
         assert index.is_overlapping is True
 
         # common endpoints
-        tuples = [(start + n * shift, start + (n + 1) * shift) for n in range(3)]
+        tuples = [(start + n * shift, start + (n + 1) * shift)
+                  for n in range(3)]
         index = IntervalIndex.from_tuples(tuples, closed=closed)
         result = index.is_overlapping
         expected = closed == "both"
@@ -785,8 +806,10 @@ class TestIntervalIndex:
         assert result is expected
 
         # intervals with duplicate left values
-        a = [10, 15, 20, 25, 30, 35, 40, 45, 45, 50, 55, 60, 65, 70, 75, 80, 85]
-        b = [15, 20, 25, 30, 35, 40, 45, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90]
+        a = [10, 15, 20, 25, 30, 35, 40, 45,
+             45, 50, 55, 60, 65, 70, 75, 80, 85]
+        b = [15, 20, 25, 30, 35, 40, 45, 45,
+             50, 55, 60, 65, 70, 75, 80, 85, 90]
         index = IntervalIndex.from_arrays(a, b, closed="right")
         result = index.is_overlapping
         assert result is False
@@ -909,7 +932,8 @@ def test_searchsorted_different_argument_classes(listlike_box):
 
 
 @pytest.mark.parametrize(
-    "arg", [[1, 2], ["a", "b"], [Timestamp("2020-01-01", tz="Europe/London")] * 2]
+    "arg", [[1, 2], ["a", "b"], [
+        Timestamp("2020-01-01", tz="Europe/London")] * 2]
 )
 def test_searchsorted_invalid_argument(arg):
     values = IntervalIndex([Interval(0, 1), Interval(1, 2)])

@@ -78,9 +78,11 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
                     # error: Argument 1 has incompatible type "float | int |
                     # integer[Any]"; expected "Decimal | float | str | tuple[int,
                     # Sequence[int], int]"
-                    values[i] = DecimalDtype.type(val)  # type: ignore[arg-type]
+                    values[i] = DecimalDtype.type(
+                        val)  # type: ignore[arg-type]
             elif not isinstance(val, decimal.Decimal):
-                raise TypeError("All values must be of type " + str(decimal.Decimal))
+                raise TypeError(
+                    "All values must be of type " + str(decimal.Decimal))
         values = np.asarray(values, dtype=object)
 
         self._data = values
@@ -143,7 +145,8 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
                 self, ufunc, method, *inputs, **kwargs
             )
 
-        inputs = tuple(x._data if isinstance(x, DecimalArray) else x for x in inputs)
+        inputs = tuple(x._data if isinstance(
+            x, DecimalArray) else x for x in inputs)
         result = getattr(ufunc, method)(*inputs, **kwargs)
 
         if method == "reduce":
@@ -179,7 +182,8 @@ class DecimalArray(OpsMixin, ExtensionScalarOpsMixin, ExtensionArray):
         if allow_fill and fill_value is None:
             fill_value = self.dtype.na_value
 
-        result = take(data, indexer, fill_value=fill_value, allow_fill=allow_fill)
+        result = take(data, indexer, fill_value=fill_value,
+                      allow_fill=allow_fill)
         return self._from_sequence(result, dtype=self.dtype)
 
     def copy(self):

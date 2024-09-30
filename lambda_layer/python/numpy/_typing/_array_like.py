@@ -36,6 +36,8 @@ NDArray: TypeAlias = ndarray[Any, dtype[_ScalarType_co]]
 # array.
 # Concrete implementations of the protocol are responsible for adding
 # any and all remaining overloads
+
+
 @runtime_checkable
 class _SupportsArray(Protocol[_DType_co]):
     def __array__(self) -> ndarray[Any, _DType_co]: ...
@@ -44,6 +46,7 @@ class _SupportsArray(Protocol[_DType_co]):
 @runtime_checkable
 class _SupportsArrayFunc(Protocol):
     """A protocol class representing `~class.__array_function__`."""
+
     def __array_function__(
         self,
         func: Callable[..., Any],

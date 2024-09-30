@@ -92,7 +92,8 @@ def numeric_only(request):
 
 @pytest.fixture(
     params=[
-        pytest.param("numba", marks=[td.skip_if_no("numba"), pytest.mark.single_cpu]),
+        pytest.param("numba", marks=[td.skip_if_no(
+            "numba"), pytest.mark.single_cpu]),
         "cython",
     ]
 )

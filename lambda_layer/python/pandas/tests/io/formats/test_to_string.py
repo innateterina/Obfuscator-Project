@@ -95,7 +95,8 @@ class TestDataFrameToStringFormatters:
 
     def test_to_string_with_datetime64_hourformatter(self):
         x = DataFrame(
-            {"hod": to_datetime(["10:10:10.100", "12:12:12.120"], format="%H:%M:%S.%f")}
+            {"hod": to_datetime(
+                ["10:10:10.100", "12:12:12.120"], format="%H:%M:%S.%f")}
         )
 
         def format_func(x):
@@ -143,8 +144,10 @@ class TestDataFrameToStringFormatters:
         col2 = "PANDAS"
         col3 = "to_string"
         expected = f"{col1:<6s} {col2:<7s} {col3:<10s}"
-        df = DataFrame([{"col1": "TEST", "col2": "PANDAS", "col3": "to_string"}])
-        d = {"col1": "{:<6s}".format, "col2": "{:<7s}".format, "col3": "{:<10s}".format}
+        df = DataFrame(
+            [{"col1": "TEST", "col2": "PANDAS", "col3": "to_string"}])
+        d = {"col1": "{:<6s}".format,
+             "col2": "{:<7s}".format, "col3": "{:<10s}".format}
         result = df.to_string(index=False, header=False, formatters=d)
         assert result == expected
 
@@ -220,7 +223,8 @@ class TestDataFrameToStringHeader:
 
     def test_to_string_multindex_header(self):
         # GH#16718
-        df = DataFrame({"a": [0], "b": [1], "c": [2], "d": [3]}).set_index(["a", "b"])
+        df = DataFrame({"a": [0], "b": [1], "c": [2],
+                       "d": [3]}).set_index(["a", "b"])
         res = df.to_string(header=["r1", "r2"])
         exp = "    r1 r2\na b      \n0 1  2  3"
         assert res == exp
@@ -468,7 +472,8 @@ class TestToStringNumericFormatting:
             False,
         ):
             df = DataFrame(
-                {"x": [0, 0.25, 3456.000, 12e45, 1.64e6, 1.7e8, 1.253456, np.pi, -1e6]}
+                {"x": [0, 0.25, 3456.000, 12e45, 1.64e6,
+                       1.7e8, 1.253456, np.pi, -1e6]}
             )
 
             df_s = df.to_string()
@@ -647,7 +652,8 @@ class TestDataFrameToString:
                 "    col1    col2\n0    Abc     NaN\n1  0.756  4.5435",
             ),
             (
-                {"col1": [np.nan, "a"], "col2": [0.009, 3.543], "col3": ["Abc", 23]},
+                {"col1": [np.nan, "a"], "col2": [
+                    0.009, 3.543], "col3": ["Abc", 23]},
                 "  col1   col2 col3\n0  NaN  0.009  Abc\n1    a  3.543   23",
             ),
         ],
@@ -703,7 +709,8 @@ class TestDataFrameToString:
     def test_truncation_no_index(self, max_cols, max_rows, expected):
         df = DataFrame([[0] * 11] * 4)
         assert (
-            df.to_string(index=False, max_cols=max_cols, max_rows=max_rows) == expected
+            df.to_string(index=False, max_cols=max_cols,
+                         max_rows=max_rows) == expected
         )
 
     def test_to_string_no_index(self):
@@ -753,7 +760,8 @@ class TestDataFrameToString:
             {"x": ["foo", "bar", "baz"], "y": ["a", "b", "c"], "z": [1, 2, 3]}
         )
         df = df.astype(
-            {"x": "string[pyarrow]", "y": "string[python]", "z": "int64[pyarrow]"}
+            {"x": "string[pyarrow]", "y": "string[python]",
+                "z": "int64[pyarrow]"}
         )
         result = df.dtypes.to_string()
         expected = dedent(
@@ -831,7 +839,8 @@ class TestDataFrameToString:
         recons = read_csv(StringIO(joined), names=header, header=None, sep=" ")
         tm.assert_series_equal(recons["B"], biggie["B"])
         assert recons["A"].count() == biggie["A"].count()
-        assert (np.abs(recons["A"].dropna() - biggie["A"].dropna()) < 0.1).all()
+        assert (np.abs(recons["A"].dropna() -
+                biggie["A"].dropna()) < 0.1).all()
 
         # FIXME: don't leave commented-out
         # expected = ['B', 'A']
@@ -842,7 +851,8 @@ class TestDataFrameToString:
         expected = ["A"]
         assert header == expected
 
-        biggie.to_string(columns=["B", "A"], formatters={"A": lambda x: f"{x:.1f}"})
+        biggie.to_string(columns=["B", "A"], formatters={
+                         "A": lambda x: f"{x:.1f}"})
 
         biggie.to_string(columns=["B", "A"], float_format=str)
         biggie.to_string(columns=["B", "A"], col_space=12, float_format=str)
@@ -1109,7 +1119,8 @@ class TestSeriesToString:
         cp.name = "foo"
         result = cp.to_string(length=True, name=True, dtype=True)
         last_line = result.split("\n")[-1].strip()
-        assert last_line == (f"Freq: B, Name: foo, Length: {len(cp)}, dtype: float64")
+        assert last_line == (
+            f"Freq: B, Name: foo, Length: {len(cp)}, dtype: float64")
 
     @pytest.mark.parametrize(
         "input_array, expected",
@@ -1171,18 +1182,21 @@ class TestSeriesToString:
     def test_to_string_mixed(self):
         ser = Series(["foo", np.nan, -1.23, 4.56])
         result = ser.to_string()
-        expected = "".join(["0     foo\n", "1     NaN\n", "2   -1.23\n", "3    4.56"])
+        expected = "".join(["0     foo\n", "1     NaN\n",
+                           "2   -1.23\n", "3    4.56"])
         assert result == expected
 
         # but don't count NAs as floats
         ser = Series(["foo", np.nan, "bar", "baz"])
         result = ser.to_string()
-        expected = "".join(["0    foo\n", "1    NaN\n", "2    bar\n", "3    baz"])
+        expected = "".join(
+            ["0    foo\n", "1    NaN\n", "2    bar\n", "3    baz"])
         assert result == expected
 
         ser = Series(["foo", 5, "bar", "baz"])
         result = ser.to_string()
-        expected = "".join(["0    foo\n", "1      5\n", "2    bar\n", "3    baz"])
+        expected = "".join(
+            ["0    foo\n", "1      5\n", "2    bar\n", "3    baz"])
         assert result == expected
 
     def test_to_string_float_na_spacing(self):

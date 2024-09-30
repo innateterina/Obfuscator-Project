@@ -34,7 +34,8 @@ class Dim2CompatTests:
     def test_transpose(self, data):
         arr2d = data.repeat(2).reshape(-1, 2)
         shape = arr2d.shape
-        assert shape[0] != shape[-1]  # otherwise the rest of the test is useless
+        # otherwise the rest of the test is useless
+        assert shape[0] != shape[-1]
 
         assert arr2d.T.shape == shape[::-1]
 
@@ -173,7 +174,8 @@ class Dim2CompatTests:
 
         result = arr._pad_or_backfill(method=method, limit=None)
 
-        expected = data_missing._pad_or_backfill(method=method).repeat(2).reshape(2, 2)
+        expected = data_missing._pad_or_backfill(
+            method=method).repeat(2).reshape(2, 2)
         tm.assert_extension_array_equal(result, expected)
 
         # Reverse so that backfill is not a no-op.
@@ -184,7 +186,8 @@ class Dim2CompatTests:
         result2 = arr2._pad_or_backfill(method=method, limit=None)
 
         expected2 = (
-            data_missing[::-1]._pad_or_backfill(method=method).repeat(2).reshape(2, 2)
+            data_missing[::-
+                         1]._pad_or_backfill(method=method).repeat(2).reshape(2, 2)
         )
         tm.assert_extension_array_equal(result2, expected2)
 

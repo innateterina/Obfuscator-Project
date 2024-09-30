@@ -151,7 +151,8 @@ class TestRollingTS:
 
     def test_frame_on(self):
         df = DataFrame(
-            {"B": range(5), "C": date_range("20130101 09:00:00", periods=5, freq="3s")}
+            {"B": range(5), "C": date_range(
+                "20130101 09:00:00", periods=5, freq="3s")}
         )
 
         df["A"] = [
@@ -163,7 +164,8 @@ class TestRollingTS:
         ]
 
         # we are doing simulating using 'on'
-        expected = df.set_index("A").rolling("2s").B.sum().reset_index(drop=True)
+        expected = df.set_index("A").rolling(
+            "2s").B.sum().reset_index(drop=True)
 
         result = df.rolling("2s", on="A").B.sum()
         tm.assert_series_equal(result, expected)
@@ -175,7 +177,8 @@ class TestRollingTS:
         # to the actual result where they are ordered as in the
         # original
         expected = (
-            df.set_index("A").rolling("2s")[["B"]].sum().reset_index()[["B", "A"]]
+            df.set_index("A").rolling("2s")[
+                ["B"]].sum().reset_index()[["B", "A"]]
         )
 
         result = df.rolling("2s", on="A")[["B"]].sum()
@@ -468,7 +471,8 @@ class TestRollingTS:
 
     def test_regular_min(self):
         df = DataFrame(
-            {"A": date_range("20130101", periods=5, freq="s"), "B": [0.0, 1, 2, 3, 4]}
+            {"A": date_range("20130101", periods=5, freq="s"),
+             "B": [0.0, 1, 2, 3, 4]}
         ).set_index("A")
         result = df.rolling("1s").min()
         expected = df.copy()
@@ -476,7 +480,8 @@ class TestRollingTS:
         tm.assert_frame_equal(result, expected)
 
         df = DataFrame(
-            {"A": date_range("20130101", periods=5, freq="s"), "B": [5, 4, 3, 4, 5]}
+            {"A": date_range("20130101", periods=5, freq="s"),
+             "B": [5, 4, 3, 4, 5]}
         ).set_index("A")
 
         tm.assert_frame_equal(result, expected)
@@ -563,7 +568,8 @@ class TestRollingTS:
     )
     def test_freqs_ops(self, freq, op, result_data):
         # GH 21096
-        index = date_range(start="2018-1-1 01:00:00", freq=f"1{freq}", periods=10)
+        index = date_range(start="2018-1-1 01:00:00",
+                           freq=f"1{freq}", periods=10)
         # Explicit cast to float to avoid implicit cast when setting nan
         s = Series(data=0, index=index, dtype="float")
         s.iloc[1] = np.nan
@@ -625,7 +631,8 @@ class TestRollingTS:
             return getattr(x.rolling(5, min_periods=1), f)()
 
         expected = (
-            df.groupby(df.index.day).apply(agg_by_day).reset_index(level=0, drop=True)
+            df.groupby(df.index.day).apply(
+                agg_by_day).reset_index(level=0, drop=True)
         )
 
         tm.assert_frame_equal(result, expected)
@@ -664,7 +671,8 @@ class TestRollingTS:
 
         df = DataFrame({"column": [3, 4, 4, 5, 6]}, index=index)
         result = df.rolling("5s").min()
-        expected = DataFrame({"column": [3.0, 3.0, 4.0, 4.0, 6.0]}, index=index)
+        expected = DataFrame(
+            {"column": [3.0, 3.0, 4.0, 4.0, 6.0]}, index=index)
         tm.assert_frame_equal(result, expected)
 
     def test_rolling_on_empty(self):
