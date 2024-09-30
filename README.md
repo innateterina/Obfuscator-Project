@@ -75,9 +75,7 @@ python main/obfuscate_cli.py --input_file_path "main/input.csv" --output_file_pa
 ```
 
 ```bash
-python main/obfuscate_cli.py --input_file_path "main/input.json"
---output_file_path "main/output.json"
---pii_fields name email age id
+python main/obfuscate_cli.py --input_file_path "main/input.json" --output_file_path "main/output.json" --pii_fields name email age id
 ```
 
 ### Running Tests
@@ -98,19 +96,14 @@ flake8 --exclude='*.zip,venv,lambda_layer,.coverage'
 
 ### Example Input and Output
 
-Example CSV Input:
+Example JSON Input:
 
-student_id,name,email,age
-1,John Ford,john@example.com,30
-2,Jane Smith,jane@example.com,25
-3,Emily Bennet,emily@example.com,22
+[{"id": 1, "name": "John Ford", "email": "john@example.com", "age": 25},
+{"id": 2, "name": "Jane Smith", "email": "jane@example.com", "age": 30}]
 
-Example Output (Obfuscated name and email fields):
+Example Output (Obfuscated name, email, age and id fields, and id field is actually not obfuscated because it's a primary key):
 
-student_id,name,email,age
-1,"**_","_**",30
-2,"**_","_**",25
-3,"**_","_**",22
+[{"id": 1, "name": "***", "email": "***", "age": "***"}, {"id": 2, "name": "***", "email": "***", "age": "***"}]
 
 ### Summary
 
