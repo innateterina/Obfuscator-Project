@@ -30,7 +30,7 @@ def replace_pii_json_data(data: dict, pii_fields: list):
     """
     if isinstance(data, dict):
         for key, value in data.items():
-            if (key in pii_fields and isinstance(value, str) and
+            if (key in pii_fields and isinstance(value, (str, int, float)) and
                     "id" not in key.lower()):
                 data[key] = "***"
             elif isinstance(value, (dict, list)):
