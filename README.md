@@ -105,12 +105,12 @@ student_id,name,email,age
 2,Jane Smith,jane@example.com,25
 3,Emily Bennet,emily@example.com,22
 
-Example Output (Obfuscated):
+Example Output (Obfuscated name and email fields):
 
-student\*id,name,email,age
-1,\*\*\*,_**,30
-2,**_,_**,25
-3,**_,\_\*\*,22
+student_id,name,email,age
+1,"**_","_**",30
+2,"**_","_**",25
+3,"**_","_**",22
 
 ### Summary
 
