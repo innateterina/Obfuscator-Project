@@ -7,7 +7,9 @@ from main.helpers import (
     upload_obfuscated_file,
 )
 from main.main import (obfuscate_upload,
-                       obfuscate_json, obfuscate_csv, obfuscate_parquet)
+                       obfuscate_json,
+                       obfuscate_csv,
+                       obfuscate_parquet)
 from io import BytesIO
 import pandas as pd
 import json
@@ -24,9 +26,11 @@ class TestObfuscator(unittest.TestCase):
 
     # Test for replace_pii_csv_data()
     def test_replace_pii_csv_data(self):
-        row = {"name": "John Ford", "email": "john@example.com", "age": "30"}
-        pii_fields = ["name", "email"]
+        row = {"student_id": "1", "name": "John Ford",
+               "email": "john@example.com", "age": "30"}
+        pii_fields = ["student_id", "name", "email"]
         obfuscated_row = replace_pii_csv_data(row, pii_fields)
+        self.assertEqual(obfuscated_row["student_id"], "1")
         self.assertEqual(obfuscated_row["name"], "***")
         self.assertEqual(obfuscated_row["email"], "***")
         self.assertEqual(obfuscated_row["age"], "30")
@@ -34,12 +38,14 @@ class TestObfuscator(unittest.TestCase):
     # Test for replace_pii_json_data()
     def test_replace_pii_json_data(self):
         data = {
+            "student_id": 1,
             "name": "Jane Ford",
             "email": "jane@example.com",
             "details": {"phone": "1234567890", "address": "123 Main St"},
         }
-        pii_fields = ["name", "email", "phone"]
+        pii_fields = ["student_id", "name", "email", "phone"]
         replace_pii_json_data(data, pii_fields)
+        self.assertEqual(data["student_id"], 1)
         self.assertEqual(data["name"], "***")
         self.assertEqual(data["email"], "***")
         self.assertEqual(data["details"]["phone"], "***")
@@ -62,7 +68,8 @@ class TestObfuscator(unittest.TestCase):
         mock_s3_response = {
             "Body": BytesIO(
                 json.dumps(
-                    {"name": "Jane Ford",
+                    {"student_id": 1,
+                     "name": "Jane Ford",
                      "email": "jane@example.com",
                      "age": 30}
                 ).encode("utf-8")
@@ -70,13 +77,11 @@ class TestObfuscator(unittest.TestCase):
         }
         s3_mock.get_object.return_value = mock_s3_response
 
-        pii_fields = ["name", "email"]
+        pii_fields = ["student_id", "name", "email"]
         result = obfuscate_json("s3://my_bucket/my_file.json", pii_fields)
-        expected_output = json.dumps({"name": "***",
+        expected_output = json.dumps({"student_id": 1, "name": "***",
                                       "email": "***",
-                                      "age": 30}
-                                     ).encode("utf-8"
-                                              )
+                                      "age": 30}).encode("utf-8")
 
         self.assertEqual(result, expected_output)
 
@@ -86,21 +91,23 @@ class TestObfuscator(unittest.TestCase):
         s3_mock = mock_boto.return_value
         mock_s3_response = {
             "Body": BytesIO(
+                "student_id,"
                 "name,email,"
-                "age\nJane Ford,"
+                "age\n1,Jane Ford,"
                 "jane@example.com,"
-                "30\nJohn Smith,john@example.com,25".encode(
-                    "utf-8"
-                )
+                "30\n2,John Smith,john@example.com,25".encode("utf-8")
             )
         }
         s3_mock.get_object.return_value = mock_s3_response
 
-        pii_fields = ["name", "email"]
+        pii_fields = ["student_id", "name", "email"]
         result = obfuscate_csv("s3://my_bucket/my_file.csv", pii_fields)
         result = result.replace(b"\r\n", b"\n")
-        expected_output = "name,email,age\n***,***,30\n***,***,25\n".encode(
-            "utf-8")
+        expected_output = (
+            "student_id,name,email,age\n"
+            "1,***,***,30\n"
+            "2,***,***,25\n"
+        ).encode("utf-8")
 
         self.assertEqual(result, expected_output)
 
@@ -110,6 +117,7 @@ class TestObfuscator(unittest.TestCase):
         s3_mock = mock_boto.return_value
         df = pd.DataFrame(
             {
+                "student_id": [1, 2],
                 "name": ["Jane Ford", "John Smith"],
                 "email": ["jane@example.com", "john@example.com"],
                 "age": [30, 25],
@@ -122,14 +130,15 @@ class TestObfuscator(unittest.TestCase):
         mock_s3_response = {"Body": parquet_file}
         s3_mock.get_object.return_value = mock_s3_response
 
-        pii_fields = ["name", "email"]
+        pii_fields = ["student_id", "name", "email"]
         result = obfuscate_parquet(
             "s3://my_bucket/my_file.parquet", pii_fields)
 
         # Convert result back to dataframe for assertion
         result_df = pd.read_parquet(BytesIO(result))
         expected_df = pd.DataFrame(
-            {"name": ["***", "***"], "email": ["***", "***"], "age": [30, 25]}
+            {"student_id": [1, 2], "name": ["***", "***"],
+                "email": ["***", "***"], "age": [30, 25]}
         )
 
         pd.testing.assert_frame_equal(result_df, expected_df)
@@ -155,7 +164,7 @@ class TestObfuscator(unittest.TestCase):
         obfuscate_upload(
             "s3://my_bucket/my_file.json",
             "s3://my_bucket/obfuscated_file.json",
-            ["name", "email"],
+            ["name", "email", "student_id"],
         )
         mock_obfuscate_json.assert_called_once()
         mock_upload.assert_called_once_with(
@@ -170,7 +179,7 @@ class TestObfuscator(unittest.TestCase):
         obfuscate_upload(
             "s3://my_bucket/my_file.csv",
             "s3://my_bucket/obfuscated_file.csv",
-            ["name", "email"],
+            ["name", "email", "student_id"],
         )
         mock_obfuscate_csv.assert_called_once()
         mock_upload.assert_called_once_with(
@@ -185,7 +194,7 @@ class TestObfuscator(unittest.TestCase):
         obfuscate_upload(
             "s3://my_bucket/my_file.parquet",
             "s3://my_bucket/obfuscated_file.parquet",
-            ["name", "email"],
+            ["name", "email", "student_id"],
         )
         mock_obfuscate_parquet.assert_called_once()
         mock_upload.assert_called_once_with(

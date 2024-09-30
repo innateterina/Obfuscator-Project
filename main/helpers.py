@@ -13,27 +13,33 @@ def parse_s3_location(s3_location: str):
 
 def replace_pii_csv_data(row: dict, pii_fields: list):
     """
-    Function obfuscates sensitive pii fields in a csv row.
+    Function obfuscates sensitive pii fields in a csv row,
+    excluding the primary key (assumed to be the first column).
     """
+    primary_key = list(row.keys())[0]
+
     for field in pii_fields:
-        if field in row:
+        if field in row and field != primary_key:
             row[field] = "***"
     return row
 
 
-def replace_pii_json_data(data: dict, pii_fields: list):
+def replace_pii_json_data(data: dict, pii_fields: list, is_top_level=True):
     """
-    Function obfuscates pii fields in JSON data recursively.
+    Function obfuscates pii fields in JSON data recursively,
+    excluding the primary key (assumed to be the first key).
     """
     if isinstance(data, dict):
+        primary_key = next(iter(data)) if is_top_level else None
         for key, value in data.items():
             if key in pii_fields and isinstance(value, str):
-                data[key] = "***"
+                if not is_top_level or key != primary_key:
+                    data[key] = "***"
             elif isinstance(value, (dict, list)):
-                replace_pii_json_data(value, pii_fields)
+                replace_pii_json_data(value, pii_fields, is_top_level=False)
     elif isinstance(data, list):
         for item in data:
-            replace_pii_json_data(item, pii_fields)
+            replace_pii_json_data(item, pii_fields, is_top_level=False)
 
 
 def upload_obfuscated_file(bucket_name: str, file_key=str, data=bytes):

@@ -67,14 +67,17 @@ def obfuscate_csv(s3_location: str, pii_fields: list):
 
 def obfuscate_parquet(s3_location: str, pii_fields: list):
     """
-    Function obfuscates Parquet data from the given s3 location.
+    Function obfuscates Parquet data from the given s3 location,
+    excluding the primary key (assumed to be the first column).
     """
     s3 = boto3.client("s3")
     bucket_name, file_key = parse_s3_location(s3_location)
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
     data = pd.read_parquet(BytesIO(obj["Body"].read()))
+
+    primary_key = data.columns[0]
     for field in pii_fields:
-        if field in data.columns:
+        if field in data.columns and field != primary_key:
             data[field] = "***"
 
     output = BytesIO()

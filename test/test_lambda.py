@@ -25,10 +25,10 @@ class TestLambdaFunction(unittest.TestCase):
 
         # Assert
         self.assertEqual(response["statusCode"], 200)
-        self.assertEqual(json.loads(response["body"]),
-                         "Obfuscation process "
-                         "completed successfully."
-                         )
+        self.assertEqual(
+            json.loads(response["body"]),
+            "Obfuscation process " "completed successfully.",
+        )
         mock_obfuscate_upload.assert_called_once_with(
             event["input_s3_location"],
             event["output_s3_location"],
