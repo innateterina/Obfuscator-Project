@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 ### Step 2: Prepare Lambda Layers
 
-To use numpy, pyarrow, and pandas in AWS Lambda, prepare the Lambda layers:
+To use numpy, pyarrow, and pandas in AWS Lambda, these libraries must be included in a Lambda layer due to their size. This helps avoid exceeding Lambda's package size limit:
 
 ```bash
 mkdir -p lambda_layer/python
@@ -48,11 +48,16 @@ zip -r data_layer.zip python
 
 ### Step 3: Create Deployment Package
 
-Create the deployment package for the Lambda function:
+First you need to remove these libraries(numpy, pyarrow, pandas) from your requirements.txt so that they are not duplicated in the deployment package:
+
+```bash
+sed -i '' '/numpy\|pyarrow\|pandas/d' requirements.txt
+```
+
+And create the deployment package for the Lambda function:
 
 ```bash
 zip -r deployment_package.zip main/ requirements.txt
-
 ```
 
 ### Step 4: Setup AWS Lambda and EventBridge
@@ -62,8 +67,36 @@ Edit scripts/setup_eventbridge.sh to set your AWS region, account ID, and role A
 ```bash
 chmod +x scripts/setup_eventbridge.sh
 ./scripts/setup_eventbridge.sh
-
 ```
+
+Or you can run these commands manually:
+
+Create Lambda function:
+aws lambda create-function \
+ --function-name MyLambdaFunction \
+ --zip-file fileb://deployment_package.zip \
+ --handler main.lambda_handler \
+ --runtime python3.8 \
+ --role arn:aws:iam::YOUR_ACCOUNT_ID:role/execution_role \
+ --region your-region
+
+Set-up EventBridge Rule:
+aws events put-rule --name MyScheduledRule --schedule-expression "rate(5 minutes)" --region your-region
+
+Add permission for EventBridge and invoke Lambda:
+aws lambda add-permission \
+ --function-name MyLambdaFunction \
+ --statement-id MyStatementId \
+ --action "lambda:InvokeFunction" \
+ --principal events.amazonaws.com \
+ --source-arn arn:aws:events:your-region:your-account-id:rule/MyScheduledRule \
+ --region your-region
+
+Add Lambda target:
+aws events put-targets \
+ --rule MyScheduledRule \
+ --targets "Id"="1","Arn"="arn:aws:lambda:your-region:your-account-id:function:MyLambdaFunction" \
+ --region your-region
 
 ### Step 5: Run Locally (CLI)
 
@@ -71,7 +104,6 @@ To test the obfuscation locally using the command-line interface:
 
 ```bash
 python main/obfuscate_cli.py --input_file_path "main/input.csv" --output_file_path "main/output.csv" --pii_fields name email
-
 ```
 
 ```bash
@@ -81,6 +113,13 @@ python main/obfuscate_cli.py --input_file_path "main/input.json" --output_file_p
 ### Running Tests
 
 Run tests to verify the functionality:
+You need to install numpy, pyarrow, and pandas on your local environment, as they are not included in requirements.txt after being zipped for Lambda layers:
+
+````bash
+pip install numpy pyarrow pandas```
+````
+
+And run the tests:
 
 ```bash
 python -m unittest discover -s test
@@ -93,6 +132,8 @@ To check for PEP-8 compliance:
 ```bash
 flake8 --exclude='*.zip,venv,lambda_layer,.coverage'
 ```
+
+If there are no messages, it means the code complies with PEP-8 standards.
 
 ### Example Input and Output
 
