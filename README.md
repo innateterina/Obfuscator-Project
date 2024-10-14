@@ -73,29 +73,42 @@ Or you can run these commands manually:
 
 Create Lambda function:
 aws lambda create-function \
- --function-name MyLambdaFunction \
+ --function-name GDPRObfuscatorLambda \
  --zip-file fileb://deployment_package.zip \
- --handler main.lambda_handler \
+ --handler main.lambda_function.lambda_handler \
  --runtime python3.8 \
  --role arn:aws:iam::YOUR_ACCOUNT_ID:role/execution_role \
  --region your-region
 
+Create Lambda Layer:
+aws lambda publish-layer-version \
+ --layer-name GDPRObfuscatorDataLayer \
+ --zip-file fileb://lambda_layer/data_layer.zip \
+ --compatible-runtimes python3.8 \
+ --region your-region
+
+Attach Lambda Layer to the function:
+aws lambda update-function-configuration \
+ --function-name GDPRObfuscatorLambda \
+ --layers arn:aws:lambda:your-region:your-account-id:layer:GDPRObfuscatorDataLayer \
+ --region your-region
+
 Set-up EventBridge Rule:
-aws events put-rule --name MyScheduledRule --schedule-expression "rate(5 minutes)" --region your-region
+aws events put-rule --name GDPRObfuscatorScheduledRule --schedule-expression "rate(5 minutes)" --region your-region
 
 Add permission for EventBridge and invoke Lambda:
 aws lambda add-permission \
- --function-name MyLambdaFunction \
+ --function-name GDPRObfuscatorLambda \
  --statement-id MyStatementId \
  --action "lambda:InvokeFunction" \
  --principal events.amazonaws.com \
- --source-arn arn:aws:events:your-region:your-account-id:rule/MyScheduledRule \
+ --source-arn arn:aws:events:your-region:your-account-id:rule/GDPRObfuscatorScheduledRule \
  --region your-region
 
 Add Lambda target:
 aws events put-targets \
- --rule MyScheduledRule \
- --targets "Id"="1","Arn"="arn:aws:lambda:your-region:your-account-id:function:MyLambdaFunction" \
+ --rule GDPRObfuscatorScheduledRule \
+ --targets "Id"="1","Arn"="arn:aws:lambda:your-region:your-account-id:function:GDPRObfuscatorLambda" \
  --region your-region
 
 ### Step 5: Run Locally (CLI)
@@ -115,9 +128,9 @@ python main/obfuscate_cli.py --input_file_path "main/input.json" --output_file_p
 Run tests to verify the functionality:
 You need to install numpy, pyarrow, and pandas on your local environment, as they are not included in requirements.txt after being zipped for Lambda layers:
 
-````bash
-pip install numpy pyarrow pandas```
-````
+```bash
+pip install numpy pyarrow pandas
+```
 
 And run the tests:
 
